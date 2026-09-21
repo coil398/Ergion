@@ -1,0 +1,13 @@
+[workspace]
+members = ["crates/ergion-core", "crates/ergion-lab"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.91"
+
+[workspace.dependencies]
+serde = { version = "=1.0.229", features = ["derive"] }
+serde_json = { version = "=1.0.151", features = ["float_roundtrip"] }
+wasm-bindgen = "=0.2.128"

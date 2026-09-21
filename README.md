@@ -6,7 +6,30 @@ Ergion（エルジオン）は、再利用可能なRust数値コアを持ち、�
 
 ## 現在の状態
 
-設計・開発準備段階です。Rustコード、CLI、Wasm、ブラウザ画面はまだ実装されていません。この文書に記載する機能は開発目標であり、実行可能なコマンドや公開済みリリースはありません。
+最初の実験として、調和振動子をRustのRK4／velocity-Verletで計算するStudioとNative CLIを実装しています。ブラウザではWorker内のWasmで計算し、位置・速度・エネルギーと解析解との差を確認できます。
+
+設定変更、開始・一時停止・再開、1ステップ実行、リセット、JSON設定の保存・読み込みに対応しています。v0.1全体は開発中です。LJ粒子系、3D MD、温度、チェックポイントによる途中状態の保存・再開は未実装です。
+
+## 起動する
+
+Rust 1.91.1以上、Node.js 24系、npm、wasm-packが必要です。wasm-pack 0.13.1で動作確認しています。最初にWasmターゲットを用意します。
+
+```bash
+rustup target add wasm32-unknown-unknown
+npm --prefix studio ci
+npm --prefix studio run build
+npm --prefix studio run dev
+```
+
+表示されたローカルURLをブラウザで開きます。Rustを変更したら `npm --prefix studio run wasm` で再生成してください。Wasm生成物は手動編集しません。
+
+CLIは同じJSON設定を読み、最終状態を標準出力へ返します。Studioから保存した設定ファイルも指定できます。
+
+```bash
+cargo run -p ergion-lab --bin ergion -- examples/oscillator.json
+```
+
+[設定の仕様・検証手順](docs/studio.md)を参照してください。
 
 ## 製品構成
 
@@ -32,6 +55,7 @@ Ergion（エルジオン）は、再利用可能なRust数値コアを持ち、�
 
 | 文書 | 内容 |
 | --- | --- |
+| [Studioの使い方](docs/studio.md) | 設定仕様、実行方法、テスト、現在の制限 |
 | [設計](docs/architecture.md) | モジュール境界、数値モデル、実行・保存の方針 |
 | [開発ロードマップ](docs/roadmap.md) | v0.1の作業順序と後続段階 |
 | [検証計画](docs/validation.md) | 数値精度・再現性・画面の受入条件 |

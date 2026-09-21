@@ -2,7 +2,7 @@
 
 ## 現在の作業段階
 
-現在はドキュメントのみ。Cargo workspace、依存ライブラリ、ビルド・テスト・起動コマンドはまだ存在しない。実装時に実際の操作を検証してからREADMEへ追記する。
+現在は調和振動子の最初の実行経路を実装済み。Cargo workspaceは `ergion-core` と `ergion-lab`、画面は `studio/` に配置しています。導入・実行は[README](README.md)、テスト手順は[Studioの文書](docs/studio.md)を参照してください。
 
 開発方針は[設計](docs/architecture.md)、順序は[ロードマップ](docs/roadmap.md)、完成判定は[検証計画](docs/validation.md)を正本とする。同じ仕様を複数箇所へ詳しく複写せず、リンクで参照する。
 
@@ -26,4 +26,4 @@
 
 ## 今後決める事項
 
-Rust toolchain、依存バージョン、CI、Studioの技術構成、対応ブラウザ、設定形式、ライセンスは未決定。今回の文書整備ではパッケージを導入せず、実装やライセンスを既成事実にしない。
+初回実装はRust 1.91.1、Vite＋TypeScript＋Canvas、JSON設定、Worker内Wasmとし、Cargo.lockとpackage-lock.jsonを管理します。依存追加は用途・Native/Wasm対応を検証してから行います。CI、正式な対応ブラウザ範囲、チェックポイント形式、ライセンスは未決定です。

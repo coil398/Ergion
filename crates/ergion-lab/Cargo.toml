@@ -1,0 +1,20 @@
+[package]
+name = "ergion-lab"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[[bin]]
+name = "ergion"
+path = "src/main.rs"
+
+[dependencies]
+ergion-core = { path = "../ergion-core" }
+serde.workspace = true
+serde_json.workspace = true
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen.workspace = true
