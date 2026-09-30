@@ -1,12 +1,14 @@
 # Ergion
 
-Ergion（エルジオン）は、再利用可能なRust数値コアを持ち、ブラウザとNative CLIから同じ条件で計算できる科学計算環境を目指すプロジェクトです。
+Ergion（エルジオン）は計算の基盤であり、学習の基盤でもある。再利用可能なRust数値コアを持ち、ブラウザとNative CLIから同じ条件で計算できる。
 
-最初の完成単位は、検証済みの小さな分子動力学（MD）環境です。微分方程式ソルバの整備だけで終わらせず、条件入力、計算、可視化、保存・再開までをつなぎます。その直後に金融計算を加え、共通コアとしての再利用性を確かめます。
+現在の計算は1次元の調和振動子だけである。単純な場合から始め、より難しいモデルへは飛ばない。式と更新は Studio の画面に、走っている計算と並べて書いてある。Lennard–Jones、NVE、Wasm の MD、CLI のモデル振り分けは main に載せない。
+
+後続の完成像は、検証済みの小さな分子動力学環境として、条件入力、計算、可視化、保存・再開までをつなぐことである。金融計算はその後に置く。今の単位ではそこへ進まない。
 
 ## 現在の状態
 
-最初の実験として、調和振動子をRustのRK4／velocity-Verletで計算するStudioとNative CLIを実装しています。ブラウザではWorker内のWasmで計算し、位置・速度・エネルギーと解析解との差を確認できます。
+最初の実験として、調和振動子をRustのRK4／velocity-Verletで計算するStudioとNative CLIを実装しています。式、一ステップ、テストが見るものは画面の学習用の文章を正とし、ここでは繰り返さない。ブラウザではWorker内のWasmで計算し、位置・速度・エネルギーと解析解との差を確認できます。
 
 設定変更、開始・一時停止・再開、1ステップ実行、リセット、JSON設定の保存・読み込みに対応しています。v0.1全体は開発中です。LJ粒子系、3D MD、温度、チェックポイントによる途中状態の保存・再開は未実装です。
 
@@ -43,6 +45,8 @@ cargo run -p ergion-lab --bin ergion -- examples/oscillator.json
 
 ## v0.1の目標
 
+調和振動子の RK4 と velocity-Verlet は現在の単位である。3D の Lennard–Jones 以降は後続であり、今は着手しない。
+
 - `f64`の計算核、一般ODE用RK4、力学系用velocity-Verlet。
 - 3D・周期境界・NVE・force-shifted Lennard–Jonesによる小規模MD。
 - 同じ設定を受け取るNative CLIとRust/Wasm。計算状態の保存・再開。
@@ -55,7 +59,7 @@ cargo run -p ergion-lab --bin ergion -- examples/oscillator.json
 
 | 文書 | 内容 |
 | --- | --- |
-| [Studioの使い方](docs/studio.md) | 設定仕様、実行方法、テスト、現在の制限 |
+| [Studioの使い方](docs/studio.md) | 設定仕様、実行方法、テスト。式と更新は画面 |
 | [設計](docs/architecture.md) | モジュール境界、数値モデル、実行・保存の方針 |
 | [開発ロードマップ](docs/roadmap.md) | v0.1の作業順序と後続段階 |
 | [検証計画](docs/validation.md) | 数値精度・再現性・画面の受入条件 |

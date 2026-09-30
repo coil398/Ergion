@@ -44,6 +44,15 @@ app.innerHTML = `
           <p class="file-note">同じJSON設定をCLIでも使えます。<br>途中の計算状態は保存しません。</p>
         </section>
         <div class="results">
+          <section class="study panel" id="study" aria-labelledby="study-heading">
+            <div class="panel-heading"><h2 id="study-heading">式と一ステップ</h2><span class="quiet-label">学習用の文章</span></div>
+            <div class="study-body">
+              <p>運動方程式は <span class="math">m x'' = −k x</span>。角振動数は <span class="math">ω = √(k/m)</span>。エネルギーは <span class="math">E = m v² / 2 + k x² / 2</span>。解析解は <span class="math">x(t) = x₀ cos(ωt) + (v₀/ω) sin(ωt)</span>、<span class="math">v(t) = −x₀ ω sin(ωt) + v₀ cos(ωt)</span>。数値解と解析解は、どちらもライブラリが返した値を描く。</p>
+              <p>RK4 は状態 <span class="math">(x, v)</span> を一階系 <span class="math">x' = v</span>、<span class="math">v' = −ω² x</span> として進める。<span class="math">k1</span> を時刻 <span class="math">t</span>、<span class="math">k2</span> と <span class="math">k3</span> を <span class="math">t + Δt/2</span>、<span class="math">k4</span> を <span class="math">t + Δt</span> で評価し、<span class="math">y ← y + (Δt/6)(k1 + 2 k2 + 2 k3 + k4)</span> とする。</p>
+              <p>velocity-Verlet は加速度 <span class="math">a = −ω² x</span> に対し、速度を半刻み進め、位置を更新し、新しい位置で加速度を評価し、速度をさらに半刻み進める。</p>
+              <p>テストは、刻みを半減した大域誤差が RK4 では4次相当、velocity-Verlet では2次相当で減ること、安定な刻みでエネルギー誤差が有界であること、バッチを分けても最終状態が一致すること、不正な入力を拒否すること、初期静止の相対エネルギー誤差が 0 であることを見る。</p>
+            </div>
+          </section>
           <section class="scene panel" aria-labelledby="scene-heading">
             <div class="panel-heading"><h2 id="scene-heading">振動の様子</h2><span id="scene-time" class="numeric">t = 0.000</span></div>
             <canvas id="oscillator" aria-label="ばねに接続された粒子の位置。数値解は紫、解析解は青緑の輪郭。" role="img"></canvas>
@@ -62,7 +71,7 @@ app.innerHTML = `
           <p class="experiment-note">数値計算はブラウザ内で実行します。条件や結果をサーバーへ送信しません。</p>
         </div>
       </div>
-      <footer class="page-footer"><span>Ergion / 時間発展の実験</span><span>調和振動子 <span aria-hidden="true">→</span> 次の段階は3D分子動力学</span></footer>
+      <footer class="page-footer"><span>Ergion / 計算と学習</span><span>この画面の計算は調和振動子だけです。</span></footer>
     </main>
   </div>`;
 

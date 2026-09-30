@@ -99,6 +99,9 @@ test('デスクトップとモバイルの表示', async ({ page }, testInfo) =>
   await page.setViewportSize({ width: 1440, height: 1050 });
   await page.goto('/');
   await expect(page.locator('#status')).toHaveText('準備完了');
+  await expect(page.getByRole('heading', { name: '式と一ステップ' })).toBeVisible();
+  await expect(page.locator('#study')).toContainText('m x\'\' = −k x');
+  await expect(page.locator('#study')).toContainText('半刻み');
   await page.locator('[name=steps]').fill('600');
   await page.getByRole('button', { name: '条件を適用してリセット' }).click();
   await expect(page.locator('#status')).toHaveText('準備完了');
@@ -107,6 +110,7 @@ test('デスクトップとモバイルの表示', async ({ page }, testInfo) =>
   await page.screenshot({ path: testInfo.outputPath('studio-desktop.png'), fullPage: true });
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(page.getByRole('heading', { name: '調和振動子.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '式と一ステップ' })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await page.getByRole('button', { name: '初期状態にリセット' }).click();
   await expect(page.locator('#status')).toHaveText('準備完了');
