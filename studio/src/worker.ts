@@ -1,10 +1,10 @@
-import init, { Simulation } from '../wasm/ergion_lab.js';
+import init, { UniformSimulation } from '../wasm/ergion_lab.js';
 import wasmUrl from '../wasm/ergion_lab_bg.wasm?url';
 import type { Batch, Command, Reply, Snapshot, Update } from './protocol';
 
 // 初期化失敗もメッセージに応答して返す。未処理のPromise rejectionにしない。
 const initialized = init({ module_or_path: wasmUrl }).then(() => null, (error: unknown) => error);
-let simulation: Simulation | undefined;
+let simulation: UniformSimulation | undefined;
 let currentId = 0;
 let batchSize = 1;
 let timer: ReturnType<typeof setTimeout> | undefined;
@@ -48,7 +48,7 @@ onmessage = (event: MessageEvent<Command>) => {
       currentId = message.id;
       simulation?.free();
       simulation = undefined;
-      simulation = new Simulation(JSON.stringify(message.config));
+      simulation = new UniformSimulation(JSON.stringify(message.config));
       batchSize = Math.max(1, Math.min(100, Math.round(0.04 / message.config.dt)));
       publish('ready', [JSON.parse(simulation.snapshot()) as Snapshot]);
       return;
@@ -60,12 +60,13 @@ onmessage = (event: MessageEvent<Command>) => {
     } else if (message.command === 'step') {
       stop();
       advance(1, 'paused');
-    } else if (!running) {
+    } else if (message.command === 'start') {
+      if (running) return;
       running = true;
       tick();
     }
   }).catch((error: unknown) => {
     stop();
-    send({ id: message.id, error: String(error) });
+    send({ id: currentId, error: String(error) });
   });
 };

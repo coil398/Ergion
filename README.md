@@ -2,13 +2,13 @@
 
 Ergion（エルジオン）は計算の基盤であり、学習の基盤でもある。再利用可能なRust数値コアを持ち、ブラウザとNative CLIから同じ条件で計算できる。
 
-現在の計算は1次元の調和振動子だけである。単純な場合から始め、より難しいモデルへは飛ばない。式と更新は Studio の画面に、走っている計算と並べて書いてある。Lennard–Jones、NVE、Wasm の MD、CLI のモデル振り分けは main に載せない。
+現在の学習単元は一粒子の等速直線運動（$x = x_0 + v t$）である。単純な場合から始め、より難しいモデルへは飛ばない。式と更新は Studio の画面に、走っている計算と並べて書いてある。ばねや Lennard–Jones、等加速度運動への拡張は今の段階では行わない。既存の調和振動子のコードは保持するが紹介ページにはしない。
 
 後続の完成像は、検証済みの小さな分子動力学環境として、条件入力、計算、可視化、保存・再開までをつなぐことである。金融計算はその後に置く。今の単位ではそこへ進まない。
 
 ## 現在の状態
 
-最初の実験として、調和振動子をRustのRK4／velocity-Verletで計算するStudioとNative CLIを実装しています。式、一ステップ、テストが見るものは画面の学習用の文章を正とし、ここでは繰り返さない。ブラウザではWorker内のWasmで計算し、位置・速度・エネルギーと解析解との差を確認できます。
+最初の実験として、一粒子の等速直線運動をRustで計算するStudioとNative CLIを実装しています。式、一ステップ、テストが見るものは画面の学習用の文章を正とし、ここでは繰り返さない。ブラウザではWorker内のWasmで計算し、位置・速度と解析解との差を確認できます（既存の調和振動子のコードもライブラリ・CLIとして保持されています）。
 
 設定変更、開始・一時停止・再開、1ステップ実行、リセット、JSON設定の保存・読み込みに対応しています。v0.1全体は開発中です。LJ粒子系、3D MD、温度、チェックポイントによる途中状態の保存・再開は未実装です。
 
@@ -28,7 +28,7 @@ npm --prefix studio run dev
 CLIは同じJSON設定を読み、最終状態を標準出力へ返します。Studioから保存した設定ファイルも指定できます。
 
 ```bash
-cargo run -p ergion-lab --bin ergion -- examples/oscillator.json
+cargo run -p ergion-lab --bin ergion -- examples/uniform_motion.json
 ```
 
 [設定の仕様・検証手順](docs/studio.md)を参照してください。
@@ -45,7 +45,7 @@ cargo run -p ergion-lab --bin ergion -- examples/oscillator.json
 
 ## v0.1の目標
 
-調和振動子の RK4 と velocity-Verlet は現在の単位である。3D の Lennard–Jones 以降は後続であり、今は着手しない。
+一粒子の等速直線運動（$x = x_0 + v t$）は現在の単位である。調和振動子コードは保持されており、3D の Lennard–Jones 以降は後続であり、今は着手しない。
 
 - `f64`の計算核、一般ODE用RK4、力学系用velocity-Verlet。
 - 3D・周期境界・NVE・force-shifted Lennard–Jonesによる小規模MD。

@@ -1,4 +1,7 @@
 //! Harmonic oscillator reference model and shared Native/Wasm execution boundary.
+pub mod uniform;
+pub use uniform::*;
+
 use serde::{Deserialize, Serialize};
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;

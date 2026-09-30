@@ -1,6 +1,6 @@
 # 設計方針
 
-状態: 調和振動子の初回実装まで反映。v0.1のMD仕様と後続段階は設計方針であり、実装済み機能と区別する。
+状態: 一粒子等速直線運動（$x = x_0 + v t$）および調和振動子の実装まで反映。v0.1のMD仕様と後続段階は設計方針であり、実装済み機能と区別する。
 
 ## 責務と依存方向
 
@@ -20,7 +20,7 @@ CLI                       → Dynamics → Core
 | Electronic | 電子密度、基底、電子状態の計算 | MDの拡張としての埋め込み |
 | 実行・表示 | 設定の入出力、開始・停止、保存、描画 | JavaScriptによる別の計算核 |
 
-MD導入時のcrate名は `ergion-core`、`ergion-md`、後続の `ergion-quant`、`ergion-electronic` を想定する。Dynamicsは製品上の名前、`ergion-md`は初期のMD実装名。現在は `crates/ergion-core` に積分器、`crates/ergion-lab` に検証用調和振動子・共通設定・Native CLI・Wasm境界、`studio/` に画面を配置する。LabはMD実装ではない。未実装の分野に空のcrateを先回りして作らない。
+MD導入時のcrate名は `ergion-core`、`ergion-md`、後続の `ergion-quant`、`ergion-electronic` を想定する。Dynamicsは製品上の名前、`ergion-md`は初期のMD実装名。現在は `crates/ergion-core` に積分器、`crates/ergion-lab` に等速直線運動・調和振動子・共通設定・Native CLI・Wasm境界、`studio/` に画面を配置する。LabはMD実装ではない。未実装の分野に空のcrateを先回りして作らない。
 
 ## 数値問題の境界
 
@@ -53,7 +53,7 @@ F_i    = -grad_i U
 
 ## 設定・状態・再現性
 
-設定とチェックポイントを区別する。設定は計算条件、チェックポイントは再開に必要な状態を表す。両者をNativeとWasmで共有し、読み書きは実行層が担当する。調和振動子の設定はスキーマ版1のJSONとし、[Studioの入力仕様](studio.md)で定義する。MD設定とチェックポイントの形式は未決定。
+設定とチェックポイントを区別する。設定は計算条件、チェックポイントは再開に必要な状態を表す。両者をNativeとWasmで共有し、読み書きは実行層が担当する。等速直線運動および調和振動子の設定はスキーマ版1のJSONとし、[Studioの入力仕様](studio.md)で定義する。MD設定とチェックポイントの形式は未決定。
 
 | データ | 保存すべき情報 |
 | --- | --- |
