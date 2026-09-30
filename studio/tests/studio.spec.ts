@@ -97,9 +97,10 @@ test('デスクトップとモバイルの表示', async ({ page }, testInfo) =>
   await page.setViewportSize({ width: 1440, height: 1050 });
   await page.goto('/');
   await expect(page.locator('#status')).toHaveText('準備完了');
-  await expect(page.getByRole('heading', { name: '等速直線運動の理論と計算' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '等速直線運動の計算核' })).toBeVisible();
   await expect(page.locator('#study')).toContainText('m x\'\' = F');
   await expect(page.locator('#study')).toContainText('x(t) = x₀ + v t');
+  await expect(page.locator('#study')).toContainText('Rustdoc');
   await page.locator('[name=steps]').fill('600');
   await page.getByRole('button', { name: '条件を適用してリセット' }).click();
   await expect(page.locator('#status')).toHaveText('準備完了');
@@ -108,7 +109,7 @@ test('デスクトップとモバイルの表示', async ({ page }, testInfo) =>
   await page.screenshot({ path: testInfo.outputPath('studio-desktop.png'), fullPage: true });
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(page.getByRole('heading', { name: '等速直線運動.' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: '等速直線運動の理論と計算' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '等速直線運動の計算核' })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await page.getByRole('button', { name: '初期状態にリセット' }).click();
   await expect(page.locator('#status')).toHaveText('準備完了');

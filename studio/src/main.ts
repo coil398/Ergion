@@ -46,12 +46,10 @@ app.innerHTML = `
         </section>
         <div class="results">
           <section class="study panel" id="study" aria-labelledby="study-heading">
-            <div class="panel-heading"><h2 id="study-heading">等速直線運動の理論と計算</h2><span class="quiet-label">学習用の文章</span></div>
+            <div class="panel-heading"><h2 id="study-heading">等速直線運動の計算核</h2><span class="quiet-label">実装と検証</span></div>
             <div class="study-body">
-              <p>最も基礎的な運動は、外力を受けない質点の運動です。Newtonの運動方程式 <span class="math">m x'' = F</span> において外力 <span class="math">F = 0</span> と置くと、加速度は常に <span class="math">a = x'' = 0</span> となります。速度 <span class="math">v = x'</span> は時間によらず一定であり、時刻 <span class="math">t</span> における位置は解析解 <span class="math">x(t) = x₀ + v t</span> で厳密に表されます。</p>
-              <p>数値積分では、この1次元系を一階の微分方程式 <span class="math">x' = v</span>、<span class="math">v' = 0</span> として扱います。古典的RK4では、導関数が定数値 <span class="math">(v, 0)</span> となるため、中間の4つの段ベクトル <span class="math">k1, k2, k3, k4</span> の位置変化率はすべて <span class="math">v</span> と等しくなり、刻み幅 <span class="math">Δt</span> に対する1ステップの更新量 <span class="math">(Δt/6)(k1 + 2k2 + 2k3 + k4)</span> は厳密に <span class="math">v Δt</span> と一致します。</p>
-              <p>同様にvelocity-Verlet法でも、加速度 <span class="math">a = 0</span> であるため、半刻み速度更新 <span class="math">v ← v + (Δt/2) a</span> は不変、位置更新 <span class="math">x ← x + Δt v</span>、再度加速度評価後の半刻み速度更新も不変となり、厳密な増分 <span class="math">x ← x + v Δt</span> を与えます。どちらの方法でも打ち切り誤差は0となり、浮動小数点の丸め誤差を除いて数値解と解析解が完全に一致します。</p>
-              <p>画面では、上の軌道図で直線上を移動する粒子を描き、下の時系列グラフで位置 <span class="math">x(t)</span> が傾き <span class="math">v</span> の直線を描く様子を確認できます。紫色の実線がRust数値計算による数値解、青緑色の破線が解析解であり、両者が重なり合って進みます。</p>
+              <p>運動方程式 <span class="math">m x'' = F</span>（<span class="math">F = 0, a = 0</span>）、解析解 <span class="math">x(t) = x₀ + v t</span>、RK4およびvelocity-Verletによる1ステップの更新と打ち切り誤差ゼロの理論、引数の仕様、テストが検証する内容は、計算核の Rustdoc（<code>crates/ergion-lab/src/uniform.rs</code> / <code>UniformSimulation</code>）を正本（source of truth）として解説されています。</p>
+              <p>本画面は、その同一の計算核（Rust / Wasm）を呼び出して直線上を移動する粒子を描き、解析解との一致を視覚的に確かめるための実験台です。紫の実線が数値解、青緑の破線が解析解を表します。</p>
             </div>
           </section>
           <section class="scene panel" aria-labelledby="scene-heading">
