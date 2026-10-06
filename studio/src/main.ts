@@ -58,7 +58,7 @@ app.innerHTML = `
             <div class="readouts"><div><span>位置 x</span><output id="position">—</output></div><div><span>速度 v</span><output id="velocity">—</output></div><div><span>解析解の位置</span><output id="exact-position">—</output></div><div><span>位置の絶対差 |x - x_exact|</span><output id="energy-error">—</output></div></div>
           </section>
           <section class="plots panel" aria-labelledby="plots-heading">
-            <div class="panel-heading"><h2 id="plots-heading">軌道を読む</h2><div class="legend"><span><i class="numerical"></i>数値解</span><span><i class="analytical"></i>解析解</span></div></div>
+            <div class="panel-heading"><h2 id="plots-heading">位置の時間変化</h2><div class="legend"><span><i class="numerical"></i>数値解</span><span><i class="analytical"></i>解析解</span></div></div>
             <div class="plot-grid"><div class="plot-main"><h3>位置の時間変化 <span>x(t)</span></h3><canvas id="time-chart" aria-label="位置と時間のグラフ" role="img"></canvas><p>時間 t</p></div><div class="plot-phase"><h3>速度の時間変化 <span>v(t)</span></h3><canvas id="phase-chart" aria-label="速度と時間のグラフ" role="img"></canvas><p>時間 t</p></div></div>
             <div class="plot-footer"><span id="comparison">解析解との差を計算します。</span><span>破線は解析解</span></div>
           </section>
