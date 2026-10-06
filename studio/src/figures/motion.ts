@@ -118,7 +118,7 @@ export function drawUniformMotion(canvas: HTMLCanvasElement, frame: UniformMotio
 
   if (axisY - 16 > bracketY + 6) drawWitness(context, positionX, bracketY + 6, axisY - 16, '#6552b8');
   if (Math.abs(positionX - exactX) > 6 && axisY - 22 > exactY + 6) {
-    drawWitness(context, exactX, exactY + 6, axisY - 22, '#167b87');
+    drawWitness(context, exactX, exactY + 6, axisY - 22, '#167b87', [5, 4]);
   }
 
   drawExactOutline(context, exactX, axisY);

@@ -28,13 +28,20 @@ export function drawJoint(context: CanvasRenderingContext2D, x: number, y: numbe
   context.restore();
 }
 
-export function drawWitness(context: CanvasRenderingContext2D, x: number, y1: number, y2: number, color: string) {
+export function drawWitness(
+  context: CanvasRenderingContext2D,
+  x: number,
+  y1: number,
+  y2: number,
+  color: string,
+  dash: number[] = [],
+) {
   if (!(y2 > y1 + 4)) return;
   context.save();
   context.globalAlpha = 0.55;
   context.strokeStyle = color;
   context.lineWidth = 1;
-  context.setLineDash([2, 3]);
+  context.setLineDash(dash);
   context.beginPath();
   context.moveTo(x, y1);
   context.lineTo(x, y2);
