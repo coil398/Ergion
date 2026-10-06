@@ -2,15 +2,15 @@
 
 Ergion（エルジオン）は計算の基盤であり、学習の基盤でもある。再利用可能なRust数値コアを持ち、ブラウザとNative CLIから同じ条件で計算できる。
 
-カリキュラムは基礎力学、電磁気学、解析力学、微分方程式の順に進む。基礎力学の内部も単純なものから進め、現在の学習単元は一粒子の等速直線運動（$x = x_0 + v t$）である。等加速度運動やNewtonの法則はその後に続き、電磁気学・解析力学・一般ODE章はまだ始めない。ばねや Lennard–Jones への拡張は今の段階では行わない。既存の調和振動子のコードは保持するが紹介ページにはしない。
+画面にいまあるページは、最初の部分である古典力学です。等速直線運動（$x = x_0 + v t$）と等加速度直線運動（$x(t) = x_0 + v_0 t + \frac{1}{2} a t^2$、$v(t) = v_0 + a t$）を置いてあります。これより後の部分は、まだページにしていません。Ergion 全体を力学の教科書とは呼びません。既存の調和振動子のコードは保持しますが、紹介するページにはしません。
 
-式の解説・理論・引数仕様・テスト検証内容は、それを計算するRust関数の rustdoc（`crates/ergion-lab/src/uniform.rs` の `UniformSimulation`）に書いてあります。文章を二重に持って内容がずれるのを防ぎ、Webページは動く粒子を示してその関数を参照します。GitHub Pages（https://coil398.github.io/Ergion/）で公開され、Cursorローカル環境でも閲覧できます。
+式の解説は、等速直線運動では `crates/ergion-lab/src/uniform.rs` の `UniformSimulation`、等加速度直線運動では `crates/ergion-lab/src/constant_acceleration.rs` の `ConstantAccelerationSimulation` の rustdoc に書いてあります。画面は、その手順と動く粒子を示します。GitHub Pages（https://coil398.github.io/Ergion/）で公開され、Cursorローカル環境でも閲覧できます。
 
 後続の完成像は、検証済みの小さな分子動力学環境として、条件入力、計算、可視化、保存・再開までをつなぐことである。金融計算はその後に置く。今の単位ではそこへ進まない。
 
 ## 現在の状態
 
-最初の実験として、一粒子の等速直線運動をRustで計算するStudioとNative CLIを実装しています。式、1ステップの計算、テストが確かめている内容は `crates/ergion-lab/src/uniform.rs` の `UniformSimulation` の rustdoc に書いてあり、文章を二重に持ちません。ブラウザではWorker内のWasmで計算し、位置・速度と手計算の解との差を確認できます（既存の調和振動子のコードもライブラリ・CLIとして保持されています）。GitHub Pages（https://coil398.github.io/Ergion/）に公開されています。
+画面にいまあるページは、最初の部分である古典力学です。等速直線運動は `crates/ergion-lab/src/uniform.rs` の `UniformSimulation`、等加速度直線運動は `crates/ergion-lab/src/constant_acceleration.rs` の `ConstantAccelerationSimulation` が計算します。式、1ステップの計算、テストが確かめている内容は、それぞれの rustdoc に書いてあります。ブラウザでは Worker 内の Wasm で同じ関数を呼び出し、位置と速度を描きます。これより後の部分は、まだページにしていません。GitHub Pages（https://coil398.github.io/Ergion/）に公開されています。
 
 設定変更、開始・一時停止・再開、1ステップ実行、リセット、JSON設定の保存・読み込みに対応しています。v0.1全体は開発中です。LJ粒子系、3D MD、温度、チェックポイントによる途中状態の保存・再開は未実装です。
 

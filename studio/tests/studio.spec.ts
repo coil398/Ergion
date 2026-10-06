@@ -8,7 +8,7 @@ const root = resolve(import.meta.dirname, '../..');
 test('開始・停止・再開・1ステップと条件の適用', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
-  await page.goto('/');
+  await page.goto('uniform.html');
   await expect(page.locator('#status')).toHaveText('準備完了');
   await expect(page.locator('#position')).toHaveText('0.00000');
   await page.getByRole('button', { name: '1ステップ', exact: true }).click();
@@ -36,7 +36,7 @@ test('開始・停止・再開・1ステップと条件の適用', async ({ page
 });
 
 test('NativeとブラウザWasmが一致する', async ({ page }, testInfo) => {
-  await page.goto('/');
+  await page.goto('uniform.html');
   await expect(page.locator('#status')).toHaveText('準備完了');
   const base = JSON.parse(readFileSync(resolve(root, 'examples/uniform_motion.json'), 'utf8'));
   const config = { ...base, steps: 300, dt: 0.01 };
@@ -66,7 +66,7 @@ test('NativeとブラウザWasmが一致する', async ({ page }, testInfo) => {
 });
 
 test('設定JSONの往復・不正入力・完了後の操作', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('uniform.html');
   await expect(page.locator('#status')).toHaveText('準備完了');
   await page.locator('[name=steps]').fill('8');
   await page.locator('[name=velocity]').fill('2');
@@ -95,7 +95,7 @@ test('設定JSONの往復・不正入力・完了後の操作', async ({ page })
 
 test('デスクトップとモバイルの表示', async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 1440, height: 1050 });
-  await page.goto('/');
+  await page.goto('uniform.html');
   await expect(page.locator('#status')).toHaveText('準備完了');
   await expect(page.getByRole('heading', { name: '等速直線運動の計算と説明' })).toBeVisible();
   await expect(page.locator('#study')).toContainText('m x\'\' = F');
@@ -117,7 +117,7 @@ test('デスクトップとモバイルの表示', async ({ page }, testInfo) =>
 });
 
 test('粗い刻みでも数値軌道が表示範囲に収まる', async ({ page }, testInfo) => {
-  await page.goto('/');
+  await page.goto('uniform.html');
   await expect(page.locator('#status')).toHaveText('準備完了');
   await page.locator('[name=initial_position]').fill('0');
   await page.locator('[name=velocity]').fill('1');
@@ -130,8 +130,73 @@ test('粗い刻みでも数値軌道が表示範囲に収まる', async ({ page 
   await page.screenshot({ path: testInfo.outputPath('coarse-step.png'), fullPage: true });
 });
 
+test('力学の目次は古典力学の二つのページだけを示す', async ({ page }) => {
+  await page.goto('./');
+  await expect(page.getByRole('heading', { level: 1, name: '力学.' })).toBeVisible();
+  await expect(page.locator('#contents')).toContainText('最初の部分は古典力学');
+  await expect(page.locator('#contents')).toContainText('まだページにしていません');
+  await expect(page.locator('#contents')).toContainText('x₀');
+  await expect(page.locator('#contents')).toContainText('v₀');
+  await expect(page.getByRole('link', { name: '等速直線運動' }).first()).toBeVisible();
+  await expect(page.getByRole('link', { name: '等加速度直線運動' }).first()).toBeVisible();
+  const text = await page.locator('#contents').innerText();
+  for (const word of ['電磁気', '解析力学', '金融', '分子動力学', '正本', '計算核', '軌道を読む', '力学の教科書']) {
+    expect(text).not.toContain(word);
+  }
+});
+
+test('等加速度直線運動をデスクトップと狭い画面で読む', async ({ page }, testInfo) => {
+  await page.setViewportSize({ width: 1440, height: 1050 });
+  await page.goto('accelerated.html');
+  await expect(page.locator('#status')).toHaveText('準備完了');
+  await expect(page.getByRole('heading', { name: '等加速度直線運動の計算と説明' })).toBeVisible();
+  await expect(page.locator('.equation').first()).toBeVisible();
+  await expect(page.locator('#study')).toContainText('x(t) = x₀ + v₀ t + (1/2) a t²');
+  await expect(page.locator('#study')).toContainText('v(t) = v₀ + a t');
+  await expect(page.locator('#study')).toContainText('数値ステップの増分は厳密解の増分と一致します');
+  await expect(page.locator('#study')).toContainText('rustdoc');
+  const type = await page.evaluate(() => ({
+    body: parseFloat(getComputedStyle(document.body).fontSize),
+    solution: parseFloat(getComputedStyle(document.querySelector('.solution')!).fontSize),
+    equation: parseFloat(getComputedStyle(document.querySelector('.equation')!).fontSize),
+  }));
+  expect(type.body).toBeGreaterThanOrEqual(16);
+  expect(type.solution).toBeGreaterThanOrEqual(24);
+  expect(type.equation).toBeGreaterThanOrEqual(24);
+  await page.locator('[name=dt]').fill('0.5');
+  await page.getByRole('button', { name: '条件を適用してリセット' }).click();
+  await expect(page.locator('#status')).toHaveText('準備完了');
+  await page.getByRole('button', { name: '1ステップ', exact: true }).click();
+  await expect(page.locator('#velocity')).toHaveText('0.50000');
+  await expect(page.locator('#position')).toHaveText('0.12500');
+  await expect(page.locator('#phase-chart')).toHaveAttribute('aria-label', /速度と時間のグラフ/);
+  await page.screenshot({ path: testInfo.outputPath('accelerated-desktop.png'), fullPage: true });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(page.getByRole('heading', { name: '等加速度直線運動.' })).toBeVisible();
+  await expect(page.locator('.equation').first()).toBeVisible();
+  await expect(page.locator('.solution')).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await page.screenshot({ path: testInfo.outputPath('accelerated-mobile.png'), fullPage: true });
+});
+
+test('等速直線運動も狭い画面で本文と式が読める', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('uniform.html');
+  await expect(page.locator('#status')).toHaveText('準備完了');
+  await expect(page.locator('.equation').first()).toBeVisible();
+  await expect(page.locator('.solution')).toContainText('x(t) = x₀ + v t');
+  await expect(page.locator('.solution')).toContainText('打ち切り誤差はありません');
+  const type = await page.evaluate(() => ({
+    body: parseFloat(getComputedStyle(document.body).fontSize),
+    solution: parseFloat(getComputedStyle(document.querySelector('.solution')!).fontSize),
+  }));
+  expect(type.body).toBeGreaterThanOrEqual(16);
+  expect(type.solution).toBeGreaterThanOrEqual(24);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+});
+
 test('CLIで有効な大きい刻みの設定を読み込み後も編集できる', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('uniform.html');
   await expect(page.locator('#status')).toHaveText('準備完了');
   const config = { schema_version: 1, initial_position: 1, velocity: 2, dt: 2, steps: 10 };
   await page.locator('#import').setInputFiles({ name: 'large-dt.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(config)) });

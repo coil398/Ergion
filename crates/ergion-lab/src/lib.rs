@@ -1,5 +1,7 @@
 //! Harmonic oscillator reference model and shared Native/Wasm execution boundary.
+pub mod constant_acceleration;
 pub mod uniform;
+pub use constant_acceleration::*;
 pub use uniform::*;
 
 use serde::{Deserialize, Serialize};

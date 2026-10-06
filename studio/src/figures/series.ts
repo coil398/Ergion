@@ -42,10 +42,10 @@ export function drawTimeSeries(canvas: HTMLCanvasElement, frame: TimeSeriesFrame
   const surface = canvasContext(canvas);
   if (surface.width < 2 || surface.height < 2) return;
   const { context, width, height } = surface;
-  const left = 48;
-  const top = 16;
-  const right = 15;
-  const bottom = 30;
+  const left = 88;
+  const top = 18;
+  const right = 16;
+  const bottom = 36;
   const plotWidth = width - left - right;
   const plotHeight = height - top - bottom;
   if (plotWidth < 1 || plotHeight < 1) return;

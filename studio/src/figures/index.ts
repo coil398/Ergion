@@ -14,4 +14,4 @@ export * as motion from './motion';
 
 export { clearFigure } from './canvas';
 export { drawTimeSeries } from './series';
-export { drawUniformMotion } from './motion';
+export { drawConstantAcceleration, drawUniformMotion } from './motion';

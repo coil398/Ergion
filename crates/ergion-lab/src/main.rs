@@ -26,6 +26,18 @@ fn run() -> Result<(), String> {
             uniform.advance(500)?;
         }
     }
+    if let Ok(mut motion) = ergion_lab::ConstantAccelerationSimulation::new(&json) {
+        loop {
+            let snapshot = motion.snapshot()?;
+            let state: ergion_lab::ConstantAccelerationSnapshot =
+                serde_json::from_str(&snapshot).map_err(|e| e.to_string())?;
+            if state.finished {
+                println!("{snapshot}");
+                return Ok(());
+            }
+            motion.advance(500)?;
+        }
+    }
     let mut simulation = Simulation::new(&json)?;
     loop {
         let snapshot = simulation.snapshot()?;

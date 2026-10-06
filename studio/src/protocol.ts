@@ -6,6 +6,17 @@ export interface Config {
   steps: number;
 }
 
+export interface ConstantAccelerationConfig {
+  schema_version: 1;
+  initial_position: number;
+  initial_velocity: number;
+  acceleration: number;
+  dt: number;
+  steps: number;
+}
+
+export type MotionModel = 'uniform' | 'constant-acceleration';
+
 export interface Snapshot {
   step: number;
   time: number;
@@ -18,7 +29,7 @@ export interface Snapshot {
 
 export interface Batch { samples: Snapshot[]; state: Snapshot }
 export type Command =
-  | { id: number; command: 'load'; config: Config }
+  | { id: number; command: 'load'; model?: MotionModel; config: Config | ConstantAccelerationConfig }
   | { id: number; command: 'start' | 'pause' | 'step' };
 export interface Update extends Batch {
   id: number;

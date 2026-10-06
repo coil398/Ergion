@@ -2,7 +2,7 @@
 
 ## 現在の作業段階
 
-現在の学習単元は一粒子の等速直線運動（$x = x_0 + v t$）である。Cargo workspaceは `ergion-core` と `ergion-lab`、画面は `studio/` に配置しています。カリキュラムは基礎力学、電磁気学、解析力学、微分方程式の順に進み、基礎力学の内部も単純なものから進めます。等加速度運動やNewtonの法則はその後に続き、電磁気学・解析力学・一般ODE章はまだ始めません。式と理論は計算するRust関数の rustdoc（`crates/ergion-lab/src/uniform.rs` の `UniformSimulation`）に置き、Studio画面は動く粒子を示してその関数を参照します。GitHub Pages（https://coil398.github.io/Ergion/）やCursorローカルで閲覧します。手順は[Studioの文書](docs/studio.md)、導入は[README](README.md)を参照してください。既存の調和振動子のコードは維持されていますが紹介ページにはしません。
+画面にいまあるページは、最初の部分である古典力学です。等速直線運動と等加速度直線運動を置いてあります。これより後の部分は、まだページにしていません。Cargo workspaceは `ergion-core` と `ergion-lab`、画面は `studio/` に配置しています。式と理論は、計算する Rust 関数の rustdoc（`UniformSimulation` と `ConstantAccelerationSimulation`）に置き、画面はその手順と動く粒子を示します。GitHub Pages（https://coil398.github.io/Ergion/）やCursorローカルで閲覧します。手順は[Studioの文書](docs/studio.md)、導入は[README](README.md)を参照してください。既存の調和振動子のコードは維持されていますが紹介ページにはしません。
 
 開発方針は[設計](docs/architecture.md)、順序は[ロードマップ](docs/roadmap.md)、完成判定は[検証計画](docs/validation.md)に従う。同じ仕様を複数箇所へ詳しく複写せず、リンクで参照する。
 
@@ -25,7 +25,7 @@
 - 作業はmainで行う。ブランチは切らない。プルリクエストは作らない。
 - コミット対象はファイルを個別に指定する。`git add .`や`git add -A`は使わない。
 - 実装はごく小さい単位で進める。次の単位へは自動で進まず、今の計算が追える説明を先に出してから続きを待つ。
-- 単純な場合から始める。カリキュラムは基礎力学、電磁気学、解析力学、微分方程式の順に進む。基礎力学の内部も単純なものから進め、現在の学習単元は一粒子の等速直線運動（$x = x_0 + v t$）だけであり、ばねや Lennard–Jones への拡張は今の段階では行わない。等加速度運動、電磁気学、解析力学、一般ODE章はまだ始めない。調和振動子の既存コードは残すが紹介ページにはしない。
+- 単純な場合から始める。画面にいまあるページは、最初の部分である古典力学で、等速直線運動と等加速度直線運動です。これより後の部分は、まだページにしていません。調和振動子の既存コードは残しますが、紹介するページにはしません。
 - Ergion（エルジオン）は計算の基盤であり、学習の基盤でもある。
 - 式と理論は、それを計算するRust関数のrustdoc（`crates/ergion-lab/src/uniform.rs` の `UniformSimulation`）に置く（引数の意味やテストの検証内容を含む）。文章を二重に持って内容がずれるのを防ぐ。Webページは動く粒子を示し、その関数を参照する。GitHub Pages（https://coil398.github.io/Ergion/）やCursorローカルで閲覧可能とする。
 - 図は、エディタで読めるローカルのウェブページにする。別の描画スタックは足さない。

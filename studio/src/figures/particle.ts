@@ -24,7 +24,7 @@ export function drawSamplePoint(context: CanvasRenderingContext2D, x: number, y:
 
 export function drawParticle(
   context: CanvasRenderingContext2D,
-  particle: { x: number; y: number; radius?: number; cue?: { direction: number; y: number } },
+  particle: { x: number; y: number; radius?: number; cue?: { direction: number; y: number; length?: number } },
 ) {
   const radius = particle.radius ?? 16;
   context.save();
@@ -38,7 +38,7 @@ export function drawParticle(
     const sign = Math.sign(direction);
     const y = particle.cue.y;
     const from = particle.x;
-    const to = particle.x + sign * 20;
+    const to = particle.x + sign * (particle.cue.length ?? 20);
     context.strokeStyle = '#d47343';
     context.lineWidth = 2;
     context.beginPath();

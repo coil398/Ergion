@@ -1,10 +1,16 @@
-import init, { UniformSimulation } from '../wasm/ergion_lab.js';
+import init, { ConstantAccelerationSimulation, UniformSimulation } from '../wasm/ergion_lab.js';
 import wasmUrl from '../wasm/ergion_lab_bg.wasm?url';
 import type { Batch, Command, Reply, Snapshot, Update } from './protocol';
 
+interface RunningSimulation {
+  snapshot(): string;
+  advance(steps: number): string;
+  free(): void;
+}
+
 // 初期化失敗もメッセージに応答して返す。未処理のPromise rejectionにしない。
 const initialized = init({ module_or_path: wasmUrl }).then(() => null, (error: unknown) => error);
-let simulation: UniformSimulation | undefined;
+let simulation: RunningSimulation | undefined;
 let currentId = 0;
 let batchSize = 1;
 let timer: ReturnType<typeof setTimeout> | undefined;
@@ -48,7 +54,10 @@ onmessage = (event: MessageEvent<Command>) => {
       currentId = message.id;
       simulation?.free();
       simulation = undefined;
-      simulation = new UniformSimulation(JSON.stringify(message.config));
+      const json = JSON.stringify(message.config);
+      simulation = message.model === 'constant-acceleration'
+        ? new ConstantAccelerationSimulation(json)
+        : new UniformSimulation(json);
       batchSize = Math.max(1, Math.min(100, Math.round(0.04 / message.config.dt)));
       publish('ready', [JSON.parse(simulation.snapshot()) as Snapshot]);
       return;

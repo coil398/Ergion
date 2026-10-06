@@ -118,7 +118,7 @@ export function drawOrigin(
   context.lineTo(x, y2);
   context.stroke();
   context.restore();
-  if (label) drawLabel(context, label.text, x, label.y, 'math', { color: '#8b879e' });
+  if (label) drawLabel(context, label.text, x, label.y, 'math', { color: '#5d5873' });
 }
 
 function interior(pixel: number, start: number, length: number) {
@@ -160,7 +160,7 @@ export function drawCartesianAxes(context: CanvasRenderingContext2D, frame: Plot
     context.lineTo(frame.left + frame.width, yZero);
     context.stroke();
     context.restore();
-    if (zeroLabel) drawLabel(context, zeroLabel, frame.left + 28, yZero - 10, 'math', { color: '#8b879e' });
+    if (zeroLabel) drawLabel(context, zeroLabel, frame.left + 36, yZero - 12, 'math', { color: '#5d5873' });
   }
 }
 

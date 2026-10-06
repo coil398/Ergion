@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "initial_position": 0.0,
+  "initial_velocity": 0.0,
+  "acceleration": 1.0,
+  "dt": 0.01,
+  "steps": 1000
+}

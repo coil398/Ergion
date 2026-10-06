@@ -3,14 +3,14 @@
 export type LabelRole = 'math' | 'tick' | 'note';
 
 const fonts: Record<LabelRole, string> = {
-  math: 'italic 13px Georgia, "Times New Roman", serif',
-  tick: '10px sans-serif',
-  note: '11px "Noto Sans JP", "Yu Gothic UI", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif',
+  math: 'italic 16px Georgia, "Times New Roman", serif',
+  tick: '16px "Noto Sans JP", "Yu Gothic UI", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif',
+  note: '16px "Noto Sans JP", "Yu Gothic UI", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif',
 };
 
 const colors: Record<LabelRole, string> = {
   math: '#25243c',
-  tick: '#817e96',
+  tick: '#5d5873',
   note: '#5d5873',
 };
 

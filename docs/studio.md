@@ -12,7 +12,7 @@
 | `studio/src/main.ts` | 条件入力、操作、設定入出力、実測値の描画、`UniformSimulation` の rustdoc への参照 |
 | `studio/wasm` | wasm-pack生成物。Git対象外、直接編集禁止 |
 
-運動方程式、手計算の解、RK4 と velocity-Verlet の1ステップの計算、引数の決まり、テストで確かめている内容は、計算を行う関数の rustdoc（`crates/ergion-lab/src/uniform.rs` の `UniformSimulation`）に書いてあります。文章を二重に持って内容がずれるのを防ぐため、Studio の画面は動く粒子を示し、その関数の説明を参照します。GitHub Pages（https://coil398.github.io/Ergion/）で公開し、Cursorローカル環境でも4173番ポートで閲覧できます。換算単位で扱い、位置・速度・時間は同じ単位系を前提とします。計算はライブラリに置きます。画面とCLIは式を計算せず、ライブラリの戻り値を描きます。ここにはばね、Lennard–Jones、等加速度運動、電磁気、解析力学、温度、3D 粒子は含まれません。
+画面にいまあるページは、最初の部分である古典力学です。等速直線運動は `UniformSimulation`、等加速度直線運動は `ConstantAccelerationSimulation` が計算します。これより後の部分は、まだページにしていません。運動方程式、厳密解、1ステップの計算、引数の決まり、テストで確かめている内容は、それぞれの rustdoc（`crates/ergion-lab/src/uniform.rs` と `crates/ergion-lab/src/constant_acceleration.rs`）に書いてあります。画面はその手順と動く粒子を示します。GitHub Pages（https://coil398.github.io/Ergion/）で公開し、Cursorローカル環境でも閲覧できます。換算単位で扱い、位置・速度・時間は同じ単位系を前提とします。画面とCLIは式を計算せず、これらの関数の戻り値を描きます。
 
 ## 設定JSON
 
