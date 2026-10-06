@@ -1,6 +1,6 @@
 ---
 name: ergion-design
-description: Design system and visual rules for Ergion. Trigger whenever someone changes Ergion layout, color, type, a page, a canvas figure, or a graph.
+description: Design system and visual rules for Ergion. Trigger whenever someone changes Ergion layout, color, type, a page, a canvas figure, a graph, or the figure library in studio/src/figures.
 ---
 
 # Ergion デザイン規則
@@ -35,7 +35,11 @@ Ergion のレイアウト、色、タイポグラフィ、ページ構造、Canv
 - 一般的なSaaSのようなグラデーションや、丸みの強すぎる過剰にモダンなUIに均してはいけません。
 - 数式記号（Georgia / Serif体）、等幅フォントによる計器表示（monospace / tabular-nums）、実線（数値解：`#6552b8`）と破線（解析解：`#167b87`）の対比を大切に維持します。
 
-## 4. チャートライブラリを追加しない
+## 4. 図は studio/src/figures/ に置き、チャートパッケージを入れない
 
-- 外部のグラフライブラリ（Chart.js, D3 等）は導入せず、TypeScript と Canvas 2D コンテキストを使って描画します。
-- 軸、グリッド線、目盛り数値、数値解（紫の実線）と手計算の解（青緑の破線）の対比を `DESIGN.md` のトークンと規則に沿って実装します。
+- 軸、動く粒子、\(vt\) として伸びる線分、ラベル、時系列グラフは `studio/src/figures/` が描く。公開モジュールは `canvas`、`axes`、`particle`、`segment`、`labels`、`series`、`motion`。
+- ページや `studio/src/main.ts` に、図を描く第二の実装を持たない。`CanvasRenderingContext2D` のパスをページに書かない。
+- Chart.js、D3、その他の第三者チャートパッケージを依存関係に加えない。描画は TypeScript と Canvas 2D だけ。
+- 色は `DESIGN.md` のパレットを使う。新しいパレットを作らない。
+- 数値は Rust の `UniformSimulation` が Wasm で返した値を描く。TypeScript で式 \(x = x_0 + v t\) を計算し直さない。
+- 等速直線運動の図は、粒子の移動と、伸びる変位 \(vt\) で \(x = x_0 + v t\) を説明する。数値解は紫の実線、解析解は青緑の破線。一度に見せるアイデアは一つ。

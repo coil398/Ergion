@@ -1,4 +1,5 @@
 import './style.css';
+import { clearFigure, drawTimeSeries, drawUniformMotion } from './figures';
 import type { Command, Config, Reply, Snapshot } from './protocol';
 
 const defaults: Config = {
@@ -36,7 +37,7 @@ app.innerHTML = `
             </fieldset>
             <fieldset><legend>時間発展</legend>
               <div class="field-pair"><label>時間刻み <span>Δt</span><input name="dt" type="number" min="0" max="1000000000000" step="any" required value="0.01"></label><label>ステップ数<input name="steps" type="number" min="1" max="1000000" step="1" required value="1000"></label></div>
-              <p class="field-hint" id="time-hint">計算時間 10.00 ／ 終点位置 10.00</p>
+              <p class="field-hint" id="time-hint">計算時間 10.00</p>
             </fieldset>
             <button class="button secondary apply" id="apply" type="submit" disabled>条件を適用してリセット</button>
             <p class="form-note" id="form-note">現在の条件で実行できます。</p>
@@ -49,12 +50,13 @@ app.innerHTML = `
             <div class="panel-heading"><h2 id="study-heading">等速直線運動の計算と説明</h2><span class="quiet-label">実装と検証</span></div>
             <div class="study-body">
               <p>運動方程式 <span class="math">m x'' = F</span>（<span class="math">F = 0, a = 0</span>）、手計算の解 <span class="math">x(t) = x₀ + v t</span>、1ステップの計算手順、引数の決まり、テストで確かめている内容は、計算を行うRustコード（<code>crates/ergion-lab/src/uniform.rs</code> の <code>UniformSimulation</code>）の rustdoc に書いてあります。</p>
-              <p>この画面では、同じRustの計算関数（Rust / Wasm）を呼び出して直線上を進む粒子を描き、手計算の解とぴったり一致することを確かめます。紫の実線がコンピュータによる数値解、青緑の破線が手計算の解を表します。</p>
+              <p>この画面では、同じRustの計算関数（Rust / Wasm）を呼び出して直線上を進む粒子を描き、手計算の解とぴったり一致することを確かめます。図の線分は、初期位置 <span class="math">x₀</span> に加わる変位 <span class="math">vt</span> です。紫の実線がコンピュータによる数値解、青緑の破線が手計算の解を表します。</p>
             </div>
           </section>
           <section class="scene panel" aria-labelledby="scene-heading">
             <div class="panel-heading"><h2 id="scene-heading">粒子の直線運動</h2><span id="scene-time" class="numeric">t = 0.000</span></div>
-            <canvas id="oscillator" aria-label="直線上を進む粒子の位置。数値解は紫、解析解は青緑の輪郭。" role="img"></canvas>
+            <p class="scene-caption">粒子は、初期位置 <span class="math">x₀</span> に変位 <span class="math">vt</span> を加えた位置まで進みます。</p>
+            <canvas id="oscillator" aria-label="直線上を進む粒子。初期位置に変位 vt を加えた位置を示します。数値解は紫の実線、解析解は青緑の破線。" role="img"></canvas>
             <div class="readouts"><div><span>位置 x</span><output id="position">—</output></div><div><span>速度 v</span><output id="velocity">—</output></div><div><span>解析解の位置</span><output id="exact-position">—</output></div><div><span>位置の絶対差 |x - x_exact|</span><output id="energy-error">—</output></div></div>
           </section>
           <section class="plots panel" aria-labelledby="plots-heading">
@@ -94,8 +96,6 @@ let state: Snapshot | undefined;
 let samples: Snapshot[] = [];
 let paintQueued = false;
 let sampleStride = 1;
-let observedPosition = 0;
-let observedVelocity = 0;
 
 function post(command: Command) { worker.postMessage(command); }
 function setText(selector: string, value: string) { document.querySelector(selector)!.textContent = value; }
@@ -136,8 +136,7 @@ function fillForm(value: Config) {
 function updateHint() {
   const value = readForm();
   const duration = value.dt * value.steps;
-  const finalX = value.initial_position + value.velocity * duration;
-  setText('#time-hint', Number.isFinite(duration) && Number.isFinite(finalX) ? `計算時間 ${duration.toFixed(2)} ／ 終点位置 ${finalX.toFixed(2)}` : '有限の正しい数値を入力してください。');
+  setText('#time-hint', Number.isFinite(duration) ? `計算時間 ${duration.toFixed(2)}` : '有限の正しい数値を入力してください。');
 }
 function load(value: Config) {
   config = { ...value };
@@ -145,8 +144,6 @@ function load(value: Config) {
   dirty = false;
   state = undefined;
   samples = [];
-  observedPosition = 0;
-  observedVelocity = 0;
   sampleStride = Math.max(1, Math.ceil(config.steps / 2500));
   errorElement.hidden = true;
   controls();
@@ -165,8 +162,6 @@ worker.onmessage = (event: MessageEvent<Reply>) => {
   phase = reply.phase;
   state = reply.state;
   for (const point of reply.samples) {
-    observedPosition = Math.max(observedPosition, Math.abs(point.position));
-    observedVelocity = Math.max(observedVelocity, Math.abs(point.velocity));
     if (point.step % sampleStride === 0 || point.finished) samples.push(point);
   }
   controls();
@@ -219,141 +214,44 @@ document.querySelector<HTMLInputElement>('#import')!.addEventListener('change', 
   } catch (error) { showError(String(error)); }
 });
 
-function canvasContext(canvas: HTMLCanvasElement) {
-  const { width, height } = canvas.getBoundingClientRect();
-  const ratio = Math.min(window.devicePixelRatio || 1, 2);
-  canvas.width = Math.round(width * ratio);
-  canvas.height = Math.round(height * ratio);
-  const context = canvas.getContext('2d')!;
-  context.scale(ratio, ratio);
-  return { context, width, height };
-}
-
-function scene() {
-  const { context: ctx, width: w, height: h } = canvasContext(canvases[0]);
-  const x = state?.position ?? config.initial_position;
-  const exact = state?.exact_position ?? x;
-  const duration = config.steps * config.dt;
-  const minX = Math.min(config.initial_position, config.initial_position + config.velocity * duration);
-  const maxX = Math.max(config.initial_position, config.initial_position + config.velocity * duration);
-  const span = Math.max(Math.abs(maxX - minX), 1.0);
-  const padding = span * 0.15;
-  const leftRange = minX - padding;
-  const rightRange = maxX + padding;
-
-  const leftPad = 40;
-  const rightPad = 40;
-  const trackW = w - leftPad - rightPad;
-  const scale = trackW / (rightRange - leftRange);
-  const particle = leftPad + (x - leftRange) * scale;
-  const exactParticle = leftPad + (exact - leftRange) * scale;
-  const y = h * 0.52;
-
-  // 直線トラックを描画
-  ctx.strokeStyle = '#e6e5f0'; ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.moveTo(leftPad, y + 25); ctx.lineTo(w - rightPad, y + 25); ctx.stroke();
-
-  // 原点マーカー
-  if (0 >= leftRange && 0 <= rightRange) {
-    const originX = leftPad + (0 - leftRange) * scale;
-    ctx.setLineDash([3, 5]); ctx.strokeStyle = '#c4c0d6'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(originX, 15); ctx.lineTo(originX, h - 25); ctx.stroke(); ctx.setLineDash([]);
-    ctx.fillStyle = '#77748f'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('x = 0', originX, h - 10);
-  }
-
-  // 粒子（解析解の破線円と数値解の実体円）
-  ctx.strokeStyle = '#167b87'; ctx.lineWidth = 1.5; ctx.setLineDash([3, 3]);
-  ctx.beginPath(); ctx.arc(exactParticle, y, 22, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
-  ctx.fillStyle = '#6552b8'; ctx.beginPath(); ctx.arc(particle, y, 16, 0, Math.PI * 2); ctx.fill();
-  ctx.fillStyle = '#fff'; ctx.font = 'italic 13px Georgia'; ctx.textAlign = 'center'; ctx.fillText('m', particle, y + 5);
-
-  // 速度ベクトルの矢印
-  if (Math.abs(config.velocity) > 1e-6) {
-    const arrowLen = Math.sign(config.velocity) * Math.min(35, Math.max(15, Math.abs(config.velocity) * 15));
-    const ax = particle + arrowLen;
-    ctx.strokeStyle = '#d47343'; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(particle, y - 24); ctx.lineTo(ax, y - 24); ctx.stroke();
-    ctx.fillStyle = '#d47343';
-    ctx.beginPath();
-    ctx.moveTo(ax, y - 24);
-    ctx.lineTo(ax - Math.sign(arrowLen) * 6, y - 28);
-    ctx.lineTo(ax - Math.sign(arrowLen) * 6, y - 20);
-    ctx.closePath();
-    ctx.fill();
-    ctx.font = 'italic 12px Georgia'; ctx.fillText('v', (particle + ax) / 2, y - 32);
-  }
-}
-
-function chart(canvas: HTMLCanvasElement, isVelocity: boolean) {
-  const { context: ctx, width: w, height: h } = canvasContext(canvas);
-  const left = 48, top = 16, right = 15, bottom = 30;
-  const pw = w - left - right, ph = h - top - bottom;
-  if (pw < 1 || ph < 1) return;
-
-  const totalTime = Math.max(config.steps * config.dt, 0.1);
-  const xMin = 0;
-  const xMax = totalTime;
-
-  let yMin = 0;
-  let yMax = 1;
-  if (isVelocity) {
-    const v = config.velocity;
-    const pad = Math.max(Math.abs(v) * 0.5, 0.5);
-    yMin = v - pad;
-    yMax = v + pad;
-  } else {
-    const duration = config.steps * config.dt;
-    const p0 = config.initial_position;
-    const pEnd = p0 + config.velocity * duration;
-    const minP = Math.min(p0, pEnd);
-    const maxP = Math.max(p0, pEnd);
-    const pad = Math.max((maxP - minP) * 0.15, 0.5);
-    yMin = minP - pad;
-    yMax = maxP + pad;
-  }
-
-  canvas.setAttribute('aria-label', `${isVelocity ? '速度と時間のグラフ' : '位置と時間のグラフ'}。縦軸 ${yMin.toPrecision(3)} から ${yMax.toPrecision(3)}。現在値 ${isVelocity ? state?.velocity : state?.position}`);
-  const mapX = (t: number) => left + (t - xMin) / (xMax - xMin) * pw;
-  const mapY = (val: number) => top + (yMax - val) / (yMax - yMin) * ph;
-  ctx.font = '10px sans-serif'; ctx.lineWidth = 1;
-
-  for (let i = 0; i <= 4; i++) {
-    const y = top + ph * i / 4;
-    ctx.strokeStyle = '#eeedf5'; ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(w - right, y); ctx.stroke();
-    ctx.textAlign = 'right'; ctx.fillStyle = '#817e96'; ctx.fillText((yMax - (yMax - yMin) * i / 4).toPrecision(3), left - 8, y + 3);
-    const x = left + pw * i / 4;
-    ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, top + ph); ctx.stroke();
-    ctx.textAlign = 'center'; ctx.fillText((xMin + (xMax - xMin) * i / 4).toPrecision(3), x, h - 10);
-  }
-
-  ctx.save(); ctx.beginPath(); ctx.rect(left, top, pw, ph); ctx.clip();
-  const points = state && samples.at(-1)?.step !== state.step ? [...samples, state] : samples;
-  for (const exact of [true, false]) {
-    ctx.strokeStyle = exact ? '#167b87' : '#6552b8'; ctx.lineWidth = exact ? 1.7 : 2;
-    ctx.setLineDash(exact ? [5, 4] : []); ctx.beginPath();
-    points.forEach((p, index) => {
-      const xCoord = mapX(p.time);
-      const yCoord = mapY(isVelocity ? (exact ? p.exact_velocity : p.velocity) : (exact ? p.exact_position : p.position));
-      if (index === 0) ctx.moveTo(xCoord, yCoord); else ctx.lineTo(xCoord, yCoord);
-    });
-    ctx.stroke();
-  }
-  ctx.setLineDash([]);
-  if (state) {
-    ctx.fillStyle = '#6552b8'; ctx.beginPath();
-    ctx.arc(mapX(state.time), mapY(isVelocity ? state.velocity : state.position), 3.5, 0, Math.PI * 2); ctx.fill();
-  }
-  ctx.restore();
+function shownSamples() {
+  if (state && samples.at(-1)?.step !== state.step) return [...samples, state];
+  return samples;
 }
 
 function paint() {
   if (state) {
-    scene(); chart(canvases[1], false); chart(canvases[2], true);
+    const points = shownSamples();
+    const key = `${config.initial_position}|${config.velocity}|${config.dt}|${config.steps}`;
+    const timeEnd = config.steps * config.dt;
+    const x0 = points.reduce((earliest, point) => point.time < earliest.time ? point : earliest, points[0] ?? state).position;
+    drawUniformMotion(canvases[0], {
+      key,
+      x0,
+      position: state.position,
+      exactPosition: state.exact_position,
+      velocity: state.velocity,
+      timeEnd,
+      samples: points.map(point => ({ time: point.time, position: point.position, exactPosition: point.exact_position })),
+    });
+    drawTimeSeries(canvases[1], {
+      key: `${key}|position`,
+      kind: 'position',
+      timeEnd,
+      time: state.time,
+      current: state.position,
+      samples: points.map(point => ({ time: point.time, numerical: point.position, exact: point.exact_position })),
+    });
+    drawTimeSeries(canvases[2], {
+      key: `${key}|velocity`,
+      kind: 'velocity',
+      timeEnd,
+      time: state.time,
+      current: state.velocity,
+      samples: points.map(point => ({ time: point.time, numerical: point.velocity, exact: point.exact_velocity })),
+    });
   } else {
-    for (const canvas of canvases) {
-      const { context, width, height } = canvasContext(canvas);
-      context.clearRect(0, 0, width, height);
-    }
+    for (const canvas of canvases) clearFigure(canvas);
   }
   const currentStep = state?.step ?? 0;
   progress.max = config.steps; progress.value = currentStep;
