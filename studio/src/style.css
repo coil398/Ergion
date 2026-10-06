@@ -22,9 +22,9 @@ button{transition:background .15s,color .15s}
 button:not(:disabled):hover{filter:brightness(.95)}
 code{overflow-wrap:anywhere}
 .app-header{min-height:76px;display:flex;align-items:center;flex-wrap:wrap;padding:12px 32px;gap:16px 32px;background:white;border-bottom:1px solid var(--line)}
-.brand{display:flex;gap:12px;align-items:center;font-size:24px;font-weight:700;letter-spacing:0;text-decoration:none}
+.brand{display:flex;gap:12px;align-items:center;font-size:18px;font-weight:700;letter-spacing:0;text-decoration:none}
 .brand-sub{font-size:16px;font-weight:400;color:var(--secondary);margin-left:6px}
-.brand-mark{display:grid;place-items:center;width:33px;height:36px;background:#6552b8;color:white;border-radius:12px 12px 12px 3px;font-family:Georgia,serif;font-style:italic;font-size:24px;line-height:1;padding-bottom:4px}
+.brand-mark{display:grid;place-items:center;width:33px;height:36px;background:#6552b8;color:white;border-radius:12px 12px 12px 3px;font-family:Georgia,serif;font-style:italic;font-size:20px;line-height:1;padding-bottom:4px}
 .header-caption{font-size:16px;color:var(--secondary)}
 .status{margin-left:auto;display:flex;gap:8px;align-items:center;font-size:16px;color:#25243c}
 .status i{width:8px;height:8px;background:#5d5873;border-radius:50%;flex:none}
@@ -33,10 +33,14 @@ code{overflow-wrap:anywhere}
 .workspace{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:calc(100vh - 76px)}
 .rail{display:flex;flex-direction:column;padding:28px 16px 24px;border-right:1px solid var(--line);background:#f9f9fc}
 .rail-heading{font-size:16px;color:var(--secondary);margin:0 10px 12px}
-.rail-item{display:flex;gap:8px;align-items:center;border-radius:7px;padding:10px 12px;font-size:16px;line-height:1.5;text-decoration:none}
-.rail-item.active{background:#eae7f6;color:#514091;font-weight:700}
+.rail-section{display:flex;flex-direction:column;align-items:stretch;min-width:0}
+.rail-section-title{display:block;border-radius:7px;padding:10px 12px;font-size:16px;font-weight:700;line-height:1.5;text-decoration:none}
+.rail-section-title.active{background:#eae7f6;color:#514091}
+.rail-pages{list-style:none;margin:0;padding:0 0 0 16px;display:flex;flex-direction:column}
+.rail-page{display:block;border-radius:7px;padding:8px 12px;font-size:16px;line-height:1.5;text-decoration:none}
+.rail-page.active{background:#eae7f6;color:#514091;font-weight:700}
 .rail-note{margin:auto 10px 28px;padding-top:48px;color:var(--secondary)}
-.orbit-icon{font-size:24px;color:#6552b8}
+.orbit-icon{font-size:18px;color:#6552b8}
 .rail-note p{font-size:16px;line-height:calc(17 / 9);margin:8px 0}
 .rail-note>span:last-child{font-size:16px}
 .source-link{font-size:16px;color:var(--secondary);margin:0 10px;text-decoration:none}
@@ -45,33 +49,31 @@ main{padding:28px 32px 24px;max-width:1600px;width:100%;margin:0 auto}
 .breadcrumb{font-size:16px;color:var(--secondary);margin:0 0 8px}
 .breadcrumb a{color:#514091}
 .breadcrumb span{margin:0 8px;color:var(--secondary)}
-h1{font-size:24px;letter-spacing:0;line-height:calc(17 / 9);margin:0 0 8px;font-weight:700}
+h1{font-size:18px;letter-spacing:0;line-height:calc(17 / 9);margin:0 0 8px;font-weight:700}
 .title-dot{color:#6552b8;margin-left:2px}
 .description{font-size:16px;color:#25243c;margin:0;line-height:calc(17 / 9)}
-.description .math,.chapter .math,.scene-caption .math,.study .math{font-family:Georgia,"Times New Roman",serif;font-style:italic}
-.equation{font-family:Georgia,"Times New Roman",serif;font-size:24px;line-height:calc(17 / 9);padding:4px 0 0;text-align:center;color:#25243c}
-.equation-second,.equation-follow{display:block}
+.equation{font-size:18px;line-height:calc(17 / 9);padding:4px 0 0;text-align:center;color:#25243c;min-width:0}
+.equation-follow{display:block}
 .equation-note{display:block;font-family:"Noto Sans JP","Yu Gothic UI","Hiragino Kaku Gothic ProN",Meiryo,sans-serif;font-style:normal;font-size:16px;line-height:calc(17 / 9);color:var(--secondary);margin-top:4px}
-.math-x{font-style:italic}
 .experiment-grid{display:grid;grid-template-columns:280px minmax(0,1fr);gap:22px;align-items:start}
 .chapter-list{display:flex;flex-direction:column;gap:16px}
 .chapter{display:block;background:#fff;border:1px solid var(--line);border-radius:10px;padding:19px 23px;text-decoration:none;color:inherit}
 .chapter:hover{border-color:#6552b8}
-.chapter h2{font-size:24px;margin:0 0 8px}
+.chapter h2{font-size:18px;margin:0 0 8px}
 .chapter p{font-size:16px;line-height:calc(17 / 9);margin:0 0 12px;color:#25243c}
-.chapter .equation{text-align:left;padding:0;margin:0}
+.chapter .equation{font-size:18px;text-align:left;padding:0;margin:0}
 .panel{background:#fff;border:1px solid var(--line);border-radius:10px}
 .panel-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
 h2{font-size:16px;font-weight:700;margin:0;line-height:1.5}
 h3{font-size:16px;font-weight:500;margin:0 0 8px;color:#25243c;line-height:1.5}
-h3 span{font:italic 16px Georgia,"Times New Roman",serif;margin-left:6px}
+h3 .tex{margin-left:6px}
 .quiet-label{font-size:16px;color:var(--secondary);line-height:1.5}
 .settings{padding:21px 19px}
 .settings>.panel-heading{margin-bottom:20px}
 .settings fieldset{border:0;padding:0;margin:0 0 20px;min-width:0}
 .settings legend{font-size:16px;color:var(--secondary);width:100%;border-bottom:1px solid #eeedf4;padding:0 0 8px;margin-bottom:12px}
 .settings label{display:block;font-size:16px;font-weight:500;color:#5d5873;min-width:0;line-height:1.5}
-.settings label>span{float:right;font:italic 16px Georgia,"Times New Roman",serif;color:#5d5873}
+.settings label>.field-symbol{float:right}
 .field-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
 .field-single{display:block;margin-top:12px}
 input[type=number],select{display:block;width:100%;border:1px solid #dedbe9;border-radius:5px;background:#fcfcfe;color:#25243c;padding:8px 10px;margin-top:6px;font-size:16px;line-height:1.5;font-variant-numeric:tabular-nums}
@@ -91,11 +93,11 @@ input:invalid:not(:focus){border-color:#b96a51}
 .results{display:flex;flex-direction:column;gap:16px;min-width:0}
 .study{padding:19px 23px 8px}
 .study .panel-heading{margin-bottom:12px}
-.study h2{font-size:24px}
-.study-body p{margin:0 0 12px;font-size:16px;line-height:calc(17 / 9);color:#25243c}
-.solution{margin:0 0 16px;padding-left:1.5em;font-size:24px;line-height:calc(17 / 9);color:#25243c}
+.study h2{font-size:18px}
+.study-body>p{margin:0 0 12px;font-size:16px;line-height:calc(17 / 9);color:#25243c}
+.solution{margin:0 0 16px;padding-left:1.5em;font-size:18px;line-height:calc(17 / 9);color:#25243c}
 .solution li{margin:0 0 12px}
-.solution-equation{font-family:Georgia,"Times New Roman",serif;font-size:24px;line-height:calc(17 / 9);margin:8px 0}
+.solution-equation{font-size:18px;line-height:calc(17 / 9);margin:8px 0}
 .scene{padding:19px 23px 0;overflow:hidden}
 .scene .panel-heading{margin-bottom:8px}
 .scene-caption{margin:0 0 8px;font-size:16px;line-height:calc(17 / 9);color:#25243c}
@@ -106,7 +108,7 @@ canvas{display:block;width:100%}
 .readouts>div{display:flex;flex-direction:column;gap:4px;min-width:0}
 .readouts>div+div{padding-left:12px;border-left:1px solid #f0eef6}
 .readouts span{font-size:16px;color:var(--secondary);line-height:1.5}
-.readouts output{font-family:ui-monospace,"Cascadia Code",monospace;font-size:24px;font-weight:500;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.readouts output{font-family:ui-monospace,"Cascadia Code",monospace;font-size:18px;font-weight:500;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .readouts>div:last-child output{color:#a86240}
 .plots{padding:20px 23px 0;overflow:hidden}
 .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:16px;color:#25243c}
@@ -120,7 +122,7 @@ canvas{display:block;width:100%}
 .plot-footer{border-top:1px solid #eeedf4;display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap;padding:12px 0;font-size:16px;color:var(--secondary)}
 .transport{display:flex;align-items:center;gap:16px;padding:16px 20px;flex-wrap:wrap}
 .transport-buttons{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.icon-button{border:1px solid #ddd9e8;background:white;color:#5f567a;width:44px;min-height:44px;border-radius:6px;font-size:24px}
+.icon-button{border:1px solid #ddd9e8;background:white;color:#5f567a;width:44px;min-height:44px;border-radius:6px;font-size:18px}
 .progress-wrap{flex:1;min-width:140px}
 .progress-copy{display:flex;justify-content:space-between;font-size:16px;color:var(--secondary);margin-bottom:8px;gap:8px;font-variant-numeric:tabular-nums}
 progress{display:block;width:100%;height:8px;appearance:none;border:0;border-radius:4px;overflow:hidden;background:#eeebf6}
@@ -140,10 +142,10 @@ sub{font-size:.75em}
 }
 @media(max-width:850px){
   .workspace{grid-template-columns:1fr}
-  .rail{flex-direction:row;flex-wrap:wrap;align-items:center;border-right:0;border-bottom:1px solid var(--line);padding:12px 16px;gap:8px}
-  .rail-heading{margin:0}
+  .rail{flex-direction:column;align-items:stretch;border-right:0;border-bottom:1px solid var(--line);padding:12px 16px;gap:8px}
+  .rail-heading{margin:0 10px 4px}
   .rail-note{display:none}
-  .source-link{margin-left:auto}
+  .source-link{margin:0 10px}
   .app-header{padding:12px 16px}
   .experiment-grid{grid-template-columns:1fr}
   .plot-grid{grid-template-columns:1fr}

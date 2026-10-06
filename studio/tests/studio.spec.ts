@@ -1,9 +1,48 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '../..');
+
+function tex(page: Page, source: string) {
+  return page.locator(`xpath=//*[contains(@class,"tex") and @data-tex="${source}"]`);
+}
+
+async function expectMechanicsSection(page: Page) {
+  const title = page.locator('.rail-section-title');
+  await expect(title).toHaveText('力学');
+  const links = page.locator('.rail-pages a');
+  await expect(links).toHaveCount(2);
+  await expect(links.nth(0)).toHaveText('等速直線運動');
+  await expect(links.nth(1)).toHaveText('等加速度直線運動');
+  const nested = await page.evaluate(() => {
+    const section = document.querySelector('.rail-section-title')!.getBoundingClientRect();
+    const items = [...document.querySelectorAll('.rail-pages a')].map(node => node.getBoundingClientRect());
+    const stacked = items.every(item => item.top >= section.bottom - 1 && item.left > section.left + 4);
+    const vertical = items.length === 2 && items[1].top >= items[0].bottom - 1;
+    return stacked && vertical;
+  });
+  expect(nested).toBe(true);
+}
+
+async function expectTypeSize(page: Page) {
+  const type = await page.evaluate(() => {
+    const px = (selector: string) => parseFloat(getComputedStyle(document.querySelector(selector)!).fontSize);
+    return {
+      body: px('body'),
+      solution: px('.solution'),
+      equation: px('.equation'),
+      katex: px('.equation .katex'),
+      heading: px('h1'),
+    };
+  });
+  expect(type.body).toBe(16);
+  expect(type.solution).toBe(18);
+  expect(type.equation).toBe(18);
+  expect(type.katex).toBe(18);
+  expect(type.heading).toBe(18);
+}
 
 test('開始・停止・再開・1ステップと条件の適用', async ({ page }) => {
   const errors: string[] = [];
@@ -98,9 +137,11 @@ test('デスクトップとモバイルの表示', async ({ page }, testInfo) =>
   await page.goto('uniform.html');
   await expect(page.locator('#status')).toHaveText('準備完了');
   await expect(page.getByRole('heading', { name: '等速直線運動の計算と説明' })).toBeVisible();
-  await expect(page.locator('#study')).toContainText('m x\'\' = F');
-  await expect(page.locator('#study')).toContainText('x(t) = x₀ + v t');
+  await expect(tex(page, String.raw`m x'' = F`).first()).toBeVisible();
+  await expect(tex(page, 'x(t) = x_0 + v t').first()).toBeVisible();
+  await expect(page.locator('#study .katex').first()).toBeVisible();
   await expect(page.locator('#study')).toContainText('rustdoc');
+  await expectMechanicsSection(page);
   await page.locator('[name=steps]').fill('600');
   await page.getByRole('button', { name: '条件を適用してリセット' }).click();
   await expect(page.locator('#status')).toHaveText('準備完了');
@@ -110,6 +151,7 @@ test('デスクトップとモバイルの表示', async ({ page }, testInfo) =>
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(page.getByRole('heading', { name: '等速直線運動.' })).toBeVisible();
   await expect(page.getByRole('heading', { name: '等速直線運動の計算と説明' })).toBeVisible();
+  await expectMechanicsSection(page);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await page.getByRole('button', { name: '初期状態にリセット' }).click();
   await expect(page.locator('#status')).toHaveText('準備完了');
@@ -135,10 +177,15 @@ test('力学の目次は古典力学の二つのページだけを示す', async
   await expect(page.getByRole('heading', { level: 1, name: '力学.' })).toBeVisible();
   await expect(page.locator('#contents')).toContainText('最初の部分は古典力学');
   await expect(page.locator('#contents')).toContainText('まだページにしていません');
-  await expect(page.locator('#contents')).toContainText('x₀');
-  await expect(page.locator('#contents')).toContainText('v₀');
+  await expect(tex(page, 'x_0').first()).toBeVisible();
+  await expect(tex(page, 'v_0').first()).toBeVisible();
+  await expect(tex(page, 'x(t) = x_0 + v t').first()).toBeVisible();
+  await expect(tex(page, String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`).first()).toBeVisible();
+  await expect(tex(page, 'v(t) = v_0 + a t').first()).toBeVisible();
+  await expect(page.locator('#contents .katex').first()).toBeVisible();
   await expect(page.getByRole('link', { name: '等速直線運動' }).first()).toBeVisible();
   await expect(page.getByRole('link', { name: '等加速度直線運動' }).first()).toBeVisible();
+  await expectMechanicsSection(page);
   const text = await page.locator('#contents').innerText();
   for (const word of ['電磁気', '解析力学', '金融', '分子動力学', '正本', '計算核', '軌道を読む', '力学の教科書']) {
     expect(text).not.toContain(word);
@@ -151,18 +198,12 @@ test('等加速度直線運動をデスクトップと狭い画面で読む', as
   await expect(page.locator('#status')).toHaveText('準備完了');
   await expect(page.getByRole('heading', { name: '等加速度直線運動の計算と説明' })).toBeVisible();
   await expect(page.locator('.equation').first()).toBeVisible();
-  await expect(page.locator('#study')).toContainText('x(t) = x₀ + v₀ t + (1/2) a t²');
-  await expect(page.locator('#study')).toContainText('v(t) = v₀ + a t');
+  await expect(tex(page, String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`).first()).toBeVisible();
+  await expect(tex(page, 'v(t) = v_0 + a t').first()).toBeVisible();
   await expect(page.locator('#study')).toContainText('数値ステップの増分は厳密解の増分と一致します');
   await expect(page.locator('#study')).toContainText('rustdoc');
-  const type = await page.evaluate(() => ({
-    body: parseFloat(getComputedStyle(document.body).fontSize),
-    solution: parseFloat(getComputedStyle(document.querySelector('.solution')!).fontSize),
-    equation: parseFloat(getComputedStyle(document.querySelector('.equation')!).fontSize),
-  }));
-  expect(type.body).toBeGreaterThanOrEqual(16);
-  expect(type.solution).toBeGreaterThanOrEqual(24);
-  expect(type.equation).toBeGreaterThanOrEqual(24);
+  await expectTypeSize(page);
+  await expectMechanicsSection(page);
   await page.locator('[name=dt]').fill('0.5');
   await page.getByRole('button', { name: '条件を適用してリセット' }).click();
   await expect(page.locator('#status')).toHaveText('準備完了');
@@ -175,6 +216,8 @@ test('等加速度直線運動をデスクトップと狭い画面で読む', as
   await expect(page.getByRole('heading', { name: '等加速度直線運動.' })).toBeVisible();
   await expect(page.locator('.equation').first()).toBeVisible();
   await expect(page.locator('.solution')).toBeVisible();
+  await expectTypeSize(page);
+  await expectMechanicsSection(page);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await page.screenshot({ path: testInfo.outputPath('accelerated-mobile.png'), fullPage: true });
 });
@@ -184,14 +227,10 @@ test('等速直線運動も狭い画面で本文と式が読める', async ({ pa
   await page.goto('uniform.html');
   await expect(page.locator('#status')).toHaveText('準備完了');
   await expect(page.locator('.equation').first()).toBeVisible();
-  await expect(page.locator('.solution')).toContainText('x(t) = x₀ + v t');
+  await expect(tex(page, 'x(t) = x_0 + v t').first()).toBeVisible();
   await expect(page.locator('.solution')).toContainText('打ち切り誤差はありません');
-  const type = await page.evaluate(() => ({
-    body: parseFloat(getComputedStyle(document.body).fontSize),
-    solution: parseFloat(getComputedStyle(document.querySelector('.solution')!).fontSize),
-  }));
-  expect(type.body).toBeGreaterThanOrEqual(16);
-  expect(type.solution).toBeGreaterThanOrEqual(24);
+  await expectTypeSize(page);
+  await expectMechanicsSection(page);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
 

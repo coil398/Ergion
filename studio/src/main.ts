@@ -1,6 +1,7 @@
 import './style.css';
 import { appHeader, pageFooter, rail } from './chrome';
 import { clearFigure, drawTimeSeries, drawUniformMotion } from './figures';
+import { tex } from './tex';
 import type { Config, Snapshot } from './protocol';
 import { mountSession } from './session';
 
@@ -25,7 +26,7 @@ app.innerHTML = `
           <p class="description">外力を受けない一つの粒子が、直線上を一定の速度で進みます。加速度がゼロであることから、位置の厳密解がどのように出るかを、このページで順に見ます。</p>
         </div>
         <div class="equation" aria-label="等速直線運動の式。x(t) は x0 足す v t">
-          <span class="math-x">x</span>(<span class="math-x">t</span>) = <span class="math-x">x₀</span> + <span class="math-x">v</span><span class="math-x">t</span>
+          ${tex('x(t) = x_0 + v t', true)}
           <span class="equation-note">加速度ゼロの厳密解</span>
         </div>
       </section>
@@ -35,13 +36,13 @@ app.innerHTML = `
           <form id="config-form">
             <fieldset><legend>運動の設定</legend>
               <div class="field-pair">
-                <label>初期位置 <span>x₀</span><input name="initial_position" type="number" min="-1000000000000" max="1000000000000" step="any" required value="0"></label>
-                <label>速度 <span>v</span><input name="velocity" type="number" min="-1000000000000" max="1000000000000" step="any" required value="1"></label>
+                <label>初期位置 <span class="field-symbol">${tex('x_0')}</span><input name="initial_position" type="number" min="-1000000000000" max="1000000000000" step="any" required value="0"></label>
+                <label>速度 <span class="field-symbol">${tex('v')}</span><input name="velocity" type="number" min="-1000000000000" max="1000000000000" step="any" required value="1"></label>
               </div>
             </fieldset>
             <fieldset><legend>時間発展</legend>
               <div class="field-pair">
-                <label>時間刻み <span>Δt</span><input name="dt" type="number" min="0" max="1000000000000" step="any" required value="0.01"></label>
+                <label>時間刻み <span class="field-symbol">${tex(String.raw`\Delta t`)}</span><input name="dt" type="number" min="0" max="1000000000000" step="any" required value="0.01"></label>
                 <label>ステップ数<input name="steps" type="number" min="1" max="1000000" step="1" required value="1000"></label>
               </div>
               <p class="field-hint" id="time-hint">計算時間 10.00</p>
@@ -57,26 +58,30 @@ app.innerHTML = `
             <div class="panel-heading"><h2 id="study-heading">等速直線運動の計算と説明</h2><span class="quiet-label">厳密解の求め方</span></div>
             <div class="study-body">
               <ol class="solution">
-                <li>質量 <span class="math">m</span> の粒子の運動方程式は <span class="math">m x'' = F</span> です。<span class="math">x</span> は直線上の位置、<span class="math">t</span> は時刻、<span class="math">x''</span> は位置を時刻で二度微分した加速度、<span class="math">F</span> は外力です。</li>
-                <li>この運動では外力が働きません。<span class="math">F = 0</span> なので、加速度は <span class="math">a = x'' = 0</span> です。</li>
-                <li>加速度がゼロのとき、速度 <span class="math">v = x'</span> は時刻によって変わりません。最初の速度を <span class="math">v</span> と書くと、どの時刻でも <span class="math">v(t) = v</span> です。</li>
-                <li>速度は位置の時間変化なので <span class="math">x' = v</span> です。時刻 0 から <span class="math">t</span> まで積分すると <span class="math">x(t) − x(0) = v t</span> です。初期位置を <span class="math">x(0) = x₀</span> と書くと、厳密解は次の式です。
-                  <p class="solution-equation"><span class="math">x(t) = x₀ + v t</span></p>
+                <li>質量 ${tex('m')} の粒子の運動方程式は ${tex(String.raw`m x'' = F`)} です。${tex('x')} は直線上の位置、${tex('t')} は時刻、${tex(String.raw`x''`)} は位置を時刻で二度微分した加速度、${tex('F')} は外力です。</li>
+                <li>この運動では外力が働きません。${tex('F = 0')} なので、加速度は ${tex(String.raw`a = x'' = 0`)} です。</li>
+                <li>加速度がゼロのとき、速度 ${tex(String.raw`v = x'`)} は時刻によって変わりません。最初の速度を ${tex('v')} と書くと、どの時刻でも ${tex('v(t) = v')} です。</li>
+                <li>速度は位置の時間変化なので ${tex(String.raw`x' = v`)} です。時刻 0 から ${tex('t')} まで積分すると ${tex('x(t) - x(0) = v t')} です。初期位置を ${tex('x(0) = x_0')} と書くと、厳密解は次の式です。
+                  <p class="solution-equation">${tex('x(t) = x_0 + v t', true)}</p>
                 </li>
-                <li>数値計算は、<code>crates/ergion-lab/src/uniform.rs</code> の <code>UniformSimulation</code> が velocity-Verlet 法で1ステップ進めます。加速度が 0 なので、更新は <span class="math">x<sub>n+1</sub> = x<sub>n</sub> + v Δt</span>、<span class="math">v<sub>n+1</sub> = v</span> です。これは厳密解を刻み幅 <span class="math">Δt</span> だけ進めた増分と一致します。位置は時刻の一次式なので、この数値ステップに打ち切り誤差はありません。表示される差は、倍精度浮動小数点の丸めだけです。</li>
+                <li>数値計算は、<code>crates/ergion-lab/src/uniform.rs</code> の <code>UniformSimulation</code> が velocity-Verlet 法で1ステップ進めます。加速度が 0 なので、更新は次の式です。
+                  <p class="solution-equation">${tex(String.raw`x_{n+1} = x_n + v \Delta t`, true)}</p>
+                  <p class="solution-equation">${tex(String.raw`v_{n+1} = v`, true)}</p>
+                  これは厳密解を刻み幅 ${tex(String.raw`\Delta t`)} だけ進めた増分と一致します。位置は時刻の一次式なので、この数値ステップに打ち切り誤差はありません。表示される差は、倍精度浮動小数点の丸めだけです。
+                </li>
               </ol>
-              <p>同じ手順は、計算を行う <code>UniformSimulation</code> の rustdoc に書いてあります。画面は、その関数が返した位置と速度を描きます。式 <span class="math">x(t) = x₀ + v t</span> を、描画のために計算し直すことはありません。図の線分は、初期位置 <span class="math">x₀</span> に加わる変位 <span class="math">vt</span> です。紫の実線が数値解、青緑の破線が厳密解です。</p>
+              <p>同じ手順は、計算を行う <code>UniformSimulation</code> の rustdoc に書いてあります。画面は、その関数が返した位置と速度を描きます。式 ${tex('x(t) = x_0 + v t')} を、描画のために計算し直すことはありません。図の線分は、初期位置 ${tex('x_0')} に加わる変位 ${tex('vt')} です。紫の実線が数値解、青緑の破線が厳密解です。</p>
             </div>
           </section>
           <section class="scene panel" aria-labelledby="scene-heading">
             <div class="panel-heading"><h2 id="scene-heading">粒子の直線運動</h2><span id="scene-time" class="numeric">t = 0.000</span></div>
-            <p class="scene-caption">粒子は、初期位置 <span class="math">x₀</span> に変位 <span class="math">vt</span> を加えた位置まで進みます。速度は一定なので、変位は時刻に比例して伸びます。</p>
+            <p class="scene-caption">粒子は、初期位置 ${tex('x_0')} に変位 ${tex('vt')} を加えた位置まで進みます。速度は一定なので、変位は時刻に比例して伸びます。</p>
             <canvas id="oscillator" aria-label="直線上を進む粒子。初期位置に変位 vt を加えた位置を示します。数値解は紫の実線、解析解は青緑の破線。" role="img"></canvas>
             <div class="readouts"><div><span>位置 x</span><output id="position">—</output></div><div><span>速度 v</span><output id="velocity">—</output></div><div><span>解析解の位置</span><output id="exact-position">—</output></div><div><span>位置の絶対差 |x − x_exact|</span><output id="energy-error">—</output></div></div>
           </section>
           <section class="plots panel" aria-labelledby="plots-heading">
             <div class="panel-heading"><h2 id="plots-heading">位置と速度の時間変化</h2><div class="legend"><span><i class="numerical"></i>数値解</span><span><i class="analytical"></i>解析解</span></div></div>
-            <div class="plot-grid"><div class="plot-main"><h3>位置の時間変化 <span>x(t)</span></h3><canvas id="time-chart" aria-label="位置と時間のグラフ" role="img"></canvas><p>時間 t</p></div><div class="plot-phase"><h3>速度の時間変化 <span>v(t)</span></h3><canvas id="phase-chart" aria-label="速度と時間のグラフ" role="img"></canvas><p>時間 t</p></div></div>
+            <div class="plot-grid"><div class="plot-main"><h3>位置の時間変化 ${tex('x(t)')}</h3><canvas id="time-chart" aria-label="位置と時間のグラフ" role="img"></canvas><p>時間 t</p></div><div class="plot-phase"><h3>速度の時間変化 ${tex('v(t)')}</h3><canvas id="phase-chart" aria-label="速度と時間のグラフ" role="img"></canvas><p>時間 t</p></div></div>
             <div class="plot-footer"><span id="comparison">解析解との差を計算します。</span><span>破線は解析解</span></div>
           </section>
           <section class="transport panel" aria-label="計算操作">

@@ -1,11 +1,5 @@
 export type PageId = 'mechanics' | 'uniform' | 'accelerated';
 
-const pages: { id: PageId; href: string; label: string }[] = [
-  { id: 'mechanics', href: './', label: '力学' },
-  { id: 'uniform', href: './uniform.html', label: '等速直線運動' },
-  { id: 'accelerated', href: './accelerated.html', label: '等加速度直線運動' },
-];
-
 export function appHeader(status: string): string {
   return `
   <header class="app-header">
@@ -15,15 +9,24 @@ export function appHeader(status: string): string {
   </header>`;
 }
 
+function pageLink(active: PageId, id: PageId, href: string, label: string): string {
+  const current = active === id;
+  return `<li><a class="rail-page${current ? ' active' : ''}" href="${href}"${current ? ' aria-current="page"' : ''}>${label}</a></li>`;
+}
+
+/** 力学は節。二つの運動はその下のページであり、節と横並びにしない。 */
 export function rail(active: PageId): string {
-  const items = pages.map(page => {
-    const current = page.id === active;
-    return `<a class="rail-item${current ? ' active' : ''}" href="${page.href}"${current ? ' aria-current="page"' : ''}><span aria-hidden="true">→</span> ${page.label}</a>`;
-  }).join('');
+  const sectionCurrent = active === 'mechanics' ? ' aria-current="page"' : '';
   return `
     <aside class="rail" aria-label="実験ナビゲーション">
-      <span class="rail-heading">力学</span>
-      ${items}
+      <span class="rail-heading">実験室</span>
+      <div class="rail-section">
+        <a class="rail-section-title${active === 'mechanics' ? ' active' : ''}" href="./"${sectionCurrent}>力学</a>
+        <ul class="rail-pages">
+          ${pageLink(active, 'uniform', './uniform.html', '等速直線運動')}
+          ${pageLink(active, 'accelerated', './accelerated.html', '等加速度直線運動')}
+        </ul>
+      </div>
       <div class="rail-note"><span class="orbit-icon" aria-hidden="true">◎</span><p>小さな系から、<br>確かな計算へ。</p><span>直線上の一粒子</span></div>
       <a class="source-link" href="https://github.com/coil398/Ergion" target="_blank" rel="noreferrer">ソースコード ↗</a>
     </aside>`;

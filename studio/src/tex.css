@@ -1,0 +1,16 @@
+/* KaTeX の 1.21em は本文より大きく見えすぎる。式は親の文字サイズのままにする。 */
+.katex { font-size: 1em; }
+.tex-display { display: block; max-width: 100%; overflow-x: auto; overflow-y: hidden; }
+.tex-display .katex-display { margin: 0.35em 0; }
+.solution .tex:not(.tex-display),
+.study-body .tex:not(.tex-display),
+.description .tex:not(.tex-display),
+.scene-caption .tex:not(.tex-display),
+.chapter .tex:not(.tex-display),
+.plot-footer .tex:not(.tex-display) {
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: middle;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
