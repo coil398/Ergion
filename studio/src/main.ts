@@ -46,10 +46,10 @@ app.innerHTML = `
         </section>
         <div class="results">
           <section class="study panel" id="study" aria-labelledby="study-heading">
-            <div class="panel-heading"><h2 id="study-heading">等速直線運動の計算核</h2><span class="quiet-label">実装と検証</span></div>
+            <div class="panel-heading"><h2 id="study-heading">等速直線運動の計算と説明</h2><span class="quiet-label">実装と検証</span></div>
             <div class="study-body">
-              <p>運動方程式 <span class="math">m x'' = F</span>（<span class="math">F = 0, a = 0</span>）、解析解 <span class="math">x(t) = x₀ + v t</span>、RK4およびvelocity-Verletによる1ステップの更新と打ち切り誤差ゼロの理論、引数の仕様、テストが検証する内容は、計算核の Rustdoc（<code>crates/ergion-lab/src/uniform.rs</code> / <code>UniformSimulation</code>）を正本（source of truth）として解説されています。</p>
-              <p>本画面は、その同一の計算核（Rust / Wasm）を呼び出して直線上を移動する粒子を描き、解析解との一致を視覚的に確かめるための実験台です。紫の実線が数値解、青緑の破線が解析解を表します。</p>
+              <p>運動方程式 <span class="math">m x'' = F</span>（<span class="math">F = 0, a = 0</span>）、手計算の解 <span class="math">x(t) = x₀ + v t</span>、1ステップの計算手順、引数の決まり、テストで確かめている内容は、計算を行うRustコード（<code>crates/ergion-lab/src/uniform.rs</code> の <code>UniformSimulation</code>）の rustdoc に書いてあります。</p>
+              <p>この画面では、同じRustの計算関数（Rust / Wasm）を呼び出して直線上を進む粒子を描き、手計算の解とぴったり一致することを確かめます。紫の実線がコンピュータによる数値解、青緑の破線が手計算の解を表します。</p>
             </div>
           </section>
           <section class="scene panel" aria-labelledby="scene-heading">

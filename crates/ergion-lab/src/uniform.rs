@@ -1,7 +1,8 @@
 //! 一粒子の等速直線運動（$x = x_0 + v t$）の計算と理論。
 //!
-//! このモジュールおよび計算関数の rustdoc が等速直線運動のレッスンの正本（source of truth）です。
-//! 二重管理による記述の乖離を防ぐため、理論・パラメータ仕様・テスト検証内容の解説はすべて本ドキュメントに集約します。
+//! 等速直線運動の理論、計算の手順、引数の決まり、テストで確かめている内容は、
+//! すべてこのモジュールと [`UniformSimulation`] の rustdoc に書いてあります。
+//! 別の文書を作って内容がずれるのを防ぐため、計算の解説はこのコード自身に置きます。
 //!
 //! # 1. 理論
 //!
@@ -102,9 +103,10 @@ pub struct UniformBatch {
     pub state: UniformSnapshot,
 }
 
-/// 一粒子の等速直線運動シミュレーション実行環境。
+/// 一粒子の等速直線運動を計算する構造体。
 ///
-/// Native CLI およびブラウザ（Web Worker / Wasm）の共通計算核です。
+/// パソコンの端末（CLI）とブラウザ（Web Worker / Wasm）の両方から、
+/// まったく同じ計算コードとして呼び出されます。
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 pub struct UniformSimulation {
     config: UniformConfig,

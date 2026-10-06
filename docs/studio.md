@@ -9,10 +9,10 @@
 | `crates/ergion-core` | 一般ODEのRK4、位置依存加速度に対するvelocity-Verlet（$a=0$ の更新） |
 | `crates/ergion-lab` | 等速直線運動（`UniformSimulation`）および調和振動子、設定検証、解析解、観測値、CLI、Wasm公開境界、理論とテスト検証の rustdoc |
 | `studio/src/worker.ts` | Wasmの初期化、バッチ実行、停止要求、実験IDによる結果の識別 |
-| `studio/src/main.ts` | 条件入力、操作、設定入出力、実測値の描画、計算核 rustdoc への参照 |
+| `studio/src/main.ts` | 条件入力、操作、設定入出力、実測値の描画、`UniformSimulation` の rustdoc への参照 |
 | `studio/wasm` | wasm-pack生成物。Git対象外、直接編集禁止 |
 
-運動方程式、解析解、RK4 と velocity-Verlet の一ステップ、引数、テストが見るものは、計算する関数の rustdoc（`crates/ergion-lab/src/uniform.rs` の `UniformSimulation`）を正本とする。乖離しうる二重の文章は持たない。Studio の画面は動く粒子を示し、その関数を参照する。公開ホスティングは行わずCursorローカルで閲覧する。換算単位で扱い、位置・速度・時間は同じ単位系を前提とする。計算はライブラリに置く。画面とCLIは式を計算せず、ライブラリの戻り値を描く。ここにはばね、Lennard–Jones、等加速度運動、電磁気、解析力学、温度、3D 粒子は含まれない。
+運動方程式、手計算の解、RK4 と velocity-Verlet の1ステップの計算、引数の決まり、テストで確かめている内容は、計算を行う関数の rustdoc（`crates/ergion-lab/src/uniform.rs` の `UniformSimulation`）に書いてあります。文章を二重に持って内容がずれるのを防ぐため、Studio の画面は動く粒子を示し、その関数の説明を参照します。GitHub Pages（https://coil398.github.io/Ergion/）で公開し、Cursorローカル環境でも4173番ポートで閲覧できます。換算単位で扱い、位置・速度・時間は同じ単位系を前提とします。計算はライブラリに置きます。画面とCLIは式を計算せず、ライブラリの戻り値を描きます。ここにはばね、Lennard–Jones、等加速度運動、電磁気、解析力学、温度、3D 粒子は含まれません。
 
 ## 設定JSON
 
@@ -50,7 +50,7 @@ npm --prefix studio run build
 npm --prefix studio run dev
 ```
 
-wasm-packは別途導入が必要。[公式導入手順](https://wasm-bindgen.github.io/wasm-pack/installer/)を参照する。本番ビルドは `studio/dist/` に生成される。外部サービスへの配備はまだ行っていない。
+wasm-packは別途導入が必要。[公式導入手順](https://wasm-bindgen.github.io/wasm-pack/installer/)を参照する。本番ビルドは `studio/dist/` に生成される。GitHub Pages（https://coil398.github.io/Ergion/）に公開される。
 
 ## 検証
 
@@ -68,7 +68,7 @@ npm --prefix studio test
 
 | 確認 | 内容 |
 | --- | --- |
-| Rust数値テスト | 計算核 rustdoc に書いた等速直線運動の厳密解一致、ゼロ状態、不正入力、バッチ分割（および調和振動子の既存テスト） |
+| Rust数値テスト | `UniformSimulation` の rustdoc に書いた等速直線運動の手計算解との一致、ゼロ状態、不正入力、バッチ分割（および調和振動子の既存テスト） |
 | ブラウザ操作 | 開始、一時停止、再開、1ステップ、リセット、未適用条件と実行条件の分離 |
 | Native/Wasm比較 | 同一JSONから300ステップ実行し、状態・解析解を比較 |
 | 設定入出力 | ダウンロードと読み込み、不正JSON、不正値、完了後の操作、有効な大きい刻みの再編集 |
@@ -78,4 +78,4 @@ npm --prefix studio test
 
 ## 現在の制限
 
-チェックポイント、MD、3D表示、温度、金融、GPU計算は未実装。実行中の状態はページを閉じると失われる。公開APIは初期段階であり、設定スキーマを変更する際は互換性方針も更新する。CIはまだ追加していない。
+チェックポイント、MD、3D表示、温度、金融、GPU計算は未実装。実行中の状態はページを閉じると失われる。公開APIは初期段階であり、設定スキーマを変更する際は互換性方針も更新する。GitHub Pagesへの自動デプロイ用GitHub Actions workflowを配置している。

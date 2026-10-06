@@ -4,7 +4,7 @@
 
 ## 責務と依存方向
 
-Rustを計算の正本とし、Wasm-firstでNativeも同時対応する。Coreは原子、力場、金融商品、電子密度、画面、ファイルシステムを知らない。
+計算はRustで行い、Wasm-firstでNativeも同時に対応する。Coreは原子、力場、金融商品、電子密度、画面、ファイルシステムを知らない。
 
 ```text
 Studio → Worker → Wasm境界 → Dynamics → Core
@@ -18,7 +18,7 @@ CLI                       → Dynamics → Core
 | Dynamics | 粒子、境界条件、力場、物理量 | DOM、ファイル保存 |
 | Quant | 確率過程、金融商品、価格評価 | 粒子エンジンへの依存 |
 | Electronic | 電子密度、基底、電子状態の計算 | MDの拡張としての埋め込み |
-| 実行・表示 | 設定の入出力、開始・停止、保存、描画 | JavaScriptによる別の計算核 |
+| 実行・表示 | 設定の入出力、開始・停止、保存、描画 | JavaScriptによる別の計算実装 |
 
 MD導入時のcrate名は `ergion-core`、`ergion-md`、後続の `ergion-quant`、`ergion-electronic` を想定する。Dynamicsは製品上の名前、`ergion-md`は初期のMD実装名。現在は `crates/ergion-core` に積分器、`crates/ergion-lab` に等速直線運動・調和振動子・共通設定・Native CLI・Wasm境界、`studio/` に画面を配置する。LabはMD実装ではない。未実装の分野に空のcrateを先回りして作らない。
 
@@ -75,7 +75,7 @@ F_i    = -grad_i U
 
 ## 依存ライブラリの方針
 
-依存ライブラリは極力入れない。一度きりの確認だけなら使ってよい。カリキュラムは基礎力学、電磁気学、解析力学、微分方程式の順に進み、基礎力学の内部も単純なものから進める（現在は等速直線運動の完了単位であり、等加速度運動・Newtonの法則・電磁気・解析力学・一般ODE章はまだ始めない）。スカラーの等速直線運動・調和振動子には`nalgebra`、`faer`、`wgpu`を導入していない。後続の単位でベクトル・小行列、大規模行列分解、GPU基盤が必要になっても、先に公式仕様、Native/Wasm対応、ライセンス、必要機能を技術検証し、範囲を広げるためだけには足さない。計算の図は Studio のウェブページとし、公開ホスティングは行わずCursorローカルで閲覧する。別の描画スタックは足さない。式の解説の正本は計算する関数の rustdoc であり、画面は動く粒子を示してその関数を参照する。初回StudioはVite＋TypeScript＋Canvas、Wasm境界はwasm-bindgen、共通設定はSerdeで構成する。
+依存ライブラリは極力入れない。一度きりの確認だけなら使ってよい。カリキュラムは基礎力学、電磁気学、解析力学、微分方程式の順に進み、基礎力学の内部も単純なものから進める（現在は等速直線運動の完了単位であり、等加速度運動・Newtonの法則・電磁気・解析力学・一般ODE章はまだ始めない）。スカラーの等速直線運動・調和振動子には`nalgebra`、`faer`、`wgpu`を導入していない。後続の単位でベクトル・小行列、大規模行列分解、GPU基盤が必要になっても、先に公式仕様、Native/Wasm対応、ライセンス、必要機能を技術検証し、範囲を広げるためだけには足さない。計算の図は Studio のWebページとし、GitHub Pages（https://coil398.github.io/Ergion/）やCursorローカルで閲覧する。別の描画スタックは足さない。式の解説は計算を行う関数の rustdoc（`crates/ergion-lab/src/uniform.rs` の `UniformSimulation`）に置き、画面は動く粒子を示してその関数を参照する。初回StudioはVite＋TypeScript＋Canvas、Wasm境界はwasm-bindgen、共通設定はSerdeで構成する。
 
 WebGPU計算は第3段で検討する。CPUの`f64`参照実装を残し、GPUの精度・並列集計による差を用途別の許容誤差で評価する。v0.1の描画技術とGPU計算基盤の採用を混同しない。
 

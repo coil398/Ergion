@@ -4,13 +4,13 @@ Ergion（エルジオン）は計算の基盤であり、学習の基盤でも�
 
 カリキュラムは基礎力学、電磁気学、解析力学、微分方程式の順に進む。基礎力学の内部も単純なものから進め、現在の学習単元は一粒子の等速直線運動（$x = x_0 + v t$）である。等加速度運動やNewtonの法則はその後に続き、電磁気学・解析力学・一般ODE章はまだ始めない。ばねや Lennard–Jones への拡張は今の段階では行わない。既存の調和振動子のコードは保持するが紹介ページにはしない。
 
-式の解説・理論・引数仕様・テスト検証内容の正本（source of truth）は、それを計算するRust関数の rustdoc（`crates/ergion-lab/src/uniform.rs` の `UniformSimulation`）である。乖離しうる二重の文章は持たない。Webページは動く粒子を示し、その関数を参照する。公開ホスティングは行わず、Cursorローカルで閲覧する。
+式の解説・理論・引数仕様・テスト検証内容は、それを計算するRust関数の rustdoc（`crates/ergion-lab/src/uniform.rs` の `UniformSimulation`）に書いてあります。文章を二重に持って内容がずれるのを防ぎ、Webページは動く粒子を示してその関数を参照します。GitHub Pages（https://coil398.github.io/Ergion/）で公開され、Cursorローカル環境でも閲覧できます。
 
 後続の完成像は、検証済みの小さな分子動力学環境として、条件入力、計算、可視化、保存・再開までをつなぐことである。金融計算はその後に置く。今の単位ではそこへ進まない。
 
 ## 現在の状態
 
-最初の実験として、一粒子の等速直線運動をRustで計算するStudioとNative CLIを実装しています。式、一ステップ、テストが見るものは計算核の rustdoc を正とし、二重管理の文章は持たない。ブラウザではWorker内のWasmで計算し、位置・速度と解析解との差を確認できます（既存の調和振動子のコードもライブラリ・CLIとして保持されています）。公開配備は行わず、ローカル環境で表示します。
+最初の実験として、一粒子の等速直線運動をRustで計算するStudioとNative CLIを実装しています。式、1ステップの計算、テストが確かめている内容は `crates/ergion-lab/src/uniform.rs` の `UniformSimulation` の rustdoc に書いてあり、文章を二重に持ちません。ブラウザではWorker内のWasmで計算し、位置・速度と手計算の解との差を確認できます（既存の調和振動子のコードもライブラリ・CLIとして保持されています）。GitHub Pages（https://coil398.github.io/Ergion/）に公開されています。
 
 設定変更、開始・一時停止・再開、1ステップ実行、リセット、JSON設定の保存・読み込みに対応しています。v0.1全体は開発中です。LJ粒子系、3D MD、温度、チェックポイントによる途中状態の保存・再開は未実装です。
 
@@ -49,7 +49,7 @@ cargo run -p ergion-lab --bin ergion -- examples/uniform_motion.json
 
 一粒子の等速直線運動（$x = x_0 + v t$）は現在の単位である。調和振動子コードは保持されており、3D の Lennard–Jones 以降は後続であり、今は着手しない。
 
-- `f64`の計算核、一般ODE用RK4、力学系用velocity-Verlet。
+- `f64`の計算基盤、一般ODE用RK4、力学系用velocity-Verlet。
 - 3D・周期境界・NVE・force-shifted Lennard–Jonesによる小規模MD。
 - 同じ設定を受け取るNative CLIとRust/Wasm。計算状態の保存・再開。
 - 粒子の3D表示、温度・全エネルギーの推移、条件変更、停止・再開。
