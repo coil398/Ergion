@@ -40,7 +40,7 @@ Ergion のすべてのWebページ、rustdoc、ドキュメント、および説
 
 - **書かない言葉**: 正本、source of truth、計算核
 - **代わりに書く例**:
-  - 「式の解説の正本は〜」 → 「式の解説は `crates/ergion-lab/src/uniform.rs` の `UniformSimulation` の rustdoc に置きます」
+  - 「式の解説の正本は〜」 → 「式の解説は UniformSimulation の説明に置き、関数名からその rustdoc へリンクします。文中にソースファイルのパスは書きません」
   - 「同一の計算核を呼び出す」 → 「同じRustの計算関数 `UniformSimulation` を呼び出す」
   - 「正本の所在」 → 「計算と説明がある場所」
 

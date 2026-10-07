@@ -1,5 +1,5 @@
 import './style.css';
-import { appHeader, pageFooter, rail } from './chrome';
+import { appHeader, pageFooter, rail, simulationDoc } from './chrome';
 import { clearFigure, drawTimeSeries, drawUniformMotion } from './figures';
 import { tex } from './tex';
 import type { Config, Snapshot } from './protocol';
@@ -64,13 +64,13 @@ app.innerHTML = `
                 <li>速度は位置の時間変化なので ${tex(String.raw`x' = v`)} です。時刻 0 から ${tex('t')} まで積分すると ${tex('x(t) - x(0) = v t')} です。初期位置を ${tex('x(0) = x_0')} と書くと、厳密解は次の式です。
                   <p class="solution-equation">${tex('x(t) = x_0 + v t', true)}</p>
                 </li>
-                <li>数値計算は、<code>crates/ergion-lab/src/uniform.rs</code> の <code>UniformSimulation</code> が velocity-Verlet 法で1ステップ進めます。加速度が 0 なので、更新は次の式です。
+                <li>数値計算の1ステップは、${simulationDoc('uniform', 'UniformSimulation')} が velocity-Verlet 法で進めます。加速度がゼロなので、更新は次の式です。
                   <p class="solution-equation">${tex(String.raw`x_{n+1} = x_n + v \Delta t`, true)}</p>
                   <p class="solution-equation">${tex(String.raw`v_{n+1} = v`, true)}</p>
                   これは厳密解を刻み幅 ${tex(String.raw`\Delta t`)} だけ進めた増分と一致します。位置は時刻の一次式なので、この数値ステップに打ち切り誤差はありません。表示される差は、倍精度浮動小数点の丸めだけです。
                 </li>
               </ol>
-              <p>同じ手順は、計算を行う <code>UniformSimulation</code> の rustdoc に書いてあります。画面は、その関数が返した位置と速度を描きます。式 ${tex('x(t) = x_0 + v t')} を、描画のために計算し直すことはありません。図の線分は、初期位置 ${tex('x_0')} に加わる変位 ${tex('vt')} です。紫の実線が数値解、青緑の破線が厳密解です。</p>
+              <p>同じ手順は、${simulationDoc('uniform', 'UniformSimulation')} の説明に書いてあります。画面は、その関数が返した位置と速度を描きます。式 ${tex('x(t) = x_0 + v t')} を、描画のために計算し直すことはありません。図の線分は、初期位置 ${tex('x_0')} に加わる変位 ${tex('vt')} です。紫の実線が数値解、青緑の破線が厳密解です。</p>
             </div>
           </section>
           <section class="scene panel" aria-labelledby="scene-heading">

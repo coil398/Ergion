@@ -1,5 +1,5 @@
 import './style.css';
-import { appHeader, pageFooter, rail } from './chrome';
+import { appHeader, pageFooter, rail, simulationDoc } from './chrome';
 import { clearFigure, drawConstantAcceleration, drawTimeSeries } from './figures';
 import { tex } from './tex';
 import type { ConstantAccelerationConfig, Snapshot } from './protocol';
@@ -69,13 +69,13 @@ app.innerHTML = `
                 <li>速度は位置の時間微分なので ${tex(String.raw`x' = v_0 + a t`)} です。もう一度、時刻 0 から ${tex('t')} まで積分すると ${tex(String.raw`x(t) - x(0) = v_0 t + \frac{1}{2} a t^2`)} です。初期位置を ${tex('x(0) = x_0')} と書くと、位置の厳密解は次の二次式です。
                   <p class="solution-equation">${tex(String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`, true)}</p>
                 </li>
-                <li>数値計算は、<code>crates/ergion-lab/src/constant_acceleration.rs</code> の <code>ConstantAccelerationSimulation</code> が velocity-Verlet 法で1ステップ進めます。加速度が一定のとき、更新は次の式です。
+                <li>数値計算の1ステップは、${simulationDoc('constant_acceleration', 'ConstantAccelerationSimulation')} が velocity-Verlet 法で進めます。加速度が一定のとき、更新は次の式です。
                   <p class="solution-equation">${tex(String.raw`x_{n+1} = x_n + v_n \Delta t + \frac{1}{2} a (\Delta t)^2`, true)}</p>
                   <p class="solution-equation">${tex(String.raw`v_{n+1} = v_n + a \Delta t`, true)}</p>
                   位置は時刻の二次式、速度は時刻の一次式であり、三階以上の導関数はゼロです。この多項式に対して、数値ステップの増分は厳密解の増分と一致します。残る差は、倍精度浮動小数点の丸めだけです。
                 </li>
               </ol>
-              <p>同じ手順は、計算を行う <code>ConstantAccelerationSimulation</code> の rustdoc に書いてあります。画面に描く位置と速度は、その関数が返した数値です。式 ${tex(String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`)} や ${tex('v(t) = v_0 + a t')} を、描画のために計算し直すことはありません。紫の実線が数値解、青緑の破線が厳密解です。</p>
+              <p>同じ手順は、${simulationDoc('constant_acceleration', 'ConstantAccelerationSimulation')} の説明に書いてあります。画面に描く位置と速度は、その関数が返した数値です。式 ${tex(String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`)} や ${tex('v(t) = v_0 + a t')} を、描画のために計算し直すことはありません。紫の実線が数値解、青緑の破線が厳密解です。</p>
             </div>
           </section>
           <section class="scene panel" aria-labelledby="scene-heading">

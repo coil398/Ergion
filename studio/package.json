@@ -6,7 +6,7 @@
   "scripts": {
     "wasm": "wasm-pack build ../crates/ergion-lab --target web --out-dir ../../studio/wasm --out-name ergion_lab --no-opt",
     "dev": "vite --host 127.0.0.1",
-    "build": "npm run wasm && tsc --noEmit && vite build",
+    "build": "npm run wasm && tsc --noEmit && vite build && node ./scripts/publish-rustdoc.mjs",
     "preview": "vite preview --host 127.0.0.1",
     "test": "playwright test"
   },

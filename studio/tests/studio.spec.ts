@@ -29,12 +29,15 @@ async function expectMechanicsSection(page: Page) {
 async function expectTypeSize(page: Page) {
   const type = await page.evaluate(() => {
     const px = (selector: string) => parseFloat(getComputedStyle(document.querySelector(selector)!).fontSize);
+    const plate = (selector: string) => getComputedStyle(document.querySelector(selector)!).backgroundColor;
     return {
       body: px('body'),
       solution: px('.solution'),
       equation: px('.equation'),
       katex: px('.equation .katex'),
       heading: px('h1'),
+      equationPlate: plate('.equation'),
+      stepPlate: plate('.solution-equation'),
     };
   });
   expect(type.body).toBe(16);
@@ -42,6 +45,20 @@ async function expectTypeSize(page: Page) {
   expect(type.equation).toBe(18);
   expect(type.katex).toBe(18);
   expect(type.heading).toBe(18);
+  expect(type.equationPlate).toBe('rgb(234, 231, 246)');
+  expect(type.stepPlate).toBe('rgb(234, 231, 246)');
+}
+
+async function expectSimulationDoc(page: Page, module: string, name: string) {
+  const href = `/Ergion/doc/ergion_lab/${module}/struct.${name}.html`;
+  const link = page.locator('#study').getByRole('link', { name, exact: true });
+  await expect(link).toHaveCount(2);
+  await expect(link.first()).toHaveAttribute('href', href);
+  await expect(link.nth(1)).toHaveAttribute('href', href);
+  expect(await page.locator('#study').innerText()).not.toContain('crates/');
+  const doc = await page.request.get(href);
+  expect(doc.ok()).toBeTruthy();
+  expect(await doc.text()).toContain(name);
 }
 
 test('開始・停止・再開・1ステップと条件の適用', async ({ page }) => {
@@ -140,7 +157,7 @@ test('デスクトップとモバイルの表示', async ({ page }, testInfo) =>
   await expect(tex(page, String.raw`m x'' = F`).first()).toBeVisible();
   await expect(tex(page, 'x(t) = x_0 + v t').first()).toBeVisible();
   await expect(page.locator('#study .katex').first()).toBeVisible();
-  await expect(page.locator('#study')).toContainText('rustdoc');
+  await expectSimulationDoc(page, 'uniform', 'UniformSimulation');
   await expectMechanicsSection(page);
   await page.locator('[name=steps]').fill('600');
   await page.getByRole('button', { name: '条件を適用してリセット' }).click();
@@ -183,6 +200,7 @@ test('力学の目次は古典力学の二つのページだけを示す', async
   await expect(tex(page, String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`).first()).toBeVisible();
   await expect(tex(page, 'v(t) = v_0 + a t').first()).toBeVisible();
   await expect(page.locator('#contents .katex').first()).toBeVisible();
+  await expect(page.locator('#contents .equation').first()).toHaveCSS('background-color', 'rgb(234, 231, 246)');
   await expect(page.getByRole('link', { name: '等速直線運動' }).first()).toBeVisible();
   await expect(page.getByRole('link', { name: '等加速度直線運動' }).first()).toBeVisible();
   await expectMechanicsSection(page);
@@ -201,7 +219,7 @@ test('等加速度直線運動をデスクトップと狭い画面で読む', as
   await expect(tex(page, String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`).first()).toBeVisible();
   await expect(tex(page, 'v(t) = v_0 + a t').first()).toBeVisible();
   await expect(page.locator('#study')).toContainText('数値ステップの増分は厳密解の増分と一致します');
-  await expect(page.locator('#study')).toContainText('rustdoc');
+  await expectSimulationDoc(page, 'constant_acceleration', 'ConstantAccelerationSimulation');
   await expectTypeSize(page);
   await expectMechanicsSection(page);
   await page.locator('[name=dt]').fill('0.5');
