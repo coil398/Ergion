@@ -32,7 +32,26 @@ export interface LinearConfig {
   steps: number;
 }
 
-export type MotionModel = 'uniform' | 'constant-acceleration' | 'position-derivative' | 'euler' | 'separation' | 'linear';
+export type TextbookKind =
+  | 'homogeneous'
+  | 'exact'
+  | 'bernoulli'
+  | 'two-real'
+  | 'undetermined'
+  | 'variation'
+  | 'laplace'
+  | 'series'
+  | 'system';
+
+export interface TextbookConfig {
+  schema_version: 1;
+  kind: TextbookKind;
+  t0: number;
+  dt: number;
+  steps: number;
+}
+
+export type MotionModel = 'uniform' | 'constant-acceleration' | 'position-derivative' | 'euler' | 'separation' | 'linear' | 'textbook';
 
 export type StepMethod = 'euler' | 'midpoint' | 'rk4';
 
@@ -49,7 +68,7 @@ export interface Snapshot {
 
 export interface Batch { samples: Snapshot[]; state: Snapshot }
 export type Command =
-  | { id: number; command: 'load'; model?: MotionModel; method?: StepMethod; config: Config | ConstantAccelerationConfig | SeparationConfig | LinearConfig }
+  | { id: number; command: 'load'; model?: MotionModel; method?: StepMethod; config: Config | ConstantAccelerationConfig | SeparationConfig | LinearConfig | TextbookConfig }
   | { id: number; command: 'start' | 'pause' | 'step' };
 export interface Update extends Batch {
   id: number;

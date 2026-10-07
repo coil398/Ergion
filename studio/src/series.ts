@@ -1,0 +1,88 @@
+import './style.css';
+import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
+import { mountExactFigure } from './curve';
+import { tex } from './tex';
+
+const app = document.querySelector<HTMLDivElement>('#app')!;
+app.innerHTML = `
+  ${appHeader('計算環境を準備中')}
+  <div class="workspace">
+    ${rail('series')}
+    <main id="lesson">
+      <section class="intro">
+        <div>
+          <p class="breadcrumb"><a href="./ode.html">微分方程式</a> <span>/</span> べき級数</p>
+          <h1>べき級数<span class="title-dot">.</span></h1>
+          <p class="description">係数が通常点のまわりでべき級数になるとき、解も同じ点のまわりのべき級数として求めます。ここでは通常点 ${tex('t = 0')} で、級数の和が閉じた関数になる方程式を解きます。和は厳密解です。</p>
+        </div>
+        <div class="equation" aria-label="べき級数で解く方程式。x ダブルプライム足す x は 0">
+          ${tex(String.raw`x'' + x = 0`, true)}
+          <span class="equation-note">t = 0 は通常点</span>
+        </div>
+      </section>
+      <section class="study panel" id="study" aria-labelledby="study-heading">
+        <div class="panel-heading"><h2 id="study-heading">級数の手順</h2><span class="quiet-label">厳密解</span></div>
+        <div class="study-body">
+          <ol class="solution">
+            <li>与えられているのは、次の方程式です。初期条件は ${tex('x(0) = 1')}、${tex("x'(0) = 0")} とします。
+              <p class="solution-equation">${tex(String.raw`x'' + x = 0`, true)}</p>
+              ${tex('x\'\'')} の係数は定数 ${tex('1')} で、${tex('t = 0')} でも 0 ではありません。係数はすべて整関数なので、${tex('t = 0')} は通常点です。解は、この点のまわりのべき級数で書けます。
+            </li>
+            <li>解を次の形に仮定します。収束半径は、この方程式では無限大です。
+              <p class="solution-equation">${tex(String.raw`x(t) = \sum_{n=0}^{\infty} a_n t^{n}`, true)}</p>
+              項別に微分します。
+              <p class="solution-equation">${tex(String.raw`x''(t) = \sum_{n=2}^{\infty} n(n-1)a_n t^{n-2}`, true)}</p>
+              指数を ${tex('m = n - 2')} にずらすと、
+              <p class="solution-equation">${tex(String.raw`x''(t) = \sum_{m=0}^{\infty} (m+2)(m+1)a_{m+2} t^{m}`, true)}</p>
+              方程式 ${tex(String.raw`x'' + x = 0`)} の各べきの係数は 0 です。
+              <p class="solution-equation">${tex(String.raw`(m+2)(m+1)a_{m+2} + a_m = 0`, true)}</p>
+              ${tex('m \\ge 0')} では ${tex('(m+1)(m+2) \\neq 0')} なので、漸化式は
+              <p class="solution-equation">${tex(String.raw`a_{m+2} = -\frac{a_m}{(m+1)(m+2)}`, true)}</p>
+              です。
+            </li>
+            <li>初期条件が最初の二つの係数です。
+              <p class="solution-equation">${tex(String.raw`a_0 = x(0) = 1,\qquad a_1 = x'(0) = 0`, true)}</p>
+              ${tex('a_1 = 0')} から、奇数番号の係数はすべて 0 です。偶数は次のとおりです。
+              <p class="solution-equation">${tex(String.raw`a_2 = -\frac{a_0}{1\cdot 2} = -\frac{1}{2}`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`a_4 = -\frac{a_2}{3\cdot 4} = \frac{1}{24}`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`a_6 = -\frac{a_4}{5\cdot 6} = -\frac{1}{720}`, true)}</p>
+              したがって、最初の項は
+              <p class="solution-equation">${tex(String.raw`x(t) = 1 - \frac{t^{2}}{2} + \frac{t^{4}}{24} - \frac{t^{6}}{720} + \cdots`, true)}</p>
+              です。これは ${tex('\\cos t')} のテイラー級数です。無限和は
+              <p class="solution-equation">${tex(String.raw`x(t) = \cos t`, true)}</p>
+              です。
+            </li>
+            <li>記号を定めます。${tex('x(t)')} は時刻 ${tex('t')} の位置、${tex('t')} は時刻、${tex('a_n')} は ${tex('t^n')} の係数、${tex('n')} と ${tex('m')} は和の番号、${tex('\\cos')} は余弦です。級数の和は厳密解です。途中で書いた有限個の項は、和そのものではなく、係数を見るための部分和です。
+            </li>
+            <li>計算の説明は ${coreStepDoc('power_series_cosine', '厳密解の説明')} です。図が描くのは、この無限和です。有限項で止めた多項式を、別に計算して描いてはいません。
+            </li>
+          </ol>
+          <h2 id="example-heading">数を代入した検算</h2>
+          <p>係数 ${tex('a_0')}、${tex('a_2')}、${tex('a_4')} までを手で方程式へ入れ、残る項の次数を見ます。</p>
+          <ol class="solution">
+            <li>部分和を ${tex('s(t) = 1 - t^{2}/2 + t^{4}/24')} とします。これは級数の第5項の手前までです。
+              <p class="solution-equation">${tex(String.raw`s''(t) = -1 + \frac{t^{2}}{2}`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`s''(t) + s(t) = \frac{t^{4}}{24}`, true)}</p>
+              右辺は、次の項 ${tex('a_6 t^{6}')} より前に残る次数です。${tex('t = 0')} では残差も 0 で、${tex('s(0) = 1')}、${tex("s'(0) = 0")} です。初期条件は部分和の段階でも満たされています。
+            </li>
+            <li>無限和 ${tex('x(t) = \\cos t')} は、すべての項を含みます。
+              <p class="solution-equation">${tex(String.raw`x''(t) + x(t) = -\cos t + \cos t = 0`, true)}</p>
+              方程式を満たします。${tex('x(0) = 1')}、${tex("x'(0) = 0")} です。この一致は式のままの一致です。部分和の残差 ${tex('t^{4}/24')} は、和をそこで止めたことによるもので、和そのものの誤差ではありません。
+            </li>
+          </ol>
+        </div>
+      </section>
+      <section class="plots panel" aria-labelledby="curve-heading">
+        <div class="panel-heading"><h2 id="curve-heading">級数の和</h2><div class="legend"><span><i class="analytical"></i>厳密解</span></div></div>
+        <p class="scene-caption">曲線は、べき級数の和 ${tex('\\cos t')} を、時刻 0 から 1 までの標本で評価したものです。有限項で止めた多項式ではなく、数値の1ステップでもありません。画面の数値は、その和を小数第5位まで示したものです。</p>
+        <canvas id="solution-chart" role="img"></canvas>
+        <div class="readouts">
+          <div><span>時刻 t</span><output id="solution-time">—</output></div>
+          <div><span>位置 x</span><output id="solution-value">—</output></div>
+        </div>
+      </section>
+      ${pageFooter('通常点のべき級数は、漸化式で係数が決まり、この方程式では和が cos t という厳密解です。')}
+    </main>
+  </div>`;
+
+mountExactFigure({ kind: 'series', t0: 0, dt: 0.015625, steps: 64, label: 'べき級数の和である厳密解' });

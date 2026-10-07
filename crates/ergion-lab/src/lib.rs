@@ -1,10 +1,12 @@
 //! Harmonic oscillator reference model and shared Native/Wasm execution boundary.
 pub mod closed_form;
+pub mod textbook;
 pub mod constant_acceleration;
 pub mod euler;
 pub mod position_derivative;
 pub mod uniform;
 pub use closed_form::*;
+pub use textbook::*;
 pub use constant_acceleration::*;
 pub use euler::*;
 pub use position_derivative::*;

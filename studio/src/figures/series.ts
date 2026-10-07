@@ -196,6 +196,7 @@ export interface ExactCurveFrame {
   current: number;
   samples: ExactSample[];
   label: string;
+  xMin?: number;
 }
 
 /** 返された厳密解だけを破線で描く。数値解の実線は重ねない。 */
@@ -221,7 +222,7 @@ export function drawExactCurve(canvas: HTMLCanvasElement, frame: ExactCurveFrame
     top,
     width: plotWidth,
     height: plotHeight,
-    xMin: 0,
+    xMin: frame.xMin !== undefined && Number.isFinite(frame.xMin) ? frame.xMin : 0,
     xMax,
     yMin: yDomain.min,
     yMax: yDomain.max,

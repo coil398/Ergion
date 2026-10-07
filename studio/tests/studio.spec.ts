@@ -22,12 +22,11 @@ async function expectMechanicsSection(page: Page) {
   const odeTitle = sections.nth(1).locator('.rail-section-title');
   await expect(odeTitle).toHaveText('微分方程式');
   const odePages = sections.nth(1).locator('.rail-pages a');
-  await expect(odePages).toHaveCount(5);
-  await expect(odePages.nth(0)).toHaveText('積分して解く');
-  await expect(odePages.nth(1)).toHaveText('変数分離');
-  await expect(odePages.nth(2)).toHaveText('1階線形');
-  await expect(odePages.nth(3)).toHaveText('位置の時間微分');
-  await expect(odePages.nth(4)).toHaveText('数値解法');
+  const odeLabels = ['積分して解く', '変数分離', '1階線形', '同次形', '完全微分', 'ベルヌーイ', '定数係数の2階同次', '未定係数法', '定数変化法', 'Laplace 変換', 'べき級数', '連立1階', '位置の時間微分', '数値解法'];
+  await expect(odePages).toHaveCount(odeLabels.length);
+  for (let index = 0; index < odeLabels.length; index += 1) {
+    await expect(odePages.nth(index)).toHaveText(odeLabels[index]);
+  }
   const nested = await page.evaluate(() => {
     const blocks = [...document.querySelectorAll('.rail-section')];
     return blocks.every((block, index) => {
@@ -507,4 +506,48 @@ test('1階線形をデスクトップと狭い画面で読む', async ({ page })
   await expect(page.locator('.solution-equation').first()).toBeVisible();
   await expect(page.locator('#solution-value')).toHaveText('2.72933');
   await expectReadingPage(page);
+});
+
+test('学部の標準的な解法をデスクトップと狭い画面で読む', async ({ page }) => {
+  test.setTimeout(120_000);
+  const pages: { href: string; title: string; formula: string; fn: string; value: string; companion?: string }[] = [
+    { href: 'homogeneous.html', title: '同次形.', formula: String.raw`x(t) = t(\ln t + C)`, fn: 'homogeneous_ratio', value: '1.38629' },
+    { href: 'exact.html', title: '完全微分.', formula: String.raw`x^2 + xy + y^2 = C`, fn: 'exact_quadratic', value: '0.65139' },
+    { href: 'bernoulli.html', title: 'ベルヌーイ.', formula: String.raw`x(t) = \frac{1}{1 + e^{-t}}`, fn: 'bernoulli_logistic', value: '0.73106' },
+    { href: 'second-order.html', title: '定数係数の2階同次.', formula: String.raw`x(t) = -e^{t} + 2e^{2t}`, fn: 'characteristic_two_real', value: '12.05983' },
+    { href: 'undetermined.html', title: '未定係数法.', formula: String.raw`x(t) = \frac{1}{2} e^{t} - e^{2t} + \frac{1}{2} e^{3t}`, fn: 'undetermined_coefficient', value: '4.01285' },
+    { href: 'variation.html', title: '定数変化法.', formula: String.raw`x(t) = \sin t - \cos t \cdot \ln|\sec t + \tan t|`, fn: 'variation_of_parameters', value: '0.17896' },
+    { href: 'laplace.html', title: 'Laplace 変換.', formula: String.raw`X(s) = \frac{1}{(s - 1)(s - 2)(s - 3)}`, fn: 'laplace_ivp', value: '4.01285' },
+    { href: 'series.html', title: 'べき級数.', formula: String.raw`a_{m+2} = -\frac{a_m}{(m+1)(m+2)}`, fn: 'power_series_cosine', value: '0.54030' },
+    { href: 'system.html', title: '連立1階.', formula: String.raw`x(t) = \frac{1}{2}\bigl(e^{3t} + e^{-t}\bigr)`, fn: 'linear_system_x', value: '10.22671', companion: '19.71766' },
+  ];
+  for (const item of pages) {
+    await page.setViewportSize({ width: 1440, height: 1050 });
+    await page.goto(item.href);
+    await expect(page.getByRole('heading', { level: 1, name: item.title })).toBeVisible();
+    await expect(page.locator('[role=tablist]')).toHaveCount(0);
+    await expect(tex(page, item.formula).first()).toBeVisible();
+    await expect(page.locator('#study')).toContainText('厳密解');
+    const href = `/Ergion/doc/ergion_core/fn.${item.fn}.html`;
+    const link = page.locator('#study').getByRole('link', { name: '厳密解の説明', exact: true });
+    await expect(link).toHaveCount(1);
+    await expect(link).toHaveAttribute('href', href);
+    const text = await page.locator('#lesson').innerText();
+    for (const word of ['crates/', '正本', '計算核', item.fn, 'Textbook', 'ばね', '電磁気']) {
+      expect(text, item.href).not.toContain(word);
+    }
+    await expect(page.locator('#status')).toHaveText('計算完了');
+    await expect(page.locator('#solution-value')).toHaveText(item.value);
+    if (item.companion) await expect(page.locator('#solution-companion')).toHaveText(item.companion);
+    await expect(page.locator('#solution-chart')).toHaveAttribute('aria-label', /厳密解/);
+    const doc = await page.request.get(href);
+    expect(doc.ok()).toBeTruthy();
+    expect(await doc.text()).toContain(item.fn);
+    await expectReadingPage(page);
+    await page.setViewportSize({ width: 390, height: 844 });
+    await expect(page.getByRole('heading', { level: 1, name: item.title })).toBeVisible();
+    await expect(page.locator('.solution-equation').first()).toBeVisible();
+    await expect(page.locator('#solution-value')).toHaveText(item.value);
+    await expectReadingPage(page);
+  }
 });

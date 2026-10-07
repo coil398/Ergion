@@ -30,7 +30,7 @@ app.innerHTML = `
             <li>速度 ${tex('v')} が時刻にも位置にもよらず一定ならば、位置は ${tex(String.raw`x' = v`)} を満たします。この運動は <a class="doc-link" href="./uniform.html">等速直線運動</a> です。</li>
             <li>加速度 ${tex('a')} が一定ならば、速度は ${tex(String.raw`v' = a`)} を満たします。この運動は <a class="doc-link" href="./accelerated.html">等加速度直線運動</a> です。</li>
           </ol>
-          <p>右辺が未知関数 ${tex('x')} を含まないときの積分、変数分離、定数係数の1階線形方程式、一定の速度での1ステップ、そして Euler 法の1ステップは、この節のページで順に見ます。</p>
+          <p>右辺が未知関数を含まないときの積分から、変数分離、1階線形、同次形、完全微分、ベルヌーイ、定数係数の2階、未定係数法、定数変化法、Laplace 変換、べき級数、連立1階、そして一定の速度での1ステップと Euler 法まで、この節のページで順に見ます。</p>
         </div>
       </section>
       <div class="chapter-list">
@@ -49,6 +49,51 @@ app.innerHTML = `
           <p>係数が定数で ${tex('p \\neq 0')} のとき、積分因子 ${tex('e^{pt}')} を掛けて積分します。得られる式は厳密解です。</p>
           <p class="equation">${tex(String.raw`x(t) = \frac{q}{p} + \left(x_0 - \frac{q}{p}\right) e^{-pt}`, true)}</p>
         </a>
+        <a class="chapter" href="./homogeneous.html">
+          <h2>同次形</h2>
+          <p>右辺が ${tex('x/t')} だけのとき、${tex('u = x/t')} と置いて変数分離に戻します。得られる式は厳密解です。</p>
+          <p class="equation">${tex(String.raw`x(t) = t(\ln t + C)`, true)}</p>
+        </a>
+        <a class="chapter" href="./exact.html">
+          <h2>完全微分</h2>
+          <p>${tex('\\partial M/\\partial y = \\partial N/\\partial x')} のとき、ポテンシャルが一定という陰関数が厳密解です。</p>
+          <p class="equation">${tex(String.raw`x^2 + xy + y^2 = C`, true)}</p>
+        </a>
+        <a class="chapter" href="./bernoulli.html">
+          <h2>ベルヌーイ</h2>
+          <p>${tex('n \\neq 0, 1')} のとき、${tex('u = x^{1-n}')} と置いて1階線形に戻します。得られる式は厳密解です。</p>
+          <p class="equation">${tex(String.raw`x' + px = q x^{n}`, true)}</p>
+        </a>
+        <a class="chapter" href="./second-order.html">
+          <h2>定数係数の2階同次</h2>
+          <p>特性方程式の根が、相異なる実数、重根、複素数のどれかで、一般解が厳密に決まります。</p>
+          <p class="equation">${tex(String.raw`x'' + b x' + c x = 0`, true)}</p>
+        </a>
+        <a class="chapter" href="./undetermined.html">
+          <h2>未定係数法</h2>
+          <p>右辺が指数関数のとき、同じ形の特殊解を仮定して係数を決めます。得られる式は厳密解です。</p>
+          <p class="equation">${tex(String.raw`x_p = K e^{3t}`, true)}</p>
+        </a>
+        <a class="chapter" href="./variation.html">
+          <h2>定数変化法</h2>
+          <p>右辺が ${tex('\\tan t')} のとき、同次解の定数を時刻の関数にして厳密解を作ります。</p>
+          <p class="equation">${tex(String.raw`x'' + x = \tan t`, true)}</p>
+        </a>
+        <a class="chapter" href="./laplace.html">
+          <h2>Laplace 変換</h2>
+          <p>初期値問題を ${tex('s')} の代数方程式にし、逆変換で時刻の厳密解へ戻します。</p>
+          <p class="equation">${tex(String.raw`X(s) = \frac{1}{(s-1)(s-2)(s-3)}`, true)}</p>
+        </a>
+        <a class="chapter" href="./series.html">
+          <h2>べき級数</h2>
+          <p>通常点で解をべき級数と仮定し、漸化式から係数を決めます。この例の和は厳密解です。</p>
+          <p class="equation">${tex(String.raw`a_{m+2} = -\frac{a_m}{(m+1)(m+2)}`, true)}</p>
+        </a>
+        <a class="chapter" href="./system.html">
+          <h2>連立1階</h2>
+          <p>定数係数の2元連立を、固有値と固有ベクトルで厳密に解きます。</p>
+          <p class="equation">${tex(String.raw`x' = x + y`, true)}</p>
+        </a>
         <a class="chapter" href="./derivative.html">
           <h2>位置の時間微分</h2>
           <p>速度が一定のあいだ、位置は1ステップごとに ${tex(String.raw`v \Delta t`)} だけ進みます。この増分は厳密です。</p>
@@ -60,7 +105,7 @@ app.innerHTML = `
           <p class="equation">${tex(String.raw`x' = v`, true)}</p>
         </a>
       </div>
-      ${pageFooter('この節は、微分方程式の意味、積分、変数分離、1階線形方程式、そして数値の1ステップです。')}
+      ${pageFooter('この節は、1階の解法、2階の解法、Laplace 変換、べき級数、連立、そして数値の1ステップです。')}
     </main>
   </div>`;
 

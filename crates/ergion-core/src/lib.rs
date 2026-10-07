@@ -232,6 +232,181 @@ pub fn first_order_linear(x0: f64, p: f64, q: f64, t: f64) -> f64 {
     particular + (x0 - particular) * (-p * t).exp()
 }
 
+/// 同次形 \(x' = 1 + x/t\) の厳密解を返します。
+///
+/// 右辺は比 \(u = x/t\) だけの関数です。\(t > 0\) とします。
+/// \(x = ut\) を微分して代入すると \(u' = 1/t\) です。
+/// 積分して \(u = \ln t + C\)、したがって
+/// \[
+/// x(t) = t(\ln t + C)
+/// \]
+/// です。\(C\) は積分定数で、\(x(1) = C\) です。
+/// \(x(t)\) は時刻 \(t\) の位置、\(t\) は時刻、\(\ln\) は自然対数です。
+/// この値は打ち切りのない厳密解です。
+pub fn homogeneous_ratio(c: f64, t: f64) -> f64 {
+    t * (c + t.ln())
+}
+
+/// 完全微分 \((2x + y)\,dx + (x + 2y)\,dy = 0\) の、\(y = t\) における陽な厳密解を返します。
+///
+/// \(M = 2x + y\)、\(N = x + 2y\) とすると \(\partial M/\partial y = \partial N/\partial x = 1\) で、方程式は完全です。
+/// ポテンシャルは \(x^2 + xy + y^2 = C\) です。\(C = 1\) の枝のうち、\(t = 0\) で \(x = 1\) となるものは
+/// \[
+/// x(t) = \frac{-t + \sqrt{4 - 3t^2}}{2}
+/// \]
+/// です。\(4 - 3t^2 \ge 0\) の範囲で使います。この値は厳密解です。
+pub fn exact_quadratic(t: f64) -> f64 {
+    let discriminant = 4.0 - 3.0 * t * t;
+    (-t + discriminant.sqrt()) / 2.0
+}
+
+/// ベルヌーイ方程式 \(x' - x = -x^2\) の厳密解を返します。
+///
+/// \(n = 2\) なので \(n \neq 0, 1\) です。\(x_0 = x(0) \neq 0\) として \(u = 1/x\) と置くと、
+/// \(u' + u = 1\) になります。積分因子 \(e^{t}\) で解くと
+/// \[
+/// x(t) = \frac{1}{1 + (1/x_0 - 1)e^{-t}}
+/// \]
+/// です。\(x(t)\) は時刻 \(t\) の位置、\(x_0\) は時刻 0 の位置、\(e\) は自然対数の底です。
+/// この値は打ち切りのない厳密解です。
+pub fn bernoulli_logistic(x0: f64, t: f64) -> f64 {
+    1.0 / (1.0 + (1.0 / x0 - 1.0) * (-t).exp())
+}
+
+/// \(x'' - 3x' + 2x = 0\)、\(x(0) = 1\)、\(x'(0) = 3\) の厳密解を返します。
+///
+/// 特性方程式 \((r - 1)(r - 2) = 0\) の根は相異なる実数 \(1\) と \(2\) です。
+/// 一般解は \(A e^{t} + B e^{2t}\) です。初期条件から \(A = -1\)、\(B = 2\) となり、
+/// \[
+/// x(t) = -e^{t} + 2e^{2t}
+/// \]
+/// です。この値は打ち切りのない厳密解です。
+pub fn characteristic_two_real(t: f64) -> f64 {
+    -t.exp() + 2.0 * (2.0 * t).exp()
+}
+
+/// [`characteristic_two_real`] の導関数です。これも厳密です。
+pub fn characteristic_two_real_prime(t: f64) -> f64 {
+    -t.exp() + 4.0 * (2.0 * t).exp()
+}
+
+/// \(x'' - 2x' + x = 0\)、\(x(0) = 1\)、\(x'(0) = 0\) の厳密解を返します。
+///
+/// 特性根は \(r = 1\) の重根です。一般解は \((A + Bt)e^{t}\) です。
+/// 初期条件から
+/// \[
+/// x(t) = (1 - t)e^{t}
+/// \]
+/// です。この値は打ち切りのない厳密解です。
+pub fn characteristic_repeated(t: f64) -> f64 {
+    (1.0 - t) * t.exp()
+}
+
+/// \(x'' + x = 0\)、\(x(0) = 1\)、\(x'(0) = 0\) の厳密解を返します。
+///
+/// 特性根は \(\pm i\) です。一般解は \(A\cos t + B\sin t\) です。
+/// 初期条件から
+/// \[
+/// x(t) = \cos t
+/// \]
+/// です。この値は打ち切りのない厳密解です。
+pub fn characteristic_complex(t: f64) -> f64 {
+    t.cos()
+}
+
+/// \(x'' - 3x' + 2x = e^{3t}\)、\(x(0) = x'(0) = 0\) の厳密解を返します。
+///
+/// 同次解は \(A e^{t} + B e^{2t}\) です。\(3\) は特性根ではないので、特殊解を \(K e^{3t}\) と置くと \(K = 1/2\) です。
+/// 初期条件から
+/// \[
+/// x(t) = \frac{1}{2}e^{t} - e^{2t} + \frac{1}{2}e^{3t}
+/// \]
+/// です。この値は未定係数法で得た厳密解です。
+pub fn undetermined_coefficient(t: f64) -> f64 {
+    0.5 * t.exp() - (2.0 * t).exp() + 0.5 * (3.0 * t).exp()
+}
+
+/// [`undetermined_coefficient`] の導関数です。これも厳密です。
+pub fn undetermined_coefficient_prime(t: f64) -> f64 {
+    0.5 * t.exp() - 2.0 * (2.0 * t).exp() + 1.5 * (3.0 * t).exp()
+}
+
+/// \(x'' + x = \tan t\)、\(x(0) = x'(0) = 0\) の厳密解を返します。
+///
+/// 区間は \((-\pi/2, \pi/2)\) です。\(\tan t\) は多項式でも指数でもないので、未定係数法の基本形では表せません。
+/// 基本解 \(\cos t\)、\(\sin t\) の定数変化から
+/// \[
+/// x(t) = \sin t - \cos t \cdot \ln|\sec t + \tan t|
+/// \]
+/// です。この値は打ち切りのない厳密解です。
+pub fn variation_of_parameters(t: f64) -> f64 {
+    let sine = t.sin();
+    let cosine = t.cos();
+    let sec_plus_tan = (1.0 + sine) / cosine;
+    sine - cosine * sec_plus_tan.abs().ln()
+}
+
+/// [`variation_of_parameters`] の導関数です。これも厳密です。
+pub fn variation_of_parameters_prime(t: f64) -> f64 {
+    let sine = t.sin();
+    let cosine = t.cos();
+    let sec_plus_tan = (1.0 + sine) / cosine;
+    cosine + sine * sec_plus_tan.abs().ln() - 1.0
+}
+
+/// Laplace 変換で解く初期値問題 \(x'' - 3x' + 2x = e^{3t}\)、\(x(0) = x'(0) = 0\) の厳密解です。
+///
+/// 変換後の代数方程式を部分分数に分けると、逆変換は未定係数法と同じ
+/// \[
+/// x(t) = \frac{1}{2}e^{t} - e^{2t} + \frac{1}{2}e^{3t}
+/// \]
+/// です。この値は厳密解です。
+pub fn laplace_ivp(t: f64) -> f64 {
+    undetermined_coefficient(t)
+}
+
+/// [`laplace_ivp`] の導関数です。これも厳密です。
+pub fn laplace_ivp_prime(t: f64) -> f64 {
+    undetermined_coefficient_prime(t)
+}
+
+/// 通常点 \(t = 0\) における \(x'' + x = 0\)、\(x(0) = 1\)、\(x'(0) = 0\) のべき級数の和を返します。
+///
+/// 級数 \(x = \sum a_n t^n\) の係数は \(a_{n+2} = -a_n/((n+1)(n+2))\) を満たし、
+/// 奇数次は 0、偶数次は \(\cos t\) のテイラー係数です。和は
+/// \[
+/// x(t) = \cos t
+/// \]
+/// で、これは無限級数としての厳密解です。有限項で打ち切った多項式ではありません。
+pub fn power_series_cosine(t: f64) -> f64 {
+    t.cos()
+}
+
+/// [`power_series_cosine`] の導関数です。和は \(-\sin t\) で、これも厳密です。
+pub fn power_series_cosine_prime(t: f64) -> f64 {
+    -t.sin()
+}
+
+/// 連立方程式 \(x' = x + y\)、\(y' = 4x + y\)、\(x(0) = 1\)、\(y(0) = 0\) の \(x(t)\) を返します。
+///
+/// 係数行列の固有値は \(3\) と \(-1\)、固有ベクトルは \((1, 2)\) と \((1, -2)\) です。
+/// \[
+/// x(t) = \frac{1}{2}\bigl(e^{3t} + e^{-t}\bigr)
+/// \]
+/// この値は厳密解です。
+pub fn linear_system_x(t: f64) -> f64 {
+    0.5 * ((3.0 * t).exp() + (-t).exp())
+}
+
+/// 同じ連立方程式の \(y(t)\) を返します。
+/// \[
+/// y(t) = e^{3t} - e^{-t}
+/// \]
+/// この値は厳密解です。
+pub fn linear_system_y(t: f64) -> f64 {
+    (3.0 * t).exp() - (-t).exp()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -349,5 +524,76 @@ mod tests {
     fn first_order_linear_matches_the_closed_form() {
         let value = first_order_linear(1.0, 2.0, 6.0, 1.0);
         assert!((value - (3.0 - 2.0 * (-2.0_f64).exp())).abs() < 1e-12);
+    }
+
+    #[test]
+    fn homogeneous_ratio_matches_the_example() {
+        assert!((homogeneous_ratio(0.0, 1.0)).abs() < 1e-12);
+        let value = homogeneous_ratio(0.0, 2.0);
+        assert!((value - 2.0 * 2.0_f64.ln()).abs() < 1e-12);
+    }
+
+    #[test]
+    fn exact_quadratic_matches_the_level_curve() {
+        assert!((exact_quadratic(0.0) - 1.0).abs() < 1e-12);
+        let value = exact_quadratic(0.5);
+        let expected = (-0.5 + (4.0 - 3.0 * 0.25_f64).sqrt()) / 2.0;
+        assert!((value - expected).abs() < 1e-12);
+    }
+
+    #[test]
+    fn bernoulli_logistic_matches_the_example() {
+        assert!((bernoulli_logistic(0.5, 0.0) - 0.5).abs() < 1e-12);
+        let value = bernoulli_logistic(0.5, 1.0);
+        assert!((value - 1.0 / (1.0 + (-1.0_f64).exp())).abs() < 1e-12);
+    }
+
+    #[test]
+    fn characteristic_examples_match_their_closed_forms() {
+        assert!((characteristic_two_real(0.0) - 1.0).abs() < 1e-12);
+        assert!((characteristic_two_real_prime(0.0) - 3.0).abs() < 1e-12);
+        let two = characteristic_two_real(1.0);
+        assert!((two - (-1.0_f64.exp() + 2.0 * 2.0_f64.exp())).abs() < 1e-12);
+        assert!((characteristic_repeated(0.0) - 1.0).abs() < 1e-12);
+        assert!((characteristic_repeated(1.0)).abs() < 1e-12);
+        assert!((characteristic_complex(0.0) - 1.0).abs() < 1e-12);
+        assert!((characteristic_complex(1.0) - 1.0_f64.cos()).abs() < 1e-12);
+    }
+
+    #[test]
+    fn undetermined_and_laplace_share_the_same_exact_solution() {
+        assert!(undetermined_coefficient(0.0).abs() < 1e-12);
+        assert!(undetermined_coefficient_prime(0.0).abs() < 1e-12);
+        let value = undetermined_coefficient(1.0);
+        let expected = 0.5 * 1.0_f64.exp() - 2.0_f64.exp() + 0.5 * 3.0_f64.exp();
+        assert!((value - expected).abs() < 1e-12);
+        assert!((laplace_ivp(1.0) - value).abs() < 1e-12);
+        assert!((laplace_ivp_prime(1.0) - undetermined_coefficient_prime(1.0)).abs() < 1e-12);
+    }
+
+    #[test]
+    fn variation_of_parameters_matches_the_initial_condition_and_the_formula() {
+        assert!(variation_of_parameters(0.0).abs() < 1e-12);
+        assert!(variation_of_parameters_prime(0.0).abs() < 1e-12);
+        let t = 1.0_f64;
+        let expected = t.sin() - t.cos() * ((1.0 + t.sin()) / t.cos()).ln();
+        assert!((variation_of_parameters(t) - expected).abs() < 1e-12);
+    }
+
+    #[test]
+    fn power_series_cosine_is_the_sum() {
+        assert!((power_series_cosine(0.0) - 1.0).abs() < 1e-12);
+        assert!(power_series_cosine_prime(0.0).abs() < 1e-12);
+        assert!((power_series_cosine(1.0) - 1.0_f64.cos()).abs() < 1e-12);
+    }
+
+    #[test]
+    fn linear_system_matches_the_initial_condition_and_the_formula() {
+        assert!((linear_system_x(0.0) - 1.0).abs() < 1e-12);
+        assert!(linear_system_y(0.0).abs() < 1e-12);
+        let x = linear_system_x(1.0);
+        let y = linear_system_y(1.0);
+        assert!((x - 0.5 * (3.0_f64.exp() + (-1.0_f64).exp())).abs() < 1e-12);
+        assert!((y - (3.0_f64.exp() - (-1.0_f64).exp())).abs() < 1e-12);
     }
 }

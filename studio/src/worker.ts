@@ -4,6 +4,7 @@ import init, {
   LinearSimulation,
   PositionDerivativeSimulation,
   SeparationSimulation,
+  TextbookSimulation,
   UniformSimulation,
 } from '../wasm/ergion_lab.js';
 import wasmUrl from '../wasm/ergion_lab_bg.wasm?url';
@@ -72,7 +73,9 @@ onmessage = (event: MessageEvent<Command>) => {
               ? new SeparationSimulation(json)
               : message.model === 'linear'
                 ? new LinearSimulation(json)
-                : new UniformSimulation(json);
+                : message.model === 'textbook'
+                  ? new TextbookSimulation(json)
+                  : new UniformSimulation(json);
       batchSize = Math.max(1, Math.min(100, Math.round(0.04 / message.config.dt)));
       publish('ready', [JSON.parse(simulation.snapshot()) as Snapshot]);
       return;
