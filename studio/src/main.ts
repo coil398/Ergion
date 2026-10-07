@@ -1,8 +1,9 @@
 import './style.css';
 import { appHeader, pageFooter, rail, simulationDoc } from './chrome';
-import { clearFigure, drawTimeSeries, drawUniformMotion } from './figures';
+import { clearFigure, drawErrorSeries, drawTimeSeries, drawUniformMotion } from './figures';
+import { bindMethodTabs, methodTabs } from './method-tabs';
 import { tex } from './tex';
-import type { Config, Snapshot } from './protocol';
+import type { Config, Snapshot, StepMethod } from './protocol';
 import { mountSession } from './session';
 
 const defaults: Config = {
@@ -64,13 +65,13 @@ app.innerHTML = `
                 <li>速度は位置の時間変化なので ${tex(String.raw`x' = v`)} です。時刻 0 から ${tex('t')} まで積分すると ${tex('x(t) - x(0) = v t')} です。初期位置を ${tex('x(0) = x_0')} と書くと、厳密解は次の式です。
                   <p class="solution-equation">${tex('x(t) = x_0 + v t', true)}</p>
                 </li>
-                <li>数値計算は velocity-Verlet 法で1ステップ進めます。加速度がゼロなので、速度は変わらず、位置は次の式で進みます（${simulationDoc('uniform', 'UniformSimulation', '1ステップの説明')}）。
+                <li>速度が一定のとき、Euler 法、中点法、古典的な4次の Runge–Kutta 法の1ステップは、どれも次の増分になります（${simulationDoc('uniform', 'UniformSimulation', '1ステップの説明')}）。
                   <p class="solution-equation">${tex(String.raw`x_{n+1} = x_n + v \Delta t`, true)}</p>
                   <p class="solution-equation">${tex(String.raw`v_{n+1} = v`, true)}</p>
-                  これは厳密解を刻み幅 ${tex(String.raw`\Delta t`)} だけ進めた増分と一致します。位置は時刻の一次式なので、この数値ステップに打ち切り誤差はありません。表示される差は、倍精度浮動小数点の丸めだけです。
+                  これは厳密解を刻み幅 ${tex(String.raw`\Delta t`)} だけ進めた増分と一致します。位置は時刻の一次式なので、この数値ステップに打ち切り誤差はありません。表示される差は、倍精度浮動小数点の丸めだけです。図のタブは方法だけを切り替え、この式は変わりません。
                 </li>
               </ol>
-              <p>画面は、各時刻の位置と速度を描きます。式 ${tex('x(t) = x_0 + v t')} を、描画のために計算し直すことはありません。図の線分は、初期位置 ${tex('x_0')} に加わる変位 ${tex('vt')} です。紫の実線が数値解、青緑の破線が厳密解です。</p>
+              <p>画面は、各時刻の位置と速度を描きます。式 ${tex('x(t) = x_0 + v t')} を、描画のために計算し直すことはありません。図の線分は、初期位置 ${tex('x_0')} に加わる変位 ${tex('vt')} です。紫の実線が数値解、青緑の破線が厳密解です。誤差は、その破線とは別の実線です。</p>
             </div>
           </section>
           <section class="scene panel" aria-labelledby="scene-heading">
@@ -80,9 +81,11 @@ app.innerHTML = `
             <div class="readouts"><div><span>位置 x</span><output id="position">—</output></div><div><span>速度 v</span><output id="velocity">—</output></div><div><span>解析解の位置</span><output id="exact-position">—</output></div><div><span>位置の絶対差 |x − x_exact|</span><output id="energy-error">—</output></div></div>
           </section>
           <section class="plots panel" aria-labelledby="plots-heading">
-            <div class="panel-heading"><h2 id="plots-heading">位置と速度の時間変化</h2><div class="legend"><span><i class="numerical"></i>数値解</span><span><i class="analytical"></i>解析解</span></div></div>
-            <div class="plot-grid"><div class="plot-main"><h3>位置の時間変化 ${tex('x(t)')}</h3><canvas id="time-chart" aria-label="位置と時間のグラフ" role="img"></canvas><p>時間 t</p></div><div class="plot-phase"><h3>速度の時間変化 ${tex('v(t)')}</h3><canvas id="phase-chart" aria-label="速度と時間のグラフ" role="img"></canvas><p>時間 t</p></div></div>
-            <div class="plot-footer"><span id="comparison">解析解との差を計算します。</span><span>破線は解析解</span></div>
+            <div class="panel-heading"><h2 id="plots-heading">位置と誤差の時間変化</h2><div class="legend"><span><i class="numerical"></i>数値解</span><span><i class="analytical"></i>解析解</span><span><i class="difference"></i>誤差</span></div></div>
+            ${methodTabs('この方程式の数値解法')}
+            <p class="scene-caption">タブは、このページの方程式 ${tex(String.raw`x' = v`)} を進める数値解法だけを切り替えます。上の導出は変わりません。速度が一定なので、どの方法の誤差も丸めだけです。</p>
+            <div class="plot-grid"><div class="plot-main"><h3>位置の時間変化 ${tex('x(t)')}</h3><canvas id="time-chart" aria-label="位置と時間のグラフ" role="img"></canvas><p>時間 t</p></div><div class="plot-phase"><h3>位置の誤差 ${tex('x - x_{\\mathrm{exact}}')}</h3><canvas id="phase-chart" aria-label="位置の誤差と時間のグラフ" role="img"></canvas><p>時間 t</p></div></div>
+            <div class="plot-footer"><span id="comparison">解析解との差を計算します。</span><span>誤差は実線</span></div>
           </section>
           <section class="transport panel" aria-label="計算操作">
             <div class="transport-buttons"><button id="run" class="button primary" disabled>計算を開始</button><button id="step" class="button secondary" disabled>1ステップ</button><button id="reset" class="icon-button" aria-label="初期状態にリセット" title="初期状態にリセット" disabled>↺</button></div>
@@ -122,7 +125,7 @@ function paintFigures(state: Snapshot | undefined, points: Snapshot[], config: C
     for (const canvas of canvases) clearFigure(canvas);
     return;
   }
-  const key = `${config.initial_position}|${config.velocity}|${config.dt}|${config.steps}`;
+  const key = `${config.initial_position}|${config.velocity}|${config.dt}|${config.steps}|${method}`;
   const timeEnd = config.steps * config.dt;
   const x0 = points.reduce((earliest, point) => point.time < earliest.time ? point : earliest, points[0] ?? state).position;
   drawUniformMotion(canvases[0], {
@@ -142,21 +145,26 @@ function paintFigures(state: Snapshot | undefined, points: Snapshot[], config: C
     current: state.position,
     samples: points.map(point => ({ time: point.time, numerical: point.position, exact: point.exact_position })),
   });
-  drawTimeSeries(canvases[2], {
-    key: `${key}|velocity`,
-    kind: 'velocity',
+  drawErrorSeries(canvases[2], {
+    key: `${key}|error`,
     timeEnd,
     time: state.time,
-    current: state.velocity,
-    samples: points.map(point => ({ time: point.time, numerical: point.velocity, exact: point.exact_velocity })),
+    current: state.position_error ?? 0,
+    samples: points.map(point => ({ time: point.time, error: point.position_error ?? point.position - point.exact_position })),
   });
 }
 
-mountSession({
+let method: StepMethod = 'euler';
+const session = mountSession({
   defaults,
   model: 'uniform',
   downloadName: 'ergion-uniform-motion.json',
   readForm,
   fillForm,
   paintFigures,
+  method: () => method,
+});
+bindMethodTabs(next => {
+  method = next;
+  session.reloadMethod();
 });

@@ -1,6 +1,6 @@
 import './style.css';
 import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
-import { mountExactFigure } from './curve';
+import { mountSteppedFigure, steppedFigure } from './curve';
 import { tex } from './tex';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
@@ -72,17 +72,12 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
-      <section class="plots panel" aria-labelledby="curve-heading">
-        <div class="panel-heading"><h2 id="curve-heading">級数の和</h2><div class="legend"><span><i class="analytical"></i>厳密解</span></div></div>
-        <p class="scene-caption">曲線は、べき級数の和 ${tex('\\cos t')} を、時刻 0 から 1 までの標本で評価したものです。有限項で止めた多項式ではなく、数値の1ステップでもありません。画面の数値は、その和を小数第5位まで示したものです。</p>
-        <canvas id="solution-chart" role="img"></canvas>
-        <div class="readouts">
-          <div><span>時刻 t</span><output id="solution-time">—</output></div>
-          <div><span>位置 x</span><output id="solution-value">—</output></div>
-        </div>
-      </section>
+      ${steppedFigure(`タブは、方程式 ${tex(String.raw`x'' + x = 0`)} を進める数値解法だけを切り替えます。上の導出と、べき級数の和である厳密解は変わりません。青緑の破線はその和です。誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、その和を小数第5位まで示したものです。`)}
       ${pageFooter('通常点のべき級数は、漸化式で係数が決まり、この方程式では和が cos t という厳密解です。')}
     </main>
   </div>`;
 
-mountExactFigure({ kind: 'series', t0: 0, dt: 0.015625, steps: 64, label: 'べき級数の和である厳密解' });
+mountSteppedFigure({
+  config: { schema_version: 1, kind: 'series', t0: 0, dt: 0.015625, steps: 64 },
+  label: 'べき級数の和である厳密解',
+});

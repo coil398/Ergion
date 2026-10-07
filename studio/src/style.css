@@ -106,7 +106,7 @@ input:invalid:not(:focus){border-color:#b96a51}
 .numeric{font-family:ui-monospace,"Cascadia Code",monospace;color:#5d5873;font-size:16px;font-variant-numeric:tabular-nums}
 canvas{display:block;width:100%}
 #oscillator{height:240px}
-#solution-chart{height:240px}
+#solution-chart,#solution-error,#companion-error{height:240px}
 .readouts{display:grid;grid-template-columns:1fr 1fr 1fr 1.4fr;border-top:1px solid #f0eef6;padding:16px 0;gap:12px}
 .readouts>div{display:flex;flex-direction:column;gap:4px;min-width:0}
 .readouts>div+div{padding-left:12px;border-left:1px solid #f0eef6}

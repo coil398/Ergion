@@ -30,7 +30,7 @@ app.innerHTML = `
             <li>速度 ${tex('v')} が時刻にも位置にもよらず一定ならば、位置は ${tex(String.raw`x' = v`)} を満たします。この運動は <a class="doc-link" href="./uniform.html">等速直線運動</a> です。</li>
             <li>加速度 ${tex('a')} が一定ならば、速度は ${tex(String.raw`v' = a`)} を満たします。この運動は <a class="doc-link" href="./accelerated.html">等加速度直線運動</a> です。</li>
           </ol>
-          <p>右辺が未知関数を含まないときの積分から、変数分離、1階線形、同次形、完全微分、ベルヌーイ、定数係数の2階、未定係数法、定数変化法、Laplace 変換、べき級数、連立1階、そして一定の速度での1ステップと Euler 法まで、この節のページで順に見ます。</p>
+          <p>右辺が未知関数を含まないときの積分から、変数分離、1階線形、同次形、完全微分、ベルヌーイ、定数係数の2階、未定係数法、定数変化法、Laplace 変換、べき級数、連立1階、一定の速度での1ステップ、Euler 法、中点法、古典的な4次の Runge–Kutta 法まで、この節のページで順に見ます。</p>
         </div>
       </section>
       <div class="chapter-list">
@@ -100,9 +100,19 @@ app.innerHTML = `
           <p class="equation">${tex(String.raw`x' = v`, true)}</p>
         </a>
         <a class="chapter" href="./euler.html">
-          <h2>数値解法</h2>
-          <p>方程式は ${tex(String.raw`x' = v`)} のままです。Euler 法、中点法、古典的な4次の Runge–Kutta 法を切り替え、位置とその誤差を見ます。</p>
-          <p class="equation">${tex(String.raw`x' = v`, true)}</p>
+          <h2>Euler法</h2>
+          <p>右辺を区間の始点で一定とみなして1ステップ進めます。速度が一定ならば、増分は ${tex(String.raw`v \Delta t`)} と一致します。</p>
+          <p class="equation">${tex(String.raw`x_{n+1} = x_n + \Delta t \, f(x_n, t_n)`, true)}</p>
+        </a>
+        <a class="chapter" href="./midpoint.html">
+          <h2>中点法</h2>
+          <p>始点の傾きで中点まで仮に進み、中点の傾きで1ステップ進めます。速度が一定ならば、増分は ${tex(String.raw`v \Delta t`)} と一致します。</p>
+          <p class="equation">${tex(String.raw`x_{n+1} = x_n + \Delta t \, k_2`, true)}</p>
+        </a>
+        <a class="chapter" href="./rk4.html">
+          <h2>古典的な4次の Runge–Kutta 法</h2>
+          <p>始点、中点、終点の四つの傾きを重み付きで足します。速度が一定ならば、増分は ${tex(String.raw`v \Delta t`)} と一致します。</p>
+          <p class="equation">${tex(String.raw`x_{n+1} = x_n + \frac{\Delta t}{6}(k_1 + 2k_2 + 2k_3 + k_4)`, true)}</p>
         </a>
       </div>
       ${pageFooter('この節は、1階の解法、2階の解法、Laplace 変換、べき級数、連立、そして数値の1ステップです。')}

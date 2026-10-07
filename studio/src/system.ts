@@ -1,6 +1,6 @@
 import './style.css';
 import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
-import { mountExactFigure } from './curve';
+import { mountSteppedFigure, steppedFigure } from './curve';
 import { tex } from './tex';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
@@ -69,18 +69,13 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
-      <section class="plots panel" aria-labelledby="curve-heading">
-        <div class="panel-heading"><h2 id="curve-heading">例の厳密解</h2><div class="legend"><span><i class="analytical"></i>厳密解</span></div></div>
-        <p class="scene-caption">曲線は、${tex('x(t)')} を時刻 0 から 1 までの標本で評価したものです。${tex('y(t)')} は同じ標本の、もう一つの未知関数です。どちらも数値の1ステップではありません。画面の数値は、厳密解を小数第5位まで示したもので、解法としての打ち切りではありません。</p>
-        <canvas id="solution-chart" role="img"></canvas>
-        <div class="readouts">
-          <div><span>時刻 t</span><output id="solution-time">—</output></div>
-          <div><span>x</span><output id="solution-value">—</output></div>
-          <div><span>y</span><output id="solution-companion">—</output></div>
-        </div>
-      </section>
+      ${steppedFigure(`タブは、連立 ${tex(String.raw`x' = x + y`)}、${tex(String.raw`y' = 4x + y`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。誤差は ${tex('x')} と ${tex('y')} の両方に出ます。どちらも時間刻みによる打ち切りであり、丸めだけではありません。表示は、厳密解を小数第5位まで示したものです。`, true)}
       ${pageFooter('定数係数の連立1階方程式は、相異なる実固有値ごとに指数関数と固有ベクトルの積を重ねた厳密解を持ちます。')}
     </main>
   </div>`;
 
-mountExactFigure({ kind: 'system', t0: 0, dt: 0.015625, steps: 64, label: '連立1階の例の厳密解' });
+mountSteppedFigure({
+  config: { schema_version: 1, kind: 'system', t0: 0, dt: 0.015625, steps: 64 },
+  label: '連立1階の例の厳密解',
+  companion: true,
+});

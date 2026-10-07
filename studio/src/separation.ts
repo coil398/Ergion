@@ -1,11 +1,7 @@
 import './style.css';
 import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
-import { loadExample } from './curve';
-import { drawExactCurve } from './figures';
-import type { Snapshot } from './protocol';
+import { mountSteppedFigure, steppedFigure } from './curve';
 import { tex } from './tex';
-
-const config = { schema_version: 1 as const, initial_position: 3, k: 2, dt: 0.015625, steps: 64 };
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 app.innerHTML = `
@@ -88,40 +84,12 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
-      <section class="plots panel" aria-labelledby="curve-heading">
-        <div class="panel-heading"><h2 id="curve-heading">例の厳密解</h2><div class="legend"><span><i class="analytical"></i>厳密解</span></div></div>
-        <p class="scene-caption">曲線は、${tex('k = 2')}、${tex('x_0 = 3')} の厳密解を、時刻 0 から 1 までの標本で評価したものです。数値の1ステップではありません。画面の数値は、その厳密解を小数第5位まで示したもので、解法としての打ち切りではありません。</p>
-        <canvas id="solution-chart" role="img"></canvas>
-        <div class="readouts">
-          <div><span>時刻 t</span><output id="solution-time">—</output></div>
-          <div><span>位置 x</span><output id="solution-value">—</output></div>
-        </div>
-      </section>
+      ${steppedFigure(`タブは、方程式 ${tex(String.raw`x' = kx`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。${tex('k = 2')}、${tex('x_0 = 3')} の誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
       ${pageFooter('変数分離で得る x(t) = x_0 e^{kt} は、x\' = kx の厳密解です。')}
     </main>
   </div>`;
 
-const canvas = document.querySelector<HTMLCanvasElement>('#solution-chart')!;
-const timeOutput = document.querySelector<HTMLOutputElement>('#solution-time')!;
-const valueOutput = document.querySelector<HTMLOutputElement>('#solution-value')!;
-let drawn: { samples: Snapshot[]; state: Snapshot } | undefined;
-
-function paint(samples: Snapshot[], state: Snapshot) {
-  drawn = { samples, state };
-  timeOutput.textContent = state.time.toFixed(5);
-  valueOutput.textContent = state.position.toFixed(5);
-  drawExactCurve(canvas, {
-    key: 'separation-example',
-    timeEnd: config.dt * config.steps,
-    time: state.time,
-    current: state.exact_position,
-    samples: samples.map(sample => ({ time: sample.time, value: sample.exact_position })),
-    label: '変数分離の例の厳密解',
-  });
-}
-
-window.addEventListener('resize', () => {
-  if (drawn) paint(drawn.samples, drawn.state);
+mountSteppedFigure({
+  config: { schema_version: 1, kind: 'separation', t0: 0, dt: 0.015625, steps: 64, initial_position: 3, k: 2 },
+  label: '変数分離の例の厳密解',
 });
-
-loadExample({ model: 'separation', config, paint });

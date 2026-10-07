@@ -51,7 +51,30 @@ export interface TextbookConfig {
   steps: number;
 }
 
-export type MotionModel = 'uniform' | 'constant-acceleration' | 'position-derivative' | 'euler' | 'separation' | 'linear' | 'textbook';
+export type CompareKind =
+  | 'uniform'
+  | 'derivative'
+  | 'accelerated'
+  | 'separation'
+  | 'linear'
+  | TextbookKind;
+
+export interface CompareConfig {
+  schema_version: 1;
+  kind: CompareKind;
+  t0: number;
+  dt: number;
+  steps: number;
+  initial_position?: number;
+  initial_velocity?: number;
+  velocity?: number;
+  acceleration?: number;
+  k?: number;
+  p?: number;
+  q?: number;
+}
+
+export type MotionModel = 'uniform' | 'constant-acceleration' | 'position-derivative' | 'euler' | 'separation' | 'linear' | 'textbook' | 'compare';
 
 export type StepMethod = 'euler' | 'midpoint' | 'rk4';
 
@@ -63,12 +86,13 @@ export interface Snapshot {
   exact_position: number;
   exact_velocity: number;
   position_error?: number;
+  velocity_error?: number;
   finished: boolean;
 }
 
 export interface Batch { samples: Snapshot[]; state: Snapshot }
 export type Command =
-  | { id: number; command: 'load'; model?: MotionModel; method?: StepMethod; config: Config | ConstantAccelerationConfig | SeparationConfig | LinearConfig | TextbookConfig }
+  | { id: number; command: 'load'; model?: MotionModel; method?: StepMethod; config: Config | ConstantAccelerationConfig | SeparationConfig | LinearConfig | TextbookConfig | CompareConfig }
   | { id: number; command: 'start' | 'pause' | 'step' };
 export interface Update extends Batch {
   id: number;

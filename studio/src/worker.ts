@@ -4,6 +4,7 @@ import init, {
   LinearSimulation,
   PositionDerivativeSimulation,
   SeparationSimulation,
+  StepCompareSimulation,
   TextbookSimulation,
   UniformSimulation,
 } from '../wasm/ergion_lab.js';
@@ -63,19 +64,42 @@ onmessage = (event: MessageEvent<Command>) => {
       simulation?.free();
       simulation = undefined;
       const json = JSON.stringify(message.config);
-      simulation = message.model === 'constant-acceleration'
-        ? new ConstantAccelerationSimulation(json)
-        : message.model === 'position-derivative'
-          ? new PositionDerivativeSimulation(json)
-          : message.model === 'euler'
-            ? new EulerSimulation(JSON.stringify({ ...message.config, method: message.method ?? 'euler' }))
-            : message.model === 'separation'
-              ? new SeparationSimulation(json)
-              : message.model === 'linear'
-                ? new LinearSimulation(json)
-                : message.model === 'textbook'
-                  ? new TextbookSimulation(json)
-                  : new UniformSimulation(json);
+      const constantAcceleration = message.config as {
+        initial_position: number;
+        initial_velocity: number;
+        acceleration: number;
+        dt: number;
+        steps: number;
+      };
+      simulation = message.model === 'compare'
+        ? new StepCompareSimulation(JSON.stringify({ ...message.config, method: message.method ?? 'euler' }))
+        : message.model === 'constant-acceleration' && message.method
+          ? new StepCompareSimulation(JSON.stringify({
+            schema_version: 1,
+            kind: 'accelerated',
+            method: message.method,
+            t0: 0,
+            dt: constantAcceleration.dt,
+            steps: constantAcceleration.steps,
+            initial_position: constantAcceleration.initial_position,
+            initial_velocity: constantAcceleration.initial_velocity,
+            acceleration: constantAcceleration.acceleration,
+          }))
+        : message.model === 'constant-acceleration'
+          ? new ConstantAccelerationSimulation(json)
+          : (message.model === 'position-derivative' || message.model === 'uniform') && message.method
+            ? new EulerSimulation(JSON.stringify({ ...message.config, method: message.method }))
+            : message.model === 'position-derivative'
+              ? new PositionDerivativeSimulation(json)
+              : message.model === 'euler'
+                ? new EulerSimulation(JSON.stringify({ ...message.config, method: message.method ?? 'euler' }))
+                : message.model === 'separation'
+                  ? new SeparationSimulation(json)
+                  : message.model === 'linear'
+                    ? new LinearSimulation(json)
+                    : message.model === 'textbook'
+                      ? new TextbookSimulation(json)
+                      : new UniformSimulation(json);
       batchSize = Math.max(1, Math.min(100, Math.round(0.04 / message.config.dt)));
       publish('ready', [JSON.parse(simulation.snapshot()) as Snapshot]);
       return;

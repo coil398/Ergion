@@ -1,6 +1,6 @@
 import './style.css';
 import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
-import { mountExactFigure } from './curve';
+import { mountSteppedFigure, steppedFigure } from './curve';
 import { tex } from './tex';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
@@ -97,22 +97,17 @@ app.innerHTML = `
             </li>
             <li>手で確かめます。${tex('x(0) = \\cos 0 = 1')}、${tex(String.raw`x'(0) = -\sin 0 = 0`)} です。
               <p class="solution-equation">${tex(String.raw`x''(t) + x(t) = -\cos t + \cos t = 0`, true)}</p>
-              方程式を満たします。この一致は式のままの一致です。図は、相異なる実根の例を標本の時刻で評価したものです。
+              方程式を満たします。この一致は式のままの一致です。図の厳密解は、相異なる実根の例を標本の時刻で評価したものです。数値解は、同じ方程式を選んだ方法で進めたものです。
             </li>
           </ol>
         </div>
       </section>
-      <section class="plots panel" aria-labelledby="curve-heading">
-        <div class="panel-heading"><h2 id="curve-heading">実根の例の厳密解</h2><div class="legend"><span><i class="analytical"></i>厳密解</span></div></div>
-        <p class="scene-caption">曲線は、${tex('x(t) = -e^{t} + 2e^{2t}')} を、時刻 0 から 1 までの標本で評価したものです。数値の1ステップではありません。画面の数値は、その厳密解を小数第5位まで示したもので、解法としての打ち切りではありません。</p>
-        <canvas id="solution-chart" role="img"></canvas>
-        <div class="readouts">
-          <div><span>時刻 t</span><output id="solution-time">—</output></div>
-          <div><span>位置 x</span><output id="solution-value">—</output></div>
-        </div>
-      </section>
+      ${steppedFigure(`タブは、実根の例 ${tex(String.raw`x'' - 3x' + 2x = 0`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
       ${pageFooter('定数係数の2階同次方程式の解は、特性根が実数、重根、複素数のどれかで厳密に書けます。')}
     </main>
   </div>`;
 
-mountExactFigure({ kind: 'two-real', t0: 0, dt: 0.015625, steps: 64, label: '相異なる実根の例の厳密解' });
+mountSteppedFigure({
+  config: { schema_version: 1, kind: 'two-real', t0: 0, dt: 0.015625, steps: 64 },
+  label: '相異なる実根の例の厳密解',
+});

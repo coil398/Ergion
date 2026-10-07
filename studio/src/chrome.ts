@@ -16,7 +16,9 @@ export type PageId =
   | 'laplace'
   | 'series'
   | 'system'
-  | 'euler';
+  | 'euler'
+  | 'midpoint'
+  | 'rk4';
 
 /** rustdoc へのリンク。見える文字は日本語とし、型名やソースのパスは文に出さない。 */
 export function simulationDoc(module: 'uniform' | 'constant_acceleration', name: string, label: string): string {
@@ -80,7 +82,9 @@ export function rail(active: PageId): string {
           ${pageLink(active, 'series', './series.html', 'べき級数')}
           ${pageLink(active, 'system', './system.html', '連立1階')}
           ${pageLink(active, 'derivative', './derivative.html', '位置の時間微分')}
-          ${pageLink(active, 'euler', './euler.html', '数値解法')}
+          ${pageLink(active, 'euler', './euler.html', 'Euler法')}
+          ${pageLink(active, 'midpoint', './midpoint.html', '中点法')}
+          ${pageLink(active, 'rk4', './rk4.html', '古典的RK4')}
         </ul>
       </div>
       <div class="rail-note"><span class="orbit-icon" aria-hidden="true">◎</span><p>小さな系から、<br>確かな計算へ。</p><span>直線上の一粒子</span></div>

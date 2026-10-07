@@ -1,6 +1,6 @@
 import './style.css';
 import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
-import { mountExactFigure } from './curve';
+import { mountSteppedFigure, steppedFigure } from './curve';
 import { tex } from './tex';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
@@ -75,17 +75,12 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
-      <section class="plots panel" aria-labelledby="curve-heading">
-        <div class="panel-heading"><h2 id="curve-heading">例の厳密解</h2><div class="legend"><span><i class="analytical"></i>厳密解</span></div></div>
-        <p class="scene-caption">曲線は、${tex('x_0 = 1/2')} の厳密解を、時刻 0 から 1 までの標本で評価したものです。数値の1ステップではありません。画面の数値は、その厳密解を小数第5位まで示したもので、解法としての打ち切りではありません。</p>
-        <canvas id="solution-chart" role="img"></canvas>
-        <div class="readouts">
-          <div><span>時刻 t</span><output id="solution-time">—</output></div>
-          <div><span>位置 x</span><output id="solution-value">—</output></div>
-        </div>
-      </section>
+      ${steppedFigure(`タブは、方程式 ${tex(String.raw`x' = x - x^2`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。${tex('x_0 = 1/2')} の誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
       ${pageFooter('ベルヌーイ方程式は、u = x^{1-n} と置くと1階線形になり、その解は厳密です。')}
     </main>
   </div>`;
 
-mountExactFigure({ kind: 'bernoulli', t0: 0, dt: 0.015625, steps: 64, label: 'ベルヌーイの例の厳密解' });
+mountSteppedFigure({
+  config: { schema_version: 1, kind: 'bernoulli', t0: 0, dt: 0.015625, steps: 64 },
+  label: 'ベルヌーイの例の厳密解',
+});

@@ -24,6 +24,8 @@ export default defineConfig({
         series: resolve(import.meta.dirname, 'series.html'),
         system: resolve(import.meta.dirname, 'system.html'),
         euler: resolve(import.meta.dirname, 'euler.html'),
+        midpoint: resolve(import.meta.dirname, 'midpoint.html'),
+        rk4: resolve(import.meta.dirname, 'rk4.html'),
       },
     },
   },

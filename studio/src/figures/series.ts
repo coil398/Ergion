@@ -17,6 +17,7 @@ export interface TimeSeriesFrame {
   time: number;
   current: number;
   samples: SeriesSample[];
+  xMin?: number;
 }
 
 const numericalColor = '#6552b8';
@@ -71,7 +72,7 @@ export function drawTimeSeries(canvas: HTMLCanvasElement, frame: TimeSeriesFrame
     top,
     width: plotWidth,
     height: plotHeight,
-    xMin: 0,
+    xMin: frame.xMin !== undefined && Number.isFinite(frame.xMin) ? frame.xMin : 0,
     xMax,
     yMin: yDomain.min,
     yMax: yDomain.max,
@@ -109,6 +110,8 @@ export interface ErrorSeriesFrame {
   time: number;
   current: number;
   samples: ErrorSample[];
+  xMin?: number;
+  zeroLabel?: string;
 }
 
 /** 位置の誤差。返された \(x - x_{\mathrm{exact}}\) を実線で描き、厳密解の破線にはしない。 */
@@ -141,7 +144,7 @@ export function drawErrorSeries(canvas: HTMLCanvasElement, frame: ErrorSeriesFra
     top,
     width: plotWidth,
     height: plotHeight,
-    xMin: 0,
+    xMin: frame.xMin !== undefined && Number.isFinite(frame.xMin) ? frame.xMin : 0,
     xMax,
     yMin: yDomain.min,
     yMax: yDomain.max,
@@ -151,7 +154,7 @@ export function drawErrorSeries(canvas: HTMLCanvasElement, frame: ErrorSeriesFra
     `位置の誤差と時間のグラフ。縦軸 ${plot.yMin.toPrecision(3)} から ${plot.yMax.toPrecision(3)}。現在の誤差 ${frame.current}`,
   );
 
-  drawCartesianAxes(context, plot, 'x − x_exact = 0');
+  drawCartesianAxes(context, plot, frame.zeroLabel ?? 'x − x_exact = 0');
   context.save();
   context.beginPath();
   context.rect(plot.left, plot.top, plot.width, plot.height);
