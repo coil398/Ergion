@@ -12,6 +12,8 @@ export default defineConfig({
         derivative: resolve(import.meta.dirname, 'derivative.html'),
         ode: resolve(import.meta.dirname, 'ode.html'),
         integrate: resolve(import.meta.dirname, 'integrate.html'),
+        separation: resolve(import.meta.dirname, 'separation.html'),
+        linear: resolve(import.meta.dirname, 'linear.html'),
         euler: resolve(import.meta.dirname, 'euler.html'),
       },
     },

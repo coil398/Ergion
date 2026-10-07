@@ -1,4 +1,4 @@
-export type PageId = 'mechanics' | 'uniform' | 'accelerated' | 'derivative' | 'ode' | 'integrate' | 'euler';
+export type PageId = 'mechanics' | 'uniform' | 'accelerated' | 'derivative' | 'ode' | 'integrate' | 'separation' | 'linear' | 'euler';
 
 /** rustdoc へのリンク。見える文字は日本語とし、型名やソースのパスは文に出さない。 */
 export function simulationDoc(module: 'uniform' | 'constant_acceleration', name: string, label: string): string {
@@ -7,7 +7,10 @@ export function simulationDoc(module: 'uniform' | 'constant_acceleration', name:
 }
 
 /** コアの1ステップの説明へのリンク。見える文字は日本語だけにする。 */
-export function coreStepDoc(fn: 'x_prime_eq_v_step' | 'euler_step' | 'midpoint_step' | 'rk4_step', label: string): string {
+export function coreStepDoc(
+  fn: 'x_prime_eq_v_step' | 'euler_step' | 'midpoint_step' | 'rk4_step' | 'separated_exponential' | 'first_order_linear',
+  label: string,
+): string {
   const href = `${import.meta.env.BASE_URL}doc/ergion_core/fn.${fn}.html`;
   return `<a class="doc-link" href="${href}">${label}</a>`;
 }
@@ -50,6 +53,8 @@ export function rail(active: PageId): string {
         <a class="rail-section-title${active === 'ode' ? ' active' : ''}" href="./ode.html"${odeCurrent}>微分方程式</a>
         <ul class="rail-pages">
           ${pageLink(active, 'integrate', './integrate.html', '積分して解く')}
+          ${pageLink(active, 'separation', './separation.html', '変数分離')}
+          ${pageLink(active, 'linear', './linear.html', '1階線形')}
           ${pageLink(active, 'derivative', './derivative.html', '位置の時間微分')}
           ${pageLink(active, 'euler', './euler.html', '数値解法')}
         </ul>

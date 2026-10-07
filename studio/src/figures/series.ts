@@ -183,3 +183,83 @@ export function drawErrorSeries(canvas: HTMLCanvasElement, frame: ErrorSeriesFra
     context.fill();
   }
 }
+
+export interface ExactSample {
+  time: number;
+  value: number;
+}
+
+export interface ExactCurveFrame {
+  key: string;
+  timeEnd: number;
+  time: number;
+  current: number;
+  samples: ExactSample[];
+  label: string;
+}
+
+/** 返された厳密解だけを破線で描く。数値解の実線は重ねない。 */
+export function drawExactCurve(canvas: HTMLCanvasElement, frame: ExactCurveFrame) {
+  const surface = canvasContext(canvas);
+  if (surface.width < 2 || surface.height < 2) return;
+  const { context, width, height } = surface;
+  const left = 88;
+  const top = 18;
+  const right = 16;
+  const bottom = 36;
+  const plotWidth = width - left - right;
+  const plotHeight = height - top - bottom;
+  if (plotWidth < 1 || plotHeight < 1) return;
+
+  const lastTime = frame.samples.reduce((max, sample) => Math.max(max, sample.time), 0);
+  const timeEnd = Number.isFinite(frame.timeEnd) && frame.timeEnd > 0 ? frame.timeEnd : lastTime;
+  const xMax = Math.max(timeEnd, lastTime, 1e-6);
+  const timed = frame.samples.map(sample => ({ time: sample.time, value: sample.value }));
+  const yDomain = axisDomain(frame.key, timed, xMax, [frame.current], 0.12, 0.5);
+  const plot: PlotFrame = {
+    left,
+    top,
+    width: plotWidth,
+    height: plotHeight,
+    xMin: 0,
+    xMax,
+    yMin: yDomain.min,
+    yMax: yDomain.max,
+  };
+  canvas.setAttribute(
+    'aria-label',
+    `${frame.label}。縦軸 ${plot.yMin.toPrecision(3)} から ${plot.yMax.toPrecision(3)}。現在値 ${frame.current}`,
+  );
+
+  drawCartesianAxes(context, plot, 'x = 0');
+  context.save();
+  context.beginPath();
+  context.rect(plot.left, plot.top, plot.width, plot.height);
+  context.clip();
+  context.lineJoin = 'round';
+  context.strokeStyle = exactColor;
+  context.lineWidth = 1.7;
+  context.setLineDash([5, 4]);
+  context.beginPath();
+  let started = false;
+  for (const sample of frame.samples) {
+    const x = mapX(plot, sample.time);
+    const y = mapY(plot, sample.value);
+    if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
+    if (started) context.lineTo(x, y);
+    else {
+      context.moveTo(x, y);
+      started = true;
+    }
+  }
+  if (started) context.stroke();
+  context.restore();
+  const pointX = mapX(plot, frame.time);
+  const pointY = mapY(plot, frame.current);
+  if (Number.isFinite(pointX) && Number.isFinite(pointY)) {
+    context.beginPath();
+    context.fillStyle = exactColor;
+    context.arc(pointX, pointY, 3.5, 0, Math.PI * 2);
+    context.fill();
+  }
+}

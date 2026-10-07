@@ -30,7 +30,7 @@ app.innerHTML = `
             <li>速度 ${tex('v')} が時刻にも位置にもよらず一定ならば、位置は ${tex(String.raw`x' = v`)} を満たします。この運動は <a class="doc-link" href="./uniform.html">等速直線運動</a> です。</li>
             <li>加速度 ${tex('a')} が一定ならば、速度は ${tex(String.raw`v' = a`)} を満たします。この運動は <a class="doc-link" href="./accelerated.html">等加速度直線運動</a> です。</li>
           </ol>
-          <p>右辺が未知関数 ${tex('x')} を含まないときの積分、一定の速度での1ステップ、そして Euler 法の1ステップは、この節のページで順に見ます。</p>
+          <p>右辺が未知関数 ${tex('x')} を含まないときの積分、変数分離、定数係数の1階線形方程式、一定の速度での1ステップ、そして Euler 法の1ステップは、この節のページで順に見ます。</p>
         </div>
       </section>
       <div class="chapter-list">
@@ -38,6 +38,16 @@ app.innerHTML = `
           <h2>積分して解く</h2>
           <p>右辺が未知関数 ${tex('x')} によらないとき、両辺を時刻で積分します。得られる式は厳密解です。</p>
           <p class="equation">${tex('x(t) = x_0 + v t', true)}</p>
+        </a>
+        <a class="chapter" href="./separation.html">
+          <h2>変数分離</h2>
+          <p>右辺が位置に比例するとき、${tex('x \\neq 0')} として変数を分けて積分します。得られる式は厳密解です。</p>
+          <p class="equation">${tex(String.raw`x(t) = x_0 e^{kt}`, true)}</p>
+        </a>
+        <a class="chapter" href="./linear.html">
+          <h2>1階線形</h2>
+          <p>係数が定数で ${tex('p \\neq 0')} のとき、積分因子 ${tex('e^{pt}')} を掛けて積分します。得られる式は厳密解です。</p>
+          <p class="equation">${tex(String.raw`x(t) = \frac{q}{p} + \left(x_0 - \frac{q}{p}\right) e^{-pt}`, true)}</p>
         </a>
         <a class="chapter" href="./derivative.html">
           <h2>位置の時間微分</h2>
@@ -50,7 +60,7 @@ app.innerHTML = `
           <p class="equation">${tex(String.raw`x' = v`, true)}</p>
         </a>
       </div>
-      ${pageFooter('この節は、微分方程式の意味、積分による厳密解、そして数値の1ステップです。')}
+      ${pageFooter('この節は、微分方程式の意味、積分、変数分離、1階線形方程式、そして数値の1ステップです。')}
     </main>
   </div>`;
 

@@ -178,6 +178,60 @@ pub fn velocity_verlet_step(
     }
 }
 
+/// 変数分離で解く \(x' = kx\) の厳密解 \(x(t) = x_0 e^{kt}\) を返します。
+///
+/// \(k\) は時刻にも位置にもよらない定数です。初期位置を \(x(0) = x_0\) とします。
+/// まず \(x \neq 0\) と仮定し、両辺を \(x\) で割って変数を分けます。
+/// \[
+/// \frac{dx}{x} = k\,dt
+/// \]
+/// 両辺を積分すると \(\ln|x| = kt + C\) です。\(C\) は積分定数です。
+/// 指数関数に戻すと \(|x| = e^{C} e^{kt}\) です。
+/// \(e^{C}\) は正なので、符号を含めた 0 でない定数を \(A = \pm e^{C}\) と書くと
+/// \(x = A e^{kt}\) です。\(t = 0\) で \(A = x_0\) となり、
+/// \[
+/// x(t) = x_0 e^{kt}
+/// \]
+/// を得ます。\(x(t)\) は時刻 \(t\) の位置、\(t\) は時刻、\(x_0\) は時刻 0 の位置、
+/// \(k\) は定数係数、\(e\) は自然対数の底です。
+///
+/// 定数関数 \(x(t) = 0\) も方程式を満たします。変数分離では \(x\) で割るため、
+/// この解は積分の外にあります。\(x_0 = 0\) を公式へ入れると 0 になり、この定数解を含みます。
+/// \(x_0 = 0\) のときは、指数が無限大でも 0 を返します。
+///
+/// この値は、級数にも時間刻みにもよらない厳密解です。打ち切り誤差はありません。
+/// 数値との差は、倍精度の指数関数の丸めだけです。\(k\) が正でも負でも同じ式です。
+pub fn separated_exponential(x0: f64, k: f64, t: f64) -> f64 {
+    if x0 == 0.0 {
+        return 0.0;
+    }
+    x0 * (k * t).exp()
+}
+
+/// 定数係数の1階線形方程式 \(x' + px = q\) の厳密解を返します。
+///
+/// \(p\) と \(q\) は定数で、\(p \neq 0\) とします。\(p = 0\) の方程式は \(x' = q\) であり、
+/// 右辺が定数の積分です。この関数はその場合を扱いません。
+/// 初期位置を \(x(0) = x_0\) とします。積分因子 \(e^{pt}\) を両辺に掛けると
+/// \[
+/// \frac{d}{dt}\bigl(x e^{pt}\bigr) = q e^{pt}
+/// \]
+/// です。\(p \neq 0\) として積分し、\(e^{pt} \neq 0\) で割ると
+/// \(x = q/p + C e^{-pt}\) です。\(C\) は積分定数です。
+/// \(t = 0\) から \(C = x_0 - q/p\) となり、
+/// \[
+/// x(t) = \frac{q}{p} + \left(x_0 - \frac{q}{p}\right) e^{-pt}
+/// \]
+/// を得ます。\(x(t)\) は時刻 \(t\) の位置、\(t\) は時刻、\(x_0\) は時刻 0 の位置、
+/// \(p\) は未知関数の係数、\(q\) は右辺の定数、\(e\) は自然対数の底です。
+///
+/// この値は、級数にも時間刻みにもよらない厳密解です。打ち切り誤差はありません。
+/// 数値との差は、倍精度の除算と指数関数の丸めだけです。
+pub fn first_order_linear(x0: f64, p: f64, q: f64, t: f64) -> f64 {
+    let particular = q / p;
+    particular + (x0 - particular) * (-p * t).exp()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -262,5 +316,38 @@ mod tests {
         });
         assert_eq!(position[0], 0.375);
         assert_eq!(velocity[0], 2.0);
+    }
+
+    #[test]
+    fn separated_exponential_zero_initial_position_is_the_zero_solution() {
+        assert_eq!(separated_exponential(0.0, 2.0, 4.0), 0.0);
+        assert_eq!(separated_exponential(0.0, 1e300, 1e300), 0.0);
+    }
+
+    #[test]
+    fn separated_exponential_with_zero_rate_stays_at_the_initial_position() {
+        assert_eq!(separated_exponential(3.0, 0.0, 4.0), 3.0);
+    }
+
+    #[test]
+    fn separated_exponential_at_zero_time_is_the_initial_position() {
+        assert_eq!(separated_exponential(3.0, 2.0, 0.0), 3.0);
+    }
+
+    #[test]
+    fn separated_exponential_matches_the_closed_form() {
+        let value = separated_exponential(3.0, 2.0, 1.0);
+        assert!((value - 3.0 * 2.0_f64.exp()).abs() < 1e-12);
+    }
+
+    #[test]
+    fn first_order_linear_at_zero_time_is_the_initial_position() {
+        assert_eq!(first_order_linear(1.0, 2.0, 6.0, 0.0), 1.0);
+    }
+
+    #[test]
+    fn first_order_linear_matches_the_closed_form() {
+        let value = first_order_linear(1.0, 2.0, 6.0, 1.0);
+        assert!((value - (3.0 - 2.0 * (-2.0_f64).exp())).abs() < 1e-12);
     }
 }

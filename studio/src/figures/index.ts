@@ -13,5 +13,5 @@ export * as series from './series';
 export * as motion from './motion';
 
 export { clearFigure } from './canvas';
-export { drawErrorSeries, drawTimeSeries } from './series';
+export { drawErrorSeries, drawExactCurve, drawTimeSeries } from './series';
 export { drawConstantAcceleration, drawUniformMotion } from './motion';
