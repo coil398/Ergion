@@ -209,7 +209,7 @@ Ergion に新しい運動や計算の画面を追加する場合、Studio の統
    - 計算時間等の事前見積もりヒント（`#time-hint`）。
    - 条件適用ボタン、JSON設定のエクスポート/インポート機能。
 5. **計算と説明 (`.study.panel`)**:
-   - 計算する関数の名前を、公開した rustdoc へのリンクにする。等速直線運動は `UniformSimulation`、等加速度直線運動は `ConstantAccelerationSimulation`。リンク先は、GitHub Pages では `https://coil398.github.io/Ergion/doc/ergion_lab/uniform/struct.UniformSimulation.html` と `https://coil398.github.io/Ergion/doc/ergion_lab/constant_acceleration/struct.ConstantAccelerationSimulation.html`。文中にソースファイルのパスは書かない。
+   - 画面の文は物理だけを述べる。型名やソースファイルのパスは書かない。rustdoc へのリンクの文字は「1ステップの説明」とし、リンク先は等速直線運動が `https://coil398.github.io/Ergion/doc/ergion_lab/uniform/struct.UniformSimulation.html`、等加速度直線運動が `https://coil398.github.io/Ergion/doc/ergion_lab/constant_acceleration/struct.ConstantAccelerationSimulation.html`。
 6. **シーン表示 (`.scene.panel`)**:
    - 図は `studio/src/figures/` が描く。ページに別の描画コードを持たない。
    - 等速直線運動では、粒子が動き、初期位置 \(x_0\) に加わる変位 \(vt\) の線分が伸びて見える。

@@ -1,9 +1,9 @@
 export type PageId = 'mechanics' | 'uniform' | 'accelerated';
 
-/** 計算する関数の名前を、公開した rustdoc へのリンクにする。文中にソースのパスは書かない。 */
-export function simulationDoc(module: 'uniform' | 'constant_acceleration', name: string): string {
+/** rustdoc へのリンク。見える文字は日本語とし、型名やソースのパスは文に出さない。 */
+export function simulationDoc(module: 'uniform' | 'constant_acceleration', name: string, label: string): string {
   const href = `${import.meta.env.BASE_URL}doc/ergion_lab/${module}/struct.${name}.html`;
-  return `<a class="doc-link" href="${href}">${name}</a>`;
+  return `<a class="doc-link" href="${href}">${label}</a>`;
 }
 
 export function appHeader(status: string): string {

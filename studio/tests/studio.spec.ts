@@ -51,11 +51,12 @@ async function expectTypeSize(page: Page) {
 
 async function expectSimulationDoc(page: Page, module: string, name: string) {
   const href = `/Ergion/doc/ergion_lab/${module}/struct.${name}.html`;
-  const link = page.locator('#study').getByRole('link', { name, exact: true });
-  await expect(link).toHaveCount(2);
-  await expect(link.first()).toHaveAttribute('href', href);
-  await expect(link.nth(1)).toHaveAttribute('href', href);
-  expect(await page.locator('#study').innerText()).not.toContain('crates/');
+  const link = page.locator('#study').getByRole('link', { name: '1ステップの説明', exact: true });
+  await expect(link).toHaveCount(1);
+  await expect(link).toHaveAttribute('href', href);
+  const study = await page.locator('#study').innerText();
+  expect(study).not.toContain('crates/');
+  expect(study).not.toContain(name);
   const doc = await page.request.get(href);
   expect(doc.ok()).toBeTruthy();
   expect(await doc.text()).toContain(name);
