@@ -1,4 +1,4 @@
-export type PageId = 'mechanics' | 'uniform' | 'accelerated' | 'derivative';
+export type PageId = 'mechanics' | 'uniform' | 'accelerated' | 'derivative' | 'ode' | 'integrate' | 'euler';
 
 /** rustdoc へのリンク。見える文字は日本語とし、型名やソースのパスは文に出さない。 */
 export function simulationDoc(module: 'uniform' | 'constant_acceleration', name: string, label: string): string {
@@ -6,10 +6,15 @@ export function simulationDoc(module: 'uniform' | 'constant_acceleration', name:
   return `<a class="doc-link" href="${href}">${label}</a>`;
 }
 
+/** コアの1ステップの説明へのリンク。見える文字は日本語だけにする。 */
+export function coreStepDoc(fn: 'x_prime_eq_v_step' | 'euler_step', label: string): string {
+  const href = `${import.meta.env.BASE_URL}doc/ergion_core/fn.${fn}.html`;
+  return `<a class="doc-link" href="${href}">${label}</a>`;
+}
+
 /** \(x' = v\) の1ステップの説明へのリンク。見える文字は日本語だけにする。 */
 export function stepDoc(label: string): string {
-  const href = `${import.meta.env.BASE_URL}doc/ergion_core/fn.x_prime_eq_v_step.html`;
-  return `<a class="doc-link" href="${href}">${label}</a>`;
+  return coreStepDoc('x_prime_eq_v_step', label);
 }
 
 export function appHeader(status: string): string {
@@ -26,18 +31,27 @@ function pageLink(active: PageId, id: PageId, href: string, label: string): stri
   return `<li><a class="rail-page${current ? ' active' : ''}" href="${href}"${current ? ' aria-current="page"' : ''}>${label}</a></li>`;
 }
 
-/** 力学は節。位置の時間微分と二つの運動はその下のページであり、節と横並びにしない。 */
+/** 力学と微分方程式は並ぶ節。各ページはその節の下に縦に置く。 */
 export function rail(active: PageId): string {
-  const sectionCurrent = active === 'mechanics' ? ' aria-current="page"' : '';
+  const mechanicsCurrent = active === 'mechanics' ? ' aria-current="page"' : '';
+  const odeCurrent = active === 'ode' ? ' aria-current="page"' : '';
   return `
     <aside class="rail" aria-label="実験ナビゲーション">
       <span class="rail-heading">実験室</span>
       <div class="rail-section">
-        <a class="rail-section-title${active === 'mechanics' ? ' active' : ''}" href="./"${sectionCurrent}>力学</a>
+        <a class="rail-section-title${active === 'mechanics' ? ' active' : ''}" href="./"${mechanicsCurrent}>力学</a>
         <ul class="rail-pages">
           ${pageLink(active, 'derivative', './derivative.html', '位置の時間微分')}
           ${pageLink(active, 'uniform', './uniform.html', '等速直線運動')}
           ${pageLink(active, 'accelerated', './accelerated.html', '等加速度直線運動')}
+        </ul>
+      </div>
+      <div class="rail-section">
+        <a class="rail-section-title${active === 'ode' ? ' active' : ''}" href="./ode.html"${odeCurrent}>微分方程式</a>
+        <ul class="rail-pages">
+          ${pageLink(active, 'integrate', './integrate.html', '積分して解く')}
+          ${pageLink(active, 'derivative', './derivative.html', '位置の時間微分')}
+          ${pageLink(active, 'euler', './euler.html', 'Euler法')}
         </ul>
       </div>
       <div class="rail-note"><span class="orbit-icon" aria-hidden="true">◎</span><p>小さな系から、<br>確かな計算へ。</p><span>直線上の一粒子</span></div>

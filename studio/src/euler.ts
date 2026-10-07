@@ -1,5 +1,5 @@
 import './style.css';
-import { appHeader, pageFooter, rail, stepDoc } from './chrome';
+import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
 import { clearFigure, drawTimeSeries, drawUniformMotion } from './figures';
 import type { Config, Snapshot } from './protocol';
 import { mountSession } from './session';
@@ -17,17 +17,17 @@ const app = document.querySelector<HTMLDivElement>('#app')!;
 app.innerHTML = `
   ${appHeader('計算環境を準備中')}
   <div class="workspace">
-    ${rail('derivative')}
+    ${rail('euler')}
     <main id="experiment">
       <section class="intro">
         <div>
-          <p class="breadcrumb"><a href="./ode.html">微分方程式</a> <span>/</span> 位置の時間微分</p>
-          <h1>位置の時間微分<span class="title-dot">.</span></h1>
-          <p class="description">直線上の位置の時間微分は、速度です。このページでは、速度が一定のあいだに位置がどれだけ進むかを、1ステップずつ見ます。</p>
+          <p class="breadcrumb"><a href="./ode.html">微分方程式</a> <span>/</span> Euler法</p>
+          <h1>Euler法<span class="title-dot">.</span></h1>
+          <p class="description">Euler 法は、右辺を区間の始点の値で一定とみなして、微分方程式を1ステップ進めます。速度が一定のときは、そのステップが厳密解の増分と一致します。</p>
         </div>
-        <div class="equation" aria-label="位置の時間微分。x プライムは v">
-          ${tex(String.raw`x' = v`, true)}
-          <span class="equation-note">位置の時間変化率</span>
+        <div class="equation" aria-label="Euler 法の1ステップ。次の位置は、いまの位置に時間刻みと右辺の積を加えた値">
+          ${tex(String.raw`x_{n+1} = x_n + \Delta t \, f(x_n, t_n)`, true)}
+          <span class="equation-note">始点の傾きで1ステップ</span>
         </div>
       </section>
       <div class="experiment-grid">
@@ -55,26 +55,25 @@ app.innerHTML = `
         </section>
         <div class="results">
           <section class="study panel" id="study" aria-labelledby="study-heading">
-            <div class="panel-heading"><h2 id="study-heading">位置の時間微分の計算と説明</h2><span class="quiet-label">1ステップの求め方</span></div>
+            <div class="panel-heading"><h2 id="study-heading">Euler法の1ステップ</h2><span class="quiet-label">一定の速度</span></div>
             <div class="study-body">
               <ol class="solution">
-                <li>直線上の位置を ${tex('x')}、時刻を ${tex('t')}、速度を ${tex('v')} とします。位置を時刻で微分したものが速度なので、${tex(String.raw`x' = v`)} です。</li>
-                <li>ステップの始まりの時刻を ${tex('t_n')}、時間刻みを ${tex(String.raw`\Delta t`)} とします。このあいだ速度 ${tex('v')} が一定ならば、両辺をその区間で積分して ${tex(String.raw`x(t_n + \Delta t) - x(t_n) = v \Delta t`)} です。</li>
-                <li>ステップ番号を ${tex('n')} と書くと、位置の更新は次の式です。
-                  <p class="solution-equation">${tex(String.raw`x_{n+1} = x_n + v \Delta t`, true)}</p>
-                  速度がこの刻みのあいだ一定なので、この1ステップは厳密です。打ち切り誤差はありません（${stepDoc('1ステップの説明')}）。
+                <li>微分方程式を ${tex(String.raw`x' = f(x, t)`)} と書きます。${tex('x')} は未知関数、${tex('t')} は時刻、${tex('f')} は右辺です。</li>
+                <li>ステップ ${tex('n')} の値を ${tex('x_n')}、時刻を ${tex('t_n')}、時間刻みを ${tex(String.raw`\Delta t`)} とします。Euler 法は右辺を区間の始点で一定とみなし、次の式で1ステップ進めます（${coreStepDoc('euler_step', '1ステップの説明')}）。
+                  <p class="solution-equation">${tex(String.raw`x_{n+1} = x_n + \Delta t \, f(x_n, t_n)`, true)}</p>
                 </li>
-                <li>同じ更新を時刻 0 から ${tex('t')} まで重ね、初期位置を ${tex('x_0')} と書くと、位置は次の式に沿って進みます。速度は変わりません。
-                  <p class="solution-equation">${tex('x(t) = x_0 + v t', true)}</p>
+                <li>このページの右辺は速度 ${tex('v')} で、刻みのあいだ一定です。したがって ${tex('f(x_n, t_n) = v')} であり、上の式は次の式と同じです。
+                  <p class="solution-equation">${tex(String.raw`x_{n+1} = x_n + v \Delta t`, true)}</p>
+                  速度が一定なので、この1ステップは厳密解の増分と一致します。打ち切り誤差はありません。表示される差は、倍精度浮動小数点の丸めだけです。
                 </li>
               </ol>
-              <p>画面は、各時刻の位置と速度を描きます。式 ${tex(String.raw`x' = v`)} や ${tex('x(t) = x_0 + v t')} を、描画のために計算し直すことはありません。図の線分は、初期位置 ${tex('x_0')} に加わる変位 ${tex('vt')} です。紫の実線が数値解、青緑の破線が厳密解です。</p>
+              <p>画面は、各時刻の位置と速度を描きます。式 ${tex(String.raw`x_{n+1} = x_n + v \Delta t`)} や ${tex('x(t) = x_0 + v t')} を、描画のために計算し直すことはありません。図の線分は、初期位置 ${tex('x_0')} に加わる変位 ${tex('vt')} です。紫の実線が数値解、青緑の破線が厳密解です。</p>
             </div>
           </section>
           <section class="scene panel" aria-labelledby="scene-heading">
             <div class="panel-heading"><h2 id="scene-heading">粒子の直線運動</h2><span id="scene-time" class="numeric">t = 0.000</span></div>
-            <p class="scene-caption">速度 ${tex('v')} が一定のあいだ、粒子は1ステップごとに変位 ${tex(String.raw`v \Delta t`)} だけ進みます。変位を重ねた長さが ${tex('vt')} です。</p>
-            <canvas id="oscillator" aria-label="直線上を進む粒子。速度が一定の1ステップで、位置は速度と時間刻みの積だけ進みます。数値解は紫の実線、解析解は青緑の破線。" role="img"></canvas>
+            <p class="scene-caption">速度 ${tex('v')} が一定のあいだ、Euler 法の1ステップは変位 ${tex(String.raw`v \Delta t`)} だけ位置を進めます。変位を重ねた長さが ${tex('vt')} です。</p>
+            <canvas id="oscillator" aria-label="直線上を進む粒子。速度が一定のとき、Euler 法の1ステップで位置は速度と時間刻みの積だけ進みます。数値解は紫の実線、解析解は青緑の破線。" role="img"></canvas>
             <div class="readouts"><div><span>位置 x</span><output id="position">—</output></div><div><span>速度 v</span><output id="velocity">—</output></div><div><span>解析解の位置</span><output id="exact-position">—</output></div><div><span>位置の絶対差 |x − x_exact|</span><output id="energy-error">—</output></div></div>
           </section>
           <section class="plots panel" aria-labelledby="plots-heading">
@@ -90,7 +89,7 @@ app.innerHTML = `
           <p class="experiment-note">数値計算はブラウザ内で実行します。条件や結果をサーバーへ送信しません。</p>
         </div>
       </div>
-      ${pageFooter('この画面の計算は、位置の時間微分の1ステップです。')}
+      ${pageFooter('この画面の計算は、速度が一定のときの Euler 法の1ステップです。')}
     </main>
   </div>`;
 
@@ -152,8 +151,8 @@ function paintFigures(state: Snapshot | undefined, points: Snapshot[], config: C
 
 mountSession({
   defaults,
-  model: 'position-derivative',
-  downloadName: 'ergion-position-derivative.json',
+  model: 'euler',
+  downloadName: 'ergion-euler.json',
   readForm,
   fillForm,
   paintFigures,

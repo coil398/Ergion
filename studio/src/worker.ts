@@ -1,4 +1,4 @@
-import init, { ConstantAccelerationSimulation, PositionDerivativeSimulation, UniformSimulation } from '../wasm/ergion_lab.js';
+import init, { ConstantAccelerationSimulation, EulerSimulation, PositionDerivativeSimulation, UniformSimulation } from '../wasm/ergion_lab.js';
 import wasmUrl from '../wasm/ergion_lab_bg.wasm?url';
 import type { Batch, Command, Reply, Snapshot, Update } from './protocol';
 
@@ -59,7 +59,9 @@ onmessage = (event: MessageEvent<Command>) => {
         ? new ConstantAccelerationSimulation(json)
         : message.model === 'position-derivative'
           ? new PositionDerivativeSimulation(json)
-          : new UniformSimulation(json);
+          : message.model === 'euler'
+            ? new EulerSimulation(json)
+            : new UniformSimulation(json);
       batchSize = Math.max(1, Math.min(100, Math.round(0.04 / message.config.dt)));
       publish('ready', [JSON.parse(simulation.snapshot()) as Snapshot]);
       return;

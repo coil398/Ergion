@@ -10,19 +10,32 @@ function tex(page: Page, source: string) {
 }
 
 async function expectMechanicsSection(page: Page) {
-  const title = page.locator('.rail-section-title');
-  await expect(title).toHaveText('力学');
-  const links = page.locator('.rail-pages a');
-  await expect(links).toHaveCount(3);
-  await expect(links.nth(0)).toHaveText('位置の時間微分');
-  await expect(links.nth(1)).toHaveText('等速直線運動');
-  await expect(links.nth(2)).toHaveText('等加速度直線運動');
+  const sections = page.locator('.rail-section');
+  await expect(sections).toHaveCount(2);
+  const mechanicsTitle = sections.nth(0).locator('.rail-section-title');
+  await expect(mechanicsTitle).toHaveText('力学');
+  const motion = sections.nth(0).locator('.rail-pages a');
+  await expect(motion).toHaveCount(3);
+  await expect(motion.nth(0)).toHaveText('位置の時間微分');
+  await expect(motion.nth(1)).toHaveText('等速直線運動');
+  await expect(motion.nth(2)).toHaveText('等加速度直線運動');
+  const odeTitle = sections.nth(1).locator('.rail-section-title');
+  await expect(odeTitle).toHaveText('微分方程式');
+  const odePages = sections.nth(1).locator('.rail-pages a');
+  await expect(odePages).toHaveCount(3);
+  await expect(odePages.nth(0)).toHaveText('積分して解く');
+  await expect(odePages.nth(1)).toHaveText('位置の時間微分');
+  await expect(odePages.nth(2)).toHaveText('Euler法');
   const nested = await page.evaluate(() => {
-    const section = document.querySelector('.rail-section-title')!.getBoundingClientRect();
-    const items = [...document.querySelectorAll('.rail-pages a')].map(node => node.getBoundingClientRect());
-    const stacked = items.every(item => item.top >= section.bottom - 1 && item.left > section.left + 4);
-    const vertical = items.every((item, index) => index === 0 || item.top >= items[index - 1].bottom - 1);
-    return stacked && vertical;
+    const blocks = [...document.querySelectorAll('.rail-section')];
+    return blocks.every((block, index) => {
+      const title = block.querySelector('.rail-section-title')!.getBoundingClientRect();
+      const items = [...block.querySelectorAll('.rail-pages a')].map(node => node.getBoundingClientRect());
+      const under = items.every(item => item.top >= title.bottom - 1 && item.left > title.left + 4);
+      const vertical = items.every((item, itemIndex) => itemIndex === 0 || item.top >= items[itemIndex - 1].bottom - 1);
+      const belowPrevious = index === 0 || title.top >= blocks[index - 1].getBoundingClientRect().bottom - 1;
+      return under && vertical && belowPrevious;
+    });
   });
   expect(nested).toBe(true);
 }
@@ -194,8 +207,8 @@ test('粗い刻みでも数値軌道が表示範囲に収まる', async ({ page 
 test('力学の目次はいまページにしてあるものだけを示す', async ({ page }) => {
   await page.goto('./');
   await expect(page.getByRole('heading', { level: 1, name: '力学.' })).toBeVisible();
-  await expect(page.locator('#contents')).toContainText('最初の部分は古典力学');
-  await expect(page.locator('#contents')).toContainText('まだページにしていません');
+  await expect(page.locator('#contents')).toContainText('直線上の一つの粒子');
+  await expect(page.locator('#contents')).not.toContainText('これより後');
   await expect(tex(page, 'x_0').first()).toBeVisible();
   await expect(tex(page, 'v_0').first()).toBeVisible();
   await expect(tex(page, String.raw`x' = v`).first()).toBeVisible();
@@ -209,9 +222,95 @@ test('力学の目次はいまページにしてあるものだけを示す', as
   await expect(page.getByRole('link', { name: '等加速度直線運動' }).first()).toBeVisible();
   await expectMechanicsSection(page);
   const text = await page.locator('#contents').innerText();
-  for (const word of ['電磁気', '解析力学', '金融', '分子動力学', '正本', '計算核', '軌道を読む', '力学の教科書']) {
+  for (const word of ['電磁気', '解析力学', '金融', '分子動力学', '正本', '計算核', '軌道を読む', '力学の教科書', 'これより後']) {
     expect(text).not.toContain(word);
   }
+});
+
+async function expectReadingPage(page: Page) {
+  await expectTypeSize(page);
+  await expectMechanicsSection(page);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+}
+
+test('微分方程式をデスクトップと狭い画面で読む', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1050 });
+  await page.goto('ode.html');
+  await expect(page.getByRole('heading', { level: 1, name: '微分方程式.' })).toBeVisible();
+  await expect(tex(page, String.raw`x' = f(x, t)`).first()).toBeVisible();
+  await expect(tex(page, String.raw`\frac{d}{dt} x(t) = f(x(t), t)`).first()).toBeVisible();
+  await expect(page.locator('#study')).toContainText('解であるためには');
+  await expect(page.locator('#study').getByRole('link', { name: '等速直線運動' })).toHaveAttribute('href', './uniform.html');
+  await expect(page.locator('#study').getByRole('link', { name: '等加速度直線運動' })).toHaveAttribute('href', './accelerated.html');
+  await expect(page.getByRole('link', { name: '積分して解く' }).first()).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Euler法' }).first()).toBeVisible();
+  const text = await page.locator('#lesson').innerText();
+  for (const word of ['crates/', '正本', '計算核', 'ばね', '電磁気', 'RK4']) {
+    expect(text).not.toContain(word);
+  }
+  await expectReadingPage(page);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(page.getByRole('heading', { level: 1, name: '微分方程式.' })).toBeVisible();
+  await expect(page.locator('.equation').first()).toBeVisible();
+  await expectReadingPage(page);
+});
+
+test('積分して解くをデスクトップと狭い画面で読む', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1050 });
+  await page.goto('integrate.html');
+  await expect(page.getByRole('heading', { level: 1, name: '積分して解く.' })).toBeVisible();
+  await expect(tex(page, String.raw`x' = f(t)`).first()).toBeVisible();
+  await expect(tex(page, 'x(t) = x_0 + v t').first()).toBeVisible();
+  await expect(tex(page, 'v(t) = v_0 + a t').first()).toBeVisible();
+  await expect(tex(page, String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`).first()).toBeVisible();
+  await expect(page.locator('#study')).toContainText('厳密解');
+  await expect(page.locator('#study').getByRole('link', { name: '等速直線運動' })).toHaveAttribute('href', './uniform.html');
+  await expect(page.locator('#study').getByRole('link', { name: '等加速度直線運動' })).toHaveAttribute('href', './accelerated.html');
+  const text = await page.locator('#lesson').innerText();
+  for (const word of ['crates/', '正本', '計算核', 'ばね', '電磁気']) {
+    expect(text).not.toContain(word);
+  }
+  await expectReadingPage(page);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(page.getByRole('heading', { level: 1, name: '積分して解く.' })).toBeVisible();
+  await expect(page.locator('.solution-equation').first()).toBeVisible();
+  await expectReadingPage(page);
+});
+
+test('Euler法をデスクトップと狭い画面で読む', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1050 });
+  await page.goto('euler.html');
+  await expect(page.locator('#status')).toHaveText('準備完了');
+  await expect(page.getByRole('heading', { name: 'Euler法の1ステップ' })).toBeVisible();
+  await expect(tex(page, String.raw`x_{n+1} = x_n + \Delta t \, f(x_n, t_n)`).first()).toBeVisible();
+  await expect(tex(page, String.raw`x_{n+1} = x_n + v \Delta t`).first()).toBeVisible();
+  await expect(page.locator('#study')).toContainText('倍精度浮動小数点の丸めだけです');
+  const href = '/Ergion/doc/ergion_core/fn.euler_step.html';
+  const link = page.locator('#study').getByRole('link', { name: '1ステップの説明', exact: true });
+  await expect(link).toHaveCount(1);
+  await expect(link).toHaveAttribute('href', href);
+  const study = await page.locator('#study').innerText();
+  expect(study).not.toContain('crates/');
+  expect(study).not.toContain('euler_step');
+  expect(study).not.toContain('EulerSimulation');
+  await expectTypeSize(page);
+  await expectMechanicsSection(page);
+  const doc = await page.request.get(href);
+  expect(doc.ok()).toBeTruthy();
+  expect(await doc.text()).toContain('euler_step');
+  await page.locator('[name=initial_position]').fill('0');
+  await page.locator('[name=velocity]').fill('2');
+  await page.locator('[name=dt]').fill('0.25');
+  await page.getByRole('button', { name: '条件を適用してリセット' }).click();
+  await expect(page.locator('#status')).toHaveText('準備完了');
+  await page.getByRole('button', { name: '1ステップ', exact: true }).click();
+  await expect(page.locator('#position')).toHaveText('0.50000');
+  await expect(page.locator('#velocity')).toHaveText('2.00000');
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(page.getByRole('heading', { name: 'Euler法.' })).toBeVisible();
+  await expect(page.locator('.equation').first()).toBeVisible();
+  await expectMechanicsSection(page);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
 
 test('位置の時間微分をデスクトップと狭い画面で読む', async ({ page }) => {

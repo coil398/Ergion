@@ -12,7 +12,7 @@ app.innerHTML = `
         <div>
           <p class="breadcrumb">実験室 <span>/</span> 力学</p>
           <h1>力学<span class="title-dot">.</span></h1>
-          <p class="description">Ergion のページは、ここから始まります。最初の部分は古典力学で、直線上の一つの粒子を扱います。いまページにしてあるのは、位置の時間微分と、それを使う二つの運動です。これより後の部分は、まだページにしていません。</p>
+          <p class="description">力学では、直線上の一つの粒子を扱います。位置の時間微分と、それを使う二つの運動を置いてあります。微分方程式の解き方は、<a href="./ode.html">隣の節</a>に置いてあります。</p>
         </div>
       </section>
       <div class="chapter-list">
@@ -33,7 +33,7 @@ app.innerHTML = `
           <p class="equation equation-follow">${tex('v(t) = v_0 + a t', true)}</p>
         </a>
       </div>
-      ${pageFooter('最初の部分は古典力学です。ページにしてあるのは、位置の時間微分、等速直線運動、等加速度直線運動です。これより後の部分は、まだページにしていません。')}
+      ${pageFooter('力学のページは、位置の時間微分、等速直線運動、等加速度直線運動です。')}
     </main>
   </div>`;
 

@@ -34,6 +34,7 @@ code{overflow-wrap:anywhere}
 .rail{display:flex;flex-direction:column;padding:28px 16px 24px;border-right:1px solid var(--line);background:#f9f9fc}
 .rail-heading{font-size:16px;color:var(--secondary);margin:0 10px 12px}
 .rail-section{display:flex;flex-direction:column;align-items:stretch;min-width:0}
+.rail-section+.rail-section{margin-top:12px}
 .rail-section-title{display:block;border-radius:7px;padding:10px 12px;font-size:16px;font-weight:700;line-height:1.5;text-decoration:none}
 .rail-section-title.active{background:#eae7f6;color:#514091}
 .rail-pages{list-style:none;margin:0;padding:0 0 0 16px;display:flex;flex-direction:column}
