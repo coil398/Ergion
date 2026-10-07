@@ -2,13 +2,13 @@
 
 Ergion（エルジオン）は計算の基盤であり、学習の基盤でもある。再利用可能なRust数値コアを持ち、ブラウザとNative CLIから同じ条件で計算できる。
 
-画面にいまあるページは、力学と微分方程式です。力学には位置の時間微分（$x' = v$）、等速直線運動（$x = x_0 + v t$）、等加速度直線運動（$x(t) = x_0 + v_0 t + \frac{1}{2} a t^2$、$v(t) = v_0 + a t$）を置いてあります。微分方程式には、式 $x' = f(x, t)$、右辺が未知関数によらないときの積分、そして Euler 法の1ステップを置いてあります。Ergion 全体を力学の教科書とは呼びません。既存の調和振動子のコードは保持しますが、紹介するページにはしません。
+画面にいまあるページは、力学と微分方程式です。力学には位置の時間微分（$x' = v$）、等速直線運動（$x = x_0 + v t$）、等加速度直線運動（$x(t) = x_0 + v_0 t + \frac{1}{2} a t^2$、$v(t) = v_0 + a t$）を置いてあります。微分方程式には、式 $x' = f(x, t)$、右辺が未知関数によらないときの積分、そして数値解法（Euler 法、中点法、古典的 RK4）を置いてあります。Ergion 全体を力学の教科書とは呼びません。既存の調和振動子のコードは保持しますが、紹介するページにはしません。
 
 式の解説は、等速直線運動では `crates/ergion-lab/src/uniform.rs` の `UniformSimulation`、等加速度直線運動では `crates/ergion-lab/src/constant_acceleration.rs` の `ConstantAccelerationSimulation` の rustdoc に書いてあります。画面は、その手順と動く粒子を示します。GitHub Pages（https://coil398.github.io/Ergion/）で公開され、Cursorローカル環境でも閲覧できます。
 
 ## 現在の状態
 
-画面にいまあるページは、力学と微分方程式です。等速直線運動は `crates/ergion-lab/src/uniform.rs` の `UniformSimulation`、等加速度直線運動は `crates/ergion-lab/src/constant_acceleration.rs` の `ConstantAccelerationSimulation` が計算します。Euler 法の1ステップは `ergion-core` の `euler_step` です。式、1ステップの計算、テストが確かめている内容は、それぞれの rustdoc に書いてあります。ブラウザでは Worker 内の Wasm で同じ関数を呼び出し、位置と速度を描きます。GitHub Pages（https://coil398.github.io/Ergion/）に公開されています。
+画面にいまあるページは、力学と微分方程式です。等速直線運動は `crates/ergion-lab/src/uniform.rs` の `UniformSimulation`、等加速度直線運動は `crates/ergion-lab/src/constant_acceleration.rs` の `ConstantAccelerationSimulation` が計算します。数値解法の1ステップは `ergion-core` の `euler_step`、`midpoint_step`、`rk4_step` です。式、1ステップの計算、テストが確かめている内容は、それぞれの rustdoc に書いてあります。ブラウザでは Worker 内の Wasm で同じ関数を呼び出し、位置と速度を描きます。GitHub Pages（https://coil398.github.io/Ergion/）に公開されています。
 
 設定変更、開始・一時停止・再開、1ステップ実行、リセット、JSON設定の保存・読み込みに対応しています。v0.1全体は開発中です。LJ粒子系、3D MD、温度、チェックポイントによる途中状態の保存・再開は未実装です。
 

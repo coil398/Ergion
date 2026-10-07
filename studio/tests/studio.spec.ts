@@ -25,7 +25,7 @@ async function expectMechanicsSection(page: Page) {
   await expect(odePages).toHaveCount(3);
   await expect(odePages.nth(0)).toHaveText('積分して解く');
   await expect(odePages.nth(1)).toHaveText('位置の時間微分');
-  await expect(odePages.nth(2)).toHaveText('Euler法');
+  await expect(odePages.nth(2)).toHaveText('数値解法');
   const nested = await page.evaluate(() => {
     const blocks = [...document.querySelectorAll('.rail-section')];
     return blocks.every((block, index) => {
@@ -243,7 +243,7 @@ test('微分方程式をデスクトップと狭い画面で読む', async ({ pa
   await expect(page.locator('#study').getByRole('link', { name: '等速直線運動' })).toHaveAttribute('href', './uniform.html');
   await expect(page.locator('#study').getByRole('link', { name: '等加速度直線運動' })).toHaveAttribute('href', './accelerated.html');
   await expect(page.getByRole('link', { name: '積分して解く' }).first()).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Euler法' }).first()).toBeVisible();
+  await expect(page.getByRole('link', { name: '数値解法' }).first()).toBeVisible();
   const text = await page.locator('#lesson').innerText();
   for (const word of ['crates/', '正本', '計算核', 'ばね', '電磁気', 'RK4']) {
     expect(text).not.toContain(word);
@@ -277,38 +277,66 @@ test('積分して解くをデスクトップと狭い画面で読む', async ({
   await expectReadingPage(page);
 });
 
-test('Euler法をデスクトップと狭い画面で読む', async ({ page }) => {
+test('数値解法のタブをデスクトップと狭い画面で切り替える', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1050 });
   await page.goto('euler.html');
   await expect(page.locator('#status')).toHaveText('準備完了');
-  await expect(page.getByRole('heading', { name: 'Euler法の1ステップ' })).toBeVisible();
-  await expect(tex(page, String.raw`x_{n+1} = x_n + \Delta t \, f(x_n, t_n)`).first()).toBeVisible();
-  await expect(tex(page, String.raw`x_{n+1} = x_n + v \Delta t`).first()).toBeVisible();
-  await expect(page.locator('#study')).toContainText('倍精度浮動小数点の丸めだけです');
-  const href = '/Ergion/doc/ergion_core/fn.euler_step.html';
-  const link = page.locator('#study').getByRole('link', { name: '1ステップの説明', exact: true });
-  await expect(link).toHaveCount(1);
-  await expect(link).toHaveAttribute('href', href);
+  await expect(page.getByRole('heading', { name: '数値解法の1ステップ' })).toBeVisible();
+  await expect(tex(page, String.raw`x' = v`).first()).toBeVisible();
+  await expect(page.locator('[role=tablist]')).toHaveCount(1);
+  await expect(page.getByRole('tab')).toHaveCount(3);
   const study = await page.locator('#study').innerText();
-  expect(study).not.toContain('crates/');
-  expect(study).not.toContain('euler_step');
-  expect(study).not.toContain('EulerSimulation');
+  for (const word of ['crates/', 'euler_step', 'midpoint_step', 'rk4_step', 'EulerSimulation']) {
+    expect(study).not.toContain(word);
+  }
   await expectTypeSize(page);
   await expectMechanicsSection(page);
-  const doc = await page.request.get(href);
-  expect(doc.ok()).toBeTruthy();
-  expect(await doc.text()).toContain('euler_step');
   await page.locator('[name=initial_position]').fill('0');
   await page.locator('[name=velocity]').fill('2');
   await page.locator('[name=dt]').fill('0.25');
   await page.getByRole('button', { name: '条件を適用してリセット' }).click();
   await expect(page.locator('#status')).toHaveText('準備完了');
-  await page.getByRole('button', { name: '1ステップ', exact: true }).click();
-  await expect(page.locator('#position')).toHaveText('0.50000');
-  await expect(page.locator('#velocity')).toHaveText('2.00000');
+
+  const tabs: { name: string; formula: string; href: string }[] = [
+    {
+      name: 'Euler法',
+      formula: String.raw`x_{n+1} = x_n + \Delta t \, f(x_n, t_n)`,
+      href: '/Ergion/doc/ergion_core/fn.euler_step.html',
+    },
+    {
+      name: '中点法',
+      formula: String.raw`x_{n+1} = x_n + \Delta t \, k_2`,
+      href: '/Ergion/doc/ergion_core/fn.midpoint_step.html',
+    },
+    {
+      name: '古典的RK4',
+      formula: String.raw`x_{n+1} = x_n + \frac{\Delta t}{6}(k_1 + 2k_2 + 2k_3 + k_4)`,
+      href: '/Ergion/doc/ergion_core/fn.rk4_step.html',
+    },
+  ];
+  for (const tab of tabs) {
+    await page.getByRole('tab', { name: tab.name, exact: true }).click();
+    await expect(page.getByRole('tab', { name: tab.name, exact: true })).toHaveAttribute('aria-selected', 'true');
+    await expect(page.locator('#status')).toHaveText('準備完了');
+    await expect(tex(page, String.raw`x' = v`).first()).toBeVisible();
+    await expect(tex(page, tab.formula).first()).toBeVisible();
+    await expect(page.locator('#study')).toContainText('丸めだけです');
+    const link = page.locator('#study').getByRole('link', { name: '1ステップの説明', exact: true });
+    await expect(link).toHaveCount(1);
+    await expect(link).toHaveAttribute('href', tab.href);
+    const doc = await page.request.get(tab.href);
+    expect(doc.ok()).toBeTruthy();
+    await page.getByRole('button', { name: '1ステップ', exact: true }).click();
+    await expect(page.locator('#position')).toHaveText('0.50000');
+    await expect(page.locator('#velocity')).toHaveText('2.00000');
+    expect(Math.abs(Number(await page.locator('#energy-error').innerText()))).toBeLessThan(1e-12);
+    await expect(page.locator('#phase-chart')).toHaveAttribute('aria-label', /位置の誤差/);
+  }
+
   await page.setViewportSize({ width: 390, height: 844 });
-  await expect(page.getByRole('heading', { name: 'Euler法.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '数値解法.' })).toBeVisible();
   await expect(page.locator('.equation').first()).toBeVisible();
+  await expect(page.getByRole('tab', { name: '古典的RK4' })).toBeVisible();
   await expectMechanicsSection(page);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
@@ -317,6 +345,7 @@ test('位置の時間微分をデスクトップと狭い画面で読む', async
   await page.setViewportSize({ width: 1440, height: 1050 });
   await page.goto('derivative.html');
   await expect(page.locator('#status')).toHaveText('準備完了');
+  await expect(page.locator('[role=tablist]')).toHaveCount(0);
   await expect(page.getByRole('heading', { name: '位置の時間微分の計算と説明' })).toBeVisible();
   await expect(tex(page, String.raw`x' = v`).first()).toBeVisible();
   await expect(tex(page, String.raw`x_{n+1} = x_n + v \Delta t`).first()).toBeVisible();

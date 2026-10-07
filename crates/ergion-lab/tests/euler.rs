@@ -10,7 +10,23 @@ fn one_step_matches_the_exact_increment() {
     assert_eq!(batch.state.position, 1.5);
     assert_eq!(batch.state.velocity, 2.0);
     assert_eq!(batch.state.exact_position, 1.5);
+    assert_eq!(batch.state.position_error, 0.0);
     assert_eq!(batch.state.time, 0.25);
+}
+
+#[test]
+fn midpoint_and_rk4_match_the_exact_increment_for_constant_velocity() {
+    for method in ["midpoint", "rk4"] {
+        let mut simulation = EulerSimulation::new(&format!(
+            r#"{{"schema_version":1,"initial_position":0,"velocity":2,"dt":0.25,"steps":4,"method":"{method}"}}"#
+        ))
+        .unwrap();
+        let batch: EulerBatch = serde_json::from_str(&simulation.advance(1).unwrap()).unwrap();
+        assert_eq!(batch.state.position, 0.5, "{method}");
+        assert_eq!(batch.state.exact_position, 0.5, "{method}");
+        assert_eq!(batch.state.position_error, 0.0, "{method}");
+        assert_eq!(batch.state.velocity, 2.0, "{method}");
+    }
 }
 
 #[test]
@@ -26,6 +42,7 @@ fn repeated_steps_match_the_closed_form() {
         velocity: 0.0,
         exact_position: 0.0,
         exact_velocity: 0.0,
+        position_error: 0.0,
         finished: false,
     };
     while !state.finished {
@@ -46,6 +63,7 @@ fn rejects_invalid_euler_configurations() {
         r#"{"schema_version":1,"initial_position":0,"velocity":1,"dt":0.1,"steps":0}"#,
         r#"{"schema_version":1,"initial_position":1e100,"velocity":1,"dt":0.1,"steps":1}"#,
         r#"{"schema_version":1,"initial_position":0,"velocity":1,"dt":0.1,"steps":1,"extra":1}"#,
+        r#"{"schema_version":1,"initial_position":0,"velocity":1,"dt":0.1,"steps":1,"method":"bogus"}"#,
         "{}",
     ] {
         assert!(EulerSimulation::new(json).is_err(), "{json}");

@@ -1,7 +1,7 @@
 import './style.css';
 import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
-import { clearFigure, drawTimeSeries, drawUniformMotion } from './figures';
-import type { Config, Snapshot } from './protocol';
+import { clearFigure, drawErrorSeries, drawTimeSeries, drawUniformMotion } from './figures';
+import type { Config, Snapshot, StepMethod } from './protocol';
 import { mountSession } from './session';
 import { tex } from './tex';
 
@@ -13,6 +13,43 @@ const defaults: Config = {
   steps: 1000,
 };
 
+const methods: Record<StepMethod, { label: string; fn: 'euler_step' | 'midpoint_step' | 'rk4_step'; formula: string; prose: string }> = {
+  euler: {
+    label: 'Euler法',
+    fn: 'euler_step',
+    formula: String.raw`x_{n+1} = x_n + \Delta t \, f(x_n, t_n)`,
+    prose: 'Euler 法は、右辺を区間の始点で一定とみなします。',
+  },
+  midpoint: {
+    label: '中点法',
+    fn: 'midpoint_step',
+    formula: String.raw`x_{n+1} = x_n + \Delta t \, k_2`,
+    prose: '中点法は2次の Runge–Kutta 法です。始点の傾きで中点まで仮に進み、その中点の傾きで1ステップ進めます。',
+  },
+  rk4: {
+    label: '古典的RK4',
+    fn: 'rk4_step',
+    formula: String.raw`x_{n+1} = x_n + \frac{\Delta t}{6}(k_1 + 2k_2 + 2k_3 + k_4)`,
+    prose: '古典的な4次の Runge–Kutta 法は、始点、中点、終点で求めた四つの傾きを上の重みで足します。',
+  },
+};
+
+let method: StepMethod = 'euler';
+
+function methodBody(kind: StepMethod): string {
+  const item = methods[kind];
+  const rounding = kind === 'euler'
+    ? `このページでは ${tex('f(x_n, t_n) = v')} です。${tex('v')} は一定なので、上の式は ${tex(String.raw`x_{n+1} = x_n + v \Delta t`)} と同じです。`
+    : kind === 'midpoint'
+      ? `${tex('v')} が一定ならば、始点の傾きも中点の傾きも ${tex('v')} です。したがって ${tex('k_2 = v')} であり、更新は ${tex(String.raw`x_{n+1} = x_n + v \Delta t`)} と一致します。`
+      : `${tex('v')} が一定ならば、四つの傾きはみな ${tex('v')} です。重み付きの和は ${tex('v')} になり、更新は ${tex(String.raw`x_{n+1} = x_n + v \Delta t`)} と一致します。`;
+  return `
+    <p>${item.prose}（${coreStepDoc(item.fn, '1ステップの説明')}）</p>
+    <p class="solution-equation">${tex(item.formula, true)}</p>
+    <p>${rounding}これは厳密解 ${tex('x(t) = x_0 + v t')} の増分と一致します。打ち切り誤差はありません。各時刻の誤差 ${tex('x - x_{\\mathrm{exact}}')} は、倍精度浮動小数点の丸めだけです。</p>
+  `;
+}
+
 const app = document.querySelector<HTMLDivElement>('#app')!;
 app.innerHTML = `
   ${appHeader('計算環境を準備中')}
@@ -21,13 +58,13 @@ app.innerHTML = `
     <main id="experiment">
       <section class="intro">
         <div>
-          <p class="breadcrumb"><a href="./ode.html">微分方程式</a> <span>/</span> Euler法</p>
-          <h1>Euler法<span class="title-dot">.</span></h1>
-          <p class="description">Euler 法は、右辺を区間の始点の値で一定とみなして、微分方程式を1ステップ進めます。速度が一定のときは、そのステップが厳密解の増分と一致します。</p>
+          <p class="breadcrumb"><a href="./ode.html">微分方程式</a> <span>/</span> 数値解法</p>
+          <h1>数値解法<span class="title-dot">.</span></h1>
+          <p class="description">方程式は ${tex(String.raw`x' = v`)} のままです。タブは、1ステップの進め方だけを切り替えます。速度 ${tex('v')} は一定で、厳密解は ${tex('x(t) = x_0 + v t')} です。</p>
         </div>
-        <div class="equation" aria-label="Euler 法の1ステップ。次の位置は、いまの位置に時間刻みと右辺の積を加えた値">
-          ${tex(String.raw`x_{n+1} = x_n + \Delta t \, f(x_n, t_n)`, true)}
-          <span class="equation-note">始点の傾きで1ステップ</span>
+        <div class="equation" aria-label="位置の時間微分。x プライムは v">
+          ${tex(String.raw`x' = v`, true)}
+          <span class="equation-note">速度は一定</span>
         </div>
       </section>
       <div class="experiment-grid">
@@ -55,31 +92,30 @@ app.innerHTML = `
         </section>
         <div class="results">
           <section class="study panel" id="study" aria-labelledby="study-heading">
-            <div class="panel-heading"><h2 id="study-heading">Euler法の1ステップ</h2><span class="quiet-label">一定の速度</span></div>
+            <div class="panel-heading"><h2 id="study-heading">数値解法の1ステップ</h2><span class="quiet-label" id="method-label">Euler法</span></div>
             <div class="study-body">
+              <div class="method-tabs" role="tablist" aria-label="数値解法">
+                <button type="button" class="method-tab" role="tab" id="tab-euler" data-method="euler" aria-selected="true" aria-controls="method-copy">Euler法</button>
+                <button type="button" class="method-tab" role="tab" id="tab-midpoint" data-method="midpoint" aria-selected="false" aria-controls="method-copy">中点法</button>
+                <button type="button" class="method-tab" role="tab" id="tab-rk4" data-method="rk4" aria-selected="false" aria-controls="method-copy">古典的RK4</button>
+              </div>
               <ol class="solution">
-                <li>微分方程式を ${tex(String.raw`x' = f(x, t)`)} と書きます。${tex('x')} は未知関数、${tex('t')} は時刻、${tex('f')} は右辺です。</li>
-                <li>ステップ ${tex('n')} の値を ${tex('x_n')}、時刻を ${tex('t_n')}、時間刻みを ${tex(String.raw`\Delta t`)} とします。Euler 法は右辺を区間の始点で一定とみなし、次の式で1ステップ進めます（${coreStepDoc('euler_step', '1ステップの説明')}）。
-                  <p class="solution-equation">${tex(String.raw`x_{n+1} = x_n + \Delta t \, f(x_n, t_n)`, true)}</p>
-                </li>
-                <li>このページの右辺は速度 ${tex('v')} で、刻みのあいだ一定です。したがって ${tex('f(x_n, t_n) = v')} であり、上の式は次の式と同じです。
-                  <p class="solution-equation">${tex(String.raw`x_{n+1} = x_n + v \Delta t`, true)}</p>
-                  速度が一定なので、この1ステップは厳密解の増分と一致します。打ち切り誤差はありません。表示される差は、倍精度浮動小数点の丸めだけです。
-                </li>
+                <li>直線上の位置を ${tex('x')}、時刻を ${tex('t')}、速度を ${tex('v')} とします。このページの方程式は ${tex(String.raw`x' = v`)} です。速度は時刻にも位置にもよりません。厳密解は ${tex('x(t) = x_0 + v t')} です。</li>
+                <li id="method-copy" role="tabpanel" aria-labelledby="tab-euler"></li>
               </ol>
-              <p>画面は、各時刻の位置と速度を描きます。式 ${tex(String.raw`x_{n+1} = x_n + v \Delta t`)} や ${tex('x(t) = x_0 + v t')} を、描画のために計算し直すことはありません。図の線分は、初期位置 ${tex('x_0')} に加わる変位 ${tex('vt')} です。紫の実線が数値解、青緑の破線が厳密解です。</p>
+              <p>画面は、各時刻に返された数値解の位置と、誤差 ${tex('x - x_{\\mathrm{exact}}')} を描きます。厳密解の式を、描画のために計算し直すことはありません。紫の実線が数値解、青緑の破線が厳密解です。誤差は、その破線とは別の実線です。</p>
             </div>
           </section>
           <section class="scene panel" aria-labelledby="scene-heading">
             <div class="panel-heading"><h2 id="scene-heading">粒子の直線運動</h2><span id="scene-time" class="numeric">t = 0.000</span></div>
-            <p class="scene-caption">速度 ${tex('v')} が一定のあいだ、Euler 法の1ステップは変位 ${tex(String.raw`v \Delta t`)} だけ位置を進めます。変位を重ねた長さが ${tex('vt')} です。</p>
-            <canvas id="oscillator" aria-label="直線上を進む粒子。速度が一定のとき、Euler 法の1ステップで位置は速度と時間刻みの積だけ進みます。数値解は紫の実線、解析解は青緑の破線。" role="img"></canvas>
-            <div class="readouts"><div><span>位置 x</span><output id="position">—</output></div><div><span>速度 v</span><output id="velocity">—</output></div><div><span>解析解の位置</span><output id="exact-position">—</output></div><div><span>位置の絶対差 |x − x_exact|</span><output id="energy-error">—</output></div></div>
+            <p class="scene-caption" id="scene-caption">速度 ${tex('v')} が一定のあいだ、選んだ方法の1ステップは変位 ${tex(String.raw`v \Delta t`)} だけ位置を進めます。</p>
+            <canvas id="oscillator" aria-label="直線上を進む粒子。速度が一定のとき、選んだ数値解法の1ステップで位置は速度と時間刻みの積だけ進みます。数値解は紫の実線、解析解は青緑の破線。" role="img"></canvas>
+            <div class="readouts"><div><span>位置 x</span><output id="position">—</output></div><div><span>速度 v</span><output id="velocity">—</output></div><div><span>解析解の位置</span><output id="exact-position">—</output></div><div><span>位置の誤差 x − x_exact</span><output id="energy-error">—</output></div></div>
           </section>
           <section class="plots panel" aria-labelledby="plots-heading">
-            <div class="panel-heading"><h2 id="plots-heading">位置と速度の時間変化</h2><div class="legend"><span><i class="numerical"></i>数値解</span><span><i class="analytical"></i>解析解</span></div></div>
-            <div class="plot-grid"><div class="plot-main"><h3>位置の時間変化 ${tex('x(t)')}</h3><canvas id="time-chart" aria-label="位置と時間のグラフ" role="img"></canvas><p>時間 t</p></div><div class="plot-phase"><h3>速度の時間変化 ${tex('v(t)')}</h3><canvas id="phase-chart" aria-label="速度と時間のグラフ" role="img"></canvas><p>時間 t</p></div></div>
-            <div class="plot-footer"><span id="comparison">解析解との差を計算します。</span><span>破線は解析解</span></div>
+            <div class="panel-heading"><h2 id="plots-heading">位置と誤差の時間変化</h2><div class="legend"><span><i class="numerical"></i>数値解</span><span><i class="analytical"></i>解析解</span><span><i class="difference"></i>誤差</span></div></div>
+            <div class="plot-grid"><div class="plot-main"><h3>位置の時間変化 ${tex('x(t)')}</h3><canvas id="time-chart" aria-label="位置と時間のグラフ" role="img"></canvas><p>時間 t</p></div><div class="plot-phase"><h3>位置の誤差 ${tex('x - x_{\\mathrm{exact}}')}</h3><canvas id="phase-chart" aria-label="位置の誤差と時間のグラフ" role="img"></canvas><p>時間 t</p></div></div>
+            <div class="plot-footer"><span id="comparison">解析解との差を計算します。</span><span>誤差は実線</span></div>
           </section>
           <section class="transport panel" aria-label="計算操作">
             <div class="transport-buttons"><button id="run" class="button primary" disabled>計算を開始</button><button id="step" class="button secondary" disabled>1ステップ</button><button id="reset" class="icon-button" aria-label="初期状態にリセット" title="初期状態にリセット" disabled>↺</button></div>
@@ -89,9 +125,22 @@ app.innerHTML = `
           <p class="experiment-note">数値計算はブラウザ内で実行します。条件や結果をサーバーへ送信しません。</p>
         </div>
       </div>
-      ${pageFooter('この画面の計算は、速度が一定のときの Euler 法の1ステップです。')}
+      ${pageFooter('この画面は、速度が一定の x\' = v を、選んだ数値解法で1ステップ進めます。')}
     </main>
   </div>`;
+
+function showMethod(kind: StepMethod) {
+  method = kind;
+  document.querySelector('#method-label')!.textContent = methods[kind].label;
+  const panel = document.querySelector<HTMLElement>('#method-copy')!;
+  panel.innerHTML = methodBody(kind);
+  panel.setAttribute('aria-labelledby', `tab-${kind}`);
+  for (const button of document.querySelectorAll<HTMLButtonElement>('.method-tab')) {
+    button.setAttribute('aria-selected', button.dataset.method === kind ? 'true' : 'false');
+  }
+}
+
+showMethod('euler');
 
 const form = document.querySelector<HTMLFormElement>('#config-form')!;
 
@@ -119,7 +168,7 @@ function paintFigures(state: Snapshot | undefined, points: Snapshot[], config: C
     for (const canvas of canvases) clearFigure(canvas);
     return;
   }
-  const key = `${config.initial_position}|${config.velocity}|${config.dt}|${config.steps}`;
+  const key = `${config.initial_position}|${config.velocity}|${config.dt}|${config.steps}|${method}`;
   const timeEnd = config.steps * config.dt;
   const x0 = points.reduce((earliest, point) => point.time < earliest.time ? point : earliest, points[0] ?? state).position;
   drawUniformMotion(canvases[0], {
@@ -139,21 +188,30 @@ function paintFigures(state: Snapshot | undefined, points: Snapshot[], config: C
     current: state.position,
     samples: points.map(point => ({ time: point.time, numerical: point.position, exact: point.exact_position })),
   });
-  drawTimeSeries(canvases[2], {
-    key: `${key}|velocity`,
-    kind: 'velocity',
+  drawErrorSeries(canvases[2], {
+    key: `${key}|error`,
     timeEnd,
     time: state.time,
-    current: state.velocity,
-    samples: points.map(point => ({ time: point.time, numerical: point.velocity, exact: point.exact_velocity })),
+    current: state.position_error ?? 0,
+    samples: points.map(point => ({ time: point.time, error: point.position_error ?? 0 })),
   });
 }
 
-mountSession({
+const session = mountSession({
   defaults,
   model: 'euler',
   downloadName: 'ergion-euler.json',
   readForm,
   fillForm,
   paintFigures,
+  method: () => method,
 });
+
+for (const button of document.querySelectorAll<HTMLButtonElement>('.method-tab')) {
+  button.addEventListener('click', () => {
+    const next = button.dataset.method as StepMethod;
+    if (next === method) return;
+    showMethod(next);
+    session.reloadMethod();
+  });
+}

@@ -1,7 +1,29 @@
 //! Domain-independent, double-precision time integration.
 
-/// Advances a general first-order ODE by one classical RK4 step.
-/// `derivative` must fill every component of its output slice.
+/// 微分方程式 \(x' = f(x, t)\) を、古典的な4次の Runge–Kutta 法で1ステップ進める。
+///
+/// \(x\) は未知関数、\(t\) は独立変数、\(f(x, t)\) は右辺です。
+/// ステップ \(n\) の値を \(x_n\)、その時刻を \(t_n\)、時間刻みを \(\Delta t\) とします。
+/// 四つの傾きは、始点、中点を二度、終点で右辺を評価したものです。
+/// \[
+/// \begin{align*}
+/// k_1 &= f(x_n, t_n), \\
+/// k_2 &= f\!\left(x_n + \tfrac{1}{2}\Delta t\, k_1,\ t_n + \tfrac{1}{2}\Delta t\right), \\
+/// k_3 &= f\!\left(x_n + \tfrac{1}{2}\Delta t\, k_2,\ t_n + \tfrac{1}{2}\Delta t\right), \\
+/// k_4 &= f(x_n + \Delta t\, k_3,\ t_n + \Delta t).
+/// \end{align*}
+/// \]
+/// 位置は次の式で進みます。
+/// \[
+/// x_{n+1} = x_n + \frac{\Delta t}{6}(k_1 + 2k_2 + 2k_3 + k_4)
+/// \]
+/// 右辺 \(f\) が \(x\) にも \(t\) にもよらず一定ならば、四つの傾きは同じ値です。
+/// そのときこの式は \(x_n + \Delta t\, f\) と一致し、区間の積分と同じ厳密な増分です。
+/// 打ち切り誤差はありません。数値との差は、倍精度浮動小数点の丸めだけです。
+/// 右辺が区間の途中で変わるときは、この1ステップは近似です。
+///
+/// `derivative` は、時刻と状態を受け取り、右辺の各成分を出力へ書き込みます。
+/// 出力の成分数は状態と同じでなければなりません。
 pub fn rk4_step(
     state: &mut [f64],
     time: f64,
@@ -66,6 +88,48 @@ pub fn euler_step(
     assert_eq!(slope.len(), state.len());
     for i in 0..state.len() {
         state[i] += dt * slope[i];
+    }
+}
+
+/// 微分方程式 \(x' = f(x, t)\) を、中点法で時間刻み \(\Delta t\) の1ステップだけ進める。
+///
+/// 中点法は、2次の Runge–Kutta 法です。
+/// \(x\) は未知関数、\(t\) は独立変数、\(f(x, t)\) は右辺です。
+/// ステップ \(n\) の値を \(x_n\)、その時刻を \(t_n\) とします。
+/// \(\Delta t\) はこの1ステップの時間刻みです。
+/// まず始点の傾きを求め、その傾きで区間の中点まで仮に進んだ位置の傾きを使います。
+/// \[
+/// \begin{align*}
+/// k_1 &= f(x_n, t_n), \\
+/// k_2 &= f\!\left(x_n + \tfrac{1}{2}\Delta t\, k_1,\ t_n + \tfrac{1}{2}\Delta t\right), \\
+/// x_{n+1} &= x_n + \Delta t\, k_2.
+/// \end{align*}
+/// \]
+/// 右辺 \(f\) が \(x\) にも \(t\) にもよらず一定ならば、\(k_1 = k_2 = f\) です。
+/// そのときこの式は \(x_n + \Delta t\, f\) と一致し、[`euler_step`] および区間の積分と同じ厳密な増分です。
+/// 打ち切り誤差はありません。数値との差は、倍精度浮動小数点の丸めだけです。
+/// 右辺が区間の途中で変わるときは、中点の傾きで区間全体を置き換える近似です。
+///
+/// `derivative` は、時刻と状態を受け取り、右辺の各成分を出力へ書き込みます。
+/// 出力の成分数は状態と同じでなければなりません。
+pub fn midpoint_step(
+    state: &mut [f64],
+    time: f64,
+    dt: f64,
+    derivative: impl Fn(f64, &[f64], &mut [f64]),
+) {
+    let mut k1 = vec![0.0; state.len()];
+    let mut k2 = vec![0.0; state.len()];
+    let mut stage = vec![0.0; state.len()];
+    derivative(time, state, &mut k1);
+    assert_eq!(k1.len(), state.len());
+    for i in 0..state.len() {
+        stage[i] = state[i] + 0.5 * dt * k1[i];
+    }
+    derivative(time + 0.5 * dt, &stage, &mut k2);
+    assert_eq!(k2.len(), state.len());
+    for i in 0..state.len() {
+        state[i] += dt * k2[i];
     }
 }
 
@@ -135,6 +199,34 @@ mod tests {
         euler_step(&mut state, 1.0, 0.5, |time, _value, slope| {
             slope[0] = time;
         });
+        assert_eq!(state[0], 0.5);
+    }
+
+    #[test]
+    fn midpoint_step_with_constant_slope_matches_euler() {
+        let mut midpoint = [1.0];
+        midpoint_step(&mut midpoint, 4.0, 0.4, |_time, _value, slope| {
+            slope[0] = 2.5;
+        });
+        let mut euler = [1.0];
+        euler_step(&mut euler, 4.0, 0.4, |_, _, slope| slope[0] = 2.5);
+        assert_eq!(midpoint, euler);
+        assert_eq!(midpoint[0], 1.0 + 0.4 * 2.5);
+    }
+
+    #[test]
+    fn midpoint_step_uses_the_slope_at_the_middle() {
+        let mut state = [0.0];
+        midpoint_step(&mut state, 0.0, 1.0, |time, _value, slope| {
+            slope[0] = time * time;
+        });
+        assert_eq!(state[0], 0.25);
+    }
+
+    #[test]
+    fn rk4_step_with_constant_slope_is_exact_aside_from_rounding() {
+        let mut state = [0.0];
+        rk4_step(&mut state, 0.0, 0.25, |_, _, slope| slope[0] = 2.0);
         assert_eq!(state[0], 0.5);
     }
 

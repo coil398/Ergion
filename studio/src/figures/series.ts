@@ -21,6 +21,7 @@ export interface TimeSeriesFrame {
 
 const numericalColor = '#6552b8';
 const exactColor = '#167b87';
+const differenceColor = '#a86240';
 
 function stroke(context: CanvasRenderingContext2D, frame: PlotFrame, samples: SeriesSample[], value: (sample: SeriesSample) => number) {
   context.beginPath();
@@ -95,4 +96,90 @@ export function drawTimeSeries(canvas: HTMLCanvasElement, frame: TimeSeriesFrame
   stroke(context, plot, frame.samples, sample => sample.exact);
   context.restore();
   drawSamplePoint(context, mapX(plot, frame.time), mapY(plot, frame.current));
+}
+
+export interface ErrorSample {
+  time: number;
+  error: number;
+}
+
+export interface ErrorSeriesFrame {
+  key: string;
+  timeEnd: number;
+  time: number;
+  current: number;
+  samples: ErrorSample[];
+}
+
+/** 位置の誤差。返された \(x - x_{\mathrm{exact}}\) を実線で描き、厳密解の破線にはしない。 */
+export function drawErrorSeries(canvas: HTMLCanvasElement, frame: ErrorSeriesFrame) {
+  const surface = canvasContext(canvas);
+  if (surface.width < 2 || surface.height < 2) return;
+  const { context, width, height } = surface;
+  const left = 88;
+  const top = 18;
+  const right = 16;
+  const bottom = 36;
+  const plotWidth = width - left - right;
+  const plotHeight = height - top - bottom;
+  if (plotWidth < 1 || plotHeight < 1) return;
+
+  const lastTime = frame.samples.reduce((max, sample) => Math.max(max, sample.time), 0);
+  const timeEnd = Number.isFinite(frame.timeEnd) && frame.timeEnd > 0 ? frame.timeEnd : lastTime;
+  const xMax = Math.max(timeEnd, lastTime, 1e-6);
+  const timed = frame.samples.map(sample => ({ time: sample.time, value: sample.error }));
+  const yDomain = axisDomain(
+    frame.key,
+    timed,
+    xMax,
+    [0, frame.current, ...frame.samples.map(sample => sample.error)],
+    0.2,
+    1e-15,
+  );
+  const plot: PlotFrame = {
+    left,
+    top,
+    width: plotWidth,
+    height: plotHeight,
+    xMin: 0,
+    xMax,
+    yMin: yDomain.min,
+    yMax: yDomain.max,
+  };
+  canvas.setAttribute(
+    'aria-label',
+    `位置の誤差と時間のグラフ。縦軸 ${plot.yMin.toPrecision(3)} から ${plot.yMax.toPrecision(3)}。現在の誤差 ${frame.current}`,
+  );
+
+  drawCartesianAxes(context, plot, 'x − x_exact = 0');
+  context.save();
+  context.beginPath();
+  context.rect(plot.left, plot.top, plot.width, plot.height);
+  context.clip();
+  context.lineJoin = 'round';
+  context.strokeStyle = differenceColor;
+  context.lineWidth = 2;
+  context.setLineDash([]);
+  context.beginPath();
+  let started = false;
+  for (const sample of frame.samples) {
+    const x = mapX(plot, sample.time);
+    const y = mapY(plot, sample.error);
+    if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
+    if (started) context.lineTo(x, y);
+    else {
+      context.moveTo(x, y);
+      started = true;
+    }
+  }
+  if (started) context.stroke();
+  context.restore();
+  const pointX = mapX(plot, frame.time);
+  const pointY = mapY(plot, frame.current);
+  if (Number.isFinite(pointX) && Number.isFinite(pointY)) {
+    context.beginPath();
+    context.fillStyle = differenceColor;
+    context.arc(pointX, pointY, 3.5, 0, Math.PI * 2);
+    context.fill();
+  }
 }

@@ -1,4 +1,4 @@
-import type { MotionModel, Reply, Snapshot } from './protocol';
+import type { MotionModel, Reply, Snapshot, StepMethod } from './protocol';
 
 export interface TimedConfig {
   schema_version: 1;
@@ -13,6 +13,8 @@ export function mountSession<C extends TimedConfig>(options: {
   readForm: () => C;
   fillForm: (value: C) => void;
   paintFigures: (state: Snapshot | undefined, samples: Snapshot[], config: C) => void;
+  /** 数値解法のページだけが渡す。タブは方法だけを切り替える。 */
+  method?: () => StepMethod;
 }) {
   const form = document.querySelector<HTMLFormElement>('#config-form')!;
   const runButton = document.querySelector<HTMLButtonElement>('#run')!;
@@ -33,7 +35,7 @@ export function mountSession<C extends TimedConfig>(options: {
   let paintQueued = false;
   let sampleStride = 1;
 
-  function post(command: { id: number; command: 'load'; model: MotionModel; config: C } | { id: number; command: 'start' | 'pause' | 'step' }) {
+  function post(command: { id: number; command: 'load'; model: MotionModel; method?: StepMethod; config: C } | { id: number; command: 'start' | 'pause' | 'step' }) {
     worker.postMessage(command);
   }
   function setText(selector: string, value: string) { document.querySelector(selector)!.textContent = value; }
@@ -74,7 +76,9 @@ export function mountSession<C extends TimedConfig>(options: {
     for (const [selector, value] of [['#position', state?.position], ['#velocity', state?.velocity], ['#exact-position', state?.exact_position]] as const) {
       setText(selector, value === undefined ? '—' : value.toFixed(5));
     }
-    const positionError = state ? Math.abs(state.position - state.exact_position) : undefined;
+    const positionError = state
+      ? (state.position_error ?? Math.abs(state.position - state.exact_position))
+      : undefined;
     const velocityError = state ? Math.abs(state.velocity - state.exact_velocity) : undefined;
     setText('#energy-error', positionError === undefined ? '—' : positionError.toExponential(2));
     setText('#comparison', state
@@ -90,7 +94,7 @@ export function mountSession<C extends TimedConfig>(options: {
     sampleStride = Math.max(1, Math.ceil(config.steps / 2500));
     errorElement.hidden = true;
     controls();
-    post({ id: ++id, command: 'load', model: options.model, config });
+    post({ id: ++id, command: 'load', model: options.model, method: options.method?.(), config });
     paint();
   }
 
@@ -171,4 +175,16 @@ export function mountSession<C extends TimedConfig>(options: {
   options.fillForm(config);
   updateHint();
   load(config);
+  return {
+    /** 適用済みの条件のまま、選ばれている数値解法だけを読み直す。 */
+    reloadMethod() {
+      phase = 'loading';
+      state = undefined;
+      samples = [];
+      errorElement.hidden = true;
+      controls();
+      post({ id: ++id, command: 'load', model: options.model, method: options.method?.(), config });
+      paint();
+    },
+  };
 }

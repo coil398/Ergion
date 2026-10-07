@@ -17,6 +17,8 @@ export interface ConstantAccelerationConfig {
 
 export type MotionModel = 'uniform' | 'constant-acceleration' | 'position-derivative' | 'euler';
 
+export type StepMethod = 'euler' | 'midpoint' | 'rk4';
+
 export interface Snapshot {
   step: number;
   time: number;
@@ -24,12 +26,13 @@ export interface Snapshot {
   velocity: number;
   exact_position: number;
   exact_velocity: number;
+  position_error?: number;
   finished: boolean;
 }
 
 export interface Batch { samples: Snapshot[]; state: Snapshot }
 export type Command =
-  | { id: number; command: 'load'; model?: MotionModel; config: Config | ConstantAccelerationConfig }
+  | { id: number; command: 'load'; model?: MotionModel; method?: StepMethod; config: Config | ConstantAccelerationConfig }
   | { id: number; command: 'start' | 'pause' | 'step' };
 export interface Update extends Batch {
   id: number;

@@ -7,7 +7,7 @@ export function simulationDoc(module: 'uniform' | 'constant_acceleration', name:
 }
 
 /** コアの1ステップの説明へのリンク。見える文字は日本語だけにする。 */
-export function coreStepDoc(fn: 'x_prime_eq_v_step' | 'euler_step', label: string): string {
+export function coreStepDoc(fn: 'x_prime_eq_v_step' | 'euler_step' | 'midpoint_step' | 'rk4_step', label: string): string {
   const href = `${import.meta.env.BASE_URL}doc/ergion_core/fn.${fn}.html`;
   return `<a class="doc-link" href="${href}">${label}</a>`;
 }
@@ -51,7 +51,7 @@ export function rail(active: PageId): string {
         <ul class="rail-pages">
           ${pageLink(active, 'integrate', './integrate.html', '積分して解く')}
           ${pageLink(active, 'derivative', './derivative.html', '位置の時間微分')}
-          ${pageLink(active, 'euler', './euler.html', 'Euler法')}
+          ${pageLink(active, 'euler', './euler.html', '数値解法')}
         </ul>
       </div>
       <div class="rail-note"><span class="orbit-icon" aria-hidden="true">◎</span><p>小さな系から、<br>確かな計算へ。</p><span>直線上の一粒子</span></div>

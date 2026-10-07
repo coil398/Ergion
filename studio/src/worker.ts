@@ -60,7 +60,7 @@ onmessage = (event: MessageEvent<Command>) => {
         : message.model === 'position-derivative'
           ? new PositionDerivativeSimulation(json)
           : message.model === 'euler'
-            ? new EulerSimulation(json)
+            ? new EulerSimulation(JSON.stringify({ ...message.config, method: message.method ?? 'euler' }))
             : new UniformSimulation(json);
       batchSize = Math.max(1, Math.min(100, Math.round(0.04 / message.config.dt)));
       publish('ready', [JSON.parse(simulation.snapshot()) as Snapshot]);

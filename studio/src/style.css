@@ -118,6 +118,10 @@ canvas{display:block;width:100%}
 .legend i{display:block;width:22px;border-top:2px solid}
 .legend .numerical{border-color:#6552b8}
 .legend .analytical{border-color:#167b87;border-top-style:dashed}
+.legend .difference{border-color:#a86240}
+.method-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}
+.method-tab{min-height:44px;padding:8px 14px;border-radius:6px;border:1px solid #ddd9e8;background:#fff;color:#5f567a;font-size:16px;font-weight:700;line-height:1.5}
+.method-tab[aria-selected=true]{background:#eae7f6;color:#514091;border-color:#e7e6ef}
 .plot-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:21px;margin-top:16px}
 .plot-grid canvas{height:220px}
 .plot-grid p{text-align:center;font-size:16px;color:var(--secondary);margin:8px 0 16px}

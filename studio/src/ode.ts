@@ -45,9 +45,9 @@ app.innerHTML = `
           <p class="equation">${tex(String.raw`x' = v`, true)}</p>
         </a>
         <a class="chapter" href="./euler.html">
-          <h2>Euler法</h2>
-          <p>右辺を区間の始点の値で一定とみなし、1ステップ進めます。速度が一定ならば、そのステップは厳密な増分と一致します。</p>
-          <p class="equation">${tex(String.raw`x_{n+1} = x_n + \Delta t \, f(x_n, t_n)`, true)}</p>
+          <h2>数値解法</h2>
+          <p>方程式は ${tex(String.raw`x' = v`)} のままです。Euler 法、中点法、古典的な4次の Runge–Kutta 法を切り替え、位置とその誤差を見ます。</p>
+          <p class="equation">${tex(String.raw`x' = v`, true)}</p>
         </a>
       </div>
       ${pageFooter('この節は、微分方程式の意味、積分による厳密解、そして数値の1ステップです。')}
