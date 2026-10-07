@@ -15,7 +15,7 @@ export interface ConstantAccelerationConfig {
   steps: number;
 }
 
-export type MotionModel = 'uniform' | 'constant-acceleration';
+export type MotionModel = 'uniform' | 'constant-acceleration' | 'position-derivative';
 
 export interface Snapshot {
   step: number;

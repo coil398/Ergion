@@ -185,8 +185,8 @@ impl UniformSimulation {
     /// - `steps`: 1バッチで進めるステップ数（1〜500）。
     ///
     /// # 計算
-    /// 1ステップごとに外力 $F = 0$（加速度 $a = 0$）として [`ergion_core::velocity_verlet_step`] を呼び出します。
-    /// 理論節に記載の通り、加速度が0であるため打ち切り誤差は0となり、厳密な解析解 $x = x_0 + v t$ に沿って位置が更新されます。
+    /// 加速度が 0 なので、速度は変わらず、位置の1ステップは [`ergion_core::x_prime_eq_v_step`] です。
+    /// この更新は厳密解 \(x = x_0 + v t\) の増分と一致し、打ち切り誤差はありません。
     pub fn advance(&mut self, steps: u32) -> Result<String, String> {
         if !(1..=500).contains(&steps) {
             return Err("batch steps must be in 1..=500".into());
@@ -194,15 +194,10 @@ impl UniformSimulation {
         let count = steps.min(self.config.steps - self.step);
         let mut samples = Vec::with_capacity(count as usize);
         for _ in 0..count {
-            // 一粒子等速直線運動: 外力 F = 0、加速度 a = 0。
-            // 時間積分のCore関数を用いて1ステップ進める。
-            ergion_core::velocity_verlet_step(
+            ergion_core::x_prime_eq_v_step(
                 std::slice::from_mut(&mut self.position),
-                std::slice::from_mut(&mut self.velocity),
+                std::slice::from_ref(&self.velocity),
                 self.config.dt,
-                |_q, a| {
-                    a[0] = 0.0;
-                },
             );
             self.step += 1;
             samples.push(self.state());

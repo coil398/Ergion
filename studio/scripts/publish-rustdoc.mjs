@@ -6,7 +6,7 @@ const studio = resolve(import.meta.dirname, '..');
 const root = resolve(studio, '..');
 
 rmSync(resolve(root, 'target/doc'), { recursive: true, force: true });
-execFileSync('cargo', ['doc', '-p', 'ergion-lab', '--no-deps'], {
+execFileSync('cargo', ['doc', '-p', 'ergion-core', '-p', 'ergion-lab', '--no-deps'], {
   cwd: root,
   stdio: 'inherit',
 });

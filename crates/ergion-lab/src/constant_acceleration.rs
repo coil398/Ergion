@@ -194,7 +194,8 @@ impl ConstantAccelerationSimulation {
     ///
     /// # 計算
     /// 1ステップごとに加速度 \(a\) を一定として [`ergion_core::velocity_verlet_step`] を呼び出します。
-    /// 上に書いたとおり、位置が時刻の二次式であるこの運動では、1ステップの更新は厳密解の増分と一致します。
+    /// その中の位置の更新は、半ステップの速度に対する [`ergion_core::x_prime_eq_v_step`] です。
+    /// 位置が時刻の二次式であるこの運動では、1ステップの更新は厳密解の増分と一致します。
     pub fn advance(&mut self, steps: u32) -> Result<String, String> {
         if !(1..=500).contains(&steps) {
             return Err("batch steps must be in 1..=500".into());

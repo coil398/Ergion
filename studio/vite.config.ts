@@ -9,6 +9,7 @@ export default defineConfig({
         main: resolve(import.meta.dirname, 'index.html'),
         uniform: resolve(import.meta.dirname, 'uniform.html'),
         accelerated: resolve(import.meta.dirname, 'accelerated.html'),
+        derivative: resolve(import.meta.dirname, 'derivative.html'),
       },
     },
   },

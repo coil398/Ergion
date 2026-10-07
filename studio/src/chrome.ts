@@ -1,8 +1,14 @@
-export type PageId = 'mechanics' | 'uniform' | 'accelerated';
+export type PageId = 'mechanics' | 'uniform' | 'accelerated' | 'derivative';
 
 /** rustdoc へのリンク。見える文字は日本語とし、型名やソースのパスは文に出さない。 */
 export function simulationDoc(module: 'uniform' | 'constant_acceleration', name: string, label: string): string {
   const href = `${import.meta.env.BASE_URL}doc/ergion_lab/${module}/struct.${name}.html`;
+  return `<a class="doc-link" href="${href}">${label}</a>`;
+}
+
+/** \(x' = v\) の1ステップの説明へのリンク。見える文字は日本語だけにする。 */
+export function stepDoc(label: string): string {
+  const href = `${import.meta.env.BASE_URL}doc/ergion_core/fn.x_prime_eq_v_step.html`;
   return `<a class="doc-link" href="${href}">${label}</a>`;
 }
 
@@ -20,7 +26,7 @@ function pageLink(active: PageId, id: PageId, href: string, label: string): stri
   return `<li><a class="rail-page${current ? ' active' : ''}" href="${href}"${current ? ' aria-current="page"' : ''}>${label}</a></li>`;
 }
 
-/** 力学は節。二つの運動はその下のページであり、節と横並びにしない。 */
+/** 力学は節。位置の時間微分と二つの運動はその下のページであり、節と横並びにしない。 */
 export function rail(active: PageId): string {
   const sectionCurrent = active === 'mechanics' ? ' aria-current="page"' : '';
   return `
@@ -29,6 +35,7 @@ export function rail(active: PageId): string {
       <div class="rail-section">
         <a class="rail-section-title${active === 'mechanics' ? ' active' : ''}" href="./"${sectionCurrent}>力学</a>
         <ul class="rail-pages">
+          ${pageLink(active, 'derivative', './derivative.html', '位置の時間微分')}
           ${pageLink(active, 'uniform', './uniform.html', '等速直線運動')}
           ${pageLink(active, 'accelerated', './accelerated.html', '等加速度直線運動')}
         </ul>

@@ -13,14 +13,15 @@ async function expectMechanicsSection(page: Page) {
   const title = page.locator('.rail-section-title');
   await expect(title).toHaveText('力学');
   const links = page.locator('.rail-pages a');
-  await expect(links).toHaveCount(2);
-  await expect(links.nth(0)).toHaveText('等速直線運動');
-  await expect(links.nth(1)).toHaveText('等加速度直線運動');
+  await expect(links).toHaveCount(3);
+  await expect(links.nth(0)).toHaveText('位置の時間微分');
+  await expect(links.nth(1)).toHaveText('等速直線運動');
+  await expect(links.nth(2)).toHaveText('等加速度直線運動');
   const nested = await page.evaluate(() => {
     const section = document.querySelector('.rail-section-title')!.getBoundingClientRect();
     const items = [...document.querySelectorAll('.rail-pages a')].map(node => node.getBoundingClientRect());
     const stacked = items.every(item => item.top >= section.bottom - 1 && item.left > section.left + 4);
-    const vertical = items.length === 2 && items[1].top >= items[0].bottom - 1;
+    const vertical = items.every((item, index) => index === 0 || item.top >= items[index - 1].bottom - 1);
     return stacked && vertical;
   });
   expect(nested).toBe(true);
@@ -190,18 +191,20 @@ test('粗い刻みでも数値軌道が表示範囲に収まる', async ({ page 
   await page.screenshot({ path: testInfo.outputPath('coarse-step.png'), fullPage: true });
 });
 
-test('力学の目次は古典力学の二つのページだけを示す', async ({ page }) => {
+test('力学の目次はいまページにしてあるものだけを示す', async ({ page }) => {
   await page.goto('./');
   await expect(page.getByRole('heading', { level: 1, name: '力学.' })).toBeVisible();
   await expect(page.locator('#contents')).toContainText('最初の部分は古典力学');
   await expect(page.locator('#contents')).toContainText('まだページにしていません');
   await expect(tex(page, 'x_0').first()).toBeVisible();
   await expect(tex(page, 'v_0').first()).toBeVisible();
+  await expect(tex(page, String.raw`x' = v`).first()).toBeVisible();
   await expect(tex(page, 'x(t) = x_0 + v t').first()).toBeVisible();
   await expect(tex(page, String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`).first()).toBeVisible();
   await expect(tex(page, 'v(t) = v_0 + a t').first()).toBeVisible();
   await expect(page.locator('#contents .katex').first()).toBeVisible();
   await expect(page.locator('#contents .equation').first()).toHaveCSS('background-color', 'rgb(234, 231, 246)');
+  await expect(page.getByRole('link', { name: '位置の時間微分' }).first()).toBeVisible();
   await expect(page.getByRole('link', { name: '等速直線運動' }).first()).toBeVisible();
   await expect(page.getByRole('link', { name: '等加速度直線運動' }).first()).toBeVisible();
   await expectMechanicsSection(page);
@@ -209,6 +212,42 @@ test('力学の目次は古典力学の二つのページだけを示す', async
   for (const word of ['電磁気', '解析力学', '金融', '分子動力学', '正本', '計算核', '軌道を読む', '力学の教科書']) {
     expect(text).not.toContain(word);
   }
+});
+
+test('位置の時間微分をデスクトップと狭い画面で読む', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1050 });
+  await page.goto('derivative.html');
+  await expect(page.locator('#status')).toHaveText('準備完了');
+  await expect(page.getByRole('heading', { name: '位置の時間微分の計算と説明' })).toBeVisible();
+  await expect(tex(page, String.raw`x' = v`).first()).toBeVisible();
+  await expect(tex(page, String.raw`x_{n+1} = x_n + v \Delta t`).first()).toBeVisible();
+  await expect(page.locator('#study')).toContainText('打ち切り誤差はありません');
+  const href = '/Ergion/doc/ergion_core/fn.x_prime_eq_v_step.html';
+  const link = page.locator('#study').getByRole('link', { name: '1ステップの説明', exact: true });
+  await expect(link).toHaveCount(1);
+  await expect(link).toHaveAttribute('href', href);
+  const study = await page.locator('#study').innerText();
+  expect(study).not.toContain('crates/');
+  expect(study).not.toContain('x_prime_eq_v_step');
+  expect(study).not.toContain('PositionDerivative');
+  await expectTypeSize(page);
+  await expectMechanicsSection(page);
+  const doc = await page.request.get(href);
+  expect(doc.ok()).toBeTruthy();
+  expect(await doc.text()).toContain('x_prime_eq_v_step');
+  await page.locator('[name=initial_position]').fill('0');
+  await page.locator('[name=velocity]').fill('2');
+  await page.locator('[name=dt]').fill('0.25');
+  await page.getByRole('button', { name: '条件を適用してリセット' }).click();
+  await expect(page.locator('#status')).toHaveText('準備完了');
+  await page.getByRole('button', { name: '1ステップ', exact: true }).click();
+  await expect(page.locator('#position')).toHaveText('0.50000');
+  await expect(page.locator('#velocity')).toHaveText('2.00000');
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(page.getByRole('heading', { name: '位置の時間微分.' })).toBeVisible();
+  await expect(page.locator('.equation').first()).toBeVisible();
+  await expectMechanicsSection(page);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
 
 test('等加速度直線運動をデスクトップと狭い画面で読む', async ({ page }, testInfo) => {
