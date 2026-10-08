@@ -1,5 +1,6 @@
 import './style.css';
 import { appHeader, pageFooter, rail, stepDoc } from './chrome';
+import { checkedVelocityProof } from './proof';
 import { clearFigure, drawErrorSeries, drawTimeSeries, drawUniformMotion } from './figures';
 import { bindMethodTabs, methodTabs } from './method-tabs';
 import type { Config, Snapshot, StepMethod } from './protocol';
@@ -93,6 +94,7 @@ app.innerHTML = `
           <p class="experiment-note">数値計算はブラウザ内で実行します。条件や結果をサーバーへ送信しません。</p>
         </div>
       </div>
+      ${checkedVelocityProof(`速度が一定のとき、1ステップは ${tex(String.raw`x_{n+1} = x_n + v \Delta t`)} であり、${tex('n')} 回の後は ${tex(String.raw`x_n = x_0 + n v \Delta t`)} です。`)}
       ${pageFooter('この画面の計算は、位置の時間微分の1ステップです。')}
     </main>
   </div>`;

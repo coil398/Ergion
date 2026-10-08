@@ -1,5 +1,6 @@
 import './style.css';
 import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
+import { uncheckedProof } from './proof';
 import { mountSteppedFigure, steppedFigure } from './curve';
 import { tex } from './tex';
 
@@ -73,6 +74,7 @@ app.innerHTML = `
         </div>
       </section>
       ${steppedFigure(`タブは、このページの方程式を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。${tex('C = 1')} の枝を、時刻 0 から ${tex('1/2')} まで進めた誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
+      ${uncheckedProof(`${tex(String.raw`(2x + y)\,dx + (x + 2y)\,dy = 0`)} の陰関数の厳密解は ${tex(String.raw`x^2 + xy + y^2 = C`)} です。`)}
       ${pageFooter('完全性の判定を満たすとき、解はポテンシャルが一定という陰関数です。')}
     </main>
   </div>`;

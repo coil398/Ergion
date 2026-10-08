@@ -1,5 +1,6 @@
 import './style.css';
 import { appHeader, pageFooter, rail } from './chrome';
+import { checkedVelocityProof } from './proof';
 import { tex } from './tex';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
@@ -36,6 +37,7 @@ app.innerHTML = `
           <p>この証明は有理数の等式です。丸めは入っていません。画面で粒子を進める計算は <a class="doc-link" href="./derivative.html">位置の時間微分</a> にあり、数は倍精度の f64 です。有理数の等式は、その丸めを証明していません。証明は <a class="doc-link" href="https://github.com/coil398/Ergion/blob/main/formal/lean/Ergion/ConstantVelocity.lean">Ergion.ConstantVelocity</a> にあります。</p>
         </div>
       </section>
+      ${checkedVelocityProof(`1ステップは ${tex(String.raw`x \mapsto x + v \Delta t`)} であり、${tex('n')} 回の後は ${tex(String.raw`x_n = x_0 + n v \Delta t`)} です。`)}
       ${pageFooter('一定速度の増分は、有理数の上で x + n v Δt です。')}
     </main>
   </div>`;

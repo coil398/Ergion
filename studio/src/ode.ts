@@ -1,5 +1,6 @@
 import './style.css';
 import { appHeader, pageFooter, rail } from './chrome';
+import { uncheckedProof } from './proof';
 import { tex } from './tex';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
@@ -95,6 +96,7 @@ app.innerHTML = `
           <p class="equation">${tex(String.raw`x' = x + y`, true)}</p>
         </a>
       </div>
+      ${uncheckedProof(`関数 ${tex('x(t)')} が解であるとは、各時刻で ${tex(String.raw`\frac{d}{dt} x(t) = f(x(t), t)`)} が成り立つことです。`)}
       ${pageFooter('この節は、1階の解法、2階の解法、Laplace 変換、べき級数、連立です。')}
     </main>
   </div>`;

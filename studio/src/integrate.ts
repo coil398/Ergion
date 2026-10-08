@@ -1,5 +1,6 @@
 import './style.css';
 import { appHeader, pageFooter, rail } from './chrome';
+import { checkedVelocityProof } from './proof';
 import { tex } from './tex';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
@@ -46,6 +47,7 @@ app.innerHTML = `
           <p>これらの式は、右辺を積分して得た厳密解です。数値の1ステップは、<a class="doc-link" href="./derivative.html">位置の時間微分</a>で見ます。</p>
         </div>
       </section>
+      ${checkedVelocityProof(`速度が一定のとき、${tex('n')} 回の後は ${tex(String.raw`x_n = x_0 + n v \Delta t`)} です。時刻を ${tex(String.raw`t = n \Delta t`)} と置けば、これは ${tex('x(t) = x_0 + v t')} と同じ増分です。`, `加速度が一定のときの ${tex('v(t) = v_0 + a t')} と ${tex(String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`)} は、まだ確かめていません。`)}
       ${pageFooter('右辺が未知関数によらないとき、積分で得る位置と速度は厳密解です。')}
     </main>
   </div>`;

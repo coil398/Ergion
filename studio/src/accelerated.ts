@@ -1,5 +1,6 @@
 import './style.css';
 import { appHeader, pageFooter, rail, simulationDoc } from './chrome';
+import { uncheckedProof } from './proof';
 import { clearFigure, drawConstantAcceleration, drawErrorSeries, drawTimeSeries } from './figures';
 import { bindMethodTabs, methodTabs } from './method-tabs';
 import { tex } from './tex';
@@ -100,6 +101,7 @@ app.innerHTML = `
           <p class="experiment-note">数値計算はブラウザ内で実行します。条件や結果をサーバーへ送信しません。</p>
         </div>
       </div>
+      ${uncheckedProof(`加速度 ${tex('a')} が一定のとき、速度は ${tex('v(t) = v_0 + a t')}、位置は ${tex(String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`)} です。`)}
       ${pageFooter('この画面の計算は一粒子の等加速度直線運動です。')}
     </main>
   </div>`;

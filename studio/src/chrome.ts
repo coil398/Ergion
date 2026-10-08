@@ -20,7 +20,8 @@ export type PageId =
   | 'midpoint'
   | 'rk4'
   | 'newton'
-  | 'velocity-step';
+  | 'velocity-step'
+  | 'proof';
 
 /** rustdoc へのリンク。見える文字は日本語とし、型名やソースのパスは文に出さない。 */
 export function simulationDoc(module: 'uniform' | 'constant_acceleration', name: string, label: string): string {
@@ -53,7 +54,7 @@ function pageLink(active: PageId, id: PageId, href: string, label: string): stri
   return `<li><a class="rail-page${current ? ' active' : ''}" href="${href}"${current ? ' aria-current="page"' : ''}>${label}</a></li>`;
 }
 
-/** 力学、微分方程式、数値計算は並ぶ節。各ページはその節の下に縦に置く。 */
+/** 力学、微分方程式、数値計算、証明は並ぶ節。各ページはその節の下に縦に置く。 */
 export function rail(active: PageId): string {
   const mechanicsCurrent = active === 'mechanics' ? ' aria-current="page"' : '';
   const odeCurrent = active === 'ode' ? ' aria-current="page"' : '';
@@ -93,6 +94,12 @@ export function rail(active: PageId): string {
           ${pageLink(active, 'midpoint', './midpoint.html', '中点法')}
           ${pageLink(active, 'rk4', './rk4.html', '古典的RK4')}
           ${pageLink(active, 'newton', './newton.html', 'ニュートン法')}
+        </ul>
+      </div>
+      <div class="rail-section">
+        <span class="rail-section-title${active === 'proof' ? ' active' : ''}">証明</span>
+        <ul class="rail-pages">
+          ${pageLink(active, 'proof', './proof.html', '有理数での確かめ')}
         </ul>
       </div>
       <div class="rail-note"><span class="orbit-icon" aria-hidden="true">◎</span><p>小さな系から、<br>確かな計算へ。</p><span>直線上の一粒子</span></div>

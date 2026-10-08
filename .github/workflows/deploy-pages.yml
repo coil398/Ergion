@@ -43,6 +43,15 @@ jobs:
       - name: Build Studio
         run: npm --prefix studio run build
 
+      - name: Install Lean
+        run: |
+          curl -sSf https://elan.lean-lang.org/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Check proofs with lake build
+        working-directory: formal/lean
+        run: lake build
+
       - name: Ensure .nojekyll exists
         run: touch studio/dist/.nojekyll
 

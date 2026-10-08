@@ -1,5 +1,6 @@
 import './style.css';
 import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
+import { uncheckedProof } from './proof';
 import { mountSteppedFigure, steppedFigure } from './curve';
 import { tex } from './tex';
 
@@ -76,6 +77,7 @@ app.innerHTML = `
         </div>
       </section>
       ${steppedFigure(`タブは、方程式 ${tex(String.raw`x' = x - x^2`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。${tex('x_0 = 1/2')} の誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
+      ${uncheckedProof(`${tex('n')} が 0 でも 1 でもないとき、${tex(String.raw`u = x^{1-n}`)} と置くと ${tex(String.raw`x' + px = q x^{n}`)} は1階線形になります。`)}
       ${pageFooter('ベルヌーイ方程式は、u = x^{1-n} と置くと1階線形になり、その解は厳密です。')}
     </main>
   </div>`;

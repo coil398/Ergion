@@ -1,5 +1,6 @@
 import './style.css';
 import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
+import { uncheckedProof } from './proof';
 import { mountSteppedFigure, steppedFigure } from './curve';
 import { tex } from './tex';
 
@@ -73,6 +74,7 @@ app.innerHTML = `
         </div>
       </section>
       ${steppedFigure(`タブは、この初期値問題を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
+      ${uncheckedProof(`初期値問題 ${tex(String.raw`x'' - 3x' + 2x = e^{3t}`)}、${tex('x(0) = 0')}、${tex("x'(0) = 0")} の解は、逆 Laplace 変換で時刻の関数に戻したものです。`)}
       ${pageFooter('Laplace 変換は、初期値問題を s の代数に変え、逆変換で厳密解へ戻します。')}
     </main>
   </div>`;

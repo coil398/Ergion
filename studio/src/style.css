@@ -99,6 +99,8 @@ input:invalid:not(:focus){border-color:#b96a51}
 .solution{margin:0 0 16px;padding-left:1.5em;font-size:18px;line-height:calc(17 / 9);color:#25243c}
 .solution li{margin:0 0 12px}
 .solution-equation{font-size:18px;line-height:calc(17 / 9);margin:8px 0;padding:8px 12px;background:#eae7f6;border:1px solid #e7e6ef;border-radius:6px;min-width:0;overflow-x:auto}
+.proof{min-width:0}
+.proof-source{display:block;max-width:100%;margin:0 0 16px;padding:12px 14px;overflow-x:auto;overflow-wrap:anywhere;white-space:pre-wrap;font-family:ui-monospace,"Cascadia Code","Noto Sans JP",monospace;font-size:16px;line-height:1.5;background:#f9f9fc;border:1px solid #e7e6ef;border-radius:6px;color:#25243c}
 .doc-link{color:#514091}
 .scene{padding:19px 23px 0;overflow:hidden}
 .scene .panel-heading{margin-bottom:8px}

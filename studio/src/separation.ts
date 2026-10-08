@@ -1,5 +1,6 @@
 import './style.css';
 import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
+import { uncheckedProof } from './proof';
 import { mountSteppedFigure, steppedFigure } from './curve';
 import { tex } from './tex';
 
@@ -85,6 +86,7 @@ app.innerHTML = `
         </div>
       </section>
       ${steppedFigure(`タブは、方程式 ${tex(String.raw`x' = kx`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。${tex('k = 2')}、${tex('x_0 = 3')} の誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
+      ${uncheckedProof(`${tex(String.raw`x' = kx`)} の厳密解は ${tex(String.raw`x(t) = x_0 e^{kt}`)} です。`)}
       ${pageFooter('変数分離で得る x(t) = x_0 e^{kt} は、x\' = kx の厳密解です。')}
     </main>
   </div>`;

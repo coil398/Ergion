@@ -1,5 +1,6 @@
 import './style.css';
 import { appHeader, pageFooter, rail, simulationDoc } from './chrome';
+import { checkedVelocityProof } from './proof';
 import { clearFigure, drawErrorSeries, drawTimeSeries, drawUniformMotion } from './figures';
 import { bindMethodTabs, methodTabs } from './method-tabs';
 import { tex } from './tex';
@@ -95,6 +96,7 @@ app.innerHTML = `
           <p class="experiment-note">数値計算はブラウザ内で実行します。条件や結果をサーバーへ送信しません。</p>
         </div>
       </div>
+      ${checkedVelocityProof(`速度が一定のとき、${tex('n')} 回の後は ${tex(String.raw`x_n = x_0 + n v \Delta t`)} です。時刻を ${tex(String.raw`t = n \Delta t`)} と置けば、これは ${tex('x(t) = x_0 + v t')} と同じ増分です。`)}
       ${pageFooter('この画面の計算は一粒子の等速直線運動です。')}
     </main>
   </div>`;

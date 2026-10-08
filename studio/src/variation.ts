@@ -1,5 +1,6 @@
 import './style.css';
 import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
+import { uncheckedProof } from './proof';
 import { mountSteppedFigure, steppedFigure } from './curve';
 import { tex } from './tex';
 
@@ -86,6 +87,7 @@ app.innerHTML = `
         </div>
       </section>
       ${steppedFigure(`タブは、方程式 ${tex(String.raw`x'' + x = \tan t`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。1 は ${tex('\\pi/2')} より小さいので、特異点を含みません。誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
+      ${uncheckedProof(`${tex(String.raw`x'' + x = \tan t`)} は、同次解の定数を時刻の関数にして解きます。`)}
       ${pageFooter('定数変化法は、同次解の任意定数を時刻の関数にして、右辺 tan t の厳密解を作ります。')}
     </main>
   </div>`;

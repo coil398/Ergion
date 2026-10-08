@@ -1,5 +1,6 @@
 import './style.css';
 import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
+import { uncheckedProof } from './proof';
 import { mountSteppedFigure, steppedFigure } from './curve';
 import { tex } from './tex';
 
@@ -70,6 +71,7 @@ app.innerHTML = `
         </div>
       </section>
       ${steppedFigure(`タブは、連立 ${tex(String.raw`x' = x + y`)}、${tex(String.raw`y' = 4x + y`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。誤差は ${tex('x')} と ${tex('y')} の両方に出ます。どちらも時間刻みによる打ち切りであり、丸めだけではありません。表示は、厳密解を小数第5位まで示したものです。`, true)}
+      ${uncheckedProof(`${tex(String.raw`x' = x + y`)} と ${tex(String.raw`y' = 4x + y`)} の解は、相異なる実固有値ごとの指数関数と固有ベクトルの積の和です。`)}
       ${pageFooter('定数係数の連立1階方程式は、相異なる実固有値ごとに指数関数と固有ベクトルの積を重ねた厳密解を持ちます。')}
     </main>
   </div>`;

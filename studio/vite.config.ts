@@ -3,6 +3,11 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   base: '/Ergion/',
+  server: {
+    fs: {
+      allow: [resolve(import.meta.dirname, '..')],
+    },
+  },
   build: {
     rollupOptions: {
       input: {
@@ -28,6 +33,7 @@ export default defineConfig({
         rk4: resolve(import.meta.dirname, 'rk4.html'),
         newton: resolve(import.meta.dirname, 'newton.html'),
         velocityStep: resolve(import.meta.dirname, 'velocity-step.html'),
+        proof: resolve(import.meta.dirname, 'proof.html'),
       },
     },
   },

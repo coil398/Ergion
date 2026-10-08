@@ -11,7 +11,7 @@ function tex(page: Page, source: string) {
 
 async function expectMechanicsSection(page: Page) {
   const sections = page.locator('.rail-section');
-  await expect(sections).toHaveCount(3);
+  await expect(sections).toHaveCount(4);
   const mechanicsTitle = sections.nth(0).locator('.rail-section-title');
   await expect(mechanicsTitle).toHaveText('力学');
   const motion = sections.nth(0).locator('.rail-pages a');
@@ -35,6 +35,11 @@ async function expectMechanicsSection(page: Page) {
   for (let index = 0; index < numericalLabels.length; index += 1) {
     await expect(numericalPages.nth(index)).toHaveText(numericalLabels[index]);
   }
+  const proofTitle = sections.nth(3).locator('.rail-section-title');
+  await expect(proofTitle).toHaveText('証明');
+  const proofPages = sections.nth(3).locator('.rail-pages a');
+  await expect(proofPages).toHaveCount(1);
+  await expect(proofPages.nth(0)).toHaveText('有理数での確かめ');
   const nested = await page.evaluate(() => {
     const blocks = [...document.querySelectorAll('.rail-section')];
     return blocks.every((block, index) => {
@@ -392,14 +397,78 @@ test('一定速度の増分は有理数の等式としてデスクトップと�
     await expect(tex(page, String.raw`x_n = x_0 + n v \Delta t`).first()).toBeVisible();
     await expect(page.locator('#study')).toContainText('有理数');
     await expect(page.locator('#study')).toContainText('f64');
-    const lesson = await page.locator('#lesson').innerText();
-    for (const word of ['crates/', 'formal/', 'Rat', '正本', '計算核']) {
-      expect(lesson).not.toContain(word);
+    const prose = await page.locator('#lesson').evaluate((node) => {
+      const clone = node.cloneNode(true) as HTMLElement;
+      clone.querySelectorAll('.proof-source').forEach((element) => element.remove());
+      return clone.innerText;
+    });
+    for (const word of ['crates/', 'formal/', 'Rat', '正本', '計算核', 'sorry']) {
+      expect(prose).not.toContain(word);
     }
+    const source = page.locator('.proof-source');
+    await expect(source).toContainText('constantVelocitySteps_eq');
+    await expect(source).not.toContainText('sorry');
     const link = page.locator('#study').getByRole('link', { name: 'Ergion.ConstantVelocity', exact: true });
     await expect(link).toHaveCount(1);
     await expect(link).toHaveAttribute('href', /ConstantVelocity\.lean$/);
+    await expect(page.locator('.proof').getByRole('link', { name: 'Ergion.ConstantVelocity', exact: true })).toHaveCount(1);
     await expectReadingPage(page);
+  }
+});
+
+test('証明の節は画面が Lean を実行しないと述べ、各ページは確かめの有無を分ける', async ({ page }) => {
+  test.setTimeout(120_000);
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: width === 1440 ? 1050 : 844 });
+    await page.goto('proof.html');
+    await expect(page.getByRole('heading', { level: 1, name: '有理数での確かめ.' })).toBeVisible();
+    await expect(page.locator('#lesson')).toContainText('lake build');
+    await expect(page.locator('#lesson')).toContainText('有理数');
+    await expect(page.locator('#lesson')).toContainText('f64');
+    await expect(page.locator('#lesson')).toContainText('この画面は証明を実行しません');
+    await expect(page.locator('#lesson')).toContainText('Lean を動かしていません');
+    const link = page.locator('#lesson').getByRole('link', { name: 'Ergion.ConstantVelocity', exact: true });
+    await expect(link).toHaveCount(1);
+    await expect(link).toHaveAttribute('href', /ConstantVelocity\.lean$/);
+    await expect(page.locator('#lesson').getByRole('link', { name: '一定速度の増分' })).toHaveAttribute('href', './velocity-step.html');
+    const prose = await page.locator('#lesson').innerText();
+    for (const word of ['crates/', 'formal/', 'Rat', '正本', '計算核', 'sorry']) {
+      expect(prose).not.toContain(word);
+    }
+    await expect(page.locator('[role=tablist]')).toHaveCount(0);
+    await expect(page.locator('.proof-source')).toHaveCount(0);
+    await expectReadingPage(page);
+  }
+
+  const checked = ['./', 'uniform.html', 'derivative.html', 'integrate.html', 'velocity-step.html'];
+  const unchecked = ['accelerated.html', 'ode.html', 'separation.html', 'linear.html', 'homogeneous.html', 'exact.html', 'bernoulli.html', 'second-order.html', 'undetermined.html', 'variation.html', 'laplace.html', 'series.html', 'system.html'];
+  const numerical = ['euler.html', 'midpoint.html', 'rk4.html', 'newton.html'];
+  for (const href of checked) {
+    await page.goto(href);
+    const source = page.locator('.proof-source');
+    await expect(source).toHaveCount(1);
+    await expect(source).toContainText('constantVelocitySteps_eq');
+    await expect(source).not.toContainText('sorry');
+    await expect(page.locator('#proof-heading')).toHaveText('証明');
+    const proofProse = await page.locator('.proof').evaluate((node) => {
+      const clone = node.cloneNode(true) as HTMLElement;
+      clone.querySelectorAll('.proof-source').forEach((element) => element.remove());
+      return clone.innerText;
+    });
+    for (const word of ['crates/', 'formal/', 'Rat', '正本', '計算核', 'sorry']) {
+      expect(proofProse).not.toContain(word);
+    }
+  }
+  for (const href of unchecked) {
+    await page.goto(href);
+    await expect(page.locator('.proof-source')).toHaveCount(0);
+    await expect(page.locator('.proof')).toContainText('このページの証明は、まだ確かめていません。');
+    await expect(page.locator('.proof')).not.toContainText('sorry');
+    await expect(page.locator('#proof-heading')).toHaveText('証明');
+  }
+  for (const href of numerical) {
+    await page.goto(href);
+    await expect(page.locator('.proof')).toHaveCount(0);
   }
 });
 
@@ -465,7 +534,7 @@ test('等加速度直線運動をデスクトップと狭い画面で読む', as
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(page.getByRole('heading', { name: '等加速度直線運動.' })).toBeVisible();
   await expect(page.locator('.equation').first()).toBeVisible();
-  await expect(page.locator('.solution')).toBeVisible();
+  await expect(page.locator('#study .solution')).toBeVisible();
   await expectTypeSize(page);
   await expectMechanicsSection(page);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
@@ -478,7 +547,7 @@ test('等速直線運動も狭い画面で本文と式が読める', async ({ pa
   await expect(page.locator('#status')).toHaveText('準備完了');
   await expect(page.locator('.equation').first()).toBeVisible();
   await expect(tex(page, 'x(t) = x_0 + v t').first()).toBeVisible();
-  await expect(page.locator('.solution')).toContainText('打ち切り誤差はありません');
+  await expect(page.locator('#study .solution')).toContainText('打ち切り誤差はありません');
   await expectTypeSize(page);
   await expectMechanicsSection(page);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
