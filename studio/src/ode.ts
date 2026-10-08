@@ -97,6 +97,26 @@ app.innerHTML = `
           <p>定数係数の2元連立を、固有値と固有ベクトルで厳密に解きます。</p>
           <p class="equation">${tex(String.raw`x' = x + y`, true)}</p>
         </a>
+        <a class="chapter" href="./sturm-liouville.html">
+          <h2>Sturm–Liouville 問題</h2>
+          <p>境界条件のついた2階の固有値問題を、初期値問題をくり返して解くシューティング法で求め、固有関数が直交することを確かめます。</p>
+          <p class="equation">${tex(String.raw`-x'' = \lambda x,\ x(0) = x(\pi) = 0`, true)}</p>
+        </a>
+        <a class="chapter" href="./chaos.html">
+          <h2>非線形力学系とカオス</h2>
+          <p>Lorenz 方程式の解を数値的に進め、わずかに異なる初期値から出た二つの軌道が離れていく様子を見ます。</p>
+          <p class="equation">${tex(String.raw`x' = \sigma (y - x)`, true)}</p>
+        </a>
+        <a class="chapter" href="./heat.html">
+          <h2>熱伝導方程式</h2>
+          <p>両端の温度を 0 に保った棒の温度を、Fourier 級数の厳密解と、格子の上の差分法で求めて比べます。</p>
+          <p class="equation">${tex(String.raw`u_t = \kappa u_{xx}`, true)}</p>
+        </a>
+        <a class="chapter" href="./wave.html">
+          <h2>波動方程式</h2>
+          <p>両端を固定した弦の変位を、d'Alembert の解と差分法で求め、端で反射する波を見ます。</p>
+          <p class="equation">${tex(String.raw`u_{tt} = c^2 u_{xx}`, true)}</p>
+        </a>
       </div>
       ${relatedPages([
         { href: './integrate.html', title: '積分して解く', description: '右辺が未知関数によらない場合の最も基本的な解法です。' },
