@@ -4,6 +4,7 @@ import { appHeader, coreStepDoc, pageFooter, rail, relatedPages } from './chrome
 import { drawErrorSeries, drawTimeSeries } from './figures';
 import type { NewtonConfig, Reply, Snapshot } from './protocol';
 import { tex } from './tex';
+import { onThemeChange } from './theme';
 
 const steps = 4;
 const config: NewtonConfig = { schema_version: 1, steps };
@@ -140,7 +141,9 @@ worker.onmessage = (event: MessageEvent<Reply>) => {
     paint(samples, reply.state);
   }
 };
-window.addEventListener('resize', () => {
+function repaint() {
   if (drawn) paint(drawn.samples, drawn.state);
-});
+}
+window.addEventListener('resize', repaint);
+onThemeChange(repaint);
 worker.postMessage({ id: ++id, command: 'load', model: 'newton', config });

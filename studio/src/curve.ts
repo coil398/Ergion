@@ -2,6 +2,7 @@ import { codeDisclosure, mountCodeDisclosure, setCodeMethod } from './code-panel
 import { drawErrorSeries, drawTimeSeries } from './figures';
 import { bindMethodTabs, methodTabs } from './method-tabs';
 import type { CompareConfig, Reply, Snapshot, StepMethod } from './protocol';
+import { onThemeChange } from './theme';
 
 /** 厳密解の図に、その方程式の数値解と誤差を重ねる。 */
 export function steppedFigure(companion = false): string {
@@ -126,9 +127,11 @@ export function mountSteppedFigure(options: {
       paint(samples, reply.state);
     }
   };
-  window.addEventListener('resize', () => {
+  const repaint = () => {
     if (drawn) paint(drawn.samples, drawn.state);
-  });
+  };
+  window.addEventListener('resize', repaint);
+  onThemeChange(repaint);
   mountCodeDisclosure();
   bindMethodTabs(next => {
     method = next;

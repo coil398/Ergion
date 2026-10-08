@@ -4,7 +4,7 @@
  */
 
 import { axisDomain, drawNumberLine, drawOrigin, mapLinear } from './axes';
-import { canvasContext } from './canvas';
+import { canvasContext, figurePalette } from './canvas';
 import { drawExactOutline, drawParticle } from './particle';
 import { drawJoint, drawSegment, drawWitness } from './segment';
 
@@ -42,6 +42,7 @@ export function drawUniformMotion(canvas: HTMLCanvasElement, frame: UniformMotio
   const surface = canvasContext(canvas);
   if (surface.width < 2 || surface.height < 2) return;
   const { context, width, height } = surface;
+  const palette = figurePalette();
   const left = 46;
   const right = 40;
   const plotWidth = Math.max(width - left - right, 1);
@@ -80,7 +81,7 @@ export function drawUniformMotion(canvas: HTMLCanvasElement, frame: UniformMotio
     x1: jointX,
     x2: exactX,
     y: exactY,
-    color: '#167b87',
+    color: palette.exact,
     width: 1.7,
     dash: [5, 4],
     caps: 'both',
@@ -89,12 +90,12 @@ export function drawUniformMotion(canvas: HTMLCanvasElement, frame: UniformMotio
     x1: originX,
     x2: jointX,
     y: bracketY,
-    color: '#4a453c',
+    color: palette.textSecondary,
     width: 1.6,
     dash: [],
     caps: 'start',
     label: 'x₀',
-    labelColor: '#4a453c',
+    labelColor: palette.textSecondary,
     labelY,
     labelAlways: true,
     clampX,
@@ -103,22 +104,22 @@ export function drawUniformMotion(canvas: HTMLCanvasElement, frame: UniformMotio
     x1: jointX,
     x2: positionX,
     y: bracketY,
-    color: '#003153',
+    color: palette.numerical,
     width: 2.5,
     dash: [],
     caps: 'none',
     arrow: true,
     label: vtLabel,
-    labelColor: '#003153',
+    labelColor: palette.numerical,
     labelY,
     labelMinPx: 48,
     clampX,
   });
   drawJoint(context, jointX, bracketY);
 
-  if (axisY - 16 > bracketY + 6) drawWitness(context, positionX, bracketY + 6, axisY - 16, '#003153');
+  if (axisY - 16 > bracketY + 6) drawWitness(context, positionX, bracketY + 6, axisY - 16, palette.numerical);
   if (Math.abs(positionX - exactX) > 6 && axisY - 22 > exactY + 6) {
-    drawWitness(context, exactX, exactY + 6, axisY - 22, '#167b87', [5, 4]);
+    drawWitness(context, exactX, exactY + 6, axisY - 22, palette.exact, [5, 4]);
   }
 
   drawExactOutline(context, exactX, axisY);
@@ -149,6 +150,7 @@ export function drawConstantAcceleration(canvas: HTMLCanvasElement, frame: Const
   const surface = canvasContext(canvas);
   if (surface.width < 2 || surface.height < 2) return;
   const { context, width, height } = surface;
+  const palette = figurePalette();
   const left = 46;
   const right = 40;
   const plotWidth = Math.max(width - left - right, 1);
@@ -184,7 +186,7 @@ export function drawConstantAcceleration(canvas: HTMLCanvasElement, frame: Const
     x1: jointX,
     x2: exactX,
     y: exactY,
-    color: '#167b87',
+    color: palette.exact,
     width: 1.7,
     dash: [5, 4],
     caps: 'both',
@@ -193,12 +195,12 @@ export function drawConstantAcceleration(canvas: HTMLCanvasElement, frame: Const
     x1: originX,
     x2: jointX,
     y: bracketY,
-    color: '#4a453c',
+    color: palette.textSecondary,
     width: 1.6,
     dash: [],
     caps: 'start',
     label: 'x₀',
-    labelColor: '#4a453c',
+    labelColor: palette.textSecondary,
     labelY,
     labelAlways: true,
     clampX,
@@ -207,7 +209,7 @@ export function drawConstantAcceleration(canvas: HTMLCanvasElement, frame: Const
     x1: jointX,
     x2: positionX,
     y: bracketY,
-    color: '#003153',
+    color: palette.numerical,
     width: 2.5,
     dash: [],
     caps: 'none',
@@ -216,9 +218,9 @@ export function drawConstantAcceleration(canvas: HTMLCanvasElement, frame: Const
   });
   drawJoint(context, jointX, bracketY);
 
-  if (axisY - 16 > bracketY + 6) drawWitness(context, positionX, bracketY + 6, axisY - 16, '#003153');
+  if (axisY - 16 > bracketY + 6) drawWitness(context, positionX, bracketY + 6, axisY - 16, palette.numerical);
   if (Math.abs(positionX - exactX) > 6 && axisY - 22 > exactY + 6) {
-    drawWitness(context, exactX, exactY + 6, axisY - 22, '#167b87', [5, 4]);
+    drawWitness(context, exactX, exactY + 6, axisY - 22, palette.exact, [5, 4]);
   }
 
   const sign = Math.sign(frame.velocity);

@@ -6,6 +6,44 @@ export interface CanvasSurface {
   height: number;
 }
 
+/** 図の色。ページと同じ CSS のトークンを読み、明るい配色と暗い配色で同じ役割の色を使う。 */
+export interface FigurePalette {
+  text: string;
+  textSecondary: string;
+  paper: string;
+  border: string;
+  borderSubtle: string;
+  origin: string;
+  numerical: string;
+  exact: string;
+  vector: string;
+  difference: string;
+}
+
+const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+let cached: { key: string; palette: FigurePalette } | undefined;
+
+export function figurePalette(): FigurePalette {
+  const key = `${document.documentElement.dataset.theme ?? ''}:${darkQuery.matches}`;
+  if (cached?.key === key) return cached.palette;
+  const style = getComputedStyle(document.documentElement);
+  const token = (name: string) => style.getPropertyValue(name).trim();
+  const palette: FigurePalette = {
+    text: token('--color-text'),
+    textSecondary: token('--color-text-secondary'),
+    paper: token('--color-paper'),
+    border: token('--color-border'),
+    borderSubtle: token('--color-border-subtle'),
+    origin: token('--color-origin'),
+    numerical: token('--color-primary'),
+    exact: token('--color-analytical'),
+    vector: token('--color-vector'),
+    difference: token('--color-difference'),
+  };
+  cached = { key, palette };
+  return palette;
+}
+
 export function canvasContext(canvas: HTMLCanvasElement): CanvasSurface {
   const { width, height } = canvas.getBoundingClientRect();
   const ratio = Math.min(window.devicePixelRatio || 1, 2);

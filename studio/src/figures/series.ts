@@ -1,7 +1,7 @@
 /** 時刻に対する数値解と解析解。点の値はスナップショットのまま描く。 */
 
 import { axisDomain, drawCartesianAxes, mapX, mapY, type PlotFrame } from './axes';
-import { canvasContext } from './canvas';
+import { canvasContext, figurePalette } from './canvas';
 import { drawSamplePoint } from './particle';
 
 export interface SeriesSample {
@@ -19,10 +19,6 @@ export interface TimeSeriesFrame {
   samples: SeriesSample[];
   xMin?: number;
 }
-
-const numericalColor = '#003153';
-const exactColor = '#167b87';
-const differenceColor = '#a86240';
 
 function stroke(context: CanvasRenderingContext2D, frame: PlotFrame, samples: SeriesSample[], value: (sample: SeriesSample) => number) {
   context.beginPath();
@@ -87,11 +83,11 @@ export function drawTimeSeries(canvas: HTMLCanvasElement, frame: TimeSeriesFrame
   context.rect(plot.left, plot.top, plot.width, plot.height);
   context.clip();
   context.lineJoin = 'round';
-  context.strokeStyle = numericalColor;
+  context.strokeStyle = figurePalette().numerical;
   context.lineWidth = 2;
   context.setLineDash([]);
   stroke(context, plot, frame.samples, sample => sample.numerical);
-  context.strokeStyle = exactColor;
+  context.strokeStyle = figurePalette().exact;
   context.lineWidth = 1.7;
   context.setLineDash([5, 4]);
   stroke(context, plot, frame.samples, sample => sample.exact);
@@ -160,7 +156,7 @@ export function drawErrorSeries(canvas: HTMLCanvasElement, frame: ErrorSeriesFra
   context.rect(plot.left, plot.top, plot.width, plot.height);
   context.clip();
   context.lineJoin = 'round';
-  context.strokeStyle = differenceColor;
+  context.strokeStyle = figurePalette().difference;
   context.lineWidth = 2;
   context.setLineDash([]);
   context.beginPath();
@@ -181,7 +177,7 @@ export function drawErrorSeries(canvas: HTMLCanvasElement, frame: ErrorSeriesFra
   const pointY = mapY(plot, frame.current);
   if (Number.isFinite(pointX) && Number.isFinite(pointY)) {
     context.beginPath();
-    context.fillStyle = differenceColor;
+    context.fillStyle = figurePalette().difference;
     context.arc(pointX, pointY, 3.5, 0, Math.PI * 2);
     context.fill();
   }
@@ -241,7 +237,7 @@ export function drawExactCurve(canvas: HTMLCanvasElement, frame: ExactCurveFrame
   context.rect(plot.left, plot.top, plot.width, plot.height);
   context.clip();
   context.lineJoin = 'round';
-  context.strokeStyle = exactColor;
+  context.strokeStyle = figurePalette().exact;
   context.lineWidth = 1.7;
   context.setLineDash([5, 4]);
   context.beginPath();
@@ -262,7 +258,7 @@ export function drawExactCurve(canvas: HTMLCanvasElement, frame: ExactCurveFrame
   const pointY = mapY(plot, frame.current);
   if (Number.isFinite(pointX) && Number.isFinite(pointY)) {
     context.beginPath();
-    context.fillStyle = exactColor;
+    context.fillStyle = figurePalette().exact;
     context.arc(pointX, pointY, 3.5, 0, Math.PI * 2);
     context.fill();
   }

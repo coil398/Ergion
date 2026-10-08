@@ -1,5 +1,7 @@
 /** 図の中の記号と目盛り数値。日本語の注記は Noto Sans JP で描く。 */
 
+import { figurePalette } from './canvas';
+
 export type LabelRole = 'math' | 'tick' | 'note';
 
 const fonts: Record<LabelRole, string> = {
@@ -8,11 +10,10 @@ const fonts: Record<LabelRole, string> = {
   note: '16px "Noto Sans JP", "Yu Gothic UI", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif',
 };
 
-const colors: Record<LabelRole, string> = {
-  math: '#1c1915',
-  tick: '#4a453c',
-  note: '#4a453c',
-};
+function roleColor(role: LabelRole): string {
+  const palette = figurePalette();
+  return role === 'math' ? palette.text : palette.textSecondary;
+}
 
 export function drawLabel(
   context: CanvasRenderingContext2D,
@@ -24,7 +25,7 @@ export function drawLabel(
 ) {
   context.save();
   context.font = fonts[role];
-  context.fillStyle = options?.color ?? colors[role];
+  context.fillStyle = options?.color ?? roleColor(role);
   context.textAlign = options?.align ?? 'center';
   context.textBaseline = 'middle';
   context.fillText(text, x, y);

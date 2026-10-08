@@ -1,5 +1,6 @@
 /** 長さとして読む線分。端点は呼び出し側が渡した座標で、積 vt はここでは計算しない。 */
 
+import { figurePalette } from './canvas';
 import { drawLabel } from './labels';
 
 export interface SegmentStyle {
@@ -21,7 +22,7 @@ export interface SegmentStyle {
 
 export function drawJoint(context: CanvasRenderingContext2D, x: number, y: number) {
   context.save();
-  context.fillStyle = '#1c1915';
+  context.fillStyle = figurePalette().text;
   context.beginPath();
   context.arc(x, y, 2.5, 0, Math.PI * 2);
   context.fill();

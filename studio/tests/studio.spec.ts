@@ -63,6 +63,46 @@ async function expectMechanicsSection(page: Page) {
   expect(nested).toBe(true);
 }
 
+const palettes = {
+  light: { bg: 'rgb(244, 239, 230)', text: 'rgb(28, 25, 21)', plate: 'rgb(232, 223, 208)', numerical: [0, 49, 83], exact: [22, 123, 135], error: [168, 98, 64] },
+  dark: { bg: 'rgb(28, 25, 21)', text: 'rgb(244, 239, 230)', plate: 'rgb(44, 40, 36)', numerical: [158, 195, 221], exact: [110, 200, 210], error: [227, 168, 138] },
+} as const;
+
+type Scheme = keyof typeof palettes;
+
+async function canvasPixels(page: Page, selector: string, rgb: readonly number[]) {
+  return page.locator(selector).evaluate((canvas: HTMLCanvasElement, [r, g, b]) => {
+    const { data } = canvas.getContext('2d')!.getImageData(0, 0, canvas.width, canvas.height);
+    let count = 0;
+    for (let index = 0; index < data.length; index += 4) {
+      if (data[index + 3] >= 250 && Math.abs(data[index] - r) <= 2 && Math.abs(data[index + 1] - g) <= 2 && Math.abs(data[index + 2] - b) <= 2) count += 1;
+    }
+    return count;
+  }, rgb);
+}
+
+async function expectScheme(page: Page, scheme: Scheme, canvases: { numerical?: string; exact?: string; error?: string }) {
+  const expected = palettes[scheme];
+  const other = palettes[scheme === 'light' ? 'dark' : 'light'];
+  const colors = await page.evaluate(() => {
+    const style = (selector: string) => getComputedStyle(document.querySelector(selector)!);
+    return {
+      root: getComputedStyle(document.documentElement).backgroundColor,
+      text: style('body').color,
+      plate: style('.equation').backgroundColor,
+      katex: style('.equation .katex').color,
+    };
+  });
+  expect(colors.root).toBe(expected.bg);
+  expect(colors.text).toBe(expected.text);
+  expect(colors.plate).toBe(expected.plate);
+  expect(colors.katex).toBe(expected.text);
+  for (const [role, selector] of Object.entries(canvases) as [keyof typeof canvases, string][]) {
+    await expect.poll(() => canvasPixels(page, selector, expected[role]), `${selector} ${role} ${scheme}`).toBeGreaterThan(0);
+    expect(await canvasPixels(page, selector, other[role]), `${selector} ${role} not ${scheme}`).toBe(0);
+  }
+}
+
 async function expectTypeSize(page: Page) {
   const type = await page.evaluate(() => {
     const px = (selector: string) => parseFloat(getComputedStyle(document.querySelector(selector)!).fontSize);
@@ -75,6 +115,7 @@ async function expectTypeSize(page: Page) {
       heading: px('h1'),
       equationPlate: plate('.equation'),
       stepPlate: plate('.solution-equation'),
+      scheme: document.documentElement.dataset.theme ?? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'),
     };
   });
   expect(type.body).toBe(16);
@@ -82,8 +123,9 @@ async function expectTypeSize(page: Page) {
   expect(type.equation).toBe(18);
   expect(type.katex).toBe(18);
   expect(type.heading).toBe(18);
-  expect(type.equationPlate).toBe('rgb(232, 223, 208)');
-  expect(type.stepPlate).toBe('rgb(232, 223, 208)');
+  const plate = palettes[type.scheme as Scheme].plate;
+  expect(type.equationPlate).toBe(plate);
+  expect(type.stepPlate).toBe(plate);
 }
 
 async function expectSimulationDoc(page: Page, module: string, name: string) {
@@ -393,7 +435,7 @@ test('力学の目次はいまページにしてあるものだけを示す', as
   await expect(tex(page, String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`).first()).toBeVisible();
   await expect(tex(page, 'v(t) = v_0 + a t').first()).toBeVisible();
   await expect(page.locator('#contents .katex').first()).toBeVisible();
-  await expect(page.locator('#contents .equation').first()).toHaveCSS('background-color', 'rgb(232, 223, 208)');
+  await expect(page.locator('#contents .equation').first()).toHaveCSS('background-color', palettes.light.plate);
   await expect(page.getByRole('link', { name: '位置の時間微分' }).first()).toBeVisible();
   await expect(page.getByRole('link', { name: '等速直線運動' }).first()).toBeVisible();
   await expect(page.getByRole('link', { name: '等加速度直線運動' }).first()).toBeVisible();
@@ -1019,4 +1061,60 @@ test('証明は式と図と例のあとで、ページの最後にある', async
           expect(order.slogan, item.href).toBe(false);
     }
   }
+});
+
+test('暗い配色は端末に従い、図と KaTeX と式の地も同じトークンで描く', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.setViewportSize({ width: 1440, height: 1050 });
+  await page.goto('separation.html');
+  await expect(page.locator('#status')).toHaveText('計算完了');
+  await expect(page.getByRole('button', { name: '端末', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  expect(await page.evaluate(() => document.documentElement.dataset.theme)).toBeUndefined();
+  await expectScheme(page, 'dark', { numerical: '#solution-chart', exact: '#solution-chart', error: '#solution-error' });
+  await expectTypeSize(page);
+  await page.emulateMedia({ colorScheme: 'light' });
+  await expectScheme(page, 'light', { numerical: '#solution-chart', exact: '#solution-chart', error: '#solution-error' });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await expect(page.locator('.theme-switch')).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+});
+
+test('明るい、暗い、端末の選択は ergion-theme に置き、どのページでも同じである', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1050 });
+  await page.goto('uniform.html');
+  await expect(page.locator('#status')).toHaveText('準備完了');
+  await page.evaluate(() => localStorage.removeItem('ergion-theme'));
+  for (let step = 1; step <= 3; step += 1) {
+    await page.getByRole('button', { name: '1ステップ', exact: true }).click();
+    await expect(page.locator('#progress-text')).toContainText(`${step} /`);
+  }
+  const group = page.getByRole('group', { name: '配色' });
+  await expect(group.getByRole('button')).toHaveText(['明るい', '暗い', '端末']);
+  await expectScheme(page, 'light', { numerical: '#oscillator', exact: '#oscillator', error: '#phase-chart' });
+
+  await group.getByRole('button', { name: '暗い', exact: true }).click();
+  await expect(group.getByRole('button', { name: '暗い', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  expect(await page.evaluate(() => localStorage.getItem('ergion-theme'))).toBe('dark');
+  await expectScheme(page, 'dark', { numerical: '#oscillator', exact: '#oscillator', error: '#phase-chart' });
+
+  for (const href of ['separation.html', 'newton.html', './']) {
+    await page.goto(href);
+    await expect(page.getByRole('button', { name: '暗い', exact: true })).toHaveAttribute('aria-pressed', 'true');
+    expect(await page.evaluate(() => document.documentElement.dataset.theme)).toBe('dark');
+    expect(await page.evaluate(() => getComputedStyle(document.documentElement).backgroundColor)).toBe(palettes.dark.bg);
+  }
+  await page.goto('newton.html');
+  await expect(page.locator('#status')).toHaveText('計算完了');
+  await expectScheme(page, 'dark', { numerical: '#solution-chart' });
+
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.getByRole('button', { name: '明るい', exact: true }).click();
+  expect(await page.evaluate(() => localStorage.getItem('ergion-theme'))).toBe('light');
+  await expectScheme(page, 'light', { numerical: '#solution-chart' });
+
+  await page.getByRole('button', { name: '端末', exact: true }).click();
+  expect(await page.evaluate(() => localStorage.getItem('ergion-theme'))).toBeNull();
+  expect(await page.evaluate(() => document.documentElement.dataset.theme)).toBeUndefined();
+  await expectScheme(page, 'dark', { numerical: '#solution-chart' });
 });

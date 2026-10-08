@@ -1,3 +1,5 @@
+import { themeControl } from './theme';
+
 export type PageId =
   | 'mechanics'
   | 'uniform'
@@ -45,6 +47,7 @@ export function appHeader(status: string): string {
   <header class="app-header">
     <a class="brand" href="./" aria-label="Ergion Studio ホーム"><span class="brand-mark" aria-hidden="true">e</span><span>Ergion <span class="brand-sub">Studio</span></span></a>
     <span class="status" id="status" role="status"><i></i><span>${status}</span></span>
+    ${themeControl()}
   </header>`;
 }
 

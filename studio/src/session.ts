@@ -1,4 +1,5 @@
 import type { MotionModel, Reply, Snapshot, StepMethod } from './protocol';
+import { onThemeChange } from './theme';
 
 export interface TimedConfig {
   schema_version: 1;
@@ -223,6 +224,7 @@ export function mountSession<C extends TimedConfig>(options: {
   });
 
   new ResizeObserver(() => paint()).observe(document.querySelector('.results')!);
+  onThemeChange(() => paint());
   options.fillForm(config);
   updateHint();
   load(config);
