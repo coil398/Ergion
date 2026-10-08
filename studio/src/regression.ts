@@ -26,13 +26,19 @@ renderLesson({
       です。最小点では二つの偏導関数が 0 です。
       ${eq(String.raw`\frac{\partial Q}{\partial \beta_0} = -2\sum_{i=1}^{n}(y_i - \beta_0 - \beta_1 x_i) = 0`)}
       ${eq(String.raw`\frac{\partial Q}{\partial \beta_1} = -2\sum_{i=1}^{n}x_i(y_i - \beta_0 - \beta_1 x_i) = 0`)}`,
-    `第1式を ${tex('-2n')} で割ると ${tex(String.raw`\bar{y} - \beta_0 - \beta_1\bar{x} = 0`)}、すなわち
+    `第1式の和を項ごとに分けると
+      ${eq(String.raw`\sum_{i=1}^{n} y_i - n\beta_0 - \beta_1\sum_{i=1}^{n} x_i = 0`)}
+      で、${tex('n')} で割ると ${tex(String.raw`\bar{y} - \beta_0 - \beta_1\bar{x} = 0`)}、すなわち
       ${eq(String.raw`\beta_0 = \bar{y} - \beta_1\bar{x}`)}
-      で、直線は点 ${tex(String.raw`(\bar{x}, \bar{y})`)} を通ります。これを第2式に代入すると
+      で、直線は点 ${tex(String.raw`(\bar{x}, \bar{y})`)} を通ります。これを第2式に代入すると、${tex(String.raw`y_i - \beta_0 - \beta_1 x_i = (y_i - \bar{y}) - \beta_1(x_i - \bar{x})`)} なので
       ${eq(String.raw`\sum_{i=1}^{n}x_i\left[(y_i - \bar{y}) - \beta_1(x_i - \bar{x})\right] = 0`)}
-      です。${tex(String.raw`\sum_i \bar{x}(y_i - \bar{y}) = 0`)}、${tex(String.raw`\sum_i \bar{x}(x_i - \bar{x}) = 0`)} を引いて ${tex('x_i')} を ${tex(String.raw`x_i - \bar{x}`)} に置きかえると
+      です。偏差の和は 0 なので ${tex(String.raw`\sum_i \bar{x}(y_i - \bar{y}) = 0`)}、${tex(String.raw`\sum_i \bar{x}(x_i - \bar{x}) = 0`)} で、これらを左辺から引くと ${tex('x_i')} が ${tex(String.raw`x_i - \bar{x}`)} に置きかわります。
+      ${eq(String.raw`\sum_{i=1}^{n}(x_i - \bar{x})(y_i - \bar{y}) - \beta_1\sum_{i=1}^{n}(x_i - \bar{x})^2 = 0`)}
       ${eq(String.raw`S_{xy} - \beta_1 S_{xx} = 0, \qquad \hat{\beta}_1 = \frac{S_{xy}}{S_{xx}}, \qquad \hat{\beta}_0 = \bar{y} - \hat{\beta}_1\bar{x}`)}
-      です（${coreDoc('statistics', 'linear_regression', '回帰係数の説明')}）。${tex('Q')} は係数の2次式で、2階の偏導関数の行列 ${tex(String.raw`2\begin{pmatrix} n & \sum x_i \\ \sum x_i & \sum x_i^2 \end{pmatrix}`)} の行列式は ${tex(String.raw`4nS_{xx} > 0`)} なので、この点が最小点です。`,
+      です（${coreDoc('statistics', 'linear_regression', '回帰係数の説明')}）。${tex('Q')} は係数の2次式で、2階の偏導関数を並べた行列とその行列式は
+      ${eq(String.raw`\begin{pmatrix} Q_{\beta_0\beta_0} & Q_{\beta_0\beta_1} \\ Q_{\beta_1\beta_0} & Q_{\beta_1\beta_1} \end{pmatrix} = 2\begin{pmatrix} n & \sum_i x_i \\ \sum_i x_i & \sum_i x_i^2 \end{pmatrix}`)}
+      ${eq(String.raw`\det = 4\left(n\sum_i x_i^2 - \Bigl(\sum_i x_i\Bigr)^2\right) = 4n\left(\sum_i x_i^2 - n\bar{x}^2\right) = 4nS_{xx} > 0`)}
+      です（${tex(String.raw`S_{xx} = \sum_i x_i^2 - n\bar{x}^2`)}）。左上の成分 ${tex('2n')} も正なので、この点が最小点です。`,
     `予測値を ${tex(String.raw`\hat{y}_i = \hat{\beta}_0 + \hat{\beta}_1 x_i`)}、残差を ${tex(String.raw`e_i = y_i - \hat{y}_i`)} とします。図の煉瓦色の縦の線分は ${tex('e_i')} です。${tex('y')} の全変動 ${tex(String.raw`S_{yy}`)} は、直線で説明できる回帰平方和と、残りの残差平方和に分かれます（ページの最後の証明）。
       ${eq(String.raw`\sum_{i}(y_i - \bar{y})^2 = \sum_{i}(\hat{y}_i - \bar{y})^2 + \sum_{i} e_i^2`)}
       決定係数 ${tex(String.raw`R^2 = 1 - \sum_i e_i^2 / S_{yy}`)} は、全変動のうち直線が説明する割合で、${tex(String.raw`0 \le R^2 \le 1`)} です。`,
@@ -70,8 +76,8 @@ renderLesson({
       です。直線は ${tex('y')} の全変動 6 のうち 3.6、つまり 60% を説明します。画面の計器の値は、ライブラリが計算した近似です。`,
   ],
   related: [
-    { href: './least-squares.html', title: '最小二乗法', description: '同じ当てはめを、正規方程式 AᵀAx = Aᵀb と QR 分解で解きます。' },
-    { href: './sample-stats.html', title: '標本・平均・分散', description: '回帰係数の材料になる、標本平均と偏差の2乗和の求め方です。' },
+    { href: './least-squares.html', title: '最小二乗法' },
+    { href: './sample-stats.html', title: '標本・平均・分散' },
   ],
   footer: 'この画面の計算は、5組の2変量標本への回帰直線の当てはめです。',
   proof: writtenProof([{

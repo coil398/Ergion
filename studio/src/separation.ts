@@ -97,15 +97,19 @@ app.innerHTML = `
               <p class="solution-equation">${tex(String.raw`2x(t) = 2 \cdot 3 e^{2t} = 6 e^{2t}`, true)}</p>
               左辺と右辺は同じ式です。この一致は近似ではなく、式のままの一致です。したがって ${tex('x(t) = 3 e^{2t}')} はこの例の厳密解です。
             </li>
+            <li>図の下の欄と比べます。時刻 ${tex('t = 1')} では
+              <p class="solution-equation">${tex(String.raw`x(1) = 3 e^{2 \cdot 1} = 3 e^{2}`, true)}</p>
+              です。これは厳密な値です。欄の「厳密解」に出る 22.16717 は、ライブラリが返したこの値を小数5桁で表した近似の値です。「数値解」と「位置の誤差」は、選んだ数値解法で時間を刻んで得た近似の値です。
+            </li>
           </ol>
         </div>
       </section>
       ${relatedPages([
-        { href: './integrate.html', title: '積分して解く', description: '右辺が未知関数によらない場合の積分による解法です。' },
-        { href: './linear.html', title: '1階線形', description: '積分因子を掛けて1階方程式を解く標準的な解法です。' },
-        { href: './homogeneous.html', title: '同次形', description: '比の変数変換によって変数分離に帰着する方程式です。' },
-        { href: './euler.html', title: 'Euler法', description: '指数関数解に対する1ステップの数値的近似です。' },
-        { href: './rk4.html', title: '古典的RK4', description: '指数関数の増分を高い精度で追跡する数値解法です。' },
+        { href: './integrate.html', title: '積分して解く' },
+        { href: './linear.html', title: '1階線形' },
+        { href: './homogeneous.html', title: '同次形' },
+        { href: './euler.html', title: 'Euler法' },
+        { href: './rk4.html', title: '古典的RK4' },
       ])}
       ${pageFooter('変数分離で得る x(t) = x_0 e^{kt} は、x\' = kx の厳密解です。')}
       ${checkedProofs([{ statement: `${tex(String.raw`x' = kx`)} の厳密解は ${tex(String.raw`x(t) = x_0 e^{kt}`)} です。`, source: separationProof, moduleName: 'Ergion.Separation', kind: '実数' }])}

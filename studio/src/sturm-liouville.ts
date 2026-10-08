@@ -95,10 +95,10 @@ renderLesson({
       です。Simpson 則による近似は <output id="example-norm">—</output> です。`,
   ],
   related: [
-    { href: './series.html', title: 'べき級数', description: '同じ形の方程式 x″ + x = 0 を、級数の係数から解きます。' },
-    { href: './heat.html', title: '熱伝導方程式', description: '変数分離で、この固有値問題 X″ = −k²X が現れます。' },
-    { href: './wave.html', title: '波動方程式', description: '弦の固有振動は、この固有関数 sin(nπx/L) です。' },
-    { href: './eigen.html', title: '固有値と固有ベクトル', description: '行列の固有値問題で、対称行列の固有ベクトルが直交することに対応します。' },
+    { href: './series.html', title: 'べき級数' },
+    { href: './heat.html', title: '熱伝導方程式' },
+    { href: './wave.html', title: '波動方程式' },
+    { href: './eigen.html', title: '固有値と固有ベクトル' },
   ],
   footer: 'この画面の計算は、区間 [0, π] の固有値問題 −x″ = λx のシューティング法です。',
   proof: writtenProof([{
@@ -123,7 +123,9 @@ renderLesson({
         ${eq(String.raw`\begin{pmatrix} x_n(a) & x_n'(a) \\ x_m(a) & x_m'(a) \end{pmatrix}\begin{pmatrix} \alpha_1 \\ \alpha_2 \end{pmatrix} = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`)}
         です。${tex(String.raw`(\alpha_1, \alpha_2) \ne (0, 0)`)} がこの方程式を満たすので、係数の行列は正則ではなく、行列式は 0 です。
         ${eq(String.raw`x_n(a)\,x_m'(a) - x_n'(a)\,x_m(a) = 0`)}
-        この行列式は ${tex('-W(a)')} なので ${tex('W(a) = 0')} です。右端の条件から、同じ理由で ${tex('W(b) = 0')} です。`,
+        ${tex(String.raw`W(a) = x_m(a)\,x_n'(a) - x_n(a)\,x_m'(a)`)} なので、符号を変えて並べかえると
+        ${eq(String.raw`-W(a) = -\bigl(x_m(a)\,x_n'(a) - x_n(a)\,x_m'(a)\bigr) = x_n(a)\,x_m'(a) - x_n'(a)\,x_m(a)`)}
+        この行列式は ${tex('-W(a)')} なので ${tex('-W(a) = 0')}、すなわち ${tex('W(a) = 0')} です。右端の条件から、同じ理由で ${tex('W(b) = 0')} です。`,
       `したがって右辺は ${tex(String.raw`p(b)\cdot 0 - p(a)\cdot 0 = 0`)} で、
         ${eq(String.raw`(\lambda_m - \lambda_n)\int_a^b w\, x_n x_m\,dt = 0`)}
         です。${tex(String.raw`\lambda_m - \lambda_n \ne 0`)} で割ると ${tex(String.raw`\int_a^b x_n x_m w\,dt = 0`)} を得ます。例の ${tex('w = 1')}、${tex(String.raw`[0, \pi]`)} では ${tex(String.raw`\int_0^\pi \sin nt\,\sin mt\,dt = 0`)}（${tex(String.raw`n \ne m`)}）です。`,

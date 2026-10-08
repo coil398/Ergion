@@ -87,10 +87,10 @@ renderLesson({
     `Black–Scholes 公式の値は ${tex(String.raw`C = 100N(0.35) - 100e^{-0.05}N(0.15) \approx 10.450584`)} です（計器の「Black–Scholes 公式の値」）。既定の条件（${tex('k = 50')}、200 ステップ、種 1）では計算の終わりに ${tex(String.raw`M = 50 \cdot 201 = 10050`)} 個の標本があり、標準誤差は約 0.15 です。推定値（種 1 の擬似乱数による近似）は、公式の値から標準誤差の数倍の範囲に入ります。標準誤差を 0.01 にするには ${tex(String.raw`M \approx (14.72/0.01)^2 \approx 2.2 \times 10^6`)} 個の標本が要ります。`,
   ],
   related: [
-    { href: './monte-carlo.html', title: 'Monte Carlo 法', description: '期待値を擬似乱数の標本平均で近似する方法と、標準誤差の考え方です。' },
-    { href: './gbm.html', title: '幾何 Brownian 運動', description: '満期の株価の式を導く Itô の補題と厳密解です。' },
-    { href: './black-scholes.html', title: 'Black–Scholes 方程式', description: '比べている価格の公式と、その導出です。' },
-    { href: './limit-theorems.html', title: '大数の法則と中心極限定理', description: '推定値が価格に近づき、そのばらつきが正規分布に近づく理由です。' },
+    { href: './monte-carlo.html', title: 'Monte Carlo 法' },
+    { href: './gbm.html', title: '幾何 Brownian 運動' },
+    { href: './black-scholes.html', title: 'Black–Scholes 方程式' },
+    { href: './limit-theorems.html', title: '大数の法則と中心極限定理' },
   ],
   footer: 'この画面の計算は、満期の株価の擬似乱数の標本による欧州型コールの価格の推定です。',
   proof: writtenProof([{

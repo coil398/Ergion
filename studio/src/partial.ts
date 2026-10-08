@@ -29,22 +29,30 @@ renderLesson({
       ${eq(String.raw`\frac{\partial f}{\partial x}(a, b) = 2a + 3b`)}
       です。`,
     `${tex('y')} についても同じように計算します。
-      ${eq(String.raw`f(a, b + h) - f(a, b) = a^2 + 3a(b + h) - a^2 - 3ab = 3ah`)}
+      ${eq(String.raw`f(a, b + h) - f(a, b) = a^2 + 3a(b + h) - a^2 - 3ab`)}
+      ${eq(String.raw`= a^2 + 3ab + 3ah - a^2 - 3ab`)}
+      ${eq(String.raw`= 3ah`)}
       ${eq(String.raw`\frac{f(a, b + h) - f(a, b)}{h} = 3a`)}
       差分商は ${tex('h')} によらないので、極限は
       ${eq(String.raw`\frac{\partial f}{\partial y}(a, b) = 3a`)}
       です。勾配は ${tex(String.raw`\nabla f(x, y) = (2x + 3y,\ 3x)`)} です（${coreDoc('calculus', 'quadratic_field_gradient', '勾配の説明')}）。`,
     `中心差分 ${tex(String.raw`D_x f(a, b) = \frac{f(a + h, b) - f(a - h, b)}{2h}`)} は、関数の値だけから偏導関数を近似します（${coreDoc('calculus', 'central_partial_x', '中心差分の偏導関数の説明')}）。この ${tex('f')} では
       ${eq(String.raw`f(a + h, b) - f(a - h, b) = (a + h)^2 - (a - h)^2 + 3(a + h)b - 3(a - h)b`)}
+      ${eq(String.raw`= (a^2 + 2ah + h^2) - (a^2 - 2ah + h^2) + (3ab + 3bh) - (3ab - 3bh)`)}
       ${eq(String.raw`= 4ah + 6bh`)}
       ${eq(String.raw`D_x f(a, b) = \frac{4ah + 6bh}{2h} = 2a + 3b`)}
-      です。${tex('h^2')} の項が打ち消し合うので、中心差分は ${tex('x')} について2次の多項式では ${tex('h')} によらず厳密値に一致します。前進差分には差 ${tex('h')} が残ります。${tex('y')} の中心差分も ${tex(String.raw`\frac{3a(b + h) - 3a(b - h)}{2h} = 3a`)} です。`,
-    `等高線 ${tex('f(x, y) = c')} を解くと、${tex('x \\ne 0')} では
+      です。${tex('h^2')} の項が打ち消し合うので、中心差分は ${tex('x')} について2次の多項式では ${tex('h')} によらず厳密値に一致します。前進差分には差 ${tex('h')} が残ります。${tex('y')} の中心差分も、${tex('a^2')} の項が打ち消し合って
+      ${eq(String.raw`D_y f(a, b) = \frac{3a(b + h) - 3a(b - h)}{2h} = \frac{6ah}{2h} = 3a`)}
+      です。`,
+    `定数 ${tex('c')} について、${tex('f')} の値が ${tex('c')} に等しい点の集まりを等高線 ${tex('f(x, y) = c')} と呼びます。これを ${tex('y')} について解くと、${tex('x \\ne 0')} では
       ${eq(String.raw`x^2 + 3xy = c,\qquad 3xy = c - x^2,\qquad y = \frac{c - x^2}{3x}`)}
       です（${coreDoc('calculus', 'quadratic_field_level_y', '等高線の説明')}）。${tex(String.raw`y = \frac{c}{3x} - \frac{x}{3}`)} を微分すると、等高線の接線の向きは
       ${eq(String.raw`\left(1,\ \frac{dy}{dx}\right) = \left(1,\ -\frac{c}{3x^2} - \frac{1}{3}\right)`)}
       です。勾配との内積は、${tex(String.raw`3y = \frac{c}{x} - x`)} を使って
-      ${eq(String.raw`(2x + 3y) + 3x\left(-\frac{c}{3x^2} - \frac{1}{3}\right) = 2x + 3y - \frac{c}{x} - x = x + \left(\frac{c}{x} - x\right) - \frac{c}{x} = 0`)}
+      ${eq(String.raw`(2x + 3y) \cdot 1 + 3x\left(-\frac{c}{3x^2} - \frac{1}{3}\right) = 2x + 3y - \frac{c}{x} - x`)}
+      ${eq(String.raw`= x + 3y - \frac{c}{x}`)}
+      ${eq(String.raw`= x + \left(\frac{c}{x} - x\right) - \frac{c}{x}`)}
+      ${eq(String.raw`= 0`)}
       です。勾配は等高線に垂直です。一般の関数での証明はページの最後にあります。`,
   ],
   figureAlt: '関数 x² + 3xy の等高線と、各点で等高線に垂直に向く勾配の矢印。',
@@ -59,10 +67,10 @@ renderLesson({
           <div><span>中心差分 ${tex('D_x f(1, 2)')}（近似値）</span><output id="central-x">—</output></div>
           <div><span>中心差分 ${tex('D_y f(1, 2)')}（近似値）</span><output id="central-y">—</output></div>
           <div><span>厳密な勾配 ${tex(String.raw`\nabla f(1, 2)`)}</span><output id="gradient">—</output></div>
-          <div><span>前進差分の差 ${tex('D_x^{+} f - f_x')}</span><output id="difference">—</output></div>
+          <div><span>前進差分の差 ${tex('D_x^{+} f - f_x')}（近似値）</span><output id="difference">—</output></div>
         </div>
         <div class="table-scroll"><table class="value-table" aria-label="点 (1, 2) における刻みごとの差分">
-          <thead><tr><th>刻み ${tex('h')}</th><th>前進差分 ${tex('D_x^{+} f')}</th><th>中心差分 ${tex('D_x f')}</th><th>中心差分 ${tex('D_y f')}</th></tr></thead>
+          <thead><tr><th>刻み ${tex('h')}</th><th>前進差分 ${tex('D_x^{+} f')}（近似値）</th><th>中心差分 ${tex('D_x f')}（近似値）</th><th>中心差分 ${tex('D_y f')}（近似値）</th></tr></thead>
           <tbody id="partial-table"></tbody>
         </table></div>
       </section>`,
@@ -74,16 +82,16 @@ renderLesson({
       で、どれも厳密な値です。勾配は ${tex(String.raw`\nabla f(1, 2) = (8, 3)`)} です。`,
     `刻み ${tex('h = 0.1')} の差分を手で計算します。${tex('f(1.1, 2) = 1.21 + 6.6 = 7.81')}、${tex('f(0.9, 2) = 0.81 + 5.4 = 6.21')} なので
       ${eq(String.raw`D_x^{+} f = \frac{7.81 - 7}{0.1} = 8.1,\qquad D_x f = \frac{7.81 - 6.21}{0.2} = \frac{1.6}{0.2} = 8`)}
-      です。前進差分の差は ${tex('0.1 = h')}、中心差分は厳密値 8 に一致します。表の値はライブラリが返した値です。`,
+      です。手で求めた 8.1 と 8 は厳密な値です。前進差分の差は ${tex('0.1 = h')}、中心差分は厳密値 8 に一致します。表と計器の値は、ライブラリが返した近似値です。`,
     `点を通る等高線は ${tex('f = 7')}、すなわち ${tex(String.raw`y = \frac{7 - x^2}{3x}`)} です。${tex('x = 1')} での傾きは
       ${eq(String.raw`\frac{dy}{dx} = -\frac{7}{3 \cdot 1^2} - \frac{1}{3} = -\frac{8}{3}`)}
       で、接線の向き ${tex(String.raw`(1, -\tfrac{8}{3})`)} と勾配の内積は ${tex(String.raw`8 \cdot 1 + 3 \cdot \left(-\tfrac{8}{3}\right) = 0`)} です。`,
   ],
   related: [
-    { href: './derivative-definition.html', title: '微分の定義', description: '1変数の差分商の極限で、偏導関数はこれを一つの変数に当てたものです。' },
-    { href: './multiple-integral.html', title: '重積分', description: '2変数関数を、平面の領域の上で積分します。' },
-    { href: './potential.html', title: '静電ポテンシャルと電位', description: '電場は電位の勾配に負号を付けたもので、等電位線に垂直です。' },
-    { href: './exact.html', title: '完全微分', description: '偏導関数の組が完全微分になる条件から方程式を解きます。' },
+    { href: './derivative-definition.html', title: '微分の定義' },
+    { href: './multiple-integral.html', title: '重積分' },
+    { href: './potential.html', title: '静電ポテンシャルと電位' },
+    { href: './exact.html', title: '完全微分' },
   ],
   footer: 'この画面の計算は、2変数関数 x² + 3xy の偏導関数と勾配です。',
   proof: writtenProof([{

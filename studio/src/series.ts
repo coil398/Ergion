@@ -87,11 +87,11 @@ app.innerHTML = `
         </div>
       </section>
       ${relatedPages([
-        { href: './taylor.html', title: 'Taylor 展開', description: '関数を多項式と剰余項で表すページです。cos t の級数はその例です。' },
-        { href: './second-order.html', title: '定数係数の2階同次', description: '同じ方程式 x\'\' + x = 0 を特性方程式で解く方法です。' },
-        { href: './variation.html', title: '定数変化法', description: '基本解 cos t と sin t を用いて非同次方程式を解く発展形です。' },
-        { href: './euler.html', title: 'Euler法', description: 'べき級数の1次打ち切りと共通する構造をもつ数値解法です。' },
-        { href: './rk4.html', title: '古典的RK4', description: 'テイラー級数の4次まで一致する高精度な数値解法です。' },
+        { href: './taylor.html', title: 'Taylor 展開' },
+        { href: './second-order.html', title: '定数係数の2階同次' },
+        { href: './variation.html', title: '定数変化法' },
+        { href: './euler.html', title: 'Euler法' },
+        { href: './rk4.html', title: '古典的RK4' },
       ])}
       ${pageFooter('通常点のべき級数は、漸化式で係数が決まり、この方程式では和が cos t という厳密解です。')}
       ${checkedProofs([{ statement: `${tex(String.raw`x'' + x = 0`)} のべき級数は、係数の漸化式 ${tex(String.raw`a_{m+2} = -\frac{a_m}{(m+1)(m+2)}`)} を満たし、和は ${tex(String.raw`\cos t`)} です。`, source: seriesProof, moduleName: 'Ergion.PowerSeries', kind: '実数' }])}

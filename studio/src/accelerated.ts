@@ -56,13 +56,27 @@ app.innerHTML = `
               初期位置を ${tex('x(0) = x_0')} と書き、移項すると、位置の厳密解は次の二次式です。
               <p class="solution-equation">${tex(String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`, true)}</p>
             </li>
-            <li>位置は時刻の二次式、速度は時刻の一次式であり、三階以上の導関数はゼロです。時刻 ${tex('t_n')} から ${tex(String.raw`\Delta t`)} だけ進んだ厳密な増分は次の式です（${simulationDoc('constant_acceleration', 'ConstantAccelerationSimulation', '1ステップの説明')}）。
+            <li>ステップ番号を ${tex('n')}、時刻 ${tex('t_n')} の位置と速度を ${tex('x_n = x(t_n)')}、${tex('v_n = v(t_n)')}、時間刻みを ${tex(String.raw`\Delta t`)} とします。位置は時刻の二次式であり、三階以上の導関数はゼロです。したがって ${tex('t_n')} のまわりの Taylor 展開は二次の項で終わります。
+              <p class="solution-equation">${tex(String.raw`x(t_n + \Delta t) = x(t_n) + x'(t_n)\,\Delta t + \frac{1}{2} x''(t_n)\,(\Delta t)^2`, true)}</p>
+              ${tex(String.raw`x'(t_n) = v_n`)}、${tex(String.raw`x''(t_n) = a`)} を代入すると、${tex(String.raw`\Delta t`)} だけ進んだ厳密な増分は次の式です（${simulationDoc('constant_acceleration', 'ConstantAccelerationSimulation', '1ステップの説明')}）。
               <p class="solution-equation">${tex(String.raw`x_{n+1} = x_n + v_n \Delta t + \frac{1}{2} a (\Delta t)^2`, true)}</p>
               <p class="solution-equation">${tex(String.raw`v_{n+1} = v_n + a \Delta t`, true)}</p>
-              中点法と古典的な4次の Runge–Kutta 法では、数値ステップの増分は厳密解の増分と一致します。残る差は、倍精度浮動小数点の丸めだけです。Euler 法は区間の始点の速度だけで位置を進めるので、位置には ${tex(String.raw`\frac{1}{2} a (\Delta t)^2`)} の打ち切りが残ります。この誤差は丸めだけではありません。
+            </li>
+            <li>中点法は、区間の中点の速度で位置を進めます。中点の速度は ${tex(String.raw`v_n + \frac{1}{2} a \Delta t`)} です。
+              <p class="solution-equation">${tex(String.raw`x_{n+1} = x_n + \Delta t \left(v_n + \frac{1}{2} a \Delta t\right)`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`= x_n + v_n \Delta t + \frac{1}{2} a (\Delta t)^2`, true)}</p>
+              古典的な4次の Runge–Kutta 法では、位置の四つの傾きは速度 ${tex('v_n')}、${tex(String.raw`v_n + \frac{1}{2} a \Delta t`)}、${tex(String.raw`v_n + \frac{1}{2} a \Delta t`)}、${tex(String.raw`v_n + a \Delta t`)} です。重み 1, 2, 2, 1 で平均します。
+              <p class="solution-equation">${tex(String.raw`\frac{1}{6}\left(v_n + 2\left(v_n + \tfrac{1}{2} a \Delta t\right) + 2\left(v_n + \tfrac{1}{2} a \Delta t\right) + v_n + a \Delta t\right) = \frac{1}{6}\left(6 v_n + 3 a \Delta t\right) = v_n + \frac{1}{2} a \Delta t`, true)}</p>
+              平均の傾きが中点法と同じなので、位置の更新も同じ式です。中点法と古典的な4次の Runge–Kutta 法では、数値ステップの増分は厳密解の増分と一致します。
+            </li>
+            <li>Euler 法は、区間の始点の速度 ${tex('v_n')} だけで位置を進めます。
+              <p class="solution-equation">${tex(String.raw`x_{n+1} = x_n + v_n \Delta t`, true)}</p>
+              厳密な増分との差は次の式です。
+              <p class="solution-equation">${tex(String.raw`\left(x_n + v_n \Delta t + \frac{1}{2} a (\Delta t)^2\right) - \left(x_n + v_n \Delta t\right) = \frac{1}{2} a (\Delta t)^2`, true)}</p>
+              この差は打ち切り誤差であり、1ステップごとに位置に残ります。速度の更新 ${tex(String.raw`v_{n+1} = v_n + a \Delta t`)} は厳密な増分と一致します。
             </li>
           </ol>
-          <p>画面は、各時刻の位置と速度を描きます。式 ${tex(String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`)} や ${tex('v(t) = v_0 + a t')} を、描画のために計算し直すことはありません。青の実線が数値解、青緑の破線が厳密解です。誤差は、その破線とは別の実線です。</p>
+          <p>画面は、各時刻の位置と速度を描きます。式 ${tex(String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`)} や ${tex('v(t) = v_0 + a t')} を、描画のために計算し直すことはありません。青の実線が数値解、青緑の破線が厳密解です。</p>
         </div>
       </section>
       ${pageFigure('accelerated', '等加速度直線運動では、粒子が進むにつれて速度の矢が長くなる。')}
@@ -95,7 +109,7 @@ app.innerHTML = `
             <div class="panel-heading"><h2 id="scene-heading">粒子の直線運動</h2><span id="scene-time" class="numeric">t = 0.000</span></div>
             <p class="scene-caption">粒子は数値解の位置にあります。青緑の破線は、同じ時刻の厳密解の位置です。橙の矢印の長さは、返された速度の大きさに比例します。加速度が一定なので、速度も矢印の長さも一定の割合で変わります。</p>
             <canvas id="oscillator" aria-label="直線上を進む粒子。速度の矢印の長さは、その時刻の速度の大きさに比例します。数値解は青の実線、解析解は青緑の破線。" role="img"></canvas>
-            <div class="readouts"><div><span>位置 x</span><output id="position">—</output></div><div><span>速度 v</span><output id="velocity">—</output></div><div><span>解析解の位置</span><output id="exact-position">—</output></div><div><span>位置の絶対差 |x − x_exact|</span><output id="energy-error">—</output></div></div>
+            <div class="readouts"><div><span>位置 x</span><output id="position">—</output></div><div><span>速度 v</span><output id="velocity">—</output></div><div><span>解析解の位置</span><output id="exact-position">—</output></div><div><span>位置の誤差 x − x_exact</span><output id="energy-error">—</output></div></div>
           </section>
           <section class="plots panel" aria-labelledby="plots-heading">
             <div class="panel-heading"><h2 id="plots-heading">位置と誤差の時間変化</h2><div class="legend"><span><i class="numerical"></i>数値解</span><span><i class="analytical"></i>解析解</span><span><i class="difference"></i>誤差</span></div></div>
@@ -109,12 +123,28 @@ app.innerHTML = `
           <p class="experiment-note">数値計算はブラウザ内で実行します。条件や結果をサーバーへ送信しません。</p>
         </div>
       </div>
+      <section class="study panel" id="example" aria-labelledby="example-heading">
+        <div class="panel-heading"><h2 id="example-heading">数を代入した例</h2></div>
+        <div class="study-body">
+          <ol class="solution">
+            <li>計算条件の既定の値 ${tex('x_0 = 0')}、${tex('v_0 = 0')}、${tex('a = 1')}、${tex(String.raw`\Delta t = 0.01`)} をとります。1ステップ後の厳密な値は次の式です。
+              <p class="solution-equation">${tex(String.raw`v_1 = 0 + 1 \cdot 0.01 = 0.01`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`x_1 = 0 + 0 \cdot 0.01 + \frac{1}{2} \cdot 1 \cdot (0.01)^2 = \frac{1}{2} \cdot 0.0001 = 0.00005`, true)}</p>
+            </li>
+            <li>中点法と古典的な4次の Runge–Kutta 法の1ステップは、上の厳密な増分と同じ式です。1ステップを一度進めると、画面の位置 ${tex('x')} と解析解の位置はどちらも 0.00005、速度 ${tex('v')} は 0.01000 です。これらは小数第5位までの近似の表示です。</li>
+            <li>Euler 法の1ステップは、始点の速度 ${tex('v_0 = 0')} で位置を進めます。
+              <p class="solution-equation">${tex(String.raw`x_1 = 0 + 0 \cdot 0.01 = 0`, true)}</p>
+              厳密な値との差は ${tex(String.raw`0 - 0.00005 = -0.00005`)} であり、これは ${tex(String.raw`\frac{1}{2} a (\Delta t)^2`)} の符号を変えた値です。画面の位置 ${tex('x')} は 0.00000、位置の誤差は近似の表示 -5.00e-5 です。
+            </li>
+          </ol>
+        </div>
+      </section>
       ${relatedPages([
-        { href: './integrate.html', title: '積分して解く', description: '加速度 a を二度積分して速度と位置を求める導出です。' },
-        { href: './uniform.html', title: '等速直線運動', description: '加速度がゼロの場合の直線運動です。' },
-        { href: './euler.html', title: 'Euler法', description: '加速度一定の運動で打ち切り誤差の累積を観察できる数値解法です。' },
-        { href: './midpoint.html', title: '中点法', description: '2次の増分が厳密に一致する高精度な数値解法です。' },
-        { href: './rk4.html', title: '古典的RK4', description: '高次の増分を捉える4次のRunge–Kutta法です。' },
+        { href: './integrate.html', title: '積分して解く' },
+        { href: './uniform.html', title: '等速直線運動' },
+        { href: './euler.html', title: 'Euler法' },
+        { href: './midpoint.html', title: '中点法' },
+        { href: './rk4.html', title: '古典的RK4' },
       ])}
       ${pageFooter('この画面の計算は一粒子の等加速度直線運動です。')}
       ${checkedProofs([{ statement: `加速度 ${tex('a')} が一定のとき、速度は ${tex('v(t) = v_0 + a t')}、位置は ${tex(String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`)} です。`, source: accelerationProof, moduleName: 'Ergion.ConstantAcceleration', kind: '実数' }])}

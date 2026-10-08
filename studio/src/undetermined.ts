@@ -99,11 +99,11 @@ app.innerHTML = `
         </div>
       </section>
       ${relatedPages([
-        { href: './second-order.html', title: '定数係数の2階同次', description: '非同次方程式の解の基礎となる同次解の求め方です。' },
-        { href: './variation.html', title: '定数変化法', description: '右辺が特殊な関数形を持たない場合の一般的な解法です。' },
-        { href: './laplace.html', title: 'Laplace 変換', description: '同じ非同次初期値問題を代数的に解く別法です。' },
-        { href: './euler.html', title: 'Euler法', description: '2階非同次方程式を1ステップずつ進める数値解法です。' },
-        { href: './rk4.html', title: '古典的RK4', description: '4次のRunge–Kutta法による高精度な数値解法です。' },
+        { href: './second-order.html', title: '定数係数の2階同次' },
+        { href: './variation.html', title: '定数変化法' },
+        { href: './laplace.html', title: 'Laplace 変換' },
+        { href: './euler.html', title: 'Euler法' },
+        { href: './rk4.html', title: '古典的RK4' },
       ])}
       ${pageFooter('未定係数法は、右辺と同じ形の特殊解を仮定し、同次解と合わせて厳密解を作ります。')}
       ${checkedProofs([{ statement: `右辺が ${tex(String.raw`e^{3t}`)} のとき、特殊解を ${tex(String.raw`x_p = K e^{3t}`)} と仮定して ${tex(String.raw`x'' - 3x' + 2x = e^{3t}`)} を解きます。`, source: undeterminedProof, moduleName: 'Ergion.Undetermined', kind: '実数' }])}

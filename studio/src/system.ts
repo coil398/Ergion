@@ -41,7 +41,9 @@ app.innerHTML = `
               <p class="solution-equation">${tex(String.raw`(1 - 2r + r^{2}) - 4 = 0`, true)}</p>
               同類項をまとめます。
               <p class="solution-equation">${tex(String.raw`r^{2} - 2r - 3 = 0`, true)}</p>
-              因数分解します。
+              積を展開して、まとめた2次式と一致することを確かめます。
+              <p class="solution-equation">${tex(String.raw`(r - 3)(r + 1) = r^{2} + r - 3r - 3 = r^{2} - 2r - 3`, true)}</p>
+              したがって
               <p class="solution-equation">${tex(String.raw`(r - 3)(r + 1) = 0`, true)}</p>
               固有値は ${tex('r_1 = 3')}、${tex('r_2 = -1')} です。二つの実数で、互いに異なります。
             </li>
@@ -114,10 +116,10 @@ app.innerHTML = `
         </div>
       </section>
       ${relatedPages([
-        { href: './second-order.html', title: '定数係数の2階同次', description: '特性方程式の根から指数関数解を作る2階の方程式です。' },
-        { href: './euler.html', title: 'Euler法', description: '連立1階の方程式を1ステップずつ進める基本の数値解法です。' },
-        { href: './midpoint.html', title: '中点法', description: '中点の傾きを用いて精度を高める2次の数値解法です。' },
-        { href: './rk4.html', title: '古典的RK4', description: '4次のRunge–Kutta法による高精度な数値解法です。' },
+        { href: './second-order.html', title: '定数係数の2階同次' },
+        { href: './euler.html', title: 'Euler法' },
+        { href: './midpoint.html', title: '中点法' },
+        { href: './rk4.html', title: '古典的RK4' },
       ])}
       ${pageFooter('定数係数の連立1階方程式は、相異なる実固有値ごとに指数関数と固有ベクトルの積を重ねた厳密解を持ちます。')}
       ${checkedProofs([{ statement: `${tex(String.raw`x' = x + y`)} と ${tex(String.raw`y' = 4x + y`)} の解は、相異なる実固有値ごとの指数関数と固有ベクトルの積の和です。`, source: systemProof, moduleName: 'Ergion.LinearSystem', kind: '実数' }])}

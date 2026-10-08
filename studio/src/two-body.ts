@@ -52,31 +52,50 @@ renderLesson({
       ${eq(String.raw`x' = r'\cos\theta - r\theta'\sin\theta,\qquad y' = r'\sin\theta + r\theta'\cos\theta`)}
       ${eq(String.raw`h = r\cos\theta\,(r'\sin\theta + r\theta'\cos\theta) - r\sin\theta\,(r'\cos\theta - r\theta'\sin\theta) = r^2\theta'`)}
       です。`,
-    `動径方向の運動方程式は、加速度の動径成分 ${tex(String.raw`r'' - r\theta'^2`)} を用いて
+    `加速度を極座標で分解します。${tex(String.raw`\hat{\boldsymbol{\theta}} = (-\sin\theta, \cos\theta)`)} を角度方向の単位ベクトルとすると、${tex(String.raw`\hat{\mathbf{r}} = (\cos\theta, \sin\theta)`)} を時間で微分して
+      ${eq(String.raw`\hat{\mathbf{r}}' = \theta'\,\hat{\boldsymbol{\theta}},\qquad \hat{\boldsymbol{\theta}}' = -\theta'\,\hat{\mathbf{r}}`)}
+      です。${tex(String.raw`\mathbf{r} = r\,\hat{\mathbf{r}}`)} を2回微分します。
+      ${eq(String.raw`\mathbf{r}' = r'\,\hat{\mathbf{r}} + r\theta'\,\hat{\boldsymbol{\theta}}`)}
+      ${eq(String.raw`\mathbf{r}'' = r''\,\hat{\mathbf{r}} + r'\theta'\,\hat{\boldsymbol{\theta}}`)}
+      ${eq(String.raw`{} + r'\theta'\,\hat{\boldsymbol{\theta}} + r\theta''\,\hat{\boldsymbol{\theta}} - r\theta'^2\,\hat{\mathbf{r}}`)}
+      ${eq(String.raw`= (r'' - r\theta'^2)\,\hat{\mathbf{r}} + (2r'\theta' + r\theta'')\,\hat{\boldsymbol{\theta}}`)}
+      ${tex(String.raw`\mathbf{r}'' = -GM\,\hat{\mathbf{r}}/r^2`)} と ${tex(String.raw`\hat{\mathbf{r}}`)} の成分を比べると、動径方向の運動方程式は
       ${eq(String.raw`r'' - r\theta'^2 = -\frac{GM}{r^2}`)}
       です。${tex('u = 1/r')} を ${tex(String.raw`\theta`)} の関数とみて、${tex(String.raw`\theta' = h u^2`)} を使って時間微分を書きかえます。
       ${eq(String.raw`r' = -\frac{1}{u^2}\frac{du}{d\theta}\,\theta' = -h\frac{du}{d\theta}`)}
       ${eq(String.raw`r'' = -h\frac{d^2u}{d\theta^2}\,\theta' = -h^2 u^2\frac{d^2u}{d\theta^2}`)}
       ${eq(String.raw`r\theta'^2 = \frac{1}{u}\,h^2 u^4 = h^2 u^3`)}
-      代入して ${tex(String.raw`-h^2u^2`)} で割ると、軌道方程式
+      動径方向の運動方程式に代入します。右辺は ${tex(String.raw`-GM/r^2 = -GMu^2`)} です。
+      ${eq(String.raw`-h^2 u^2\frac{d^2u}{d\theta^2} - h^2 u^3 = -GM u^2`)}
+      両辺を ${tex(String.raw`-h^2u^2`)} で割ると、軌道方程式
       ${eq(String.raw`\frac{d^2u}{d\theta^2} + u = \frac{GM}{h^2}`)}
       を得ます。`,
-    `これは定数の右辺をもつ単振動の方程式です。特殊解 ${tex(String.raw`u = GM/h^2`)} に同次方程式の一般解を加えて、近点を ${tex(String.raw`\theta = 0`)} にとると
+    `これは定数の右辺をもつ単振動の方程式です。定数 ${tex(String.raw`u = GM/h^2`)} は特殊解で、同次方程式 ${tex(String.raw`u'' + u = 0`)} の一般解は ${tex(String.raw`C\cos(\theta - \theta_0)`)}（${tex(String.raw`C \ge 0`)}、${tex(String.raw`\theta_0`)} は定数）です。和をとると
+      ${eq(String.raw`u(\theta) = \frac{GM}{h^2} + C\cos(\theta - \theta_0)`)}
+      です。${tex('u')} が最大、すなわち ${tex('r')} が最小になる近点を ${tex(String.raw`\theta = 0`)} にとると ${tex(String.raw`\theta_0 = 0`)} です。${tex(String.raw`e = C h^2/(GM) \ge 0`)} と置いて ${tex(String.raw`GM/h^2`)} をくくり出すと
       ${eq(String.raw`u(\theta) = \frac{GM}{h^2}\left(1 + e\cos\theta\right)`)}
-      です（${tex(String.raw`e \ge 0`)} は定数）。${tex('r = 1/u')} に戻すと、半直弦 ${tex(String.raw`p = h^2/(GM)`)} の円錐曲線
+      です。${tex('r = 1/u')} に戻すと、半直弦 ${tex(String.raw`p = h^2/(GM)`)} の円錐曲線
       ${eq(String.raw`r(\theta) = \frac{p}{1 + e\cos\theta}`)}
       です（${coreDoc('mechanics', 'conic_radius', '円錐曲線の説明')}）。${tex('e')} は離心率で、${tex('0 \\le e < 1')} は楕円、${tex('e = 1')} は放物線、${tex('e > 1')} は双曲線です。`,
     `楕円の大きさを求めます。近点距離と遠点距離は ${tex(String.raw`\theta = 0`)}、${tex(String.raw`\theta = \pi`)} として
       ${eq(String.raw`r_p = \frac{p}{1 + e},\qquad r_a = \frac{p}{1 - e}`)}
-      長半径と短半径は
-      ${eq(String.raw`a = \frac{r_p + r_a}{2} = \frac{p}{1 - e^2},\qquad b = a\sqrt{1 - e^2}`)}
-      です。近点では速度が動径に垂直なので ${tex('h = r_p v_p')} で、${tex(String.raw`h^2 = GMp = GM r_p(1 + e)`)} から近点の速さは
+      です。長半径 ${tex('a')} は二つの距離の平均です。
+      ${eq(String.raw`a = \frac{r_p + r_a}{2} = \frac{p}{2}\cdot\frac{(1 - e) + (1 + e)}{(1 + e)(1 - e)}`)}
+      ${eq(String.raw`= \frac{p}{1 - e^2}`)}
+      短半径 ${tex('b')} は、焦点から近点と遠点までの距離の幾何平均です。
+      ${eq(String.raw`b = \sqrt{r_p r_a} = \frac{p}{\sqrt{1 - e^2}} = a\sqrt{1 - e^2}`)}
+      近点では速度が動径に垂直なので ${tex('h = r_p v_p')} です。${tex(String.raw`p = h^2/(GM)`)} と ${tex(String.raw`p = r_p(1 + e)`)} から
+      ${eq(String.raw`h^2 = GMp = GM r_p(1 + e)`)}
+      ${eq(String.raw`v_p^2 = \frac{h^2}{r_p^2} = \frac{GM(1 + e)}{r_p}`)}
+      なので、近点の速さは
       ${eq(String.raw`v_p = \sqrt{\frac{GM(1 + e)}{r_p}}`)}
       です（${coreDoc('mechanics', 'kepler_periapsis_speed', '近点の速さの説明')}）。最後の証明の面積速度 ${tex('h/2')} で楕円の面積 ${tex(String.raw`\pi a b`)} を割ると、周期は
       ${eq(String.raw`T = \frac{2\pi a b}{h} = \frac{2\pi a^2\sqrt{1 - e^2}}{\sqrt{GM a(1 - e^2)}} = 2\pi\sqrt{\frac{a^3}{GM}}`)}
       です。`,
-    `時刻と位置の対応を求めます。楕円を離心近点角 ${tex('E')} で ${tex(String.raw`x = a(\cos E - e)`)}、${tex(String.raw`y = b\sin E`)} と表すと、中心力の中心（焦点）が原点で、${tex('E = 0')} が近点です。これを ${tex('h')} に代入します。
-      ${eq(String.raw`h = a(\cos E - e)\cdot b\cos E\,E' + b\sin E\cdot a\sin E\,E' = ab\,(1 - e\cos E)\,E'`)}
+    `時刻と位置の対応を求めます。楕円を離心近点角 ${tex('E')} で ${tex(String.raw`x = a(\cos E - e)`)}、${tex(String.raw`y = b\sin E`)} と表すと、中心力の中心（焦点）が原点で、${tex('E = 0')} が近点です。時間で微分すると ${tex(String.raw`x' = -a\sin E\,E'`)}、${tex(String.raw`y' = b\cos E\,E'`)} です。これを ${tex(String.raw`h = x y' - y x'`)} に代入します。
+      ${eq(String.raw`h = a(\cos E - e)\cdot b\cos E\,E' + b\sin E\cdot a\sin E\,E'`)}
+      ${eq(String.raw`= ab\,(\cos^2 E + \sin^2 E - e\cos E)\,E'`)}
+      ${eq(String.raw`= ab\,(1 - e\cos E)\,E'`)}
       時刻 0 に近点 ${tex('E = 0')} から出るとして、0 から ${tex('t')} まで積分します。
       ${eq(String.raw`ab\,(E - e\sin E) = h t`)}
       ${tex(String.raw`n = h/(ab) = 2\pi/T`)} と置くと Kepler の方程式
@@ -109,21 +128,21 @@ renderLesson({
   example: [
     `${tex('G = 1')}、${tex('m_1 = 2')}、${tex('m_2 = 1')} とします。全質量と換算質量は
       ${eq(String.raw`M = 2 + 1 = 3,\qquad GM = 3,\qquad \mu = \frac{2\cdot 1}{3} = \frac{2}{3}`)}
-      です。各質点の位置は ${tex(String.raw`\mathbf{r}_1 = \mathbf{r}/3`)}、${tex(String.raw`\mathbf{r}_2 = -2\mathbf{r}/3`)} で、重い質点1は重心の近くを小さく回ります。`,
+      で、どれも厳密な値です。各質点の位置は ${tex(String.raw`\mathbf{r}_1 = \mathbf{r}/3`)}、${tex(String.raw`\mathbf{r}_2 = -2\mathbf{r}/3`)} で、重い質点1は重心の近くを小さく回ります。`,
     `近点距離 ${tex('r_p = 1')}、離心率 ${tex('e = 0.5')} とします。近点の速さ、角運動量、半直弦は
       ${eq(String.raw`v_p = \sqrt{\frac{3\cdot(1 + 0.5)}{1}} = \sqrt{4.5},\qquad h = 1\cdot\sqrt{4.5} = \sqrt{4.5},\qquad p = \frac{4.5}{3} = 1.5`)}
       です。${tex(String.raw`\sqrt{4.5} \approx 2.12132`)} は小数5桁の近似です。確かに ${tex(String.raw`p = r_p(1 + e) = 1\cdot 1.5`)} です。`,
     `遠点距離、長半径、短半径、周期は
       ${eq(String.raw`r_a = \frac{1.5}{1 - 0.5} = 3,\qquad a = \frac{1 + 3}{2} = 2,\qquad b = 2\sqrt{1 - 0.25} = \sqrt{3}`)}
       ${eq(String.raw`T = 2\pi\sqrt{\frac{2^3}{3}} = 2\pi\sqrt{8/3} \approx 10.26040`)}
-      です。根号の形が厳密な値で、小数は近似です。既定の条件 ${tex(String.raw`\Delta t = 0.005`)}、4104 ステップの計算時間 ${tex('20.52')} は、${tex(String.raw`2T \approx 20.5208`)} とほぼ等しく、約2周期です。`,
+      です。根号の形が厳密な値で、小数は近似です。既定の条件 ${tex(String.raw`\Delta t = 0.005`)}、4104 ステップの計算時間 ${tex(String.raw`4104 \cdot 0.005 = 20.52`)}（厳密）は、${tex(String.raw`2T \approx 20.5208`)} とほぼ等しく、約2周期です。`,
     `相対運動のエネルギーは ${tex(String.raw`E = \mu\left(\frac{v_p^2}{2} - \frac{GM}{r_p}\right) = \frac{2}{3}\left(\frac{4.5}{2} - 3\right) = -\frac{1}{2}`)} で、厳密です。古典的RK4 の数値解では、計器の角運動量 ${tex('h')} は計算の終わりまで ${tex('2.12132')}（近似）のままです。Euler 法では1周ごとに ${tex('h')} とエネルギーが増え、軌跡は楕円の外へ広がります。`,
   ],
   related: [
-    { href: './noether.html', title: '対称性と保存則', description: '回転の対称性から角運動量の保存を導きます。' },
-    { href: './euler-lagrange.html', title: '最小作用の原理と Euler–Lagrange 方程式', description: '極座標の Lagrangian から同じ動径の方程式を得ます。' },
-    { href: './lennard-jones.html', title: 'Lennard–Jones ポテンシャル', description: '逆2乗則とは別の2体の相互作用です。' },
-    { href: './newton.html', title: 'ニュートン法', description: 'Kepler の方程式の根を求める反復です。' },
+    { href: './noether.html', title: '対称性と保存則' },
+    { href: './euler-lagrange.html', title: '最小作用の原理と Euler–Lagrange 方程式' },
+    { href: './lennard-jones.html', title: 'Lennard–Jones ポテンシャル' },
+    { href: './newton.html', title: 'ニュートン法' },
   ],
   footer: 'この画面の計算は、逆2乗の引力で引き合う2質点の平面運動です。',
   proof: writtenProof([{

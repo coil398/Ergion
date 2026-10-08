@@ -51,7 +51,11 @@ app.innerHTML = `
             <li>1ステップは、今の位置に ${tex(String.raw`v \Delta t`)} を足すことと定めます。証明したのは、その結果が次の位置になることです。
               <p class="solution-equation">${tex(String.raw`x \mapsto x + v \Delta t`, true)}</p>
             </li>
-            <li>同じステップを ${tex('n')} 回繰り返すと、位置は出発点 ${tex('x_0')} から ${tex(String.raw`n v \Delta t`)} だけ進みます。${tex('n = 0')} のときは、位置は ${tex('x_0')} のままです。
+            <li>出発点を ${tex('x_0')}、${tex('n')} 回の後の位置を ${tex('x_n')} と書きます。${tex('n = 0')} のときは、位置は ${tex('x_0')} のままです。
+              <p class="solution-equation">${tex(String.raw`x_0 = x_0 + 0 \cdot v \Delta t`, true)}</p>
+              ${tex('n')} 回の後に ${tex(String.raw`x_n = x_0 + n v \Delta t`)} が成り立つと仮定し、もう1ステップ進めます。
+              <p class="solution-equation">${tex(String.raw`x_{n+1} = x_n + v \Delta t = x_0 + n v \Delta t + v \Delta t = x_0 + (n + 1) v \Delta t`, true)}</p>
+              したがって、どの ${tex('n')} についても、位置は出発点 ${tex('x_0')} から ${tex(String.raw`n v \Delta t`)} だけ進みます。
               <p class="solution-equation">${tex(String.raw`x_n = x_0 + n v \Delta t`, true)}</p>
             </li>
           </ol>
@@ -85,7 +89,7 @@ app.innerHTML = `
           <section class="scene panel" aria-labelledby="scene-heading">
             <div class="panel-heading"><h2 id="scene-heading">粒子の直線運動</h2><span id="scene-time" class="numeric">t = 0.000</span></div>
             <p class="scene-caption" id="sim-caption">${getCaption(currentTopic, currentMethod)}</p>
-            <canvas id="oscillator" aria-label="直線上を進む粒子。速度が一定のとき、数値解法の1ステップで位置は厳密解と一致し、差は丸めだけです。数値解は青の実線、解析解は青緑の破線。" role="img"></canvas>
+            <canvas id="oscillator" aria-label="直線上を進む粒子。速度が一定のとき、数値解法の1ステップで位置は厳密解と一致します。数値解は青の実線、解析解は青緑の破線。" role="img"></canvas>
             <div class="readouts"><div><span>位置 x</span><output id="position">—</output></div><div><span>速度 v</span><output id="velocity">—</output></div><div><span>解析解の位置</span><output id="exact-position">—</output></div><div><span>位置の誤差 x − x_exact</span><output id="energy-error">—</output></div></div>
           </section>
           <section class="plots panel" aria-labelledby="plots-heading">
@@ -101,12 +105,33 @@ app.innerHTML = `
           <p class="experiment-note">数値計算はブラウザ内で実行します。条件や結果をサーバーへ送信しません。</p>
         </div>
       </div>
+      <section class="study panel" id="example" aria-labelledby="example-heading">
+        <div class="panel-heading"><h2 id="example-heading">数を代入した例</h2></div>
+        <div class="study-body">
+          <ol class="solution">
+            <li>図の有理数 ${tex(String.raw`x_0 = \frac{1}{2}`)}、${tex(String.raw`v = \frac{1}{3}`)}、${tex(String.raw`\Delta t = \frac{3}{2}`)} を1ステップの式に代入します。増分は
+              <p class="solution-equation">${tex(String.raw`v \Delta t = \frac{1}{3}\cdot\frac{3}{2} = \frac{1}{2}`, true)}</p>
+              で、1ステップ後の位置は
+              <p class="solution-equation">${tex(String.raw`x_1 = \frac{1}{2} + \frac{1}{2} = 1`, true)}</p>
+              です。${tex(String.raw`\frac{1}{2}`)} と ${tex('1')} はどちらも厳密な有理数です。
+            </li>
+            <li>計算条件の既定の値 ${tex('x_0 = 0')}、${tex('v = 1')}、${tex(String.raw`\Delta t = 0.01`)} をとります。どれも有理数です。1ステップの増分は ${tex(String.raw`v \Delta t = 1 \cdot 0.01 = 0.01`)} です。
+              <p class="solution-equation">${tex(String.raw`x_1 = 0 + 1 \cdot 1 \cdot 0.01 = 0.01`, true)}</p>
+              この値は厳密です。一定速度のタブで1ステップを一度進めると、画面の位置 ${tex('x')} と解析解の位置はどちらも 0.01000 です。これは小数第5位までの近似の表示です。
+            </li>
+            <li>最後のステップ ${tex('n = 1000')} では、位置の厳密な値は次の式です。
+              <p class="solution-equation">${tex(String.raw`x_{1000} = 0 + 1000 \cdot 1 \cdot 0.01 = 10`, true)}</p>
+              最後まで進めると、画面の位置 ${tex('x')} は近似の表示 10.00000 です。
+            </li>
+          </ol>
+        </div>
+      </section>
       ${relatedPages([
-        { href: './uniform.html', title: '等速直線運動', description: '一定速度で進む粒子の運動方程式と厳密解です。' },
-        { href: './derivative.html', title: '位置の時間微分', description: '速度の定義と1ステップの微小変位を解説するページです。' },
-        { href: './euler.html', title: 'Euler法', description: '増分を繰り返し適用する基本の数値解法です。' },
-        { href: './midpoint.html', title: '中点法', description: '中点で傾きを再評価する2次の数値解法です。' },
-        { href: './rk4.html', title: '古典的RK4', description: '4次の精度で増分を計算する数値解法です。' },
+        { href: './uniform.html', title: '等速直線運動' },
+        { href: './derivative.html', title: '位置の時間微分' },
+        { href: './euler.html', title: 'Euler法' },
+        { href: './midpoint.html', title: '中点法' },
+        { href: './rk4.html', title: '古典的RK4' },
       ])}
       ${pageFooter('一定速度の増分は、x + n v Δt です。')}
       ${checkedVelocityProof(`1ステップは ${tex(String.raw`x \mapsto x + v \Delta t`)} であり、${tex('n')} 回の後は ${tex(String.raw`x_n = x_0 + n v \Delta t`)} です。`)}

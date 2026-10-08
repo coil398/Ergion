@@ -30,14 +30,16 @@ renderLesson({
       ${eq(String.raw`f'(a) = \lim_{h \to 0} (2a + h) = 2a`)}
       です。`,
     `点 ${tex('(a, f(a))')} を通り傾き ${tex(`f'(a)`)} の直線を接線と呼びます（${coreDoc('calculus', 'point_slope_line', '直線の式の説明')}）。
-      ${eq(String.raw`y = f(a) + f'(a)(x - a) = a^2 + 2a(x - a) = 2ax - a^2`)}
+      ${eq(String.raw`y = f(a) + f'(a)(x - a) = a^2 + 2a(x - a)`)}
+      括弧を外して同類項をまとめます。
+      ${eq(String.raw`y = a^2 + 2ax - 2a^2 = 2ax - a^2`)}
       割線の傾き ${tex('2a + h')} は ${tex(String.raw`h \to 0`)} で接線の傾き ${tex('2a')} に近づき、割線は接線に近づきます。`,
     `画面の差分商は、定義の式 ${tex(String.raw`\frac{f(a + h) - f(a)}{h}`)} をそのまま計算した近似値です（${coreDoc('calculus', 'forward_difference', '差分商の計算の説明')}）。${tex('x^2')} では、この値から ${tex('2a')} を引いた差は厳密には ${tex('h')} で、刻みに比例して小さくなります。`,
   ],
   figureAlt: '曲線 y = x² 上の2点を結ぶ割線が、刻み h を縮めるにつれて接線へ近づく様子。',
   figure: `
       <section class="plots panel lesson-figure" aria-labelledby="fig-heading">
-        <div class="panel-heading"><h2 id="fig-heading">割線と接線、差分商と刻み ${tex('h')}</h2><div class="legend"><span><i class="numerical"></i>割線と差分商（計算値）</span><span><i class="analytical"></i>接線と厳密な式 2a + h</span></div></div>
+        <div class="panel-heading"><h2 id="fig-heading">割線と接線、差分商と刻み ${tex('h')}</h2><div class="legend"><span><i class="numerical"></i>割線と差分商（近似値）</span><span><i class="analytical"></i>接線と厳密な式 2a + h</span></div></div>
         <div class="plot-pair">
           <div><h3>曲線 ${tex('y = x^2')} の割線と接線</h3><canvas id="secant-chart" role="img"></canvas><p>横軸 ${tex('x')}。割線の刻みは ${tex('h = 1, 0.5, 0.25')}、点 ${tex('a = 1')} です。</p></div>
           <div><h3>差分商と刻み ${tex('h')}</h3><canvas id="quotient-chart" role="img"></canvas><p>横軸 ${tex('h')}。白抜きの点は極限値 ${tex(`f'(1) = 2`)} です。</p></div>
@@ -55,17 +57,21 @@ renderLesson({
   example: [
     `${tex('a = 1')}、${tex('h = 0.1')} とします。定義の式に代入すると
       ${eq(String.raw`\frac{(1 + 0.1)^2 - 1^2}{0.1} = \frac{1.21 - 1}{0.1} = \frac{0.21}{0.1} = 2.1`)}
-      で、整理した式 ${tex(String.raw`2a + h = 2 + 0.1 = 2.1`)} と一致します。導関数は厳密に ${tex(`f'(1) = 2`)} で、差は ${tex('0.1')} です。`,
+      で、整理した式 ${tex(String.raw`2a + h = 2 + 0.1 = 2.1`)} と一致します。この 2.1 は厳密な値です。導関数は厳密に ${tex(`f'(1) = 2`)} で、差は ${tex('0.1')} です。`,
     `${tex('h = 0.01')} では
       ${eq(String.raw`\frac{1.01^2 - 1}{0.01} = \frac{1.0201 - 1}{0.01} = \frac{0.0201}{0.01} = 2.01`)}
-      で、差は ${tex('0.01')} です。表の差は、刻み ${tex('h')} と同じ値になっています。`,
-    `${tex('h = 1')} の割線は2点 ${tex('(1, 1)')} と ${tex('(2, 4)')} を通り、傾きは ${tex(String.raw`\frac{4 - 1}{2 - 1} = 3`)}、式は ${tex('y = 3x - 2')} です。接線は ${tex('y = 2x - 1')} です。`,
+      で、どちらも厳密な値です。差は ${tex('0.01')} です。表の差は、刻み ${tex('h')} と同じ値になっています。`,
+    `${tex('h = 1')} の割線は2点 ${tex('(1, 1)')} と ${tex('(2, 4)')} を通り、傾きは ${tex(String.raw`\frac{4 - 1}{2 - 1} = 3`)} です。点 ${tex('(1, 1)')} を通る傾き 3 の直線なので
+      ${eq(String.raw`y = 1 + 3(x - 1) = 3x - 2`)}
+      です。接線は ${tex('y = 2ax - a^2')} に ${tex('a = 1')} を代入して
+      ${eq(String.raw`y = 2 \cdot 1 \cdot x - 1^2 = 2x - 1`)}
+      です。`,
   ],
   related: [
-    { href: './derivative.html', title: '位置の時間微分', description: '速度を、位置の時間についての導関数として定めます。' },
-    { href: './limits.html', title: '極限と連続', description: '差分商の極限に使う ε-δ の定義です。' },
-    { href: './numerical-differentiation.html', title: '数値微分', description: '極限をとらずに、差分商で導関数を近似したときの誤差です。' },
-    { href: './product-chain.html', title: '積の微分と合成関数の微分', description: 'この定義から、積と合成の導関数の公式を導きます。' },
+    { href: './derivative.html', title: '位置の時間微分' },
+    { href: './limits.html', title: '極限と連続' },
+    { href: './numerical-differentiation.html', title: '数値微分' },
+    { href: './product-chain.html', title: '積の微分と合成関数の微分' },
   ],
   footer: 'この画面の計算は、関数 x² の点 a = 1 における差分商の列です。',
   proof: writtenProof([{
@@ -123,7 +129,7 @@ async function load() {
     document.getElementById('gap')!.textContent = v.gap.toFixed(6);
     const a = figure.arrays;
     document.getElementById('quotient-table')!.innerHTML = table(
-      [tex('h'), '差分商（計算値）', `${tex('2a + h')}（厳密）`, `差分商 ${tex('-\\, 2a')}`],
+      [tex('h'), '差分商（近似値）', `${tex('2a + h')}（厳密）`, `差分商 ${tex('-\\, 2a')}（近似値）`],
       a.h.map((h, i) => [String(h), a.quotient[i].toFixed(10), a.simplified[i].toFixed(10), a.gap[i].toExponential(6)]),
     );
     paint();

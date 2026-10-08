@@ -28,12 +28,15 @@ renderLesson({
       ${eq(String.raw`\bar{x}_k = \bar{x}_{k-1} + \frac{\delta_k}{k}`)}
       ${eq(String.raw`M_k = M_{k-1} + \delta_k\,(x_k - \bar{x}_k)`)}
       とし、最後に ${tex(String.raw`s^2 = M_n/(n - 1)`)} とします。標本をすべて保存しておく必要がありません。`,
-    `${tex('M_k')} の更新式を確かめます。${tex(String.raw`M_k = \sum_{i=1}^{k} x_i^2 - k\bar{x}_k^2`)} なので
+    `${tex('M_k')} の更新式を確かめます。2乗を展開し、${tex(String.raw`\sum_{i=1}^{k} x_i = k\bar{x}_k`)} を使うと
+      ${eq(String.raw`M_k = \sum_{i=1}^{k} x_i^2 - 2\bar{x}_k\sum_{i=1}^{k} x_i + k\bar{x}_k^2 = \sum_{i=1}^{k} x_i^2 - 2k\bar{x}_k^2 + k\bar{x}_k^2 = \sum_{i=1}^{k} x_i^2 - k\bar{x}_k^2`)}
+      です。同じ式を ${tex('k - 1')} 個について書いて引くと、${tex('x_k^2')} 以外の2乗の和が消えて
       ${eq(String.raw`M_k - M_{k-1} = x_k^2 - k\bar{x}_k^2 + (k - 1)\bar{x}_{k-1}^2`)}
       です。${tex(String.raw`x_k = \bar{x}_{k-1} + \delta_k`)}、${tex(String.raw`\bar{x}_k = \bar{x}_{k-1} + \delta_k/k`)} を代入して展開します。
       ${eq(String.raw`x_k^2 = \bar{x}_{k-1}^2 + 2\bar{x}_{k-1}\delta_k + \delta_k^2`)}
-      ${eq(String.raw`k\bar{x}_k^2 = k\bar{x}_{k-1}^2 + 2\bar{x}_{k-1}\delta_k + \frac{\delta_k^2}{k}`)}
-      ${eq(String.raw`M_k - M_{k-1} = \delta_k^2 - \frac{\delta_k^2}{k} = \delta_k^2\,\frac{k - 1}{k}`)}
+      ${eq(String.raw`k\bar{x}_k^2 = k\left(\bar{x}_{k-1}^2 + \frac{2\bar{x}_{k-1}\delta_k}{k} + \frac{\delta_k^2}{k^2}\right) = k\bar{x}_{k-1}^2 + 2\bar{x}_{k-1}\delta_k + \frac{\delta_k^2}{k}`)}
+      ${eq(String.raw`M_k - M_{k-1} = \left(\bar{x}_{k-1}^2 + 2\bar{x}_{k-1}\delta_k + \delta_k^2\right) - \left(k\bar{x}_{k-1}^2 + 2\bar{x}_{k-1}\delta_k + \frac{\delta_k^2}{k}\right) + (k - 1)\bar{x}_{k-1}^2`)}
+      ${eq(String.raw`= \delta_k^2 - \frac{\delta_k^2}{k} = \delta_k^2\,\frac{k - 1}{k}`)}
       一方、${tex(String.raw`x_k - \bar{x}_k = \delta_k - \delta_k/k = \delta_k (k - 1)/k`)} なので、${tex(String.raw`\delta_k (x_k - \bar{x}_k)`)} は右辺と同じです。二つの方法は、代数的に同じ ${tex('s^2')} を与えます。`,
   ],
   figureAlt: '数直線の上に並ぶ8個の標本の点と、標本平均の縦線、平均から標準偏差の幅の帯。',
@@ -67,16 +70,17 @@ renderLesson({
       です。最初の3個 ${tex('2, 4, 4')} の偏差平方和は ${tex(String.raw`(2 - \tfrac{10}{3})^2 + 2(4 - \tfrac{10}{3})^2 = \tfrac{16}{9} + \tfrac{8}{9} = \tfrac{8}{3}`)} で、確かに一致します。8個を読み終えると ${tex('M_8 = 32')}、${tex('s^2 = 32/7')} です。図の下の表は、選んだ方法でライブラリが計算した各行の値です。`,
   ],
   related: [
-    { href: './limit-theorems.html', title: '大数の法則と中心極限定理', description: '標本の大きさを増やすと、標本平均が母平均に近づきます。' },
-    { href: './regression.html', title: '線形回帰', description: '2変量の標本の平均と偏差から、回帰直線の係数を求めます。' },
-    { href: './observables.html', title: '温度・圧力・動径分布関数', description: '分子動力学の時系列の平均と分散から、巨視的な量を求めます。' },
+    { href: './limit-theorems.html', title: '大数の法則と中心極限定理' },
+    { href: './regression.html', title: '線形回帰' },
+    { href: './observables.html', title: '温度・圧力・動径分布関数' },
   ],
   footer: 'この画面の計算は、8個の数値の標本の標本平均と不偏分散です。',
   proof: writtenProof([{
     statement: `${tex('X_1, \\ldots, X_n')}（${tex('n \\ge 2')}）が平均 ${tex(String.raw`\mu`)}、分散 ${tex(String.raw`\sigma^2`)} の分布に独立に従うとき、${tex(String.raw`s^2 = \frac{1}{n-1}\sum_{i=1}^{n}(X_i - \bar{X})^2`)} は ${tex(String.raw`\mathbb{E}[s^2] = \sigma^2`)} を満たします（不偏性）。`,
     proof: [
       `${tex(String.raw`X_i - \bar{X} = (X_i - \mu) - (\bar{X} - \mu)`)} と書き、2乗して ${tex('i')} について足します。${tex(String.raw`\sum_i (X_i - \mu) = n(\bar{X} - \mu)`)} なので
-        ${eq(String.raw`\sum_{i=1}^{n}(X_i - \bar{X})^2 = \sum_{i=1}^{n}(X_i - \mu)^2 - 2(\bar{X} - \mu)\cdot n(\bar{X} - \mu) + n(\bar{X} - \mu)^2 = \sum_{i=1}^{n}(X_i - \mu)^2 - n(\bar{X} - \mu)^2`)}
+        ${eq(String.raw`\sum_{i=1}^{n}(X_i - \bar{X})^2 = \sum_{i=1}^{n}\left[(X_i - \mu)^2 - 2(X_i - \mu)(\bar{X} - \mu) + (\bar{X} - \mu)^2\right]`)}
+        ${eq(String.raw`= \sum_{i=1}^{n}(X_i - \mu)^2 - 2(\bar{X} - \mu)\cdot n(\bar{X} - \mu) + n(\bar{X} - \mu)^2 = \sum_{i=1}^{n}(X_i - \mu)^2 - n(\bar{X} - \mu)^2`)}
         です。`,
       `分散の定義から ${tex(String.raw`\mathbb{E}[(X_i - \mu)^2] = \sigma^2`)} です。独立な確率変数の和の分散は分散の和なので
         ${eq(String.raw`\mathbb{E}[(\bar{X} - \mu)^2] = \mathrm{Var}(\bar{X}) = \frac{1}{n^2}\sum_{i=1}^{n}\mathrm{Var}(X_i) = \frac{\sigma^2}{n}`)}

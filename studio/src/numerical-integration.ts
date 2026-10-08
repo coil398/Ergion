@@ -25,15 +25,17 @@ renderLesson({
     `台形則では、小区間 ${tex('[x_i, x_{i+1}]')} で ${tex('f')} を両端を結ぶ直線に置き換えます。その下の面積は、高さ ${tex('h')}、上底 ${tex('f_i')}、下底 ${tex('f_{i+1}')} の台形の面積です。
       ${eq(String.raw`\int_{x_i}^{x_{i+1}} f(x)\,dx \approx \frac{h}{2}\bigl(f_i + f_{i+1}\bigr)`)}
       ${tex('i = 0')} から ${tex('n - 1')} まで足すと、両端の値は1回、内側の値は2回ずつ現れます。
-      ${eq(String.raw`T_n = \frac{h}{2}\bigl[(f_0 + f_1) + (f_1 + f_2) + \cdots + (f_{n-1} + f_n)\bigr] = h\left[\frac{f_0}{2} + f_1 + \cdots + f_{n-1} + \frac{f_n}{2}\right]`)}
+      ${eq(String.raw`T_n = \frac{h}{2}\bigl[(f_0 + f_1) + (f_1 + f_2) + \cdots + (f_{n-1} + f_n)\bigr]`)}
+      ${eq(String.raw`= \frac{h}{2}\bigl[f_0 + 2f_1 + \cdots + 2f_{n-1} + f_n\bigr]`)}
+      ${eq(String.raw`= h\left[\frac{f_0}{2} + f_1 + \cdots + f_{n-1} + \frac{f_n}{2}\right]`)}
       です（${coreDoc('calculus', 'trapezoid_rule', '台形則の説明')}）。`,
     `Simpson 則では、${tex('n')} を偶数とし、隣り合う2区間 ${tex('[x_{2j}, x_{2j+2}]')} で ${tex('f')} を3点を通る放物線に置き換えます。${tex('s = (x - x_{2j})/h')} と置くと、放物線は
       ${eq(String.raw`p(x) = f_{2j}\,\frac{(s - 1)(s - 2)}{2} - f_{2j+1}\,s(s - 2) + f_{2j+2}\,\frac{s(s - 1)}{2}`)}
-      です（${coreDoc('calculus', 'simpson_parabola', '3点を通る放物線の説明')}）。${tex('dx = h\\,ds')} で、三つの係数の積分は
-      ${eq(String.raw`\int_0^2 \frac{(s - 1)(s - 2)}{2}\,ds = \frac{1}{2}\left(\frac{8}{3} - 6 + 4\right) = \frac{1}{3}`)}
-      ${eq(String.raw`\int_0^2 s(s - 2)\,ds = \frac{8}{3} - 4 = -\frac{4}{3}`)}
-      ${eq(String.raw`\int_0^2 \frac{s(s - 1)}{2}\,ds = \frac{1}{2}\left(\frac{8}{3} - 2\right) = \frac{1}{3}`)}
-      なので
+      です（${coreDoc('calculus', 'simpson_parabola', '3点を通る放物線の説明')}）。${tex('dx = h\\,ds')} で、${tex('x')} が ${tex('x_{2j}')} から ${tex('x_{2j+2}')} まで動くとき ${tex('s')} は 0 から 2 まで動きます。三つの係数を展開して積分すると
+      ${eq(String.raw`\int_0^2 \frac{(s - 1)(s - 2)}{2}\,ds = \frac{1}{2}\int_0^2 (s^2 - 3s + 2)\,ds = \frac{1}{2}\left[\frac{s^3}{3} - \frac{3s^2}{2} + 2s\right]_0^2 = \frac{1}{2}\left(\frac{8}{3} - 6 + 4\right) = \frac{1}{2}\cdot\frac{2}{3} = \frac{1}{3}`)}
+      ${eq(String.raw`\int_0^2 s(s - 2)\,ds = \int_0^2 (s^2 - 2s)\,ds = \left[\frac{s^3}{3} - s^2\right]_0^2 = \frac{8}{3} - 4 = -\frac{4}{3}`)}
+      ${eq(String.raw`\int_0^2 \frac{s(s - 1)}{2}\,ds = \frac{1}{2}\int_0^2 (s^2 - s)\,ds = \frac{1}{2}\left[\frac{s^3}{3} - \frac{s^2}{2}\right]_0^2 = \frac{1}{2}\left(\frac{8}{3} - 2\right) = \frac{1}{2}\cdot\frac{2}{3} = \frac{1}{3}`)}
+      です。中央の項には符号 ${tex('-')} が付くので、その係数は ${tex(String.raw`-\left(-\frac{4}{3}\right) = \frac{4}{3}`)} です。したがって
       ${eq(String.raw`\int_{x_{2j}}^{x_{2j+2}} p(x)\,dx = h\left(\frac{f_{2j}}{3} + \frac{4 f_{2j+1}}{3} + \frac{f_{2j+2}}{3}\right) = \frac{h}{3}\bigl(f_{2j} + 4 f_{2j+1} + f_{2j+2}\bigr)`)}
       です。${tex('j = 0')} から ${tex('n/2 - 1')} まで足すと、奇数番号の値は係数 4、内側の偶数番号の値は隣り合う二つの組に2回現れて係数 2 となります。
       ${eq(String.raw`S_n = \frac{h}{3}\left[f_0 + 4\!\!\sum_{i\ \text{奇数}}\!\! f_i + 2\!\!\sum_{\substack{i\ \text{偶数}\\ 0 < i < n}}\!\! f_i + f_n\right]`)}
@@ -58,12 +60,12 @@ renderLesson({
         </div>
         <div class="readouts">
           <div><span>近似値（${tex('n = 4')}）</span><output id="approx">—</output></div>
-          <div><span>誤差の上界</span><output id="bound">—</output></div>
-          <div><span>誤差の比 ${tex('e_8 / e_4')}</span><output id="ratio">—</output></div>
-          <div><span>差 近似値 ${tex('- 2')}</span><output id="difference">—</output></div>
+          <div><span>誤差の上界（近似値）</span><output id="bound">—</output></div>
+          <div><span>誤差の比 ${tex('e_8 / e_4')}（近似値）</span><output id="ratio">—</output></div>
+          <div><span>差 近似値 ${tex('- 2')}（近似値）</span><output id="difference">—</output></div>
         </div>
         <div class="table-scroll"><table class="value-table" aria-label="分割数ごとの近似値、差、誤差の比">
-          <thead><tr><th>分割数 ${tex('n')}</th><th>近似値</th><th>差 ${tex('e_n')} = 近似値 ${tex('- 2')}</th><th>比 ${tex('e_n / e_{n/2}')}</th></tr></thead>
+          <thead><tr><th>分割数 ${tex('n')}</th><th>近似値</th><th>差 ${tex('e_n')} = 近似値 ${tex('- 2')}（近似値）</th><th>比 ${tex('e_n / e_{n/2}')}（近似値）</th></tr></thead>
           <tbody id="integration-table"></tbody>
         </table></div>
       </section>`,
@@ -81,11 +83,11 @@ renderLesson({
       です。それぞれ ${tex(String.raw`\frac{1}{4} = 0.25`)} と ${tex(String.raw`\frac{1}{16} = 0.0625`)} に近く、表の大きな ${tex('n')} ではさらに近づきます。式の値 ${tex(String.raw`\frac{\pi}{4}(1 + \sqrt{2})`)} と ${tex(String.raw`\frac{\pi}{12}(2 + 4\sqrt{2})`)} は厳密で、小数は近似値です。`,
   ],
   related: [
-    { href: './fundamental-theorem.html', title: '定積分と微分積分学の基本定理', description: '長方形の和の極限として定積分を定め、原始関数で厳密値を求めます。' },
-    { href: './integrate.html', title: '積分して解く', description: '右辺が時刻だけの微分方程式の解は定積分です。' },
-    { href: './midpoint.html', title: '中点法', description: '区間の中点の傾きで進める、2次の数値解法です。' },
-    { href: './rk4.html', title: '古典的RK4', description: '右辺が時刻だけのとき、1ステップは Simpson 則と同じ重みです。' },
-    { href: './monte-carlo.html', title: 'Monte Carlo 法', description: '乱数の点の平均で積分を近似する方法です。' },
+    { href: './fundamental-theorem.html', title: '定積分と微分積分学の基本定理' },
+    { href: './integrate.html', title: '積分して解く' },
+    { href: './midpoint.html', title: '中点法' },
+    { href: './rk4.html', title: '古典的RK4' },
+    { href: './monte-carlo.html', title: 'Monte Carlo 法' },
   ],
   footer: 'この画面の計算は、sin x の 0 から π までの定積分の台形則と Simpson 則です。',
   proof: writtenProof([{

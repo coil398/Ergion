@@ -98,10 +98,10 @@ app.innerHTML = `
         </div>
       </section>
       ${relatedPages([
-        { href: './second-order.html', title: '定数係数の2階同次', description: '基本解 cos t と sin t を導出する同次方程式です。' },
-        { href: './undetermined.html', title: '未定係数法', description: '特殊解の形を仮定して解くもう一つの標準的な解法です。' },
-        { href: './euler.html', title: 'Euler法', description: 'tan t を含む2階非同次方程式の数値解法です。' },
-        { href: './rk4.html', title: '古典的RK4', description: '非同次方程式の振動を高い精度で追跡する4次の数値解法です。' },
+        { href: './second-order.html', title: '定数係数の2階同次' },
+        { href: './undetermined.html', title: '未定係数法' },
+        { href: './euler.html', title: 'Euler法' },
+        { href: './rk4.html', title: '古典的RK4' },
       ])}
       ${pageFooter('定数変化法は、同次解の任意定数を時刻の関数にして、右辺 tan t の厳密解を作ります。')}
       ${checkedProofs([{ statement: `${tex(String.raw`x'' + x = \tan t`)} は、同次解の定数を時刻の関数にして解きます。`, source: variationProof, moduleName: 'Ergion.Variation', kind: '実数' }])}

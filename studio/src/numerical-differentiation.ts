@@ -26,7 +26,7 @@ renderLesson({
       ${eq(String.raw`f(x + h) = f(x) + h f'(x) + \frac{h^2}{2} f''(\xi)`)}
       です。${tex('f(x)')} を移項して ${tex('h')} で割ると
       ${eq(String.raw`\frac{f(x + h) - f(x)}{h} = f'(x) + \frac{h}{2} f''(\xi)`)}
-      です。誤差の主要項は ${tex(String.raw`\frac{h}{2} f''(x)`)} で、${tex('h')} の1次です（${coreDoc('calculus', 'forward_difference', '前進差分の説明')}）。`,
+      です。${tex('h \\to 0')} で ${tex(String.raw`\xi \to x`)} なので ${tex(String.raw`f''(\xi) \to f''(x)`)} で、誤差の主要項は ${tex(String.raw`\frac{h}{2} f''(x)`)}、${tex('h')} の1次です（${coreDoc('calculus', 'forward_difference', '前進差分の説明')}）。`,
     `中心差分では、${tex('x + h')} と ${tex('x - h')} の二つの展開を使います。
       ${eq(String.raw`f(x + h) = f(x) + h f'(x) + \frac{h^2}{2} f''(x) + \frac{h^3}{6} f'''(\xi_+)`)}
       ${eq(String.raw`f(x - h) = f(x) - h f'(x) + \frac{h^2}{2} f''(x) - \frac{h^3}{6} f'''(\xi_-)`)}
@@ -34,7 +34,9 @@ renderLesson({
       ${eq(String.raw`f(x + h) - f(x - h) = 2h f'(x) + \frac{h^3}{6}\bigl(f'''(\xi_+) + f'''(\xi_-)\bigr)`)}
       ${tex('2h')} で割ると
       ${eq(String.raw`\frac{f(x + h) - f(x - h)}{2h} = f'(x) + \frac{h^2}{12}\bigl(f'''(\xi_+) + f'''(\xi_-)\bigr)`)}
-      です。誤差の主要項は ${tex(String.raw`\frac{h^2}{6} f'''(x)`)} で、${tex('h')} の2次です（${coreDoc('calculus', 'central_difference', '中心差分の説明')}）。`,
+      です。${tex('h \\to 0')} で ${tex(String.raw`\xi_\pm \to x`)} なので
+      ${eq(String.raw`\frac{h^2}{12}\bigl(f'''(\xi_+) + f'''(\xi_-)\bigr) \approx \frac{h^2}{12}\cdot 2 f'''(x) = \frac{h^2}{6} f'''(x)`)}
+      で、誤差の主要項は ${tex(String.raw`\frac{h^2}{6} f'''(x)`)}、${tex('h')} の2次です（${coreDoc('calculus', 'central_difference', '中心差分の説明')}）。`,
     `${tex(String.raw`f(x) = \sin x`)} では ${tex(String.raw`f'' = -\sin x`)}、${tex(String.raw`f''' = -\cos x`)} なので、${tex('x = 1')} での主要項は
       ${eq(String.raw`\frac{h}{2} f''(1) = -\frac{h}{2}\sin 1,\qquad \frac{h^2}{6} f'''(1) = -\frac{h^2}{6}\cos 1`)}
       です（${coreDoc('calculus', 'forward_difference_leading_error', '前進差分の主要項の説明')}、${coreDoc('calculus', 'central_difference_leading_error', '中心差分の主要項の説明')}）。常用対数をとると
@@ -45,7 +47,7 @@ renderLesson({
       ${eq(String.raw`E(h) = \frac{h}{2}|f''(x)| + \frac{\varepsilon |f(x)|}{h}`)}
       と見積もると、
       ${eq(String.raw`E'(h) = \frac{|f''(x)|}{2} - \frac{\varepsilon |f(x)|}{h^2} = 0,\qquad h = \sqrt{\frac{2\varepsilon |f(x)|}{|f''(x)|}}`)}
-      で、${tex(String.raw`\sin 1 = |f''(1)| = |f(1)|`)} より ${tex(String.raw`h = \sqrt{2\varepsilon} \approx 1.5 \times 10^{-8}`)} で最小です。中心差分では ${tex(String.raw`\frac{h^2}{6}|f'''| + \frac{\varepsilon |f|}{h}`)} を同じように最小にして ${tex(String.raw`h = (3\varepsilon |f| / |f'''|)^{1/3} \approx 8 \times 10^{-6}`)} です。グラフの谷は、この位置にあります。`,
+      で、${tex(String.raw`\sin 1 = |f''(1)| = |f(1)|`)} より ${tex(String.raw`h = \sqrt{2\varepsilon} \approx 1.5 \times 10^{-8}`)} で最小です。中心差分では ${tex(String.raw`\frac{h^2}{6}|f'''| + \frac{\varepsilon |f|}{h}`)} を同じように最小にして ${tex(String.raw`h = (3\varepsilon |f| / |f'''|)^{1/3} \approx 8 \times 10^{-6}`)} です。グラフの谷は、この見積もりに近い位置にあります。`,
   ],
   figureAlt: '刻み h に対する前進差分と中心差分の誤差の両対数グラフ。傾き 1 と 2 の直線と、h が小さい側で誤差が増え始める谷。',
   figure: `
@@ -58,13 +60,13 @@ renderLesson({
         </div>
         <div class="readouts">
           <div><span>差分 ${tex('D f(1)')}（${tex('h = 0.1')}、近似値）</span><output id="value">—</output></div>
-          <div><span>厳密値 ${tex(String.raw`\cos 1`)}</span><output id="exact">—</output></div>
-          <div><span>誤差の主要項</span><output id="leading">—</output></div>
-          <div><span>差 ${tex(String.raw`D f(1) - \cos 1`)}</span><output id="difference">—</output></div>
+          <div><span>厳密値 ${tex(String.raw`\cos 1`)} の小数（近似値）</span><output id="exact">—</output></div>
+          <div><span>誤差の主要項（近似値）</span><output id="leading">—</output></div>
+          <div><span>差 ${tex(String.raw`D f(1) - \cos 1`)}（近似値）</span><output id="difference">—</output></div>
         </div>
-        <p>${tex(String.raw`h = 10^{-1}`)} から ${tex(String.raw`10^{-3}`)} までの傾き <output id="slope">—</output>、誤差が最小になる刻み ${tex('h')} = <output id="valley">—</output></p>
+        <p>${tex(String.raw`h = 10^{-1}`)} から ${tex(String.raw`10^{-3}`)} までの傾き <output id="slope">—</output>、誤差が最小になる刻み ${tex('h')} = <output id="valley">—</output>（いずれも近似値）</p>
         <div class="table-scroll"><table class="value-table" aria-label="刻みごとの差分と誤差">
-          <thead><tr><th>刻み ${tex('h')}</th><th>${tex('D f(1)')}（近似値）</th><th>差 ${tex(String.raw`D f(1) - \cos 1`)}</th><th>主要項</th></tr></thead>
+          <thead><tr><th>刻み ${tex('h')}</th><th>${tex('D f(1)')}（近似値）</th><th>差 ${tex(String.raw`D f(1) - \cos 1`)}（近似値）</th><th>主要項（近似値）</th></tr></thead>
           <tbody id="difference-table"></tbody>
         </table></div>
       </section>`,
@@ -73,16 +75,16 @@ renderLesson({
     `${tex('x = 1')}、${tex('h = 0.1')} とします。関数の値は ${tex(String.raw`\sin 0.9 \approx 0.7833269`)}、${tex(String.raw`\sin 1 \approx 0.8414710`)}、${tex(String.raw`\sin 1.1 \approx 0.8912074`)} で、厳密値は ${tex(String.raw`\cos 1 \approx 0.540302`)} です（いずれも近似値）。`,
     `前進差分は
       ${eq(String.raw`D_+ f(1) = \frac{0.8912074 - 0.8414710}{0.1} = \frac{0.0497364}{0.1} = 0.497364`)}
-      で、7桁の値で差をとると ${tex(String.raw`0.4973638 - 0.5403023 = -0.0429385`)} です。主要項 ${tex(String.raw`-\frac{0.1}{2}\cdot 0.841471 = -0.042074`)} と、上2桁が一致します。`,
+      で、7桁の値で差をとると ${tex(String.raw`0.4973638 - 0.5403023 = -0.0429385`)} です。主要項 ${tex(String.raw`-\frac{0.1}{2}\cdot 0.841471 = -0.042074`)} と、上2桁が一致します（いずれも近似値）。`,
     `中心差分は
       ${eq(String.raw`D_0 f(1) = \frac{0.8912074 - 0.7833269}{0.2} = \frac{0.1078805}{0.2} = 0.539402`)}
-      で、差は ${tex(String.raw`0.539402 - 0.540302 = -0.000900`)} です。主要項 ${tex(String.raw`-\frac{0.01}{6}\cdot 0.540302 = -0.000901`)} とよく一致します。刻みを ${tex('1/10')} にすると、前進差分の差は約 ${tex('1/10')}、中心差分の差は約 ${tex('1/100')} になります。画面の計器と表は、ライブラリが返した値です。`,
+      で、差は ${tex(String.raw`0.539402 - 0.540302 = -0.000900`)} です。主要項 ${tex(String.raw`-\frac{0.01}{6}\cdot 0.540302 = -0.000901`)} とよく一致します（いずれも近似値）。刻みを ${tex('1/10')} にすると、前進差分の差は約 ${tex('1/10')}、中心差分の差は約 ${tex('1/100')} になります。画面の計器と表は、ライブラリが返した値です。`,
   ],
   related: [
-    { href: './derivative-definition.html', title: '微分の定義', description: '前進差分は、極限をとる前の差分商そのものです。' },
-    { href: './taylor.html', title: 'Taylor 展開', description: '誤差の主要項は、Taylor の定理の剰余項から出ます。' },
-    { href: './euler.html', title: 'Euler法', description: '微分方程式の導関数を前進差分で置き換えた数値解法です。' },
-    { href: './potential.html', title: '静電ポテンシャルと電位', description: '電位の差分から電場を近似します。' },
+    { href: './derivative-definition.html', title: '微分の定義' },
+    { href: './taylor.html', title: 'Taylor 展開' },
+    { href: './euler.html', title: 'Euler法' },
+    { href: './potential.html', title: '静電ポテンシャルと電位' },
   ],
   footer: 'この画面の計算は、sin x の x = 1 における前進差分と中心差分です。',
   proof: writtenProof([

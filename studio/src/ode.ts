@@ -32,7 +32,7 @@ app.innerHTML = `
             <li>速度 ${tex('v')} が時刻にも位置にもよらず一定ならば、位置は ${tex(String.raw`x' = v`)} を満たします。この運動は <a class="doc-link" href="./uniform.html">等速直線運動</a> です。</li>
             <li>加速度 ${tex('a')} が一定ならば、速度は ${tex(String.raw`v' = a`)} を満たします。この運動は <a class="doc-link" href="./accelerated.html">等加速度直線運動</a> です。</li>
           </ol>
-          <p>右辺が未知関数を含まないときの積分から、変数分離、1階線形、同次形、完全微分、ベルヌーイ、定数係数の2階、未定係数法、定数変化法、Laplace 変換、べき級数、連立1階まで、この節のページで順に見ます。数値の1ステップと、方程式の根を求める反復は、数値計算の節に置いてあります。</p>
+          <p>右辺が未知関数を含まないときの積分から、変数分離、1階線形、同次形、完全微分、ベルヌーイ、定数係数の2階、未定係数法、定数変化法、Laplace 変換、べき級数、連立1階、Sturm–Liouville 問題、非線形力学系、熱伝導方程式、波動方程式まで、この節のページで順に見ます。数値の1ステップと、方程式の根を求める反復は、数値計算の節に置いてあります。</p>
         </div>
       </section>
       ${pageFigure('ode', '微分方程式の解とは、各時刻で導関数が右辺 f(x, t) と一致する関数である。')}
@@ -119,10 +119,10 @@ app.innerHTML = `
         </a>
       </div>
       ${relatedPages([
-        { href: './integrate.html', title: '積分して解く', description: '右辺が未知関数によらない場合の最も基本的な解法です。' },
-        { href: './separation.html', title: '変数分離', description: '未知関数と独立変数を分けて積分する解法です。' },
-        { href: './linear.html', title: '1階線形', description: '積分因子を用いて解く1階方程式の解法です。' },
-        { href: './euler.html', title: 'Euler法', description: '微分方程式を数値的に解く基本アルゴリズムです。' },
+        { href: './integrate.html', title: '積分して解く' },
+        { href: './separation.html', title: '変数分離' },
+        { href: './linear.html', title: '1階線形' },
+        { href: './euler.html', title: 'Euler法' },
       ])}
       ${pageFooter('この節は、1階の解法、2階の解法、Laplace 変換、べき級数、連立です。')}
       ${checkedProofs([{ statement: `関数 ${tex('x(t)')} が解であるとは、各時刻で ${tex(String.raw`\frac{d}{dt} x(t) = f(x(t), t)`)} が成り立つことです。`, source: solutionProof, moduleName: 'Ergion.Solution', kind: '実数' }])}

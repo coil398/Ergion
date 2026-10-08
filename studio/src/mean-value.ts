@@ -23,11 +23,13 @@ renderLesson({
       ${eq(String.raw`3c^2 = 4`)}
       ${eq(String.raw`c^2 = \frac{4}{3}`)}
       ${eq(String.raw`c = \frac{2}{\sqrt{3}} = 1.154700\ldots`)}
-      です。負の根 ${tex(String.raw`-\frac{2}{\sqrt{3}}`)} は区間 ${tex('(0, 2)')} にありません（${coreDoc('calculus', 'cube_mean_value_point', '点 c の厳密な式の説明')}）。`,
+      です。${tex(String.raw`\frac{2}{\sqrt{3}}`)} は厳密な値、${tex(String.raw`1.154700\ldots`)} は近似値です。負の根 ${tex(String.raw`-\frac{2}{\sqrt{3}}`)} は区間 ${tex('(0, 2)')} にありません（${coreDoc('calculus', 'cube_mean_value_point', '点 c の厳密な式の説明')}）。`,
     `同じ点 ${tex('c')} をニュートン法で求めます。${tex(`g(c) = f'(c) - m = 3c^2 - 4`)} と置くと、${tex('c')} は ${tex('g(c) = 0')} の根で、${tex(`g'(c) = f''(c) = 6c`)} です。ニュートン法の1回の更新は
       ${eq(String.raw`c_{n+1} = c_n - \frac{g(c_n)}{g'(c_n)} = c_n - \frac{3c_n^2 - 4}{6c_n}`)}
-      です（${coreStepDoc('newton_step', 'ニュートン法の1回の更新の説明')}）。右辺を整理すると
-      ${eq(String.raw`c_{n+1} = c_n - \frac{c_n}{2} + \frac{4}{6c_n} = \frac{c_n}{2} + \frac{2}{3c_n}`)}
+      です（${coreStepDoc('newton_step', 'ニュートン法の1回の更新の説明')}）。右辺の分数を二つに分けます。
+      ${eq(String.raw`\frac{3c_n^2 - 4}{6c_n} = \frac{3c_n^2}{6c_n} - \frac{4}{6c_n} = \frac{c_n}{2} - \frac{2}{3c_n}`)}
+      これを代入して整理すると
+      ${eq(String.raw`c_{n+1} = c_n - \frac{c_n}{2} + \frac{2}{3c_n} = \frac{c_n}{2} + \frac{2}{3c_n}`)}
       です（${coreDoc('calculus', 'mean_value_newton', '点 c の反復の説明')}）。`,
     `出発点は区間の中点 ${tex('c_0 = 1')} とします。根 ${tex(String.raw`2/\sqrt{3}`)} は ${tex('g')} の単純な根なので、近似値と根の差は反復ごとにおよそ2乗になり、正しい桁の数がほぼ倍になります。`,
     `求めた点 ${tex('c')} の接線は
@@ -50,24 +52,24 @@ renderLesson({
           <div><span>厳密な c = 2/√3</span><output id="c-exact">—</output></div>
           <div><span>差 c₄ − 2/√3（近似値）</span><output id="c-error">—</output></div>
         </div>
-        <h3>ニュートン法の反復 ${tex('c_n')}</h3>
+        <h3>ニュートン法の反復 ${tex('c_n')}（近似値）</h3>
         <div id="newton-table"></div>
         <p id="error" role="alert" hidden></p>
       </section>`,
   exampleHeading: '数を代入した例',
   example: [
-    `${tex('c_0 = 1')} から更新式 ${tex(String.raw`c_{n+1} = \frac{c_n}{2} + \frac{2}{3c_n}`)} を分数のまま計算します。
+    `${tex('c_0 = 1')} から更新式 ${tex(String.raw`c_{n+1} = \frac{c_n}{2} + \frac{2}{3c_n}`)} を分数のまま計算します。分数は厳密な値、小数は近似値です。
       ${eq(String.raw`c_1 = \frac{1}{2} + \frac{2}{3} = \frac{3 + 4}{6} = \frac{7}{6} = 1.166667\ldots`)}`,
-    `${eq(String.raw`c_2 = \frac{7}{12} + \frac{2}{3 \cdot 7/6} = \frac{7}{12} + \frac{4}{7} = \frac{49 + 48}{84} = \frac{97}{84} = 1.154762\ldots`)}`,
-    `${eq(String.raw`c_3 = \frac{97}{168} + \frac{2}{3 \cdot 97/84} = \frac{97}{168} + \frac{56}{97} = \frac{9409 + 9408}{16296} = \frac{18817}{16296} = 1.15470054\ldots`)}
-      厳密な ${tex(String.raw`c = 2/\sqrt{3} = 1.15470053\ldots`)} との差は、${tex('c_1')} で約 ${tex('0.012')}、${tex('c_2')} で約 ${tex(String.raw`6.1 \times 10^{-5}`)}、${tex('c_3')} で約 ${tex(String.raw`1.6 \times 10^{-9}`)} です。画面の表の値と一致します。`,
-    `確かめとして、${tex(String.raw`f'(c) = 3 \cdot \frac{4}{3} = 4 = m`)} です。${tex(String.raw`c = 1.1547\ldots`)} は区間 ${tex('(0, 2)')} の中にあります。`,
+    `${eq(String.raw`c_2 = \frac{7}{12} + \frac{2}{3 \cdot 7/6} = \frac{7}{12} + \frac{2}{7/2} = \frac{7}{12} + \frac{4}{7} = \frac{49 + 48}{84} = \frac{97}{84} = 1.154762\ldots`)}`,
+    `${eq(String.raw`c_3 = \frac{97}{168} + \frac{2}{3 \cdot 97/84} = \frac{97}{168} + \frac{2}{97/28} = \frac{97}{168} + \frac{56}{97} = \frac{9409 + 9408}{16296} = \frac{18817}{16296} = 1.15470054\ldots`)}
+      厳密な ${tex(String.raw`c = 2/\sqrt{3}`)} の近似値 ${tex(String.raw`1.15470053\ldots`)} との差は、${tex('c_1')} で約 ${tex('0.012')}、${tex('c_2')} で約 ${tex(String.raw`6.1 \times 10^{-5}`)}、${tex('c_3')} で約 ${tex(String.raw`1.6 \times 10^{-9}`)} です。画面の表の値と一致します。`,
+    `確かめとして、${tex(String.raw`c^2 = \frac{4}{3}`)} より ${tex(String.raw`f'(c) = 3c^2 = 3 \cdot \frac{4}{3} = 4 = m`)} です。${tex(String.raw`c = 1.1547\ldots`)}（近似値）は区間 ${tex('(0, 2)')} の中にあります。`,
   ],
   related: [
-    { href: './newton.html', title: 'ニュートン法', description: '接線が軸と交わる点で根の近似を更新する方法です。' },
-    { href: './limits.html', title: '極限と連続', description: '定理の仮定にある連続の定義です。' },
-    { href: './fundamental-theorem.html', title: '定積分と微分積分学の基本定理', description: '導関数が 0 の関数は定数であることを、この定理から示して使います。' },
-    { href: './taylor.html', title: 'Taylor 展開', description: '剰余項の Lagrange 形は、平均値の定理を繰り返して得られます。' },
+    { href: './newton.html', title: 'ニュートン法' },
+    { href: './limits.html', title: '極限と連続' },
+    { href: './fundamental-theorem.html', title: '定積分と微分積分学の基本定理' },
+    { href: './taylor.html', title: 'Taylor 展開' },
   ],
   footer: 'この画面の計算は、x³ の区間 [0, 2] での平均値の定理の点 c です。',
   proof: writtenProof([

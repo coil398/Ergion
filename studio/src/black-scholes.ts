@@ -27,34 +27,68 @@ renderLesson({
       です。`,
     `オプションを1単位持ち、株を ${tex(String.raw`\Delta`)} 単位売った組 ${tex(String.raw`\Pi = V - \Delta S`)} を考えます。短い時間の変化は
       ${eq(String.raw`d\Pi = dV - \Delta\,dS = \left(\frac{\partial V}{\partial t} + \mu S\frac{\partial V}{\partial S} + \frac{1}{2}\sigma^2 S^2\frac{\partial^2 V}{\partial S^2} - \Delta\mu S\right)dt + \sigma S\left(\frac{\partial V}{\partial S} - \Delta\right)dW`)}
-      です。${tex(String.raw`\Delta = \partial V/\partial S`)} と選ぶと ${tex('dW')} の項が消え、
+      です。${tex(String.raw`\Delta = \partial V/\partial S`)} と選ぶと ${tex('dW')} の項が消え、${tex('dt')} の項の ${tex(String.raw`\mu S\frac{\partial V}{\partial S} - \Delta\mu S`)} も 0 になるので
       ${eq(String.raw`d\Pi = \left(\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2\frac{\partial^2 V}{\partial S^2}\right)dt`)}
-      となり、揺らぎのない資産になります。裁定（元手なしで確実に利益を得る取引）がないなら、この組は無リスク金利で増えるので ${tex(String.raw`d\Pi = r\Pi\,dt = r\left(V - S\frac{\partial V}{\partial S}\right)dt`)} です。二つの式を等しいとおいて移項すると、ページの上の Black–Scholes 方程式を得ます。ドリフト率 ${tex(String.raw`\mu`)} は式に残りません。`,
-    `変数を ${tex(String.raw`x = \ln(S/K)`)}、${tex(String.raw`\tau = \frac{1}{2}\sigma^2(T - t)`)}、${tex('V = K\\,v(x, \\tau)')} と変えます。${tex(String.raw`\tau`)} は満期から測った時間で、${tex('t = T')} が ${tex(String.raw`\tau = 0`)} です。合成関数の微分で
+      となり、揺らぎのない資産になります。裁定（元手なしで確実に利益を得る取引）がないなら、この組は無リスク金利で増えるので
+      ${eq(String.raw`d\Pi = r\Pi\,dt = r\left(V - S\frac{\partial V}{\partial S}\right)dt`)}
+      です。二つの式の ${tex('dt')} の係数を等しいとおきます。
+      ${eq(String.raw`\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2\frac{\partial^2 V}{\partial S^2} = rV - rS\frac{\partial V}{\partial S}`)}
+      右辺を左辺へ移項すると
+      ${eq(String.raw`\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2\frac{\partial^2 V}{\partial S^2} + rS\frac{\partial V}{\partial S} - rV = 0`)}
+      で、ページの上の Black–Scholes 方程式です。ドリフト率 ${tex(String.raw`\mu`)} は式に残りません。`,
+    `変数を ${tex(String.raw`x = \ln(S/K)`)}、${tex(String.raw`\tau = \frac{1}{2}\sigma^2(T - t)`)}、${tex('V = K\\,v(x, \\tau)')} と変えます。${tex(String.raw`\tau`)} は満期から測った時間で、${tex('t = T')} が ${tex(String.raw`\tau = 0`)} です。添字 ${tex(String.raw`v_\tau, v_x, v_{xx}`)} は ${tex(String.raw`\tau`)}、${tex('x')} による偏微分を表します。新しい変数の微分は
+      ${eq(String.raw`\frac{d\tau}{dt} = -\frac{1}{2}\sigma^2, \qquad \frac{dx}{dS} = \frac{d}{dS}\left(\ln S - \ln K\right) = \frac{1}{S}`)}
+      です。合成関数の微分で
       ${eq(String.raw`\frac{\partial V}{\partial t} = K\frac{\partial v}{\partial \tau}\frac{d\tau}{dt} = -\frac{1}{2}\sigma^2 K\,v_\tau`)}
       ${eq(String.raw`\frac{\partial V}{\partial S} = K v_x\frac{dx}{dS} = \frac{K}{S}v_x`)}
-      ${eq(String.raw`\frac{\partial^2 V}{\partial S^2} = -\frac{K}{S^2}v_x + \frac{K}{S}v_{xx}\frac{1}{S} = \frac{K}{S^2}\left(v_{xx} - v_x\right)`)}
+      2階の微分は、積 ${tex(String.raw`\frac{K}{S}\cdot v_x`)} の微分で、${tex(String.raw`\frac{\partial v_x}{\partial S} = v_{xx}\frac{dx}{dS} = \frac{1}{S}v_{xx}`)} を使います。
+      ${eq(String.raw`\frac{\partial^2 V}{\partial S^2} = \frac{\partial}{\partial S}\left(\frac{K}{S}v_x\right) = -\frac{K}{S^2}v_x + \frac{K}{S}\cdot\frac{1}{S}v_{xx} = \frac{K}{S^2}\left(v_{xx} - v_x\right)`)}
       です。方程式に代入すると
+      ${eq(String.raw`-\frac{1}{2}\sigma^2 K v_\tau + \frac{1}{2}\sigma^2 S^2\cdot\frac{K}{S^2}\left(v_{xx} - v_x\right) + rS\cdot\frac{K}{S}v_x - rK v = 0`)}
+      で、${tex('S')} が約分されて
       ${eq(String.raw`-\frac{1}{2}\sigma^2 K v_\tau + \frac{1}{2}\sigma^2 K\left(v_{xx} - v_x\right) + rK v_x - rK v = 0`)}
-      で、${tex(String.raw`\frac{1}{2}\sigma^2 K`)} で割り、${tex(String.raw`k = 2r/\sigma^2`)} と置くと
+      です。${tex(String.raw`\frac{1}{2}\sigma^2 K`)} で割り、${tex(String.raw`k = 2r/\sigma^2`)} と置くと
+      ${eq(String.raw`-v_\tau + v_{xx} - v_x + k v_x - k v = 0`)}
       ${eq(String.raw`v_\tau = v_{xx} + (k - 1)v_x - k v`)}
-      です。満期の条件は ${tex(String.raw`v(x, 0) = \max(e^x - 1, 0)`)} になります。`,
-    `残った1階の項と0階の項を消すため、${tex(String.raw`v = e^{-\alpha x - \beta\tau}u(x, \tau)`)} と置きます。
-      ${eq(String.raw`v_\tau = e^{-\alpha x - \beta\tau}\left(u_\tau - \beta u\right)`)}
-      ${eq(String.raw`v_x = e^{-\alpha x - \beta\tau}\left(u_x - \alpha u\right)`)}
-      ${eq(String.raw`v_{xx} = e^{-\alpha x - \beta\tau}\left(u_{xx} - 2\alpha u_x + \alpha^2 u\right)`)}
-      を代入して共通の因子で割ると
+      です。満期の条件は、${tex(String.raw`S = Ke^x`)} を ${tex(String.raw`V(S, T) = \max(S - K, 0)`)} に入れて
+      ${eq(String.raw`K v(x, 0) = \max(Ke^x - K, 0), \qquad v(x, 0) = \max(e^x - 1, 0)`)}
+      になります。`,
+    `残った1階の項と0階の項を消すため、定数 ${tex(String.raw`\alpha`)}、${tex(String.raw`\beta`)} と新しい未知関数 ${tex(String.raw`u(x, \tau)`)} を使って ${tex(String.raw`v = e^{-\alpha x - \beta\tau}u(x, \tau)`)} と置きます。${tex(String.raw`E = e^{-\alpha x - \beta\tau}`)} と書くと ${tex(String.raw`E_\tau = -\beta E`)}、${tex(String.raw`E_x = -\alpha E`)} なので、積の微分により
+      ${eq(String.raw`v_\tau = E\left(u_\tau - \beta u\right)`)}
+      ${eq(String.raw`v_x = E\left(u_x - \alpha u\right)`)}
+      ${eq(String.raw`v_{xx} = -\alpha E\left(u_x - \alpha u\right) + E\left(u_{xx} - \alpha u_x\right) = E\left(u_{xx} - 2\alpha u_x + \alpha^2 u\right)`)}
+      です。これらを ${tex(String.raw`v_\tau = v_{xx} + (k - 1)v_x - k v`)} に代入して、0 でない共通の因子 ${tex('E')} で割ると
       ${eq(String.raw`u_\tau - \beta u = u_{xx} - 2\alpha u_x + \alpha^2 u + (k - 1)(u_x - \alpha u) - k u`)}
+      括弧を外すと
+      ${eq(String.raw`u_\tau = u_{xx} - 2\alpha u_x + (k - 1)u_x + \beta u + \alpha^2 u - (k - 1)\alpha u - k u`)}
+      で、${tex('u_x')} と ${tex('u')} の項をまとめると
       ${eq(String.raw`u_\tau = u_{xx} + \left[(k - 1) - 2\alpha\right]u_x + \left[\beta + \alpha^2 - (k - 1)\alpha - k\right]u`)}
-      です。${tex(String.raw`\alpha = \frac{k - 1}{2}`)} と選ぶと ${tex('u_x')} の係数は 0、${tex('u')} の係数は ${tex(String.raw`\beta + \frac{(k-1)^2}{4} - \frac{(k-1)^2}{2} - k = \beta - \frac{(k + 1)^2}{4}`)} なので、${tex(String.raw`\beta = \frac{(k + 1)^2}{4}`)} と選ぶと
+      です。${tex(String.raw`\alpha = \frac{k - 1}{2}`)} と選ぶと ${tex('u_x')} の係数は 0 です。このとき ${tex(String.raw`\alpha^2 = \frac{(k-1)^2}{4}`)}、${tex(String.raw`(k - 1)\alpha = \frac{(k-1)^2}{2}`)} なので、${tex('u')} の係数は
+      ${eq(String.raw`\beta + \frac{(k-1)^2}{4} - \frac{(k-1)^2}{2} - k = \beta - \frac{(k-1)^2 + 4k}{4} = \beta - \frac{k^2 + 2k + 1}{4} = \beta - \frac{(k + 1)^2}{4}`)}
+      です。${tex(String.raw`\beta = \frac{(k + 1)^2}{4}`)} と選ぶと ${tex('u')} の係数も 0 になり、初期値は ${tex(String.raw`u(x, 0) = e^{\alpha x}v(x, 0)`)} と ${tex(String.raw`\alpha + 1 = \frac{k + 1}{2}`)} から
+      ${eq(String.raw`u(x, 0) = e^{\alpha x}\max(e^x - 1, 0) = \max\left(e^{(\alpha + 1)x} - e^{\alpha x},\ 0\right) = \max\left(e^{(k+1)x/2} - e^{(k-1)x/2},\ 0\right)`)}
+      です。こうして
       ${eq(String.raw`u_\tau = u_{xx}, \qquad u(x, 0) = \max\left(e^{(k+1)x/2} - e^{(k-1)x/2},\ 0\right)`)}
-      の熱伝導方程式になります（${coreDoc('finance', 'heat_transform', '変数変換の説明')}）。言いかえると ${tex(String.raw`u = e^{\alpha x + \beta\tau}V/K`)}、${tex(String.raw`\alpha = r/\sigma^2 - 1/2`)}、${tex(String.raw`\beta = (r/\sigma^2 + 1/2)^2`)} です。`,
-    `熱伝導方程式の解は、初期値と熱核の積分 ${tex(String.raw`u(x, \tau) = \int_{-\infty}^{\infty} u(y, 0)\,\frac{1}{\sqrt{4\pi\tau}}e^{-(x - y)^2/(4\tau)}\,dy`)} です。${tex('u(y, 0)')} は ${tex('y > 0')} で ${tex('e^{ay}')}（${tex(String.raw`a = \frac{k \pm 1}{2}`)}）の差、${tex(String.raw`y \le 0`)} で 0 です。${tex(String.raw`y = x + \sqrt{2\tau}\,z`)} と置換し、指数を平方完成すると
-      ${eq(String.raw`\int_0^\infty e^{ay}\frac{e^{-(x - y)^2/(4\tau)}}{\sqrt{4\pi\tau}}\,dy = \int_{-x/\sqrt{2\tau}}^{\infty} e^{ax + a\sqrt{2\tau}z}\varphi(z)\,dz = e^{ax + a^2\tau}\,N\!\left(\frac{x + 2a\tau}{\sqrt{2\tau}}\right)`)}
-      です（${tex(String.raw`\varphi`)} は標準正規分布の密度）。${tex(String.raw`a = \frac{k + 1}{2}`)} と ${tex(String.raw`a = \frac{k - 1}{2}`)} の二つの項に使い、${tex(String.raw`e^{-\alpha x - \beta\tau}`)} を掛けて ${tex('v')} に戻すと、指数は ${tex('x')} と ${tex(String.raw`-k\tau`)} だけが残ります。
-      ${eq(String.raw`v = e^{x}N(d_1) - e^{-k\tau}N(d_2), \qquad d_{1,2} = \frac{x + (k \pm 1)\tau}{\sqrt{2\tau}}`)}
-      ${tex(String.raw`\sqrt{2\tau} = \sigma\sqrt{T - t}`)}、${tex(String.raw`(k + 1)\tau = (r + \frac{1}{2}\sigma^2)(T - t)`)}、${tex(String.raw`k\tau = r(T - t)`)} なので、${tex('V = Kv')} は Black–Scholes 公式
-      ${eq(String.raw`C(S, t) = S\,N(d_1) - K e^{-r(T - t)}N(d_2)`)}
+      の熱伝導方程式になります（${coreDoc('finance', 'heat_transform', '変数変換の説明')}）。${tex(String.raw`k = 2r/\sigma^2`)} を入れて言いかえると ${tex(String.raw`u = e^{\alpha x + \beta\tau}V/K`)}、${tex(String.raw`\alpha = \frac{1}{2}\left(\frac{2r}{\sigma^2} - 1\right) = \frac{r}{\sigma^2} - \frac{1}{2}`)}、${tex(String.raw`\beta = \frac{1}{4}\left(\frac{2r}{\sigma^2} + 1\right)^2 = \left(\frac{r}{\sigma^2} + \frac{1}{2}\right)^2`)} です。`,
+    `熱伝導方程式の解は、初期値と熱核の積分 ${tex(String.raw`u(x, \tau) = \int_{-\infty}^{\infty} u(y, 0)\,\frac{1}{\sqrt{4\pi\tau}}e^{-(x - y)^2/(4\tau)}\,dy`)} です。${tex('u(y, 0)')} は ${tex('y > 0')} で ${tex('e^{ay}')}（${tex(String.raw`a = \frac{k \pm 1}{2}`)}）の差、${tex(String.raw`y \le 0`)} で 0 です。一つの項 ${tex(String.raw`e^{ay}`)} の積分を求めます。${tex(String.raw`y = x + \sqrt{2\tau}\,z`)} と置換すると ${tex(String.raw`dy = \sqrt{2\tau}\,dz`)}、${tex(String.raw`(x - y)^2/(4\tau) = 2\tau z^2/(4\tau) = z^2/2`)}、${tex('y = 0')} は ${tex(String.raw`z = -x/\sqrt{2\tau}`)} なので
+      ${eq(String.raw`\frac{e^{-(x - y)^2/(4\tau)}}{\sqrt{4\pi\tau}}\,dy = \frac{\sqrt{2\tau}}{\sqrt{4\pi\tau}}e^{-z^2/2}\,dz = \frac{1}{\sqrt{2\pi}}e^{-z^2/2}\,dz = \varphi(z)\,dz`)}
+      ${eq(String.raw`\int_0^\infty e^{ay}\frac{e^{-(x - y)^2/(4\tau)}}{\sqrt{4\pi\tau}}\,dy = \int_{-x/\sqrt{2\tau}}^{\infty} e^{ax + a\sqrt{2\tau}z}\varphi(z)\,dz`)}
+      です（${tex(String.raw`\varphi`)} は標準正規分布の密度）。指数を平方完成します。
+      ${eq(String.raw`a\sqrt{2\tau}\,z - \frac{z^2}{2} = -\frac{\left(z - a\sqrt{2\tau}\right)^2}{2} + a^2\tau`)}
+      よって被積分関数は ${tex(String.raw`e^{ax + a^2\tau}\varphi(z - a\sqrt{2\tau})`)} で、${tex(String.raw`w = z - a\sqrt{2\tau}`)} と置くと下端は ${tex(String.raw`-x/\sqrt{2\tau} - a\sqrt{2\tau} = -(x + 2a\tau)/\sqrt{2\tau}`)} です。標準正規分布の対称性 ${tex(String.raw`\int_{-c}^{\infty}\varphi(w)\,dw = N(c)`)} により
+      ${eq(String.raw`\int_{-x/\sqrt{2\tau}}^{\infty} e^{ax + a\sqrt{2\tau}z}\varphi(z)\,dz = e^{ax + a^2\tau}\int_{-(x + 2a\tau)/\sqrt{2\tau}}^{\infty}\varphi(w)\,dw = e^{ax + a^2\tau}\,N\!\left(\frac{x + 2a\tau}{\sqrt{2\tau}}\right)`)}
+      です。${tex(String.raw`a = \frac{k + 1}{2}`)} と ${tex(String.raw`a = \frac{k - 1}{2}`)} の二つの項に使うと
+      ${eq(String.raw`u = e^{\frac{k+1}{2}x + \frac{(k+1)^2}{4}\tau}N(d_1) - e^{\frac{k-1}{2}x + \frac{(k-1)^2}{4}\tau}N(d_2), \qquad d_{1,2} = \frac{x + (k \pm 1)\tau}{\sqrt{2\tau}}`)}
+      です。${tex(String.raw`v = e^{-\alpha x - \beta\tau}u`)} に戻します。${tex(String.raw`\alpha = \frac{k-1}{2}`)}、${tex(String.raw`\beta = \frac{(k+1)^2}{4}`)} なので、二つの指数は
+      ${eq(String.raw`\left(\tfrac{k+1}{2} - \tfrac{k-1}{2}\right)x + \left(\tfrac{(k+1)^2}{4} - \tfrac{(k+1)^2}{4}\right)\tau = x`)}
+      ${eq(String.raw`\left(\tfrac{k-1}{2} - \tfrac{k-1}{2}\right)x + \frac{(k-1)^2 - (k+1)^2}{4}\tau = \frac{-4k}{4}\tau = -k\tau`)}
+      となり、
+      ${eq(String.raw`v = e^{x}N(d_1) - e^{-k\tau}N(d_2)`)}
+      です。元の変数では
+      ${eq(String.raw`\sqrt{2\tau} = \sqrt{\sigma^2(T - t)} = \sigma\sqrt{T - t}`)}
+      ${eq(String.raw`(k + 1)\tau = \left(\frac{2r}{\sigma^2} + 1\right)\frac{\sigma^2}{2}(T - t) = \left(r + \tfrac{1}{2}\sigma^2\right)(T - t), \qquad k\tau = \frac{2r}{\sigma^2}\cdot\frac{\sigma^2}{2}(T - t) = r(T - t)`)}
+      なので ${tex(String.raw`d_1 = \frac{\ln(S/K) + (r + \sigma^2/2)(T - t)}{\sigma\sqrt{T - t}}`)}、${tex(String.raw`d_2 = d_1 - \frac{2\tau}{\sqrt{2\tau}} = d_1 - \sigma\sqrt{T - t}`)} です。最後に ${tex(String.raw`Ke^x = S`)} を使うと、${tex('V = Kv')} は Black–Scholes 公式
+      ${eq(String.raw`C(S, t) = K e^{x}N(d_1) - K e^{-r(T - t)}N(d_2) = S\,N(d_1) - K e^{-r(T - t)}N(d_2)`)}
       です（${coreDoc('finance', 'black_scholes_call', 'Black–Scholes 公式の説明')}）。株価に対する変化率は ${tex(String.raw`\Delta = N(d_1)`)}、${tex(String.raw`\Gamma = \frac{\varphi(d_1)}{S\sigma\sqrt{T - t}}`)} です（${tex(String.raw`\Delta`)} の証明はページの最後）。`,
     `標準正規分布の累積分布関数 ${tex(String.raw`N(z) = \frac{1}{2}\operatorname{erfc}(-z/\sqrt{2})`)} は、相補誤差関数 ${tex(String.raw`\operatorname{erfc}`)} を ${tex('|x| < 2')} で正の項の級数、${tex(String.raw`|x| \ge 2`)} で連分数から求めた近似で、誤差は ${tex(String.raw`10^{-15}`)} 以下です（${coreDoc('finance', 'normal_cdf', '累積分布関数の近似の説明')}、${coreDoc('finance', 'erfc', '相補誤差関数の説明')}）。画面の公式の値は、この近似を除けば厳密です。`,
     `差分法では、区間 ${tex('[-L, L]')}（${tex('L = 2')}、${tex(String.raw`S \approx 13.5`)} から ${tex('739')}）を ${tex('M = 400')} 等分し（${tex(String.raw`\Delta x = 0.01`)}）、${tex(String.raw`\tau`)} を ${tex(String.raw`\Delta\tau = 2.5 \times 10^{-5}`)} ずつ ${tex('800')} 回進めます。${tex(String.raw`\rho = \Delta\tau/\Delta x^2 = 0.25`)} です。左端は ${tex('u = 0')}、右端は ${tex(String.raw`C \approx S - Ke^{-r(T - t)}`)} を移した ${tex(String.raw`u = e^{\alpha L + \beta\tau}(e^L - e^{-k\tau})`)} です。陽解法は
@@ -84,7 +118,7 @@ renderLesson({
     </section>`,
   exampleHeading: '数を代入した例',
   example: [
-    `${tex('S = K = 100')}、${tex('r = 0.05')}、${tex(String.raw`\sigma = 0.2`)}、${tex('T - t = 1')} とします。${tex(String.raw`\ln(S/K) = 0`)}、${tex(String.raw`\sigma\sqrt{T - t} = 0.2`)} なので
+    `${tex('S = K = 100')}、${tex('r = 0.05')}、${tex(String.raw`\sigma = 0.2`)}、${tex('T - t = 1')} とします。${tex(String.raw`\ln(S/K) = 0`)}、${tex(String.raw`\sigma^2/2 = 0.04/2 = 0.02`)}、${tex(String.raw`\sigma\sqrt{T - t} = 0.2`)} なので
       ${eq(String.raw`d_1 = \frac{0 + (0.05 + 0.02)\cdot 1}{0.2} = 0.35, \qquad d_2 = 0.35 - 0.2 = 0.15`)}
       で、どちらも厳密な値です。`,
     `正規分布表または ${tex(String.raw`N`)} の近似から ${tex(String.raw`N(0.35) \approx 0.636831`)}、${tex(String.raw`N(0.15) \approx 0.559618`)}、割引係数は ${tex(String.raw`e^{-0.05} \approx 0.951229`)} です。
@@ -95,11 +129,11 @@ renderLesson({
       です。熱伝導方程式の定数は ${tex(String.raw`k = 2 \cdot 0.05/0.04 = 2.5`)}、${tex(String.raw`\alpha = 0.75`)}、${tex(String.raw`\beta = 3.5^2/4 = 3.0625`)}、満期までの1年は ${tex(String.raw`\tau = \frac{1}{2}\cdot 0.04 \cdot 1 = 0.02`)} です。差分法の値と公式の値の差は計器に示し、どちらのタブでも ${tex(String.raw`10^{-3}`)} 程度です。`,
   ],
   related: [
-    { href: './heat.html', title: '熱伝導方程式', description: '変数変換の後の方程式と、陽解法・Crank–Nicolson 法の安定性です。' },
-    { href: './compound.html', title: '連続複利と指数成長', description: `満期の支払いを割り引く係数 ${tex(String.raw`e^{-r(T - t)}`)} は、連続複利の逆数です。` },
-    { href: './gbm.html', title: '幾何 Brownian 運動', description: '株価のモデルと、Itô の補題です。' },
-    { href: './mc-pricing.html', title: 'Monte Carlo 価格評価', description: '同じ価格を、満期の株価の擬似乱数の標本の平均で推定します。' },
-    { href: './elimination.html', title: '連立1次方程式と消去法', description: 'Crank–Nicolson 法の三重対角の方程式を解く消去法です。' },
+    { href: './heat.html', title: '熱伝導方程式' },
+    { href: './compound.html', title: '連続複利と指数成長' },
+    { href: './gbm.html', title: '幾何 Brownian 運動' },
+    { href: './mc-pricing.html', title: 'Monte Carlo 価格評価' },
+    { href: './elimination.html', title: '連立1次方程式と消去法' },
   ],
   footer: 'この画面の計算は、権利行使価格 100、金利 0.05、ボラティリティ 0.2 の欧州型コールの価格です。',
   proof: writtenProof([{
@@ -161,10 +195,10 @@ function fill() {
   show('fd-price', fixed(v.fd_price));
   show('delta', fixed(v.delta));
   show('fd-gap', v.fd_gap.toExponential(2));
-  document.getElementById('greek-note')!.innerHTML = `${tex(String.raw`d_1`)} = ${fixed(v.d1)}、${tex(String.raw`d_2`)} = ${fixed(v.d2)}（厳密）、${tex(String.raw`\Gamma`)} = ${fixed(v.gamma)}。${names[method]}は ${tex(String.raw`\rho`)} = ${fixed(v.rho, 2)}、${tex(String.raw`\Delta x`)} = ${fixed(v.dx, 2)}、${fixed(v.steps, 0)} ステップです。`;
+  document.getElementById('greek-note')!.innerHTML = `${tex(String.raw`d_1`)} = ${fixed(v.d1)}、${tex(String.raw`d_2`)} = ${fixed(v.d2)}（厳密）、${tex(String.raw`\Gamma`)} = ${fixed(v.gamma)}（厳密）。${names[method]}は ${tex(String.raw`\rho`)} = ${fixed(v.rho, 2)}、${tex(String.raw`\Delta x`)} = ${fixed(v.dx, 2)}、${fixed(v.steps, 0)} ステップです。`;
   show('table-heading', `${names[method]}と公式の価格（T − t = 1、小数6桁）`);
   const row = (cells: (string | number)[], tag = 'td') => `<tr>${cells.map(cell => `<${tag}>${cell}</${tag}>`).join('')}</tr>`;
-  document.getElementById('price-table')!.innerHTML = row(['S', '公式 C', '差分法（近似）', '差（近似）', 'Δ = N(d₁)'], 'th')
+  document.getElementById('price-table')!.innerHTML = row(['S', '公式 C（厳密）', '差分法（近似）', '差（近似）', 'Δ = N(d₁)（厳密）'], 'th')
     + a.table_s.map((s, i) => row([fixed(s, 0), fixed(a.table_formula[i]), fixed(a.table_fd[i]), a.table_diff[i].toExponential(2), fixed(a.table_delta[i])])).join('');
 }
 

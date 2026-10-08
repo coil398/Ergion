@@ -92,14 +92,19 @@ app.innerHTML = `
               <p class="solution-equation">${tex(String.raw`(2x + y)\,dx + (x + 2y)\,dy = 0`, true)}</p>
               与えられた方程式そのものです。この一致は式のままの一致です。したがって、この枝は例の厳密解です。
             </li>
+            <li>図の下の欄と比べます。図は ${tex('t = 0')} から ${tex('t = 1/2')} までです。${tex('t = 1/2')} では
+              <p class="solution-equation">${tex(String.raw`4 - 3 \cdot \left(\frac{1}{2}\right)^{2} = 4 - \frac{3}{4} = \frac{13}{4}`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`x\!\left(\frac{1}{2}\right) = \frac{-\frac{1}{2} + \sqrt{\frac{13}{4}}}{2} = \frac{-\frac{1}{2} + \frac{\sqrt{13}}{2}}{2} = \frac{\sqrt{13} - 1}{4}`, true)}</p>
+              です。これは厳密な値です。欄の「厳密解」に出る 0.65139 は、ライブラリが返したこの値を小数5桁で表した近似の値です。「数値解」と「位置の誤差」は、選んだ数値解法で時間を刻んで得た近似の値です。
+            </li>
           </ol>
         </div>
       </section>
       ${relatedPages([
-        { href: './integrate.html', title: '積分して解く', description: '偏積分からポテンシャル関数を構成する基礎となる積分です。' },
-        { href: './separation.html', title: '変数分離', description: '微分形式として完全になる特別な場合の方程式です。' },
-        { href: './euler.html', title: 'Euler法', description: '陰関数で定義される解曲線を1ステップずつ進める数値解法です。' },
-        { href: './rk4.html', title: '古典的RK4', description: '解曲線を高い精度で追跡する4次の数値解法です。' },
+        { href: './integrate.html', title: '積分して解く' },
+        { href: './separation.html', title: '変数分離' },
+        { href: './euler.html', title: 'Euler法' },
+        { href: './rk4.html', title: '古典的RK4' },
       ])}
       ${pageFooter('完全性の判定を満たすとき、解はポテンシャルが一定という陰関数です。')}
       ${checkedProofs([{ statement: `${tex(String.raw`(2x + y)\,dx + (x + 2y)\,dy = 0`)} の陰関数の厳密解は ${tex(String.raw`x^2 + xy + y^2 = C`)} です。`, source: exactProof, moduleName: 'Ergion.Exact', kind: '実数' }])}

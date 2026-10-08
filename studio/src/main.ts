@@ -50,10 +50,12 @@ app.innerHTML = `
             <li>速度が一定のとき、Euler 法、中点法、古典的な4次の Runge–Kutta 法の1ステップは、どれも次の増分になります（${simulationDoc('uniform', 'UniformSimulation', '1ステップの説明')}）。
               <p class="solution-equation">${tex(String.raw`x_{n+1} = x_n + v \Delta t`, true)}</p>
               <p class="solution-equation">${tex(String.raw`v_{n+1} = v`, true)}</p>
-              これは厳密解を刻み幅 ${tex(String.raw`\Delta t`)} だけ進めた増分と一致します。位置は時刻の一次式なので、この数値ステップに打ち切り誤差はありません。表示される差は、倍精度浮動小数点の丸めだけです。
+              ここで ${tex('n')} はステップ番号、${tex('x_n')} は時刻 ${tex(String.raw`t_n = n \Delta t`)} の位置、${tex(String.raw`\Delta t`)} は時間刻みです。厳密解を刻み幅 ${tex(String.raw`\Delta t`)} だけ進めた増分は、次の式です。
+              <p class="solution-equation">${tex(String.raw`x(t_n + \Delta t) - x(t_n) = \left(x_0 + v t_n + v \Delta t\right) - \left(x_0 + v t_n\right) = v \Delta t`, true)}</p>
+              数値ステップの増分 ${tex(String.raw`x_{n+1} - x_n = v \Delta t`)} はこれと一致します。位置は時刻の一次式なので、この数値ステップに打ち切り誤差はありません。
             </li>
           </ol>
-          <p>画面は、各時刻の位置と速度を描きます。式 ${tex('x(t) = x_0 + v t')} を、描画のために計算し直すことはありません。図の線分は、初期位置 ${tex('x_0')} に加わる変位 ${tex('vt')} です。青の実線が数値解、青緑の破線が厳密解です。誤差は、その破線とは別の実線です。</p>
+          <p>画面は、各時刻の位置と速度を描きます。式 ${tex('x(t) = x_0 + v t')} を、描画のために計算し直すことはありません。図の線分は、初期位置 ${tex('x_0')} に加わる変位 ${tex('vt')} です。青の実線が数値解、青緑の破線が厳密解です。</p>
         </div>
       </section>
       ${pageFigure('uniform', '等速直線運動では、初期位置 x₀ から現在位置まで変位 vt が伸びる。')}
@@ -85,7 +87,7 @@ app.innerHTML = `
             <div class="panel-heading"><h2 id="scene-heading">粒子の直線運動</h2><span id="scene-time" class="numeric">t = 0.000</span></div>
             <p class="scene-caption">粒子は、初期位置 ${tex('x_0')} に変位 ${tex('vt')} を加えた位置まで進みます。速度は一定なので、変位は時刻に比例して伸びます。</p>
             <canvas id="oscillator" aria-label="直線上を進む粒子。初期位置に変位 vt を加えた位置を示します。数値解は青の実線、解析解は青緑の破線。" role="img"></canvas>
-            <div class="readouts"><div><span>位置 x</span><output id="position">—</output></div><div><span>速度 v</span><output id="velocity">—</output></div><div><span>解析解の位置</span><output id="exact-position">—</output></div><div><span>位置の絶対差 |x − x_exact|</span><output id="energy-error">—</output></div></div>
+            <div class="readouts"><div><span>位置 x</span><output id="position">—</output></div><div><span>速度 v</span><output id="velocity">—</output></div><div><span>解析解の位置</span><output id="exact-position">—</output></div><div><span>位置の誤差 x − x_exact</span><output id="energy-error">—</output></div></div>
           </section>
           <section class="plots panel" aria-labelledby="plots-heading">
             <div class="panel-heading"><h2 id="plots-heading">位置と誤差の時間変化</h2><div class="legend"><span><i class="numerical"></i>数値解</span><span><i class="analytical"></i>解析解</span><span><i class="difference"></i>誤差</span></div></div>
@@ -99,11 +101,26 @@ app.innerHTML = `
           <p class="experiment-note">数値計算はブラウザ内で実行します。条件や結果をサーバーへ送信しません。</p>
         </div>
       </div>
+      <section class="study panel" id="example" aria-labelledby="example-heading">
+        <div class="panel-heading"><h2 id="example-heading">数を代入した例</h2></div>
+        <div class="study-body">
+          <ol class="solution">
+            <li>計算条件の既定の値 ${tex('x_0 = 0')}、${tex('v = 1')}、${tex(String.raw`\Delta t = 0.01`)} をとります。厳密解は次の式です。
+              <p class="solution-equation">${tex(String.raw`x(t) = 0 + 1 \cdot t = t`, true)}</p>
+            </li>
+            <li>1ステップ後の時刻は ${tex(String.raw`t = 0.01`)} で、位置の厳密な値は ${tex('x(0.01) = 0.01')} です。1ステップの更新に代入しても同じ値です。
+              <p class="solution-equation">${tex(String.raw`x_1 = 0 + 1 \cdot 0.01 = 0.01`, true)}</p>
+              1ステップを一度進めると、画面の位置 ${tex('x')} と解析解の位置はどちらも 0.01000 です。これは小数第5位までの近似の表示です。
+            </li>
+            <li>最後のステップ ${tex('n = 1000')} の時刻は ${tex(String.raw`t = 1000 \cdot 0.01 = 10`)} で、位置の厳密な値は ${tex('x(10) = 10')} です。最後まで進めると、画面の位置 ${tex('x')} は近似の表示 10.00000 です。</li>
+          </ol>
+        </div>
+      </section>
       ${relatedPages([
-        { href: './derivative.html', title: '位置の時間微分', description: '速度の定義と1ステップの微小変位を説明するページです。' },
-        { href: './velocity-step.html', title: '一定速度の増分', description: '一定速度の増分を繰り返し適用する数値計算の基礎です。' },
-        { href: './integrate.html', title: '積分して解く', description: '未知関数を含まない微分方程式を積分して解く導出です。' },
-        { href: './euler.html', title: 'Euler法', description: '等速直線運動を1ステップずつ進める基本の数値解法です。' },
+        { href: './derivative.html', title: '位置の時間微分' },
+        { href: './velocity-step.html', title: '一定速度の増分' },
+        { href: './integrate.html', title: '積分して解く' },
+        { href: './euler.html', title: 'Euler法' },
       ])}
       ${pageFooter('この画面の計算は一粒子の等速直線運動です。')}
       ${checkedVelocityProof(`速度が一定のとき、${tex('n')} 回の後は ${tex(String.raw`x_n = x_0 + n v \Delta t`)} です。時刻を ${tex(String.raw`t = n \Delta t`)} と置けば、これは ${tex('x(t) = x_0 + v t')} と同じ増分です。`)}

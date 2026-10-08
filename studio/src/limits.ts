@@ -20,11 +20,15 @@ renderLesson({
     `例として ${tex(String.raw`f(x) = \frac{\sin x}{x}`)}、${tex('a = 0')}、${tex('L = 1')} をとります。${tex('x = 0')} では分母が 0 なので、${tex('f(0)')} は定義されません。グラフでは点 ${tex('(0, 1)')} が穴になります。極限は ${tex('x = 0')} での値を使わず、${tex('0 < |x| < \\delta')} の値だけで決まります（${coreDoc('calculus', 'sine_ratio', '比 sin x / x の説明')}）。`,
     `差 ${tex(String.raw`1 - \frac{\sin x}{x}`)} を上から抑えます。関数 ${tex(String.raw`t - \sin t`)} は ${tex('t = 0')} で 0 で、導関数 ${tex(String.raw`1 - \cos t`)} は 0 以上なので減りません。したがって ${tex(String.raw`t \ge 0`)} で ${tex(String.raw`\sin t \le t`)} です。両辺を 0 から ${tex(String.raw`s \ge 0`)} まで積分します。
       ${eq(String.raw`\int_0^s \sin t\,dt \le \int_0^s t\,dt`)}
+      ${eq(String.raw`\bigl[-\cos t\bigr]_0^s \le \left[\frac{t^2}{2}\right]_0^s`)}
       ${eq(String.raw`1 - \cos s \le \frac{s^2}{2}`)}
       すなわち ${tex(String.raw`\cos s \ge 1 - \frac{s^2}{2}`)} です。もう一度、0 から ${tex('x > 0')} まで積分します。
       ${eq(String.raw`\int_0^x \cos s\,ds \ge \int_0^x \left(1 - \frac{s^2}{2}\right) ds`)}
+      ${eq(String.raw`\bigl[\sin s\bigr]_0^x \ge \left[s - \frac{s^3}{6}\right]_0^x`)}
       ${eq(String.raw`\sin x \ge x - \frac{x^3}{6}`)}
-      両辺を ${tex('x > 0')} で割り、${tex(String.raw`\sin x \le x`)} と合わせると
+      両辺を ${tex('x > 0')} で割ります。
+      ${eq(String.raw`\frac{\sin x}{x} \ge 1 - \frac{x^2}{6}`)}
+      ${tex(String.raw`\sin x \le x`)} を ${tex('x > 0')} で割ると ${tex(String.raw`\frac{\sin x}{x} \le 1`)} です。二つを合わせ、各辺を 1 から引くと
       ${eq(String.raw`0 \le 1 - \frac{\sin x}{x} \le \frac{x^2}{6}`)}
       です。${tex(String.raw`\frac{\sin x}{x}`)} と ${tex('x^2')} は偶関数なので、この不等式は ${tex('x < 0')} でも成り立ちます（${coreDoc('calculus', 'sine_ratio_gap_bound', '差の上界の説明')}）。`,
     `${tex(String.raw`\varepsilon > 0`)} に対して ${tex(String.raw`\delta = \sqrt{6\varepsilon}`)} と選びます。${tex(String.raw`0 < |x| < \delta`)} ならば
@@ -49,9 +53,9 @@ renderLesson({
           <div><span>h = 0.1 の sin h / h（近似値）</span><output id="ratio">—</output></div>
           <div><span>差 1 − sin h / h（近似値）</span><output id="gap">—</output></div>
           <div><span>上界 h² / 6（厳密）</span><output id="bound">—</output></div>
-          <div><span>ε = 0.05 の幅 δ = √(6ε)</span><output id="delta">—</output></div>
+          <div><span>ε = 0.05 の幅 δ = √(6ε)（近似値）</span><output id="delta">—</output></div>
         </div>
-        <h3>刻み ${tex('h')} を縮めたときの値</h3>
+        <h3>刻み ${tex('h')} を縮めたときの値（近似値）</h3>
         <div id="ratio-table"></div>
         <p id="error" role="alert" hidden></p>
       </section>`,
@@ -59,18 +63,18 @@ renderLesson({
   example: [
     `${tex('h = 0.1')} とします。${tex(String.raw`\sin 0.1 = 0.0998334166\ldots`)}（近似値）なので
       ${eq(String.raw`\frac{\sin 0.1}{0.1} = 0.998334166\ldots,\qquad 1 - \frac{\sin 0.1}{0.1} = 0.001665833\ldots`)}
-      です。上界は厳密に ${tex(String.raw`\frac{0.1^2}{6} = \frac{1}{600} = 0.0016666\ldots`)} で、差は上界より小さい値です。`,
+      で、どちらも近似値です。上界は厳密に ${tex(String.raw`\frac{0.1^2}{6} = \frac{1}{600} = 0.0016666\ldots`)} で、差は上界より小さい値です。`,
     `級数の初めの2項で差を手で確かめます。
       ${eq(String.raw`\frac{h^2}{6} - \frac{h^4}{120} = \frac{0.01}{6} - \frac{0.0001}{120} = 0.0016666667 - 0.0000008333 = 0.0016658333`)}
-      これは画面の差 ${tex('0.0016658335')} と小数第9位まで一致します。表では ${tex('h')} を ${tex(String.raw`\frac{1}{10}`)} にするごとに差がほぼ ${tex(String.raw`\frac{1}{100}`)} になり、差と上界の比は 1 に近づきます。`,
-    `${tex(String.raw`\varepsilon = 0.05`)} とすると、${tex(String.raw`\delta = \sqrt{6 \cdot 0.05} = \sqrt{0.3} = 0.5477\ldots`)} です。${tex(String.raw`x = 0.5 < \delta`)} では
+      小数第10位までの近似値です。これは画面の差 ${tex('0.0016658335')}（近似値）と小数第9位まで一致します。表では ${tex('h')} を ${tex(String.raw`\frac{1}{10}`)} にするごとに差がほぼ ${tex(String.raw`\frac{1}{100}`)} になり、差と上界の比は 1 に近づきます。`,
+    `${tex(String.raw`\varepsilon = 0.05`)} とすると、${tex(String.raw`\delta = \sqrt{6 \cdot 0.05} = \sqrt{0.3} = 0.5477\ldots`)}（近似値）です。${tex(String.raw`x = 0.5 < \delta`)} では
       ${eq(String.raw`\frac{\sin 0.5}{0.5} = 0.958851\ldots,\qquad 1 - 0.958851\ldots = 0.041149\ldots < 0.05`)}
-      で、値は帯 ${tex(String.raw`1 \pm 0.05`)} の中にあります。`,
+      で（小数は近似値）、値は帯 ${tex(String.raw`1 \pm 0.05`)} の中にあります。`,
   ],
   related: [
-    { href: './derivative-definition.html', title: '微分の定義', description: '差分商の極限として導関数を定めます。' },
-    { href: './numerical-differentiation.html', title: '数値微分', description: '極限をとらずに、小さな刻みの差分商で導関数を近似します。' },
-    { href: './mean-value.html', title: '平均値の定理', description: '連続で微分できる関数の割線と接線の関係です。' },
+    { href: './derivative-definition.html', title: '微分の定義' },
+    { href: './numerical-differentiation.html', title: '数値微分' },
+    { href: './mean-value.html', title: '平均値の定理' },
   ],
   footer: 'この画面の計算は、比 sin x / x の x を 0 に近づけたときの値の列です。',
   proof: writtenProof([{

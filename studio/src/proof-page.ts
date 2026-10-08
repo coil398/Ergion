@@ -118,7 +118,7 @@ app.innerHTML = `
         <div>
           <p class="breadcrumb">証明 <span>/</span> 証明の一覧</p>
           <h1>証明の一覧<span class="title-dot">.</span></h1>
-          <p class="description">この画面は証明を実行しません。確かめは、ページを公開する前に lake build で検査することです。検査が失敗すると、ページの公開は止まります。</p>
+          <p class="description">この画面は証明を実行しません。証明は lake build で Lean が検査します。検査が失敗すると、サイトは更新されません。</p>
         </div>
         <div class="equation" aria-label="一定速度の n ステップ。位置は出発点に n v Δt を足す">
           ${tex(String.raw`x_n = x_0 + n v \Delta t`, true)}
@@ -133,7 +133,7 @@ app.innerHTML = `
         </div>
       </section>
       ${pageFigure('proof', '証明の一覧が先頭に置く等式は有理数の帰納で、解であることは各時刻の差分商の極限が右辺と一致することである。')}
-      ${pageFooter('証明の検査は公開前の lake build であり、この画面は Lean を実行しません。')}
+      ${pageFooter('証明は lake build で検査し、この画面は Lean を実行しません。')}
     </main>
   </div>`;
 

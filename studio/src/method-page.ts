@@ -24,16 +24,16 @@ export interface CompareSimConfig extends TimedConfig {
 
 export function getCaption(topic: TopicKind, method: StepMethod): string {
   if (topic === 'uniform') {
-    return '速度 v が一定のとき、ステップの繰り返しは厳密解 x_0 + v t と一致します。位置の差は浮動小数点の丸めだけです。';
+    return '速度 v が一定のとき、ステップの繰り返しは厳密解 x_0 + v t と一致します。';
   }
   if (topic === 'accelerated') {
     if (method === 'euler') {
       return '加速度 a が一定のとき、Euler法ではステップを繰り返すにつれて位置の打ち切り誤差が累積し、増大します。';
     }
     if (method === 'midpoint') {
-      return '加速度 a が一定のとき、中点法の増分は2次の厳密な増分と一致し、残る差は浮動小数点の丸めだけです。';
+      return '加速度 a が一定のとき、中点法の増分は2次の厳密な増分と一致します。';
     }
-    return '加速度 a が一定のとき、古典的RK4の増分は2次の厳密な増分と一致し、残る差は浮動小数点の丸めだけです。';
+    return '加速度 a が一定のとき、古典的RK4の増分は2次の厳密な増分と一致します。';
   }
   return '変数分離 x\' = kx では、どの数値解法も打ち切り誤差を持ち、誤差は時刻とともに増大します。古典的RK4はEuler法より厳密解の近くに留まります。';
 }
@@ -59,29 +59,29 @@ export function patternTabs(current: StepMethod = 'euler'): string {
 function getRelatedLinksForMethod(method: StepMethod): RelatedLink[] {
   if (method === 'euler') {
     return [
-      { href: './midpoint.html', title: '中点法', description: '2次の精度に改良したRunge–Kutta法です。' },
-      { href: './rk4.html', title: '古典的RK4', description: '4次の精度をもつ標準的な数値解法です。' },
-      { href: './velocity-step.html', title: '一定速度の増分', description: '増分を繰り返し適用する数値計算の基礎です。' },
-      { href: './uniform.html', title: '等速直線運動', description: '丸め誤差のみが現れる等速運動のシミュレーションです。' },
-      { href: './accelerated.html', title: '等加速度直線運動', description: '打ち切り誤差の累積が現れる運動のシミュレーションです。' },
-      { href: './separation.html', title: '変数分離', description: '指数関数解に対する打ち切り誤差が現れる例です。' },
+      { href: './midpoint.html', title: '中点法' },
+      { href: './rk4.html', title: '古典的RK4' },
+      { href: './velocity-step.html', title: '一定速度の増分' },
+      { href: './uniform.html', title: '等速直線運動' },
+      { href: './accelerated.html', title: '等加速度直線運動' },
+      { href: './separation.html', title: '変数分離' },
     ];
   }
   if (method === 'midpoint') {
     return [
-      { href: './euler.html', title: 'Euler法', description: '1次の基本数値解法です。' },
-      { href: './rk4.html', title: '古典的RK4', description: '4次の精度をもつ標準的な数値解法です。' },
-      { href: './accelerated.html', title: '等加速度直線運動', description: '中点法で2次の増分が厳密に一致する運動です。' },
-      { href: './velocity-step.html', title: '一定速度の増分', description: '1ステップの反復と誤差を比較するページです。' },
-      { href: './separation.html', title: '変数分離', description: '中点法による打ち切り誤差の推移を見る例です。' },
+      { href: './euler.html', title: 'Euler法' },
+      { href: './rk4.html', title: '古典的RK4' },
+      { href: './accelerated.html', title: '等加速度直線運動' },
+      { href: './velocity-step.html', title: '一定速度の増分' },
+      { href: './separation.html', title: '変数分離' },
     ];
   }
   return [
-    { href: './euler.html', title: 'Euler法', description: '1次の基本数値解法です。' },
-    { href: './midpoint.html', title: '中点法', description: '2次のRunge–Kutta法です。' },
-    { href: './accelerated.html', title: '等加速度直線運動', description: '高次の増分まで一致する運動のシミュレーションです。' },
-    { href: './separation.html', title: '変数分離', description: 'Euler法に比べ誤差が極めて小さく保たれる例です。' },
-    { href: './velocity-step.html', title: '一定速度の増分', description: '1ステップの反復と誤差を比較するページです。' },
+    { href: './euler.html', title: 'Euler法' },
+    { href: './midpoint.html', title: '中点法' },
+    { href: './accelerated.html', title: '等加速度直線運動' },
+    { href: './separation.html', title: '変数分離' },
+    { href: './velocity-step.html', title: '一定速度の増分' },
   ];
 }
 
@@ -112,11 +112,31 @@ export function mountMethodPage(options: {
     steps: 1000,
   };
 
+  const line = (source: string) => `<p class="solution-equation">${tex(source, true)}</p>`;
   const reduction = method === 'euler'
-    ? `このページでは ${tex('f(x_n, t_n) = v')} です。${tex('v')} は一定なので、上の式は ${tex(String.raw`x_{n+1} = x_n + v \Delta t`)} と同じです。`
+    ? `このページでは ${tex('f(x, t) = v')} なので、始点の傾きは次の値です。
+                ${line('f(x_n, t_n) = v')}
+                更新式に代入します。
+                ${line(String.raw`x_{n+1} = x_n + \Delta t \, v = x_n + v \Delta t`)}`
     : method === 'midpoint'
-      ? `${tex('v')} が一定ならば、始点の傾きも中点の傾きも ${tex('v')} です。したがって ${tex('k_2 = v')} であり、更新は ${tex(String.raw`x_{n+1} = x_n + v \Delta t`)} と一致します。`
-      : `${tex('v')} が一定ならば、四つの傾きはみな ${tex('v')} です。重み付きの和は ${tex('v')} になり、更新は ${tex(String.raw`x_{n+1} = x_n + v \Delta t`)} と一致します。`;
+      ? `始点の傾きを ${tex('k_1')}、始点から ${tex(String.raw`\frac{\Delta t}{2}`)} だけ仮に進んだ中点の傾きを ${tex('k_2')} と書きます。
+                ${line('k_1 = f(x_n, t_n)')}
+                ${line(String.raw`k_2 = f\left(x_n + \frac{\Delta t}{2} k_1,\ t_n + \frac{\Delta t}{2}\right)`)}
+                このページでは ${tex('f(x, t) = v')} であり、どの点でも値は ${tex('v')} です。
+                ${line('k_1 = v')}
+                ${line(String.raw`k_2 = f\left(x_n + \frac{\Delta t}{2} v,\ t_n + \frac{\Delta t}{2}\right) = v`)}
+                更新式に代入します。
+                ${line(String.raw`x_{n+1} = x_n + \Delta t \, v = x_n + v \Delta t`)}`
+      : `始点の傾きを ${tex('k_1')}、中点で求めた二つの傾きを ${tex('k_2')}、${tex('k_3')}、終点で求めた傾きを ${tex('k_4')} と書きます。
+                ${line('k_1 = f(x_n, t_n)')}
+                ${line(String.raw`k_2 = f\left(x_n + \frac{\Delta t}{2} k_1,\ t_n + \frac{\Delta t}{2}\right)`)}
+                ${line(String.raw`k_3 = f\left(x_n + \frac{\Delta t}{2} k_2,\ t_n + \frac{\Delta t}{2}\right)`)}
+                ${line(String.raw`k_4 = f\left(x_n + \Delta t \, k_3,\ t_n + \Delta t\right)`)}
+                このページでは ${tex('f(x, t) = v')} であり、どの点でも値は ${tex('v')} です。
+                ${line('k_1 = k_2 = k_3 = k_4 = v')}
+                更新式に代入し、括弧の中をまとめます。
+                ${line(String.raw`x_{n+1} = x_n + \frac{\Delta t}{6}(v + 2v + 2v + v)`)}
+                ${line(String.raw`= x_n + \frac{\Delta t}{6} \cdot 6v = x_n + v \Delta t`)}`;
   const app = document.querySelector<HTMLDivElement>('#app')!;
   app.innerHTML = `
     ${appHeader('計算環境を準備中')}
@@ -137,13 +157,17 @@ export function mountMethodPage(options: {
           <div class="panel-heading"><h2 id="study-heading">${options.title}の1ステップ</h2></div>
           <div class="study-body">
             <ol class="solution">
-              <li>直線上の位置を ${tex('x')}、時刻を ${tex('t')}、速度を ${tex('v')} とします。このページの例の方程式は ${tex(String.raw`x' = v`)} です。速度は時刻にも位置にもよりません。厳密解は ${tex('x(t) = x_0 + v t')} です。</li>
-              <li>${options.prose}（${coreStepDoc(options.fn, '1ステップの説明')}）
+              <li>直線上の位置を ${tex('x')}、時刻を ${tex('t')}、速度を ${tex('v')} とします。このページの例の方程式は ${tex(String.raw`x' = v`)} です。速度は時刻にも位置にもよりません。初期位置を ${tex('x_0')} と書くと、厳密解は ${tex('x(t) = x_0 + v t')} です。</li>
+              <li>方程式の右辺を関数 ${tex('f')} と書き、${tex(String.raw`x' = f(x, t)`)} とします。ステップ番号を ${tex('n')}、時刻 ${tex('t_n')} での位置を ${tex('x_n')}、時間刻みを ${tex(String.raw`\Delta t`)} とします。${options.prose}（${coreStepDoc(options.fn, '1ステップの説明')}）
                 <p class="solution-equation">${tex(options.formula, true)}</p>
-                <p>${reduction}これは厳密解 ${tex('x(t) = x_0 + v t')} の増分と一致します。打ち切り誤差はありません。各時刻の誤差 ${tex('x - x_{\\mathrm{exact}}')} は、倍精度浮動小数点の丸めだけです。</p>
+                ${reduction}
+              </li>
+              <li>厳密解を ${tex(String.raw`\Delta t`)} だけ進めた増分は次の式です。
+                <p class="solution-equation">${tex(String.raw`x(t_n + \Delta t) - x(t_n) = \left(x_0 + v t_n + v \Delta t\right) - \left(x_0 + v t_n\right) = v \Delta t`, true)}</p>
+                数値ステップの増分 ${tex(String.raw`x_{n+1} - x_n = v \Delta t`)} はこれと一致します。打ち切り誤差はありません。画面に出る誤差 ${tex('x - x_{\\mathrm{exact}}')} は近似の値で、計算機が数を有限の桁で表すことによる丸めだけです。
               </li>
             </ol>
-            <p>画面は、各時刻に返された数値解の位置と、誤差 ${tex('x - x_{\\mathrm{exact}}')} を描きます。厳密解の式を、描画のために計算し直すことはありません。青の実線が数値解、青緑の破線が厳密解です。誤差は、その破線とは別の実線です。</p>
+            <p>画面は、各時刻に返された数値解の位置と、誤差 ${tex('x - x_{\\mathrm{exact}}')} を描きます。厳密解の式を、描画のために計算し直すことはありません。青の実線が数値解、青緑の破線が厳密解です。</p>
           </div>
         </section>
         ${pageFigure(options.page, options.figureAlt)}
@@ -189,6 +213,18 @@ export function mountMethodPage(options: {
             <p class="experiment-note">数値計算はブラウザ内で実行します。条件や結果をサーバーへ送信しません。</p>
           </div>
         </div>
+        <section class="study panel" id="example" aria-labelledby="example-heading">
+          <div class="panel-heading"><h2 id="example-heading">数を代入した例</h2></div>
+          <div class="study-body">
+            <ol class="solution">
+              <li>計算条件の既定の値 ${tex('x_0 = 0')}、${tex('v = 1')}、${tex(String.raw`\Delta t = 0.01`)} をとります。上の手順のとおり、${options.title}の1ステップは ${tex(String.raw`x_{n+1} = x_n + v \Delta t`)} です。
+                <p class="solution-equation">${tex(String.raw`x_1 = 0 + 1 \cdot 0.01 = 0.01`, true)}</p>
+                この値は厳密で、厳密解の ${tex('x(0.01) = 0 + 1 \\cdot 0.01 = 0.01')} と同じです。
+              </li>
+              <li>一定速度のタブで1ステップを一度進めると、画面の位置 ${tex('x')} と解析解の位置はどちらも 0.01000 です。これは小数第5位までの近似の表示です。</li>
+            </ol>
+          </div>
+        </section>
         ${relatedPages(getRelatedLinksForMethod(method))}
         ${pageFooter(`この画面は、速度が一定の x' = v を、${options.title}で1ステップ進めます。`)}
       </main>

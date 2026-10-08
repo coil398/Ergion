@@ -63,9 +63,14 @@ renderLesson({
     `共鳴曲線の山の位置を求めます。${tex('A')} が最大になるのは ${tex('R^2')} が最小になるときです。${tex(String.raw`u = \omega^2`)} と置いて微分します。
       ${eq(String.raw`R^2 = (k - m u)^2 + \gamma^2 u`)}
       ${eq(String.raw`\frac{d R^2}{du} = -2m(k - m u) + \gamma^2 = 0`)}
+      ${eq(String.raw`k - m u = \frac{\gamma^2}{2m}`)}
       ${eq(String.raw`u = \frac{k}{m} - \frac{\gamma^2}{2m^2}`)}
       右辺が正のとき、山は ${tex(String.raw`\omega_r = \sqrt{\omega_0^2 - \gamma^2/(2m^2)}`)} にあります。${tex(String.raw`\beta = \gamma/(2m)`)}、${tex(String.raw`\omega_d = \sqrt{\omega_0^2 - \beta^2}`)} とすると、${tex(String.raw`k - m\omega_r^2 = \gamma^2/(2m)`)} を代入して
-      ${eq(String.raw`R^2 = \frac{\gamma^4}{4m^2} + \gamma^2\left(\omega_0^2 - \frac{\gamma^2}{2m^2}\right) = \gamma^2\left(\omega_0^2 - \beta^2\right) = \gamma^2\omega_d^2`)}
+      ${eq(String.raw`R^2 = \left(\frac{\gamma^2}{2m}\right)^2 + \gamma^2\left(\omega_0^2 - \frac{\gamma^2}{2m^2}\right)`)}
+      ${eq(String.raw`= \frac{\gamma^4}{4m^2} + \gamma^2\omega_0^2 - \frac{\gamma^4}{2m^2}`)}
+      ${eq(String.raw`= \gamma^2\omega_0^2 - \frac{\gamma^4}{4m^2}`)}
+      ${tex(String.raw`\beta^2 = \gamma^2/(4m^2)`)} なので
+      ${eq(String.raw`R^2 = \gamma^2\left(\omega_0^2 - \beta^2\right) = \gamma^2\omega_d^2`)}
       ${eq(String.raw`A_{\max} = \frac{F_0}{\gamma\,\omega_d}`)}
       です。${tex(String.raw`\gamma`)} が小さいほど山は高く、${tex(String.raw`\omega_r`)} は ${tex(String.raw`\omega_0`)} に近づきます。`,
     `初期値問題の厳密解は、${tex(String.raw`x_h(0) = x_0 - x_p(0)`)}、${tex(String.raw`x_h'(0) = v_0 - x_p'(0)`)} となる減衰振動の解 ${tex('x_h')} を加えたものです（${coreDoc('mechanics', 'forced_state', '初期値問題の厳密解の説明')}）。${tex('x_h')} は ${tex(String.raw`e^{-\beta t}`)} で小さくなるので、時間が十分たつと ${tex(String.raw`x \approx x_p`)} です。数値解は、${tex(`x' = v`)}、${tex(String.raw`v' = (F_0\cos\omega t - \gamma v - k x)/m`)} を選んだ方法で1ステップずつ進めた近似です。`,
@@ -85,7 +90,7 @@ renderLesson({
     dt: 0.01,
     steps: 2000,
     sceneHeading: '外力を受けてばねにつながれた質点',
-    sceneCaption: '質点は数値解の位置にあります。黒の矢印は外力 F(t) の向きと大きさ、青緑の破線の輪は同じ時刻の厳密解の位置、橙の矢印は速度の向きです。',
+    sceneCaption: '質点は数値解の位置にあります。F(t) の付いた矢印は外力の向きと大きさ、青緑の破線の輪は同じ時刻の厳密解の位置、橙の矢印は速度の向きです。',
     sceneLabel: '周期的な外力を受けて往復する、ばねにつながれた質点',
     readouts: { position: '位置 x', velocity: '速度 v', exact: '厳密解の位置', error: '位置の差 x − x_exact' },
     plotsHeading: '位置の時間変化と共鳴曲線',
@@ -96,7 +101,7 @@ renderLesson({
   }),
   exampleHeading: '数を代入した例',
   example: [
-    `${tex('m = 1')}、${tex('k = 4')}、${tex(String.raw`\gamma = 0.5`)}、${tex('F_0 = 1')}、${tex(String.raw`\omega = 2`)} とします。固有角振動数は ${tex(String.raw`\omega_0 = \sqrt{4/1} = 2`)} で、外力の角振動数と等しくなっています。分母の実部と虚部は
+    `${tex('m = 1')}、${tex('k = 4')}、${tex(String.raw`\gamma = 0.5`)}、${tex('F_0 = 1')}、${tex(String.raw`\omega = 2`)} とします。固有角振動数は ${tex(String.raw`\omega_0 = \sqrt{4/1} = 2`)}（厳密）で、外力の角振動数と等しくなっています。分母の実部と虚部は
       ${eq(String.raw`k - m\omega^2 = 4 - 1\cdot 2^2 = 0,\qquad \gamma\omega = 0.5\cdot 2 = 1`)}
       です。`,
     `振幅と位相の遅れは
@@ -104,18 +109,23 @@ renderLesson({
       で、どちらも厳密な値です。${tex(String.raw`\pi/2 \approx 1.57080`)} は小数5桁の近似です。定常解は
       ${eq(String.raw`x_p(t) = \cos\!\left(2t - \frac{\pi}{2}\right) = \sin 2t`)}
       で、外力 ${tex(String.raw`\cos 2t`)} より位相が4分の1周期遅れます。画面の既定の条件で、共鳴曲線の下の計器に ${tex('A')} と ${tex(String.raw`\delta`)} の値が出ます。`,
-    `${tex('x_0 = 0')}、${tex('v_0 = 0')} から始めます。${tex(String.raw`x_p(0) = 0`)}、${tex(String.raw`x_p'(0) = 2\cos 0 = 2`)} なので、${tex(String.raw`x_h(0) = 0`)}、${tex(String.raw`x_h'(0) = -2`)} です。${tex(String.raw`\beta = 0.5/2 = 0.25`)}、${tex(String.raw`\omega_d = \sqrt{4 - 0.25^2} = \sqrt{3.9375}`)} の減衰振動の解は
-      ${eq(String.raw`x_h(t) = e^{-0.25t}\,\frac{-2 + 0.25\cdot 0}{\sqrt{3.9375}}\sin\sqrt{3.9375}\,t`)}
+    `${tex('x_0 = 0')}、${tex('v_0 = 0')} から始めます。${tex(String.raw`x_p(0) = 0`)}、${tex(String.raw`x_p'(0) = 2\cos 0 = 2`)} なので、${tex(String.raw`x_h(0) = 0`)}、${tex(String.raw`x_h'(0) = -2`)} です。${tex(String.raw`\beta = 0.5/2 = 0.25`)}、${tex(String.raw`\omega_d = \sqrt{4 - 0.25^2} = \sqrt{3.9375}`)} です。減衰振動の厳密解 ${tex(String.raw`e^{-\beta t}\left[x_0\cos\omega_d t + \frac{v_0 + \beta x_0}{\omega_d}\sin\omega_d t\right]`)} の ${tex('x_0')} を ${tex('x_h(0) = 0')}、${tex('v_0')} を ${tex(`x_h'(0) = -2`)} に置き換えると
+      ${eq(String.raw`x_h(t) = e^{-0.25t}\left[0\cdot\cos\sqrt{3.9375}\,t\right.`)}
+      ${eq(String.raw`\left.{} + \frac{-2 + 0.25\cdot 0}{\sqrt{3.9375}}\sin\sqrt{3.9375}\,t\right]`)}
+      ${eq(String.raw`= -\frac{2}{\sqrt{3.9375}}\,e^{-0.25t}\sin\sqrt{3.9375}\,t`)}
       なので、厳密解は
       ${eq(String.raw`x(t) = \sin 2t - \frac{2}{\sqrt{3.9375}}\,e^{-0.25t}\sin\sqrt{3.9375}\,t`)}
-      です。${tex(String.raw`2/\sqrt{3.9375} \approx 1.00791`)}（近似）で、${tex('t = 20')} では過渡の項の大きさは ${tex(String.raw`1.00791\,e^{-5} \approx 0.00679`)} 以下です。`,
+      です。${tex(String.raw`2/\sqrt{3.9375} \approx 1.00791`)}（近似）で、${tex('t = 20')} では過渡の項の大きさは ${tex(String.raw`1.00791\,e^{-5} \approx 0.00679`)}（近似）以下です。既定の条件 ${tex(String.raw`\Delta t = 0.01`)} の 2000 ステップで ${tex('t = 20')} まで進めると、計器の厳密解の位置に
+      ${eq(String.raw`x(20) = \sin 40 - \frac{2}{\sqrt{3.9375}}\,e^{-5}\sin\!\left(20\sqrt{3.9375}\right)`)}
+      ${eq(String.raw`\approx 0.73890`)}
+      が出ます。根号と三角関数の形が厳密な値で、${tex('0.73890')} は小数5桁の近似です。`,
     `この減衰係数での共鳴曲線の山は ${tex(String.raw`\omega_r = \sqrt{4 - 0.25/2} = \sqrt{3.875} \approx 1.96850`)} にあり、高さは ${tex(String.raw`A_{\max} = \frac{1}{0.5\sqrt{3.9375}} = \frac{2}{\sqrt{3.9375}} \approx 1.00791`)} です。根号の形が厳密な値、小数は近似です。`,
   ],
   related: [
-    { href: './damped.html', title: '減衰振動', description: '外力のない場合の運動で、過渡の項はこの方程式の解です。' },
-    { href: './undetermined.html', title: '未定係数法', description: '右辺が余弦のときの特殊解を、係数を置いて求めます。' },
-    { href: './variation.html', title: '定数変化法', description: '一般の外力に対する特殊解を求める方法です。' },
-    { href: './laplace.html', title: 'Laplace 変換', description: '初期値問題を代数の方程式にして解きます。' },
+    { href: './damped.html', title: '減衰振動' },
+    { href: './undetermined.html', title: '未定係数法' },
+    { href: './variation.html', title: '定数変化法' },
+    { href: './laplace.html', title: 'Laplace 変換' },
   ],
   footer: 'この画面の計算は、周期的な外力を受けてばねにつながれた一つの質点の強制振動です。',
 });

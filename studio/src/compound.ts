@@ -80,10 +80,10 @@ renderLesson({
       です。差は年複利で ${tex('105.127110 - 105 = 0.127110')}、月複利で ${tex('105.127110 - 105.116190 = 0.010920')} です。主要項は年複利で ${tex(String.raw`105.127110 \cdot 0.05^2/2 \approx 0.131409`)}、月複利で ${tex(String.raw`105.127110 \cdot 0.05^2/24 \approx 0.010951`)} で、差の近似になっています。画面の計器の1年後の値は、タブで選んだ ${tex('m')} についてライブラリが計算した値です。`,
   ],
   related: [
-    { href: './separation.html', title: '変数分離', description: `連続複利の方程式 ${tex(`S' = rS`)} は、変数分離で解ける最も簡単な方程式です。` },
-    { href: './linear.html', title: '1階線形', description: `一定の入金 ${tex('q')} を加えた ${tex(`S' = rS + q`)} は1階線形の方程式です。` },
-    { href: './taylor.html', title: 'Taylor 展開', description: `極限の計算に使った ${tex(String.raw`\ln(1 + x)`)} と ${tex('e^x')} の展開です。` },
-    { href: './gbm.html', title: '幾何 Brownian 運動', description: `成長率に揺らぎを加えた株価のモデルで、期待値は ${tex(String.raw`S_0 e^{\mu t}`)} です。` },
+    { href: './separation.html', title: '変数分離' },
+    { href: './linear.html', title: '1階線形' },
+    { href: './taylor.html', title: 'Taylor 展開' },
+    { href: './gbm.html', title: '幾何 Brownian 運動' },
   ],
   footer: 'この画面の計算は、元本 100、年利率 0.05 の複利と連続複利の元利合計です。',
   proof: writtenProof([{

@@ -47,9 +47,20 @@ renderLesson({
       です。根号の中の符号で、解の形が三つに分かれます。`,
     `不足減衰 ${tex(String.raw`\zeta < 1`)}（${tex(String.raw`\beta < \omega_0`)}）では根号の中が負です。${tex(String.raw`\omega_d = \sqrt{\omega_0^2 - \beta^2}`)} と置くと
       ${eq(String.raw`r = -\beta \pm i\omega_d`)}
-      です。Euler の公式から ${tex(String.raw`e^{(-\beta \pm i\omega_d)t} = e^{-\beta t}(\cos\omega_d t \pm i\sin\omega_d t)`)} なので、実数の一般解は任意定数 ${tex('A')}、${tex('B')} を用いて
+      です。${tex('i')} は虚数単位です。二つの根から、任意定数 ${tex('C_1')}、${tex('C_2')} を用いて一般解は
+      ${eq(String.raw`x(t) = C_1 e^{(-\beta + i\omega_d)t} + C_2 e^{(-\beta - i\omega_d)t}`)}
+      です。Euler の公式から ${tex(String.raw`e^{(-\beta \pm i\omega_d)t} = e^{-\beta t}(\cos\omega_d t \pm i\sin\omega_d t)`)} なので、${tex(String.raw`\cos\omega_d t`)} と ${tex(String.raw`\sin\omega_d t`)} の項をまとめます。
+      ${eq(String.raw`x(t) = e^{-\beta t}\left[(C_1 + C_2)\cos\omega_d t\right.`)}
+      ${eq(String.raw`\left.{} + i(C_1 - C_2)\sin\omega_d t\right]`)}
+      ${tex('A = C_1 + C_2')}、${tex('B = i(C_1 - C_2)')} と置くと、実数の任意定数 ${tex('A')}、${tex('B')} による実数の一般解は
       ${eq(String.raw`x(t) = e^{-\beta t}\left(A\cos\omega_d t + B\sin\omega_d t\right)`)}
-      です。臨界減衰 ${tex(String.raw`\zeta = 1`)} では重根 ${tex(String.raw`r = -\beta`)} で、一般解は
+      です。臨界減衰 ${tex(String.raw`\zeta = 1`)}（${tex(String.raw`\beta = \omega_0`)}）では重根 ${tex(String.raw`r = -\beta`)} で、${tex(String.raw`e^{-\beta t}`)} のほかに ${tex(String.raw`t e^{-\beta t}`)} も解です。実際、${tex(String.raw`x = t e^{-\beta t}`)} を微分すると
+      ${eq(String.raw`x' = (1 - \beta t)\,e^{-\beta t}`)}
+      ${eq(String.raw`x'' = (\beta^2 t - 2\beta)\,e^{-\beta t}`)}
+      で、${tex(String.raw`\omega_0^2 = \beta^2`)} として方程式の左辺に代入すると
+      ${eq(String.raw`\left[(\beta^2 t - 2\beta) + 2\beta(1 - \beta t) + \beta^2 t\right] e^{-\beta t}`)}
+      ${eq(String.raw`= (\beta^2 t - 2\beta + 2\beta - 2\beta^2 t + \beta^2 t)\, e^{-\beta t} = 0`)}
+      です。したがって一般解は
       ${eq(String.raw`x(t) = (A + Bt)\,e^{-\beta t}`)}
       です。過減衰 ${tex(String.raw`\zeta > 1`)} では ${tex(String.raw`s = \sqrt{\beta^2 - \omega_0^2}`)}、${tex(String.raw`r_\pm = -\beta \pm s`)} が二つの実根で、
       ${eq(String.raw`x(t) = C_+ e^{r_+ t} + C_- e^{r_- t}`)}
@@ -61,12 +72,18 @@ renderLesson({
       ${eq(String.raw`x'(t) = e^{-\beta t}\left[(B\omega_d - \beta A)\cos\omega_d t - (A\omega_d + \beta B)\sin\omega_d t\right]`)}
       ${tex('t = 0')} を代入します。
       ${eq(String.raw`x'(0) = B\omega_d - \beta A = v_0`)}
+      ${tex('A = x_0')} を代入して移項します。
+      ${eq(String.raw`B\omega_d = v_0 + \beta x_0`)}
       ${eq(String.raw`B = \frac{v_0 + \beta x_0}{\omega_d}`)}
       したがって厳密解は
       ${eq(String.raw`x(t) = e^{-\beta t}\left[x_0\cos\omega_d t + \frac{v_0 + \beta x_0}{\omega_d}\sin\omega_d t\right]`)}
       です（${coreDoc('mechanics', 'damped_state', '三つの場合の厳密解の説明')}）。`,
-    `振れ幅の包絡線を求めます。${tex(String.raw`C = \sqrt{A^2 + B^2}`)}、${tex(String.raw`\cos\varphi = A/C`)}、${tex(String.raw`\sin\varphi = B/C`)} と置くと、加法定理から
-      ${eq(String.raw`A\cos\omega_d t + B\sin\omega_d t = C\cos(\omega_d t - \varphi)`)}
+    `振れ幅の包絡線を求めます。${tex(String.raw`C = \sqrt{A^2 + B^2}`)}、${tex(String.raw`\cos\varphi = A/C`)}、${tex(String.raw`\sin\varphi = B/C`)} と置きます。${tex(String.raw`\varphi`)} は位相のずれです。加法定理から
+      ${eq(String.raw`C\cos(\omega_d t - \varphi)`)}
+      ${eq(String.raw`= C\cos\varphi\cos\omega_d t + C\sin\varphi\sin\omega_d t`)}
+      ${eq(String.raw`= A\cos\omega_d t + B\sin\omega_d t`)}
+      なので
+      ${eq(String.raw`x(t) = C e^{-\beta t}\cos(\omega_d t - \varphi)`)}
       です。${tex(String.raw`|\cos(\omega_d t - \varphi)| \le 1`)} なので
       ${eq(String.raw`-C e^{-\beta t} \le x(t) \le C e^{-\beta t}`)}
       です（${coreDoc('mechanics', 'damped_envelope', '包絡線の説明')}）。下の位置のグラフの細い破線が ${tex(String.raw`\pm C e^{-\beta t}`)} です。`,
@@ -99,25 +116,26 @@ renderLesson({
   example: [
     `${tex('m = 1')}、${tex('k = 4')}、${tex(String.raw`\gamma = 0.4`)}、${tex('x_0 = 1')}、${tex('v_0 = 0')} とします。定数は
       ${eq(String.raw`\beta = \frac{0.4}{2\cdot 1} = 0.2,\qquad \omega_0 = \sqrt{4/1} = 2,\qquad \zeta = \frac{0.2}{2} = 0.1`)}
-      で、${tex(String.raw`\zeta < 1`)} なので不足減衰です。減衰固有角振動数は
+      で、どれも厳密な値です。${tex(String.raw`\zeta < 1`)} なので不足減衰です。減衰固有角振動数は
       ${eq(String.raw`\omega_d = \sqrt{4 - 0.2^2} = \sqrt{3.96} \approx 1.98997`)}
       です。${tex(String.raw`\sqrt{3.96}`)} が厳密な値で、${tex('1.98997')} は小数5桁の近似です。`,
     `係数は ${tex('A = 1')}、${tex(String.raw`B = \frac{0 + 0.2\cdot 1}{\sqrt{3.96}} = \frac{0.2}{\sqrt{3.96}}`)} なので、厳密解は
       ${eq(String.raw`x(t) = e^{-0.2t}\left[\cos\sqrt{3.96}\,t + \frac{0.2}{\sqrt{3.96}}\sin\sqrt{3.96}\,t\right]`)}
-      です。包絡線の振幅は ${tex(String.raw`C = \sqrt{1 + 0.04/3.96} = \sqrt{4/3.96} = 2/\sqrt{3.96} \approx 1.00504`)} です。`,
+      です。包絡線の振幅は ${tex(String.raw`C = \sqrt{1 + 0.04/3.96} = \sqrt{4/3.96} = 2/\sqrt{3.96} \approx 1.00504`)} です。${tex(String.raw`2/\sqrt{3.96}`)} が厳密な値で、${tex('1.00504')} は小数5桁の近似です。`,
     `半周期 ${tex(String.raw`t = \pi/\omega_d`)} では ${tex(String.raw`\cos\pi = -1`)}、${tex(String.raw`\sin\pi = 0`)} なので
       ${eq(String.raw`x\!\left(\frac{\pi}{\omega_d}\right) = -e^{-0.2\pi/\sqrt{3.96}}`)}
       が厳密な値です。指数は ${tex(String.raw`0.2\pi/\sqrt{3.96} \approx 0.315742`)} で、
       ${eq(String.raw`x\!\left(\frac{\pi}{\omega_d}\right) \approx -0.72925`)}
       は小数5桁の近似です。速度の式の ${tex(String.raw`\cos`)} の係数は ${tex(String.raw`B\omega_d - \beta A = 0.2 - 0.2 = 0`)}、${tex(String.raw`\sin\pi = 0`)} なので、この時刻の速度は厳密に 0 です。`,
     `エネルギーは、${tex('t = 0')} で ${tex(String.raw`E = \frac{1}{2}\cdot 4\cdot 1^2 = 2`)}（厳密）、半周期で
-      ${eq(String.raw`E = \frac{1}{2}\cdot 4\cdot e^{-0.4\pi/\sqrt{3.96}} = 2e^{-0.4\pi/\sqrt{3.96}} \approx 1.06360`)}
-      です。半周期のあいだに抵抗が散逸させたエネルギーは ${tex(String.raw`2 - 2e^{-0.4\pi/\sqrt{3.96}} \approx 0.93640`)}（近似）です。時間刻みを ${tex(String.raw`\Delta t = \pi/(100\sqrt{3.96})`)} とし 100 ステップ進めると、画面の厳密解の位置と計器の下のエネルギーにこの値が出ます。`,
+      ${eq(String.raw`E = \frac{1}{2}\cdot 1\cdot 0^2 + \frac{1}{2}\cdot 4\cdot \left(-e^{-0.2\pi/\sqrt{3.96}}\right)^2`)}
+      ${eq(String.raw`= 2e^{-0.4\pi/\sqrt{3.96}} \approx 1.06360`)}
+      です。${tex(String.raw`2e^{-0.4\pi/\sqrt{3.96}}`)} が厳密な値で、${tex('1.06360')} は小数5桁の近似です。半周期のあいだに抵抗が散逸させたエネルギーは ${tex(String.raw`2 - 2e^{-0.4\pi/\sqrt{3.96}} \approx 0.93640`)}（近似）です。時間刻みを ${tex(String.raw`\Delta t = \pi/(100\sqrt{3.96})`)} とし 100 ステップ進めると、画面の厳密解の位置と計器の下のエネルギーにこの値が出ます。`,
   ],
   related: [
-    { href: './harmonic.html', title: '単振動', description: '抵抗のない場合 γ = 0 の振動です。' },
-    { href: './second-order.html', title: '定数係数の2階同次', description: '同じ特性方程式の根から一般解を作ります。' },
-    { href: './forced.html', title: '強制振動と共鳴', description: 'この振動に周期的な外力を加えた運動です。' },
+    { href: './harmonic.html', title: '単振動' },
+    { href: './second-order.html', title: '定数係数の2階同次' },
+    { href: './forced.html', title: '強制振動と共鳴' },
   ],
   footer: 'この画面の計算は、抵抗を受けてばねにつながれた一つの質点の減衰振動です。',
   proof: writtenProof([{

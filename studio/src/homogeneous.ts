@@ -64,8 +64,11 @@ app.innerHTML = `
           <h2 id="example-heading">数を代入した例</h2>
           <p>${tex('C = 0')} とします。${tex('t > 0')} という仮定はそのままです。同じ変形を、数を入れた式でたどります。</p>
           <ol class="solution">
-            <li>方程式は ${tex(String.raw`x' = 1 + x/t`)} のままです。${tex('u = x/t')} と置くと ${tex(String.raw`u' = 1/t`)} です。
-              <p class="solution-equation">${tex(String.raw`u = \ln t`, true)}</p>
+            <li>方程式は ${tex(String.raw`x' = 1 + x/t`)} のままです。${tex('u = x/t')} と置くと、上の手順と同じく
+              <p class="solution-equation">${tex(String.raw`\frac{du}{dt} = \frac{1}{t}`, true)}</p>
+              です。両辺を積分し、${tex('C = 0')} を入れます。
+              <p class="solution-equation">${tex(String.raw`u(t) = \int \frac{1}{t}\,dt = \ln t + C = \ln t + 0 = \ln t`, true)}</p>
+              ${tex('x = ut')} へ戻します。
               <p class="solution-equation">${tex(String.raw`x(t) = t \ln t`, true)}</p>
             </li>
             <li>手で確かめます。${tex('t = 1')} では ${tex('\\ln 1 = 0')} なので ${tex('x(1) = 0')} です。これは ${tex('C = 0')} と一致します。微分すると、
@@ -74,14 +77,18 @@ app.innerHTML = `
               <p class="solution-equation">${tex(String.raw`1 + \frac{x(t)}{t} = 1 + \ln t`, true)}</p>
               左辺と右辺は同じ式です。この一致は近似ではなく、式のままの一致です。したがって ${tex('x(t) = t \\ln t')} はこの例の厳密解です。
             </li>
+            <li>図の下の欄と比べます。図は時刻 ${tex('t = 1')} から始まり、時刻 ${tex('t = 2')} では
+              <p class="solution-equation">${tex(String.raw`x(2) = 2 \ln 2`, true)}</p>
+              です。これは厳密な値です。欄の「厳密解」に出る 1.38629 は、ライブラリが返したこの値を小数5桁で表した近似の値です。「数値解」と「位置の誤差」は、選んだ数値解法で時間を刻んで得た近似の値です。
+            </li>
           </ol>
         </div>
       </section>
       ${relatedPages([
-        { href: './separation.html', title: '変数分離', description: '置換 u = x/t によって帰着する基本解法です。' },
-        { href: './linear.html', title: '1階線形', description: '置換後の導関数を解くための線形理論です。' },
-        { href: './euler.html', title: 'Euler法', description: '同次形の方程式を1ステップずつ進める数値解法です。' },
-        { href: './rk4.html', title: '古典的RK4', description: '4次のRunge–Kutta法による高精度な数値解法です。' },
+        { href: './separation.html', title: '変数分離' },
+        { href: './linear.html', title: '1階線形' },
+        { href: './euler.html', title: 'Euler法' },
+        { href: './rk4.html', title: '古典的RK4' },
       ])}
       ${pageFooter('同次形の置換 u = x/t で得る x(t) = t(ln t + C) は、t > 0 における厳密解です。')}
       ${checkedProofs([{ statement: `${tex(String.raw`x' = 1 + \frac{x}{t}`)} の、${tex('t > 0')} における厳密解は ${tex(String.raw`x(t) = t(\ln t + C)`)} です。`, source: homogeneousProof, moduleName: 'Ergion.Homogeneous', kind: '実数' }])}

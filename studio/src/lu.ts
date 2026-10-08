@@ -27,12 +27,21 @@ renderLesson({
       ${eq(String.raw`\begin{pmatrix} -3 & -1 & 2 \\ 2 & 1 & -1 \\ -2 & 1 & 2 \end{pmatrix}`)}
       乗数は
       ${eq(String.raw`l_{21} = \frac{2}{-3} = -\frac{2}{3}, \qquad l_{31} = \frac{-2}{-3} = \frac{2}{3}`)}
-      で、各行から乗数を掛けた第1行を引きます。
-      ${eq(String.raw`(2,\ 1,\ -1) + \tfrac{2}{3}(-3,\ -1,\ 2) = (0,\ \tfrac{1}{3},\ \tfrac{1}{3})`)}
-      ${eq(String.raw`(-2,\ 1,\ 2) - \tfrac{2}{3}(-3,\ -1,\ 2) = (0,\ \tfrac{5}{3},\ \tfrac{2}{3})`)}`,
-    `第2段では、第2列の対角から下の成分 ${tex(String.raw`\tfrac{1}{3}, \tfrac{5}{3}`)} のうち大きい ${tex(String.raw`\tfrac{5}{3}`)} の行を第2行に上げます。すでに決まった乗数も同じ行と一緒に入れ替わり、${tex(String.raw`l_{21} = \tfrac{2}{3}`)}、${tex(String.raw`l_{31} = -\tfrac{2}{3}`)} になります。第3段の乗数と引き算は
-      ${eq(String.raw`l_{32} = \frac{1/3}{5/3} = \frac{1}{5}`)}
-      ${eq(String.raw`(0,\ \tfrac{1}{3},\ \tfrac{1}{3}) - \tfrac{1}{5}(0,\ \tfrac{5}{3},\ \tfrac{2}{3}) = (0,\ 0,\ \tfrac{1}{3} - \tfrac{2}{15}) = (0,\ 0,\ \tfrac{1}{5})`)}
+      で、各行から乗数を掛けた第1行を引きます。第2行には ${tex(String.raw`-l_{21} = \tfrac{2}{3}`)} 倍を加えます。
+      ${eq(String.raw`(2,\ 1,\ -1) + \tfrac{2}{3}(-3,\ -1,\ 2) = (2,\ 1,\ -1) + (-2,\ -\tfrac{2}{3},\ \tfrac{4}{3})`)}
+      ${eq(String.raw`= (2 - 2,\ 1 - \tfrac{2}{3},\ -1 + \tfrac{4}{3}) = (0,\ \tfrac{1}{3},\ \tfrac{1}{3})`)}
+      第3行からは ${tex(String.raw`l_{31} = \tfrac{2}{3}`)} 倍を引きます。
+      ${eq(String.raw`(-2,\ 1,\ 2) - \tfrac{2}{3}(-3,\ -1,\ 2) = (-2,\ 1,\ 2) - (-2,\ -\tfrac{2}{3},\ \tfrac{4}{3})`)}
+      ${eq(String.raw`= (-2 + 2,\ 1 + \tfrac{2}{3},\ 2 - \tfrac{4}{3}) = (0,\ \tfrac{5}{3},\ \tfrac{2}{3})`)}
+      第1段のあとの行列は、乗数を対角の下の 0 の位置に括弧で書くと
+      ${eq(String.raw`\begin{pmatrix} -3 & -1 & 2 \\ (-\tfrac{2}{3}) & \tfrac{1}{3} & \tfrac{1}{3} \\ (\tfrac{2}{3}) & \tfrac{5}{3} & \tfrac{2}{3} \end{pmatrix}`)}
+      です。`,
+    `第2段では、第2列の対角から下の成分 ${tex(String.raw`\tfrac{1}{3}, \tfrac{5}{3}`)} のうち大きい ${tex(String.raw`\tfrac{5}{3}`)} の行を第2行に上げます。すでに決まった乗数も同じ行と一緒に入れ替わります。
+      ${eq(String.raw`\begin{pmatrix} -3 & -1 & 2 \\ (\tfrac{2}{3}) & \tfrac{5}{3} & \tfrac{2}{3} \\ (-\tfrac{2}{3}) & \tfrac{1}{3} & \tfrac{1}{3} \end{pmatrix}`)}
+      したがって ${tex(String.raw`l_{21} = \tfrac{2}{3}`)}、${tex(String.raw`l_{31} = -\tfrac{2}{3}`)} です。第2段の乗数と引き算は
+      ${eq(String.raw`l_{32} = \frac{1/3}{5/3} = \frac{1}{3}\cdot\frac{3}{5} = \frac{1}{5}`)}
+      ${eq(String.raw`(0,\ \tfrac{1}{3},\ \tfrac{1}{3}) - \tfrac{1}{5}(0,\ \tfrac{5}{3},\ \tfrac{2}{3}) = (0,\ \tfrac{1}{3},\ \tfrac{1}{3}) - (0,\ \tfrac{1}{3},\ \tfrac{2}{15})`)}
+      ${eq(String.raw`= (0,\ \tfrac{1}{3} - \tfrac{1}{3},\ \tfrac{5}{15} - \tfrac{2}{15}) = (0,\ 0,\ \tfrac{3}{15}) = (0,\ 0,\ \tfrac{1}{5})`)}
       です。行は元の第2行、第3行、第1行の順に並んだので、
       ${eq(String.raw`P = \begin{pmatrix} 0 & 1 & 0 \\ 0 & 0 & 1 \\ 1 & 0 & 0 \end{pmatrix}, \quad L = \begin{pmatrix} 1 & 0 & 0 \\ \tfrac{2}{3} & 1 & 0 \\ -\tfrac{2}{3} & \tfrac{1}{5} & 1 \end{pmatrix}, \quad U = \begin{pmatrix} -3 & -1 & 2 \\ 0 & \tfrac{5}{3} & \tfrac{2}{3} \\ 0 & 0 & \tfrac{1}{5} \end{pmatrix}`)}
       です（${coreDoc('linalg', 'lu_decompose', 'LU 分解の説明')}）。どの乗数も絶対値が 1 以下です。`,
@@ -71,9 +80,9 @@ renderLesson({
     `画面のライブラリの値は、${tex(String.raw`l_{21} = \tfrac{2}{3}`)} が 0.666667、${tex(String.raw`u_{22} = \tfrac{5}{3}`)} が 1.66667、${tex(String.raw`u_{33} = \tfrac{1}{5}`)} が 0.2 で、どれも有効数字6桁で手計算の分数と一致する近似値です。${tex('PA - LU')} の成分と残差 ${tex(String.raw`\|A\mathbf{x} - \mathbf{b}\|`)} は ${tex('10^{-15}')} 程度で、厳密には 0 です。`,
   ],
   related: [
-    { href: './elimination.html', title: '連立1次方程式と消去法', description: '同じ行列を、拡大係数行列の行基本変形で消去します。' },
-    { href: './least-squares.html', title: '最小二乗法', description: '正規方程式の係数行列を、三角行列への分解で解きます。' },
-    { href: './heat.html', title: '熱伝導方程式', description: '時間を陰的に進める差分法では、各時刻に連立1次方程式を解きます。' },
+    { href: './elimination.html', title: '連立1次方程式と消去法' },
+    { href: './least-squares.html', title: '最小二乗法' },
+    { href: './heat.html', title: '熱伝導方程式' },
   ],
   footer: 'この画面の計算は、3行3列の行列の部分ピボット選択付き LU 分解です。',
 });

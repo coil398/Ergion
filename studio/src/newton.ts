@@ -63,20 +63,30 @@ app.innerHTML = `
         <div class="panel-heading"><h2 id="example-heading">数を代入した例</h2><span class="quiet-label">${tex('f(x) = x^2 - 2')}</span></div>
         <div class="study-body">
           <ol class="solution">
-            <li>${tex('f(x) = x^2 - 2')} をとります。導関数は ${tex("f'(x) = 2x")} です。出発点は ${tex('x_0 = 1')} です。第1回は
+            <li>${tex('f(x) = x^2 - 2')} をとります。導関数は ${tex("f'(x) = 2x")} です。出発点は ${tex('x_0 = 1')} です。分数の値はすべて厳密です。</li>
+            <li>第1回です。${tex('f(1) = 1^2 - 2 = -1')}、${tex("f'(1) = 2 \\cdot 1 = 2")} です。
               <p class="solution-equation">${tex(String.raw`x_1 = 1 - \frac{1^2 - 2}{2 \cdot 1} = \frac{3}{2}`, true)}</p>
-              第2回は
-              <p class="solution-equation">${tex(String.raw`x_2 = \frac{3}{2} - \frac{\left(\frac{3}{2}\right)^2 - 2}{2 \cdot \frac{3}{2}} = \frac{3}{2} - \frac{1}{12} = \frac{17}{12}`, true)}</p>
-              第3回は
-              <p class="solution-equation">${tex(String.raw`x_3 = \frac{17}{12} - \frac{\left(\frac{17}{12}\right)^2 - 2}{2 \cdot \frac{17}{12}} = \frac{17}{12} - \frac{1}{408} = \frac{577}{408}`, true)}</p>
-              ${tex('f(\\sqrt{2}) = 0')} であり、出発点が正なので、以後の近似も正の側に残ります。列の極限は、正の根 ${tex('\\sqrt{2}')} です。
+              途中は ${tex(String.raw`1 - \frac{-1}{2} = 1 + \frac{1}{2} = \frac{3}{2}`)} です。
             </li>
+            <li>第2回です。${tex(String.raw`f\left(\frac{3}{2}\right) = \frac{9}{4} - \frac{8}{4} = \frac{1}{4}`)}、${tex(String.raw`f'\left(\frac{3}{2}\right) = 2 \cdot \frac{3}{2} = 3`)} なので、商は ${tex(String.raw`\frac{1}{4} \div 3 = \frac{1}{12}`)} です。
+              <p class="solution-equation">${tex(String.raw`x_2 = \frac{3}{2} - \frac{\left(\frac{3}{2}\right)^2 - 2}{2 \cdot \frac{3}{2}} = \frac{3}{2} - \frac{1}{12} = \frac{17}{12}`, true)}</p>
+              最後の引き算は ${tex(String.raw`\frac{18}{12} - \frac{1}{12} = \frac{17}{12}`)} です。
+            </li>
+            <li>第3回です。${tex(String.raw`f\left(\frac{17}{12}\right) = \frac{289}{144} - \frac{288}{144} = \frac{1}{144}`)}、${tex(String.raw`f'\left(\frac{17}{12}\right) = 2 \cdot \frac{17}{12} = \frac{17}{6}`)} なので、商は ${tex(String.raw`\frac{1}{144} \cdot \frac{6}{17} = \frac{6}{2448} = \frac{1}{408}`)} です。
+              <p class="solution-equation">${tex(String.raw`x_3 = \frac{17}{12} - \frac{\left(\frac{17}{12}\right)^2 - 2}{2 \cdot \frac{17}{12}} = \frac{17}{12} - \frac{1}{408} = \frac{577}{408}`, true)}</p>
+              最後の引き算は ${tex(String.raw`\frac{578}{408} - \frac{1}{408} = \frac{577}{408}`)} です。
+            </li>
+            <li>第4回です。${tex(String.raw`f\left(\frac{577}{408}\right) = \frac{332929}{166464} - \frac{332928}{166464} = \frac{1}{166464}`)}、${tex(String.raw`f'\left(\frac{577}{408}\right) = \frac{577}{204}`)} なので、商は ${tex(String.raw`\frac{1}{166464} \cdot \frac{204}{577} = \frac{1}{470832}`)} です。
+              <p class="solution-equation">${tex(String.raw`x_4 = \frac{577}{408} - \frac{1}{470832} = \frac{665858}{470832} - \frac{1}{470832} = \frac{665857}{470832}`, true)}</p>
+              小数では ${tex(String.raw`x_4 \approx 1.41421`)} で、これは近似の値です。画面の反復 ${tex('n = 4')} の数値の近似 ${tex('x_n')} は、同じ近似の表示 1.41421 です。
+            </li>
+            <li>${tex('f(\\sqrt{2}) = 0')} であり、出発点が正なので、以後の近似も正の側に残ります。列の極限は、正の根 ${tex('\\sqrt{2}')} です。画面の √2 の 1.41421 と誤差の 1.59e-12 は、どちらも近似の値です。</li>
           </ol>
         </div>
       </section>
       ${relatedPages([
-        { href: './euler.html', title: 'Euler法', description: '導関数を用いて次の点を近似する点で幾何学的に共通する解法です。' },
-        { href: './ode.html', title: '微分方程式', description: '導関数とその性質を扱う基礎理論です。' },
+        { href: './euler.html', title: 'Euler法' },
+        { href: './ode.html', title: '微分方程式' },
       ])}
       ${pageFooter('ニュートン法は、接線の零点で f(x) = 0 の近似を更新します。')}
     </main>

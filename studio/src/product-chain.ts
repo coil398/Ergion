@@ -16,8 +16,10 @@ renderLesson({
   steps: [
     `記号を定めます。${tex('u')}、${tex('v')} は点 ${tex('x')} で微分可能な関数です。合成関数では、${tex('g')} は ${tex('x')} で微分可能、${tex('f')} は点 ${tex('g(x)')} で微分可能とします。${tex(`u'`)} などは導関数、${tex(String.raw`h \neq 0`)} は刻みです。`,
     `積の差分商を二つに分けます。${tex('u(x)v(x + h)')} を引いて加えると
-      ${eq(String.raw`u(x + h)v(x + h) - u(x)v(x) = \bigl(u(x + h) - u(x)\bigr)v(x + h) + u(x)\bigl(v(x + h) - v(x)\bigr)`)}
-      です。両辺を ${tex('h')} で割ります。
+      ${eq(String.raw`u(x + h)v(x + h) - u(x)v(x) = u(x + h)v(x + h) - u(x)v(x + h) + u(x)v(x + h) - u(x)v(x)`)}
+      です。前の2項から ${tex('v(x + h)')}、後の2項から ${tex('u(x)')} をくくり出します。
+      ${eq(String.raw`= \bigl(u(x + h) - u(x)\bigr)v(x + h) + u(x)\bigl(v(x + h) - v(x)\bigr)`)}
+      両辺を ${tex('h')} で割ります。
       ${eq(String.raw`\frac{u(x + h)v(x + h) - u(x)v(x)}{h} = \frac{u(x + h) - u(x)}{h}\,v(x + h) + u(x)\,\frac{v(x + h) - v(x)}{h}`)}
       ${tex(String.raw`h \to 0`)} で、第1の差分商は ${tex(`u'(x)`)} に、${tex('v(x + h)')} は ${tex('v')} の連続性により ${tex('v(x)')} に、第2の差分商は ${tex(`v'(x)`)} に近づきます。
       ${eq(String.raw`(uv)'(x) = u'(x)\,v(x) + u(x)\,v'(x)`)}
@@ -51,27 +53,28 @@ renderLesson({
           <div><span>${tex(String.raw`(e^{x^2})'`)} の ${tex('x = 1')} の値 ${tex('2e')}（厳密な式）</span><output id="chain-exact">—</output></div>
           <div><span>中心差分 h = 0.1（近似値）</span><output id="chain-central">—</output></div>
         </div>
-        <h3>点 ${tex('x = 1')} の中心差分と公式の値の差</h3>
+        <h3>点 ${tex('x = 1')} の中心差分と公式の値の差（近似値）</h3>
         <div id="difference-table"></div>
         <p id="error" role="alert" hidden></p>
       </section>`,
   exampleHeading: '数を代入した例',
   example: [
     `${tex('x = 1')} とします。${tex(String.raw`\sin 1 = 0.841471\ldots`)}、${tex(String.raw`\cos 1 = 0.540302\ldots`)}（近似値）です。積の微分の公式に代入すると
-      ${eq(String.raw`2 \cdot 1 \cdot \sin 1 + 1^2 \cdot \cos 1 = 1.682942\ldots + 0.540302\ldots = 2.223244\ldots`)}
-      です。第1項と第2項の値は、図の灰色の2本の曲線の ${tex('x = 1')} における高さです。`,
+      ${eq(String.raw`2 \cdot 1 \cdot \sin 1 + 1^2 \cdot \cos 1 = 2\sin 1 + \cos 1`)}
+      ${eq(String.raw`2\sin 1 + \cos 1 = 1.682942\ldots + 0.540302\ldots = 2.223244\ldots`)}
+      です。${tex(String.raw`2\sin 1 + \cos 1`)} は厳密な値、小数は近似値です。第1項と第2項の値は、図の灰色の2本の曲線の ${tex('x = 1')} における高さです。`,
     `合成関数の微分の公式に代入すると、厳密に
-      ${eq(String.raw`2 \cdot 1 \cdot e^{1^2} = 2e = 5.436563\ldots`)}
-      です。`,
-    `中心差分を ${tex('h = 0.1')} で手計算します。${tex(String.raw`e^{1.1^2} = e^{1.21} = 3.353485\ldots`)}、${tex(String.raw`e^{0.9^2} = e^{0.81} = 2.247908\ldots`)} なので
+      ${eq(String.raw`2 \cdot 1 \cdot e^{1^2} = 2e`)}
+      です。その近似値は ${tex(String.raw`2e = 5.436563\ldots`)} です。`,
+    `中心差分を ${tex('h = 0.1')} で手計算します。${tex(String.raw`e^{1.1^2} = e^{1.21} = 3.353485\ldots`)}、${tex(String.raw`e^{0.9^2} = e^{0.81} = 2.247908\ldots`)}（どちらも近似値）なので
       ${eq(String.raw`\frac{e^{1.21} - e^{0.81}}{2 \cdot 0.1} = \frac{1.105576\ldots}{0.2} = 5.527883\ldots`)}
-      で、厳密な値 ${tex('2e')} との差は ${tex('0.0913\\ldots')} です。表では ${tex('h')} を ${tex(String.raw`\frac{1}{10}`)} にするごとに、差がほぼ ${tex(String.raw`\frac{1}{100}`)} になります。`,
+      で、厳密な値 ${tex('2e')} との差は近似値で ${tex('0.0913\\ldots')} です。表では ${tex('h')} を ${tex(String.raw`\frac{1}{10}`)} にするごとに、差がほぼ ${tex(String.raw`\frac{1}{100}`)} になります。`,
   ],
   related: [
-    { href: './derivative-definition.html', title: '微分の定義', description: '二つの公式の出発点である差分商の極限です。' },
-    { href: './integration-techniques.html', title: '置換積分と部分積分', description: '合成関数の微分から置換積分を、積の微分から部分積分を導きます。' },
-    { href: './taylor.html', title: 'Taylor 展開', description: '高い階数の導関数を使って関数を多項式で近似します。' },
-    { href: './numerical-differentiation.html', title: '数値微分', description: '中心差分の誤差が刻みの2乗に比例することを示します。' },
+    { href: './derivative-definition.html', title: '微分の定義' },
+    { href: './integration-techniques.html', title: '置換積分と部分積分' },
+    { href: './taylor.html', title: 'Taylor 展開' },
+    { href: './numerical-differentiation.html', title: '数値微分' },
   ],
   footer: 'この画面の計算は、x² sin x と e の x² 乗の導関数の公式の値と中心差分です。',
   proof: writtenProof([

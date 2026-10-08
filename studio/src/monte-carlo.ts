@@ -75,9 +75,9 @@ renderLesson({
     `標準誤差を 0.025901 の半分にするには、${tex('N')} を4倍の 16080 にします。小数第3位まで ${tex(String.raw`\pi`)} を求めるため標準誤差を ${tex('0.0005')} にするには ${tex(String.raw`N \approx 2.696766/0.0005^2 \approx 1.08 \times 10^{7}`)} 個の点が要ります。`,
   ],
   related: [
-    { href: './limit-theorems.html', title: '大数の法則と中心極限定理', description: '標本平均が期待値に近づく理由と、推定値のばらつきが正規分布に近づく理由です。' },
-    { href: './mc-pricing.html', title: 'Monte Carlo 価格評価', description: '同じ方法で、満期の価格の標本からオプションの価格を推定します。' },
-    { href: './observables.html', title: '温度・圧力・動径分布関数', description: '分子の配置の標本平均として、巨視的な量を求めます。' },
+    { href: './limit-theorems.html', title: '大数の法則と中心極限定理' },
+    { href: './mc-pricing.html', title: 'Monte Carlo 価格評価' },
+    { href: './observables.html', title: '温度・圧力・動径分布関数' },
   ],
   footer: 'この画面の計算は、単位正方形の擬似乱数の点による円周率の推定です。',
   proof: writtenProof([{

@@ -83,9 +83,9 @@ renderLesson({
     `直線を少しずらして ${tex('c_0 = 1')}、${tex('c_1 = 1')} にすると、残差は ${tex('(0, 0, -1, 0, 0)')} で2乗和は ${tex('1')} になり、${tex('0.8')} より大きくなります。正規方程式の解では ${tex(String.raw`\mathbf{d} = (0.2, 0)^T`)} のずれに対して ${tex(String.raw`\|A\mathbf{d}\|^2 = 5 \cdot 0.04 = 0.2`)} だけ増え、${tex(String.raw`0.8 + 0.2 = 1`)} です。これは証明の式 ${tex(String.raw`\|\mathbf{b} - A(\hat{\mathbf{x}} + \mathbf{d})\|^2 = \|\hat{\mathbf{r}}\|^2 + \|A\mathbf{d}\|^2`)} の一例です。`,
   ],
   related: [
-    { href: './regression.html', title: '線形回帰', description: '観測値の誤差を確率変数とみなし、最小二乗の係数の分布を調べます。' },
-    { href: './lu.html', title: 'LU 分解', description: '正方の連立1次方程式を、三角行列への分解で解きます。' },
-    { href: './elimination.html', title: '連立1次方程式と消去法', description: '正規方程式のような正方の連立方程式を、行基本変形で解きます。' },
+    { href: './regression.html', title: '線形回帰' },
+    { href: './lu.html', title: 'LU 分解' },
+    { href: './elimination.html', title: '連立1次方程式と消去法' },
   ],
   footer: 'この画面の計算は、5個の観測点への直線の最小二乗の当てはめです。',
   proof: writtenProof([{
@@ -99,7 +99,7 @@ renderLesson({
         です。等号は ${tex(String.raw`A\mathbf{d} = \mathbf{0}`)} のときだけで、列が1次独立なのでそれは ${tex(String.raw`\mathbf{d} = \mathbf{0}`)} のときだけです。したがって ${tex(String.raw`\hat{\mathbf{x}}`)} はただ一つの最小点です。`,
       `逆に ${tex(String.raw`\hat{\mathbf{x}}`)} が最小点だとします。${tex(String.raw`\mathbf{g} = A^T\hat{\mathbf{r}}`)}、${tex(String.raw`\mathbf{d} = s\mathbf{g}`)}（${tex('s')} は実数）と置くと、第1の式は
         ${eq(String.raw`\varphi(s) = \|\hat{\mathbf{r}}\|^2 - 2s\|\mathbf{g}\|^2 + s^2\|A\mathbf{g}\|^2`)}
-        で、${tex(String.raw`\varphi`)} はすべての ${tex('s')} で ${tex(String.raw`\varphi(s) \ge \varphi(0)`)} を満たします。微分できる関数が内点 ${tex('s = 0')} で最小なので ${tex(String.raw`\varphi'(0) = -2\|\mathbf{g}\|^2 = 0`)}、つまり ${tex(String.raw`A^T\hat{\mathbf{r}} = \mathbf{0}`)} で、これは ${tex(String.raw`A^T A\hat{\mathbf{x}} = A^T\mathbf{b}`)} です。`,
+        で、${tex(String.raw`\varphi`)} はすべての ${tex('s')} で ${tex(String.raw`\varphi(s) \ge \varphi(0)`)} を満たします。微分できる関数が内点 ${tex('s = 0')} で最小なので ${tex(String.raw`\varphi'(0) = -2\|\mathbf{g}\|^2 = 0`)} です。したがって ${tex(String.raw`\|\mathbf{g}\|^2 = 0`)} です。${tex(String.raw`\|\mathbf{g}\|^2 = \mathbf{g}\cdot\mathbf{g}`)} で、この内積が 0 になるのは ${tex(String.raw`\mathbf{g} = \mathbf{0}`)} のときだけなので ${tex(String.raw`\mathbf{g} = \mathbf{0}`)} です。${tex(String.raw`\mathbf{g} = A^T\hat{\mathbf{r}}`)} と置いたので ${tex(String.raw`A^T\hat{\mathbf{r}} = \mathbf{0}`)} で、これは ${tex(String.raw`A^T A\hat{\mathbf{x}} = A^T\mathbf{b}`)} です。`,
       `最後に、${tex(String.raw`A^T A`)} は正則です。${tex(String.raw`A^T A\mathbf{y} = \mathbf{0}`)} ならば ${tex(String.raw`\mathbf{y}^T A^T A\mathbf{y} = \|A\mathbf{y}\|^2 = 0`)} なので ${tex(String.raw`A\mathbf{y} = \mathbf{0}`)}、列が1次独立なので ${tex(String.raw`\mathbf{y} = \mathbf{0}`)} です。よって正規方程式の解は ${tex(String.raw`\hat{\mathbf{x}} = (A^T A)^{-1}A^T\mathbf{b}`)} として存在し、ただ一つです。`,
     ],
   }]),

@@ -39,22 +39,29 @@ renderLesson({
       ${eq(String.raw`r^2 e^{rt} + \omega^2 e^{rt} = 0`)}
       ${tex('e^{rt} \\neq 0')} で割ると、特性方程式は
       ${eq(String.raw`r^2 + \omega^2 = 0`)}
+      ${eq(String.raw`r^2 = -\omega^2`)}
       ${eq(String.raw`r = \pm i\omega`)}
-      です。根が純虚数なので、実数の一般解は任意定数 ${tex('A')}、${tex('B')} を用いて
+      です。${tex('i')} は虚数単位です。二つの根から、任意定数 ${tex('C_1')}、${tex('C_2')} を用いて一般解は
+      ${eq(String.raw`x(t) = C_1 e^{i\omega t} + C_2 e^{-i\omega t}`)}
+      です。Euler の公式 ${tex(String.raw`e^{\pm i\omega t} = \cos\omega t \pm i\sin\omega t`)} を代入し、${tex(String.raw`\cos\omega t`)} と ${tex(String.raw`\sin\omega t`)} の項をまとめます。
+      ${eq(String.raw`x(t) = (C_1 + C_2)\cos\omega t + i(C_1 - C_2)\sin\omega t`)}
+      ${tex('A = C_1 + C_2')}、${tex('B = i(C_1 - C_2)')} と置くと、実数の任意定数 ${tex('A')}、${tex('B')} による実数の一般解は
       ${eq(String.raw`x(t) = A\cos\omega t + B\sin\omega t`)}
       です。`,
     `初期条件から定数を決めます。${tex('t = 0')} で ${tex(String.raw`\cos 0 = 1`)}、${tex(String.raw`\sin 0 = 0`)} なので
       ${eq(String.raw`x(0) = A = x_0`)}
       速度は
       ${eq(String.raw`x'(t) = -A\omega\sin\omega t + B\omega\cos\omega t`)}
-      ${eq(String.raw`x'(0) = B\omega = v_0`)}
+      ${eq(String.raw`x'(0) = -A\omega \cdot 0 + B\omega \cdot 1 = B\omega = v_0`)}
       ${eq(String.raw`B = \frac{v_0}{\omega}`)}
-      です。したがって厳密解は
+      です。${tex('A = x_0')}、${tex(String.raw`B = v_0/\omega`)} を一般解とその導関数に代入すると、厳密解は
       ${eq(String.raw`x(t) = x_0\cos\omega t + \frac{v_0}{\omega}\sin\omega t`)}
       ${eq(String.raw`v(t) = -x_0\omega\sin\omega t + v_0\cos\omega t`)}
       です（${coreDoc('mechanics', 'harmonic_position', '位置の厳密解の説明')}）。周期は ${tex(String.raw`T = 2\pi/\omega`)} です。`,
-    `力学的エネルギーを ${tex(String.raw`E = \frac{1}{2} m v^2 + \frac{1}{2} k x^2`)} と定めます（${coreDoc('mechanics', 'spring_energy', 'エネルギーの説明')}）。厳密解では ${tex('E')} は一定で、位置と速度の組 ${tex('(x, v)')} は楕円
+    `力学的エネルギーを ${tex(String.raw`E = \frac{1}{2} m v^2 + \frac{1}{2} k x^2`)} と定めます（${coreDoc('mechanics', 'spring_energy', 'エネルギーの説明')}）。厳密解では ${tex('E')} は一定です（下の証明）。定義の両辺を ${tex('E > 0')} で割ります。
+      ${eq(String.raw`1 = \frac{m v^2}{2E} + \frac{k x^2}{2E}`)}
       ${eq(String.raw`\frac{x^2}{2E/k} + \frac{v^2}{2E/m} = 1`)}
+      したがって位置と速度の組 ${tex('(x, v)')} は、この楕円
       の上を回ります。数値解では、Euler 法は1周ごとに ${tex('E')} を増やし、楕円の外へ広がります。中点法と古典的RK4 の差は、刻みを小さくすると速く小さくなります。`,
   ],
   figureAlt: '単振動の位置の時間変化と、位置と速度の楕円の位相図。',
@@ -81,19 +88,19 @@ renderLesson({
   example: [
     `${tex('m = 1')}、${tex('k = 4')}、${tex('x_0 = 1')}、${tex('v_0 = 0')} とします。固有角振動数と周期は
       ${eq(String.raw`\omega = \sqrt{4/1} = 2,\qquad T = \frac{2\pi}{2} = \pi`)}
-      で、厳密解は ${tex(String.raw`x(t) = \cos 2t`)}、${tex(String.raw`v(t) = -2\sin 2t`)} です。`,
+      で、どちらも厳密な値です。厳密解は ${tex(String.raw`x(t) = \cos 2t`)}、${tex(String.raw`v(t) = -2\sin 2t`)} です。`,
     `${tex(String.raw`t = \pi/4`)} では ${tex(String.raw`2t = \pi/2`)} なので
       ${eq(String.raw`x(\pi/4) = \cos\frac{\pi}{2} = 0,\qquad v(\pi/4) = -2\sin\frac{\pi}{2} = -2`)}
-      です。質点は原点を負の向きに速さ 2 で通ります。`,
+      で、どちらも厳密な値です。質点は原点を負の向きに速さ 2 で通ります。`,
     `エネルギーは、${tex('t = 0')} と ${tex(String.raw`t = \pi/4`)} で
       ${eq(String.raw`E = \frac{1}{2}\cdot 1\cdot 0^2 + \frac{1}{2}\cdot 4\cdot 1^2 = 2,\qquad E = \frac{1}{2}\cdot 1\cdot(-2)^2 + \frac{1}{2}\cdot 4\cdot 0^2 = 2`)}
       で、どちらも厳密に 2 です。画面の計器の下に、数値解のエネルギーと厳密な値 2 を並べます。`,
   ],
   related: [
-    { href: './second-order.html', title: '定数係数の2階同次', description: '特性方程式の根が複素共役のときの解として、同じ余弦波が出ます。' },
-    { href: './series.html', title: 'べき級数', description: '同じ方程式 x″ + x = 0 を、級数の係数から解きます。' },
-    { href: './rk4.html', title: '古典的RK4', description: 'この方程式を高精度で進める4次の数値解法です。' },
-    { href: './damped.html', title: '減衰振動', description: '速度に比例する抵抗を加えた振動です。' },
+    { href: './second-order.html', title: '定数係数の2階同次' },
+    { href: './series.html', title: 'べき級数' },
+    { href: './rk4.html', title: '古典的RK4' },
+    { href: './damped.html', title: '減衰振動' },
   ],
   footer: 'この画面の計算は、ばねにつながれた一つの質点の単振動です。',
   proof: writtenProof([{

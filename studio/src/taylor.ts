@@ -58,12 +58,12 @@ renderLesson({
         </div>
         <div class="readouts">
           <div><span>Taylor 多項式 ${tex('P_n(1)')}（近似値）</span><output id="polynomial">—</output></div>
-          <div><span>厳密値 ${tex('e')}</span><output id="exact">—</output></div>
-          <div><span>剰余項の上界</span><output id="bound">—</output></div>
-          <div><span>差 ${tex('e - P_n(1)')}</span><output id="difference">—</output></div>
+          <div><span>厳密値 ${tex('e')} の小数（近似値）</span><output id="exact">—</output></div>
+          <div><span>剰余項の上界（近似値）</span><output id="bound">—</output></div>
+          <div><span>差 ${tex('e - P_n(1)')}（近似値）</span><output id="difference">—</output></div>
         </div>
         <div class="table-scroll"><table class="value-table" aria-label="x = 1 における次数ごとの値">
-          <thead><tr><th>次数 ${tex('k')}</th><th>${tex('P_k(1)')}（近似値）</th><th>差 ${tex('e - P_k(1)')}</th><th>上界 ${tex(String.raw`e/(k+1)!`)}</th></tr></thead>
+          <thead><tr><th>次数 ${tex('k')}</th><th>${tex('P_k(1)')}（近似値）</th><th>差 ${tex('e - P_k(1)')}（近似値）</th><th>上界 ${tex(String.raw`e/(k+1)!`)}（近似値）</th></tr></thead>
           <tbody id="taylor-table"></tbody>
         </table></div>
       </section>`,
@@ -77,12 +77,12 @@ renderLesson({
       です（近似値）。`,
     `Lagrange 形では ${tex(String.raw`R_4(1) = \frac{e^{\xi}}{4!} = \frac{e^{\xi}}{24}`)}、${tex(String.raw`0 < \xi < 1`)} です。${tex(String.raw`1 < e^{\xi} < e`)} より
       ${eq(String.raw`\frac{1}{24} < R_4(1) < \frac{e}{24},\qquad 0.041667 < R_4(1) < 0.113262`)}
-      で、差 ${tex('0.051615')} はこの範囲に入ります。画面の ${tex('n = 3')} のタブの計器は、ライブラリが返した ${tex('P_3(1)')}、${tex('e')}、上界、差を示します。`,
+      で（小数は近似値）、差 ${tex('0.051615')} はこの範囲に入ります。上界の式で ${tex('x = 1')}、${tex('n = 3')} とすると ${tex(String.raw`\frac{e^{1} \cdot 1^4}{4!} = \frac{e}{24} \approx 0.113262`)} です。画面の ${tex('n = 3')} のタブの計器は、ライブラリが返した ${tex('P_3(1)')}、${tex('e')}、上界、差を示します。`,
   ],
   related: [
-    { href: './series.html', title: 'べき級数', description: '微分方程式の解を、同じ形の無限級数として係数から求めます。' },
-    { href: './mean-value.html', title: '平均値の定理', description: '剰余項の式は、n = 0 のとき平均値の定理そのものです。' },
-    { href: './numerical-differentiation.html', title: '数値微分', description: 'Taylor 展開から、差分の誤差の大きさを求めます。' },
+    { href: './series.html', title: 'べき級数' },
+    { href: './mean-value.html', title: '平均値の定理' },
+    { href: './numerical-differentiation.html', title: '数値微分' },
   ],
   footer: 'この画面の計算は、指数関数 e^x の Taylor 多項式と剰余項の上界です。',
   proof: writtenProof([{

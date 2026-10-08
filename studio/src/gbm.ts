@@ -42,7 +42,9 @@ renderLesson({
       を得ます。通常の微分と違い、2次の項が ${tex('dt')} の大きさで残ります。`,
     `${tex(String.raw`f(S) = \ln S`)} とします。${tex(String.raw`f'(S) = 1/S`)}、${tex(String.raw`f''(S) = -1/S^2`)} なので
       ${eq(String.raw`d(\ln S_t) = \frac{1}{S_t}\left(\mu S_t\,dt + \sigma S_t\,dW_t\right) - \frac{1}{2}\cdot\frac{1}{S_t^2}\,\sigma^2 S_t^2\,dt`)}
-      ${eq(String.raw`d(\ln S_t) = \left(\mu - \tfrac{1}{2}\sigma^2\right)dt + \sigma\,dW_t`)}
+      各項を約分します。
+      ${eq(String.raw`\frac{1}{S_t}\cdot\mu S_t = \mu, \qquad \frac{1}{S_t}\cdot\sigma S_t = \sigma, \qquad -\frac{1}{2}\cdot\frac{1}{S_t^2}\cdot\sigma^2 S_t^2 = -\frac{1}{2}\sigma^2`)}
+      ${eq(String.raw`d(\ln S_t) = \mu\,dt + \sigma\,dW_t - \tfrac{1}{2}\sigma^2\,dt = \left(\mu - \tfrac{1}{2}\sigma^2\right)dt + \sigma\,dW_t`)}
       です。右辺の係数は定数なので、${tex('0')} から ${tex('t')} まで積分できます。
       ${eq(String.raw`\ln S_t - \ln S_0 = \left(\mu - \tfrac{1}{2}\sigma^2\right)t + \sigma\,(W_t - W_0)`)}
       ${eq(String.raw`S_t = S_0 \exp\left(\left(\mu - \tfrac{1}{2}\sigma^2\right)t + \sigma W_t\right)`)}
@@ -90,11 +92,11 @@ renderLesson({
     `既定の条件（${tex('M = 1000')}、100 ステップ、種 1）で ${tex('t = 1')} まで進めると、期待値は ${tex(String.raw`100\,e^{0.08} \approx 108.328707`)} です。全経路の標本平均の標準偏差は ${tex(String.raw`108.33\sqrt{e^{0.09} - 1}/\sqrt{1000} \approx 1.05`)} なので、標本平均（種 1 の擬似乱数による近似）は、この程度の幅で期待値からずれます。対数価格の分散は厳密には ${tex(String.raw`\sigma^2 t = 0.09`)} で、計器の下に標本の分散（近似）を並べます。`,
   ],
   related: [
-    { href: './euler.html', title: 'Euler法', description: '確率項のない場合の Euler–Maruyama 法は、常微分方程式の Euler 法です。' },
-    { href: './monte-carlo.html', title: 'Monte Carlo 法', description: '多数の擬似乱数の経路の平均で期待値を近似する方法です。' },
-    { href: './limit-theorems.html', title: '大数の法則と中心極限定理', description: '経路の数を増やすと標本平均が期待値に近づく理由です。' },
-    { href: './black-scholes.html', title: 'Black–Scholes 方程式', description: 'この株価のモデルのもとで、オプションの価格が満たす偏微分方程式です。' },
-    { href: './compound.html', title: '連続複利と指数成長', description: `揺らぎのない場合 ${tex(String.raw`\sigma = 0`)} の解 ${tex(String.raw`S_0 e^{\mu t}`)} です。` },
+    { href: './euler.html', title: 'Euler法' },
+    { href: './monte-carlo.html', title: 'Monte Carlo 法' },
+    { href: './limit-theorems.html', title: '大数の法則と中心極限定理' },
+    { href: './black-scholes.html', title: 'Black–Scholes 方程式' },
+    { href: './compound.html', title: '連続複利と指数成長' },
   ],
   footer: 'この画面の計算は、幾何 Brownian 運動に従う多数の株価の擬似乱数の経路です。',
   proof: writtenProof([{

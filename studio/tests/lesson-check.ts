@@ -1,6 +1,6 @@
 import { expect, type Page } from '@playwright/test';
 
-export const banned = ['正本', 'source of truth', '計算核', '実験台', '乖離', '集約', 'f64', '.lean', 'crates/', 'Lean のファイル'];
+export const banned = ['正本', 'source of truth', '計算核', '実験台', '乖離', '集約', 'f64', '.lean', 'crates/', 'Lean のファイル', 'つながり', '確認済', '換算単位', '公開の前', '式を満たす関数', '配色', '明るい', '暗い', '端末', '暗くする', '明るくする', '誤差は実線', '計算時間を延ばす'];
 
 export interface LessonPage {
   href: string;
@@ -54,6 +54,11 @@ export async function checkLessonPage(page: Page, item: LessonPage) {
     expect(order.hasProof, item.href).toBe(Boolean(item.proof));
     expect(order.fits, `${item.href} ${width}`).toBe(true);
     for (const word of banned) expect(order.text, `${item.href} ${word}`).not.toContain(word);
+    await expect(page.locator('main .quiet-label')).toHaveCount(0);
+    await expect(page.locator('#related .panel-heading')).toHaveText('関連ページ');
+    for (const item of await page.locator('#related li').all()) {
+      expect((await item.innerText()).trim()).toBe((await item.locator('a').innerText()).trim());
+    }
     await page.locator('.page-figure').scrollIntoViewIfNeeded();
     await expect.poll(async () => (await visibleFigure(page)).every(image => image.loaded) && (await visibleFigure(page)).length === 1, item.href).toBe(true);
     const light = (await visibleFigure(page))[0].src;

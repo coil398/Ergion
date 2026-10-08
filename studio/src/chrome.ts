@@ -214,12 +214,11 @@ export function pageFooter(note: string): string {
 export interface RelatedLink {
   href: string;
   title: string;
-  description: string;
 }
 
 export function relatedPages(links: RelatedLink[]): string {
   const items = links
-    .map(link => `<li><a class="doc-link" href="${link.href}">${link.title}</a>: ${link.description}</li>`)
+    .map(link => `<li><a class="doc-link" href="${link.href}">${link.title}</a></li>`)
     .join('');
   return `
       <section class="study panel" id="related" aria-labelledby="related-heading">

@@ -34,10 +34,16 @@ renderLesson({
       分子を展開すると ${tex('(n + 1)(2n + 1) = 2n^2 + 3n + 1')} なので
       ${eq(String.raw`S_n^{\mathrm{R}} = \frac{2n^2 + 3n + 1}{6n^2} = \frac{1}{3} + \frac{1}{2n} + \frac{1}{6n^2}`)}
       です。${tex(String.raw`n \to \infty`)} で ${tex(String.raw`S_n^{\mathrm{R}} \to \frac{1}{3}`)} です（${coreDoc('calculus', 'square_riemann_sum_exact', '和の公式で整理した式の説明')}）。`,
-    `左端の標本点 ${tex(String.raw`x_i^* = \frac{i - 1}{n}`)} では、${tex(String.raw`\sum_{i=1}^{n} (i - 1)^2 = \frac{(n - 1)n(2n - 1)}{6}`)} より
-      ${eq(String.raw`S_n^{\mathrm{L}} = \frac{(n - 1)(2n - 1)}{6n^2} = \frac{2n^2 - 3n + 1}{6n^2} = \frac{1}{3} - \frac{1}{2n} + \frac{1}{6n^2}`)}
-      です。中点 ${tex(String.raw`x_i^* = \frac{2i - 1}{2n}`)} では、${tex(String.raw`\sum_{i=1}^{n} (2i - 1)^2 = \frac{n(4n^2 - 1)}{3}`)} より
-      ${eq(String.raw`S_n^{\mathrm{M}} = \frac{1}{4n^2} \cdot \frac{1}{n} \cdot \frac{n(4n^2 - 1)}{3} = \frac{4n^2 - 1}{12n^2} = \frac{1}{3} - \frac{1}{12n^2}`)}
+    `左端の標本点 ${tex(String.raw`x_i^* = \frac{i - 1}{n}`)} では
+      ${eq(String.raw`S_n^{\mathrm{L}} = \sum_{i=1}^{n} \left(\frac{i - 1}{n}\right)^2 \frac{1}{n} = \frac{1}{n^3} \sum_{i=1}^{n} (i - 1)^2`)}
+      です。${tex(String.raw`\sum_{i=1}^{n} (i - 1)^2 = \sum_{j=0}^{n-1} j^2 = \frac{(n - 1)n(2n - 1)}{6}`)} を代入します。
+      ${eq(String.raw`S_n^{\mathrm{L}} = \frac{1}{n^3} \cdot \frac{(n - 1)n(2n - 1)}{6} = \frac{(n - 1)(2n - 1)}{6n^2}`)}
+      分子を展開すると ${tex('(n - 1)(2n - 1) = 2n^2 - 3n + 1')} なので
+      ${eq(String.raw`S_n^{\mathrm{L}} = \frac{2n^2 - 3n + 1}{6n^2} = \frac{1}{3} - \frac{1}{2n} + \frac{1}{6n^2}`)}
+      です。中点 ${tex(String.raw`x_i^* = \frac{2i - 1}{2n}`)} では
+      ${eq(String.raw`S_n^{\mathrm{M}} = \sum_{i=1}^{n} \left(\frac{2i - 1}{2n}\right)^2 \frac{1}{n} = \frac{1}{4n^2} \cdot \frac{1}{n} \sum_{i=1}^{n} (2i - 1)^2`)}
+      です。${tex(String.raw`\sum_{i=1}^{n} (2i - 1)^2 = \frac{n(4n^2 - 1)}{3}`)} を代入します。
+      ${eq(String.raw`S_n^{\mathrm{M}} = \frac{1}{4n^3} \cdot \frac{n(4n^2 - 1)}{3} = \frac{4n^2 - 1}{12n^2} = \frac{1}{3} - \frac{1}{12n^2}`)}
       です。左端と右端の差は ${tex(String.raw`\frac{1}{2n}`)} 程度で ${tex('n')} に反比例し、中点の差は ${tex(String.raw`\frac{1}{12n^2}`)} で ${tex('n^2')} に反比例します。`,
     `微分積分学の基本定理は二つの主張です。第一に、${tex(String.raw`F(x) = \int_a^x f(t)\,dt`)} は ${tex(`F'(x) = f(x)`)} を満たします。第二に、${tex(`G' = f`)} となる原始関数 ${tex('G')} があれば
       ${eq(String.raw`\int_a^b f(x)\,dx = G(b) - G(a)`)}
@@ -48,7 +54,7 @@ renderLesson({
   figureAlt: '曲線 y = x² の下に並ぶ長方形の和が、分割を細かくするにつれて面積 1/3 へ近づく様子。',
   figure: `
       <section class="plots panel lesson-figure" aria-labelledby="fig-heading">
-        <div class="panel-heading"><h2 id="fig-heading">曲線 ${tex('y = x^2')} の下の長方形と Riemann 和 ${tex('S_n')}</h2><div class="legend"><span><i class="numerical"></i>Riemann 和（計算値）</span><span><i class="analytical"></i>厳密な値 1/3</span></div></div>
+        <div class="panel-heading"><h2 id="fig-heading">曲線 ${tex('y = x^2')} の下の長方形と Riemann 和 ${tex('S_n')}</h2><div class="legend"><span><i class="numerical"></i>Riemann 和（近似値）</span><span><i class="analytical"></i>厳密な値 1/3</span></div></div>
         ${methodTabs('Riemann 和の標本点', [
           { id: 'left', label: '左端 Riemann 和' },
           { id: 'right', label: '右端 Riemann 和' },
@@ -60,9 +66,9 @@ renderLesson({
         </div>
         <div class="readouts">
           <div><span>標本点</span><output id="rule">—</output></div>
-          <div><span>n = ${N} の Riemann 和（計算値）</span><output id="sum">—</output></div>
+          <div><span>n = ${N} の Riemann 和（厳密）</span><output id="sum">—</output></div>
           <div><span>和の公式の値（厳密）</span><output id="closed">—</output></div>
-          <div><span>差 S_n − 1/3</span><output id="sum-error">—</output></div>
+          <div><span>差 S_n − 1/3（近似値）</span><output id="sum-error">—</output></div>
         </div>
         <h3>分割数 ${tex('n')} を2倍ずつ増やしたときの Riemann 和</h3>
         <div id="sum-table"></div>
@@ -78,13 +84,13 @@ renderLesson({
       で、差は ${tex(String.raw`\frac{7}{32} - \frac{1}{3} = -\frac{11}{96} = -0.114583\ldots`)} です。`,
     `中点の標本点は ${tex(String.raw`\frac{1}{8}, \frac{3}{8}, \frac{5}{8}, \frac{7}{8}`)} で
       ${eq(String.raw`S_4^{\mathrm{M}} = \frac{1}{4}\left(\frac{1}{64} + \frac{9}{64} + \frac{25}{64} + \frac{49}{64}\right) = \frac{1}{4} \cdot \frac{84}{64} = \frac{21}{64} = 0.328125`)}
-      で、差は ${tex(String.raw`-\frac{1}{12 \cdot 16} = -\frac{1}{192} = -0.005208\ldots`)} です。三つの値はどれも有限個の分数の和なので、画面の計算値は厳密な分数の値を小数で表したものです。タブで標本点を替えると、計器と表がこの値に替わります。`,
+      で、差は ${tex(String.raw`-\frac{1}{12 \cdot 16} = -\frac{1}{192} = -0.005208\ldots`)} です。${tex(String.raw`\frac{7}{32}`)}、${tex(String.raw`\frac{15}{32}`)}、${tex(String.raw`\frac{21}{64}`)} は分母が 2 の累乗なので、小数 ${tex('0.21875')}、${tex('0.46875')}、${tex('0.328125')} は厳密な値です。差の小数 ${tex(String.raw`0.135416\ldots`)} などは近似値です。タブで標本点を替えると、計器と表がこの値に替わります。`,
   ],
   related: [
-    { href: './integrate.html', title: '積分して解く', description: '右辺が未知関数を含まない微分方程式を、この定理で積分して解きます。' },
-    { href: './numerical-integration.html', title: '数値積分', description: '台形則と Simpson 則で、Riemann 和より速く定積分を近似します。' },
-    { href: './integration-techniques.html', title: '置換積分と部分積分', description: 'この定理と微分の公式から導く積分の計算法です。' },
-    { href: './mean-value.html', title: '平均値の定理', description: '基本定理の第二の主張の証明に使います。' },
+    { href: './integrate.html', title: '積分して解く' },
+    { href: './numerical-integration.html', title: '数値積分' },
+    { href: './integration-techniques.html', title: '置換積分と部分積分' },
+    { href: './mean-value.html', title: '平均値の定理' },
   ],
   footer: 'この画面の計算は、∫₀¹ x² dx の左端、右端、中点の Riemann 和です。',
   proof: writtenProof([
@@ -148,7 +154,7 @@ function paint() {
   });
   drawPlot(document.getElementById('sum-chart') as HTMLCanvasElement, {
     key: 'riemann-sums',
-    label: `分割数 n と${ruleNames[rule]} Riemann 和。実線は計算値、破線は厳密な値 1/3。`,
+    label: `分割数 n と${ruleNames[rule]} Riemann 和。実線は近似値、破線は厳密な値 1/3。`,
     lines: [line(f, 'sums'), line(f, 'exact')],
     xMin: 0,
     xMax: 40,
@@ -167,7 +173,7 @@ async function load() {
     document.getElementById('sum-error')!.textContent = v.error.toFixed(6);
     const a = figure.arrays;
     document.getElementById('sum-table')!.innerHTML = table(
-      [tex('n'), `${tex('S_n')}（計算値）`, '和の公式（厳密）', tex(String.raw`S_n - \frac{1}{3}`)],
+      [tex('n'), `${tex('S_n')}（近似値）`, '和の公式（厳密）', `${tex(String.raw`S_n - \frac{1}{3}`)}（近似値）`],
       a.n.map((n, i) => [String(n), a.sum[i].toFixed(10), a.closed[i].toFixed(10), a.error[i].toExponential(4)]),
     );
     paint();

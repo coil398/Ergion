@@ -28,9 +28,13 @@ renderLesson({
       中心極限定理は、すべての ${tex('a < b')} について
       ${eq(String.raw`\lim_{n \to \infty} P(a \le Z_n \le b) = \int_a^b \varphi(z)\,dz, \qquad \varphi(z) = \frac{1}{\sqrt{2\pi}}e^{-z^2/2}`)}
       が成り立つことを述べます（${coreDoc('statistics', 'standard_normal_density', '標準正規分布の密度の説明')}）。この定理の証明には特性関数を使い、このページでは扱いません。`,
-    `標本の分布には、率 ${tex(String.raw`\lambda = 1`)} の指数分布 ${tex(String.raw`p(x) = e^{-x}`)}（${tex(String.raw`x \ge 0`)}）を使います。左右対称でない分布です。部分積分により
-      ${eq(String.raw`\mu = \int_0^\infty x e^{-x}\,dx = 1, \qquad \mathbb{E}[X^2] = \int_0^\infty x^2 e^{-x}\,dx = 2, \qquad \sigma^2 = 2 - 1^2 = 1`)}
-      です。標本は、一様な擬似乱数 ${tex('U')} を逆関数法 ${tex(String.raw`X = -\ln(1 - U)`)} で変換して作ります（${coreTypeDoc('statistics', 'Rng', '擬似乱数の生成器の説明')}）。擬似乱数は種（seed）から決まる数列で、画面の標本はすべて種 1 から作ったものです。標本から求めた平均、割合、ヒストグラムは、どれも近似です。`,
+    `標本の分布には、率 ${tex(String.raw`\lambda = 1`)} の指数分布 ${tex(String.raw`p(x) = e^{-x}`)}（${tex(String.raw`x \ge 0`)}）を使います。左右対称でない分布です。部分積分により（${tex(String.raw`x \to \infty`)} で ${tex(String.raw`x^m e^{-x} \to 0`)}）
+      ${eq(String.raw`\mu = \int_0^\infty x e^{-x}\,dx = \left[-x e^{-x}\right]_0^\infty + \int_0^\infty e^{-x}\,dx = 0 + 1 = 1`)}
+      ${eq(String.raw`\mathbb{E}[X^2] = \int_0^\infty x^2 e^{-x}\,dx = \left[-x^2 e^{-x}\right]_0^\infty + 2\int_0^\infty x e^{-x}\,dx = 0 + 2 \cdot 1 = 2`)}
+      ${eq(String.raw`\sigma^2 = \mathbb{E}[X^2] - \mu^2 = 2 - 1^2 = 1`)}
+      です。標本は、${tex('[0, 1)')} 上の一様な擬似乱数 ${tex('U')} を逆関数法で変換して作ります。累積分布関数 ${tex(String.raw`F(x) = 1 - e^{-x}`)} について ${tex('U = F(X)')} を ${tex('X')} について解くと
+      ${eq(String.raw`U = 1 - e^{-X}, \qquad e^{-X} = 1 - U, \qquad X = -\ln(1 - U)`)}
+      です（${coreTypeDoc('statistics', 'Rng', '擬似乱数の生成器の説明')}）。擬似乱数は種（seed）から決まる数列で、画面の標本はすべて種 1 から作ったものです。標本から求めた平均、割合、ヒストグラムは、どれも近似です。`,
   ],
   figureAlt: '標本の大きさとともに母平均 1 に近づく標本平均の推移と、標準化した標本平均のヒストグラムに重なる標準正規分布の密度。',
   figure: `
@@ -43,7 +47,7 @@ renderLesson({
       <div class="readouts">
         <div><span>標本平均 x̄₈₀₀（近似）</span><output id="final-mean">—</output></div>
         <div><span>|Z₃₀| ≤ 1 の組の割合（近似）</span><output id="within">—</output></div>
-        <div><span>Chebyshev の上界 σ²/(nε²)</span><output id="chebyshev">—</output></div>
+        <div><span>Chebyshev の上界 σ²/(nε²)（近似）</span><output id="chebyshev">—</output></div>
         <div><span>|x̄₃₀ − μ| ≥ 0.5 の組の割合（近似）</span><output id="deviation">—</output></div>
       </div>
       <p id="z-moments" style="white-space:pre-line">—</p>
@@ -59,9 +63,9 @@ renderLesson({
     `中心極限定理によれば ${tex(String.raw`P(|Z_{30}| \le 1) \approx \int_{-1}^{1}\varphi(z)\,dz \approx 0.682689`)}（Simpson 則の近似）です。画面の ${tex(String.raw`|Z_{30}| \le 1`)} の割合は、この値に近い近似です。`,
   ],
   related: [
-    { href: './sample-stats.html', title: '標本・平均・分散', description: '標本平均と不偏分散の求め方です。' },
-    { href: './monte-carlo.html', title: 'Monte Carlo 法', description: '大数の法則を使って、擬似乱数の標本平均で積分を近似します。' },
-    { href: './observables.html', title: '温度・圧力・動径分布関数', description: '分子動力学の長い時系列の平均で、巨視的な量を推定します。' },
+    { href: './sample-stats.html', title: '標本・平均・分散' },
+    { href: './monte-carlo.html', title: 'Monte Carlo 法' },
+    { href: './observables.html', title: '温度・圧力・動径分布関数' },
   ],
   footer: 'この画面の計算は、率 1 の指数分布の擬似乱数（種 1）の標本平均です。',
   proof: writtenProof([

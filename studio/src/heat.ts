@@ -108,10 +108,10 @@ renderLesson({
       で、ぎざぎざは1ステップごとに符号を変えながら約 1.56 倍になります。初期温度にこのモードは含まれませんが、計算の途中で生じるごく小さな成分が増え、FTCS 法の数値解は発散します。同じ ${tex('r')} でも Crank–Nicolson 法は発散しません。`,
   ],
   related: [
-    { href: './black-scholes.html', title: 'Black–Scholes 方程式', description: '変数変換で、この熱伝導方程式に帰着するオプション価格の方程式です。' },
-    { href: './sturm-liouville.html', title: 'Sturm–Liouville 問題', description: '変数分離で現れる X″ + k²X = 0 の固有値と、固有関数の直交性です。' },
-    { href: './wave.html', title: '波動方程式', description: '同じ境界条件の弦の振動で、モードは減らずに振動します。' },
-    { href: './elimination.html', title: '連立1次方程式と消去法', description: 'Crank–Nicolson 法の三重対角の方程式を解く Gauss 消去です。' },
+    { href: './black-scholes.html', title: 'Black–Scholes 方程式' },
+    { href: './sturm-liouville.html', title: 'Sturm–Liouville 問題' },
+    { href: './wave.html', title: '波動方程式' },
+    { href: './elimination.html', title: '連立1次方程式と消去法' },
   ],
   footer: 'この画面の計算は、両端の温度を 0 に保った1本の棒の熱伝導方程式です。',
 });

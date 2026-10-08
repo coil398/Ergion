@@ -33,15 +33,19 @@ renderLesson({
       両辺を ${tex('m')} で割ります。${tex('m > 0')} なので割ってよく、
       ${eq(String.raw`x'' = \frac{F}{m}`)}
       です。右辺は定数なので、加速度は ${tex(String.raw`a = \frac{F}{m}`)} という定数です（${coreDoc('mechanics', 'constant_force_acceleration', '加速度の説明')}）。`,
-    `${tex(`v' = a`)} を時刻 0 から ${tex('t')} まで積分します。
+    `${tex(`v' = a`)} を時刻 0 から ${tex('t')} まで積分します。${tex(String.raw`\tau`)} は積分の変数で、0 から ${tex('t')} までの時刻を表します。
       ${eq(String.raw`\int_0^t v'(\tau)\,d\tau = \int_0^t \frac{F}{m}\,d\tau`)}
+      左辺は微分積分学の基本定理で端の値の差に、右辺は定数の積分になります。
+      ${eq(String.raw`\Big[v(\tau)\Big]_0^t = \Big[\frac{F}{m}\tau\Big]_0^t`)}
       ${eq(String.raw`v(t) - v(0) = \frac{F}{m} t`)}
       ${tex('v(0) = v_0')} を移項すると、速度の厳密解は
       ${eq(String.raw`v(t) = v_0 + \frac{F}{m} t`)}
       です。`,
     `${tex(`x' = v`)} を時刻 0 から ${tex('t')} まで積分します。
       ${eq(String.raw`\int_0^t x'(\tau)\,d\tau = \int_0^t \left(v_0 + \frac{F}{m}\tau\right) d\tau`)}
-      各項の原始関数を評価します。
+      各項の原始関数を書きます。
+      ${eq(String.raw`\Big[x(\tau)\Big]_0^t = \Big[v_0 \tau + \frac{1}{2}\frac{F}{m}\tau^2\Big]_0^t`)}
+      上端 ${tex('t')} の値から下端 0 の値を引きます。
       ${eq(String.raw`x(t) - x(0) = v_0 t + \frac{1}{2}\frac{F}{m} t^2`)}
       ${tex('x(0) = x_0')} を移項すると、位置の厳密解は
       ${eq(String.raw`x(t) = x_0 + v_0 t + \frac{1}{2}\frac{F}{m} t^2`)}
@@ -60,7 +64,7 @@ renderLesson({
     dt: 0.01,
     steps: 200,
     sceneHeading: '一定の力を受ける質点',
-    sceneCaption: '黒の矢印は一定の力 F の向き、橙の矢印は速度の向きで長さは速さに比例します。青緑の破線の輪は同じ時刻の厳密解の位置です。',
+    sceneCaption: 'F の付いた矢印は一定の力 F の向き、橙の矢印は速度の向きで長さは速さに比例します。青緑の破線の輪は同じ時刻の厳密解の位置です。',
     sceneLabel: '一定の力を受けて直線上を進む質点',
     readouts: { position: '位置 x', velocity: '速度 v', exact: '厳密解の位置', error: '位置の差 x − x_exact' },
     plotsHeading: '位置と誤差の時間変化',
@@ -72,18 +76,18 @@ renderLesson({
   example: [
     `${tex('m = 0.5')}、${tex('F = 2')}、${tex('x_0 = 1')}、${tex('v_0 = 0')} とします。加速度は
       ${eq(String.raw`a = \frac{F}{m} = \frac{2}{0.5} = 4`)}
-      です。`,
+      で、厳密な値です。`,
     `時刻 ${tex('t = 2')} の速度は
       ${eq(String.raw`v(2) = 0 + 4 \cdot 2 = 8`)}
       位置は
       ${eq(String.raw`x(2) = 1 + 0 \cdot 2 + \frac{1}{2} \cdot 4 \cdot 2^2 = 1 + 8 = 9`)}
-      です。どちらも厳密な値です。画面の既定の条件は ${tex(String.raw`\Delta t = 0.01`)} の 200 ステップで、終わりの時刻は ${tex('t = 2')} です。中点法と古典的RK4 の位置は 9 と一致します。`,
-    `Euler 法では、位置の差は 1 ステップあたり ${tex(String.raw`\frac{1}{2} \cdot 4 \cdot 0.01^2 = 0.0002`)} ずつ増え、200 ステップの後は ${tex(String.raw`200 \cdot 0.0002 = 0.04`)} です。数値解は 9 より 0.04 だけ小さい ${tex('8.96')} です。`,
+      です。どちらも厳密な値です。画面の既定の条件は ${tex(String.raw`\Delta t = 0.01`)} の 200 ステップで、終わりの時刻は ${tex('t = 2')} です。中点法と古典的RK4 の位置の近似解は、画面の5桁で厳密な値 9 と一致します。`,
+    `Euler 法では、位置の差は 1 ステップあたり ${tex(String.raw`\frac{1}{2} \cdot 4 \cdot 0.01^2 = 0.0002`)} ずつ増え、200 ステップの後は ${tex(String.raw`200 \cdot 0.0002 = 0.04`)} です。Euler 法の近似解は、厳密な値 9 より 0.04 だけ小さい ${tex('8.96')} です。`,
   ],
   related: [
-    { href: './accelerated.html', title: '等加速度直線運動', description: '加速度 a が一定の運動で、a = F/m と置いた同じ式です。' },
-    { href: './derivative.html', title: '位置の時間微分', description: '速度を位置の時間微分として定めるページです。' },
-    { href: './second-order.html', title: '定数係数の2階同次', description: '右辺が位置にもよる2階の線形方程式です。' },
+    { href: './accelerated.html', title: '等加速度直線運動' },
+    { href: './derivative.html', title: '位置の時間微分' },
+    { href: './second-order.html', title: '定数係数の2階同次' },
   ],
   footer: 'この画面の計算は、一定の力を受ける一つの質点の直線運動です。',
 });

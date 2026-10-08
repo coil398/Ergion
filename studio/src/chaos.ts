@@ -48,8 +48,12 @@ renderLesson({
     `固定点 ${tex(String.raw`\mathbf{X}^*`)} の近くで ${tex(String.raw`\mathbf{X} = \mathbf{X}^* + \boldsymbol{\xi}`)} と置き、${tex(String.raw`\boldsymbol\xi`)} の2次以上の項を捨てると、${tex(String.raw`\boldsymbol\xi' = J\boldsymbol\xi`)} です。${tex('J')} は右辺の Jacobi 行列で
       ${eq(String.raw`J = \begin{pmatrix} -\sigma & \sigma & 0 \\ \rho - z & -1 & -x \\ y & x & -\beta \end{pmatrix}`)}
       です（${coreDoc('differential', 'lorenz_jacobian', 'Jacobi 行列の説明')}）。原点では ${tex('z')} の成分が分かれ、${tex(String.raw`(x, y)`)} の区画の特性方程式は
-      ${eq(String.raw`\det\begin{pmatrix} -\sigma - \mu & \sigma \\ \rho & -1 - \mu \end{pmatrix} = (\sigma + \mu)(1 + \mu) - \sigma\rho = 0`)}
-      ${eq(String.raw`\mu^2 + (\sigma + 1)\mu + \sigma(1 - \rho) = 0`)}
+      ${eq(String.raw`\det\begin{pmatrix} -\sigma - \mu & \sigma \\ \rho & -1 - \mu \end{pmatrix} = (-\sigma - \mu)(-1 - \mu) - \sigma\cdot\rho`)}
+      ${eq(String.raw`= (\sigma + \mu)(1 + \mu) - \sigma\rho`)}
+      括弧を外します。
+      ${eq(String.raw`= \sigma\cdot 1 + \sigma\mu + \mu\cdot 1 + \mu^2 - \sigma\rho`)}
+      同類項をまとめます。
+      ${eq(String.raw`= \mu^2 + (\sigma + 1)\mu + \sigma - \sigma\rho = \mu^2 + (\sigma + 1)\mu + \sigma(1 - \rho) = 0`)}
       です。根と残りの固有値は
       ${eq(String.raw`\mu_\pm = \frac{-(\sigma + 1) \pm \sqrt{(\sigma + 1)^2 + 4\sigma(\rho - 1)}}{2},\qquad \mu_3 = -\beta`)}
       です（${coreDoc('differential', 'lorenz_origin_eigenvalues', '原点の固有値の説明')}）。${tex(String.raw`\rho > 1`)} では ${tex(String.raw`\mu_+ > 0`)} なので、原点から少しずれた解は離れていきます。`,
@@ -102,9 +106,9 @@ renderLesson({
     `発散は ${tex(String.raw`-\sigma - 1 - \beta = -10 - 1 - \frac{8}{3} = -\frac{41}{3}`)} で、相空間の体積は単位時間あたり ${tex(String.raw`e^{-41/3} \approx 1.2\times 10^{-6}`)} 倍に縮みます。`,
   ],
   related: [
-    { href: './system.html', title: '連立1階', description: '線形の連立方程式 x′ = Ax を固有値で解きます。固定点のまわりの線形化と同じ形です。' },
-    { href: './rk4.html', title: '古典的RK4', description: 'このページの軌道を進める4次の数値解法です。' },
-    { href: './bernoulli.html', title: 'ベルヌーイ', description: '変数変換で線形に直せる、1変数の非線形方程式です。' },
+    { href: './system.html', title: '連立1階' },
+    { href: './rk4.html', title: '古典的RK4' },
+    { href: './bernoulli.html', title: 'ベルヌーイ' },
   ],
   footer: 'この画面の計算は、Lorenz 方程式の2本の軌道の数値解です。',
 });

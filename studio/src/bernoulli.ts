@@ -40,7 +40,9 @@ app.innerHTML = `
               <p class="solution-equation">${tex(String.raw`-\frac{u'}{u^{2}} - \frac{1}{u} = -\frac{1}{u^{2}}`, true)}</p>
               両辺に ${tex('-u^{2}')} を掛けます。
               <p class="solution-equation">${tex(String.raw`\left(-\frac{u'}{u^{2}}\right)(-u^{2}) - \left(\frac{1}{u}\right)(-u^{2}) = \left(-\frac{1}{u^{2}}\right)(-u^{2})`, true)}</p>
-              各項を整理すると
+              各項の積を計算します。
+              <p class="solution-equation">${tex(String.raw`\frac{u' u^{2}}{u^{2}} + \frac{u^{2}}{u} = \frac{u^{2}}{u^{2}}`, true)}</p>
+              約分すると
               <p class="solution-equation">${tex(String.raw`u' + u = 1`, true)}</p>
               です。${tex('u \\neq 0')} は ${tex('x')} が有限であることから従います。
             </li>
@@ -86,20 +88,27 @@ app.innerHTML = `
               です。厳密解は次の式です。
               <p class="solution-equation">${tex(String.raw`x(t) = \frac{1}{1 + e^{-t}}`, true)}</p>
             </li>
-            <li>手で確かめます。${tex('t = 0')} では ${tex('e^{0} = 1')} なので ${tex('x(0) = 1/2')} です。初期位置と一致します。微分すると、
+            <li>手で確かめます。${tex('t = 0')} では ${tex('e^{0} = 1')} なので ${tex('x(0) = 1/2')} です。初期位置と一致します。${tex('x = (1 + e^{-t})^{-1}')} と見て、合成関数の微分をします。
+              <p class="solution-equation">${tex(String.raw`x'(t) = -(1 + e^{-t})^{-2} \cdot \frac{d}{dt}\bigl(1 + e^{-t}\bigr) = -(1 + e^{-t})^{-2} \cdot (-e^{-t})`, true)}</p>
               <p class="solution-equation">${tex(String.raw`x'(t) = \frac{e^{-t}}{(1 + e^{-t})^{2}}`, true)}</p>
-              右辺 ${tex('x - x^{2}')} は
+              右辺 ${tex('x - x^{2} = x(1 - x)')} を計算します。まず
+              <p class="solution-equation">${tex(String.raw`1 - x = \frac{1 + e^{-t}}{1 + e^{-t}} - \frac{1}{1 + e^{-t}} = \frac{e^{-t}}{1 + e^{-t}}`, true)}</p>
+              です。したがって
               <p class="solution-equation">${tex(String.raw`x(1 - x) = \frac{1}{1 + e^{-t}} \cdot \frac{e^{-t}}{1 + e^{-t}} = \frac{e^{-t}}{(1 + e^{-t})^{2}}`, true)}</p>
               左辺と右辺は同じ式です。この一致は式のままの一致です。したがって ${tex('x(t) = 1/(1 + e^{-t})')} はこの例の厳密解です。
+            </li>
+            <li>図の下の欄と比べます。時刻 ${tex('t = 1')} では
+              <p class="solution-equation">${tex(String.raw`x(1) = \frac{1}{1 + e^{-1}}`, true)}</p>
+              です。これは厳密な値です。欄の「厳密解」に出る 0.73106 は、ライブラリが返したこの値を小数5桁で表した近似の値です。「数値解」と「位置の誤差」は、選んだ数値解法で時間を刻んで得た近似の値です。
             </li>
           </ol>
         </div>
       </section>
       ${relatedPages([
-        { href: './linear.html', title: '1階線形', description: '置換 u = x^{1-n} によって帰着する線形方程式の解法です。' },
-        { href: './separation.html', title: '変数分離', description: 'n が 0 または 1 に退化するときの方程式の解法です。' },
-        { href: './euler.html', title: 'Euler法', description: 'ロジスティック方程式を1ステップずつ進める数値解法です。' },
-        { href: './rk4.html', title: '古典的RK4', description: '非線形方程式を高い精度で追跡する4次の数値解法です。' },
+        { href: './linear.html', title: '1階線形' },
+        { href: './separation.html', title: '変数分離' },
+        { href: './euler.html', title: 'Euler法' },
+        { href: './rk4.html', title: '古典的RK4' },
       ])}
       ${pageFooter('ベルヌーイ方程式は、u = x^{1-n} と置くと1階線形になり、その解は厳密です。')}
       ${checkedProofs([{ statement: `${tex('n')} が 0 でも 1 でもないとき、${tex(String.raw`u = x^{1-n}`)} と置くと ${tex(String.raw`x' + px = q x^{n}`)} は1階線形になります。`, source: bernoulliProof, moduleName: 'Ergion.Bernoulli', kind: '実数' }])}

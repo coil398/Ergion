@@ -44,7 +44,8 @@ app.innerHTML = `
               <p class="solution-equation">${tex(String.raw`s^{2}X - 3sX + 2X = \frac{1}{s - 3}`, true)}</p>
               ${tex('X(s)')} をくくります。
               <p class="solution-equation">${tex(String.raw`(s^{2} - 3s + 2)X = \frac{1}{s - 3}`, true)}</p>
-              左辺の2次式を因数分解します。
+              左辺の2次式を因数分解します。積を展開すると元の2次式に戻ります。
+              <p class="solution-equation">${tex(String.raw`(s - 1)(s - 2) = s^{2} - 2s - s + 2 = s^{2} - 3s + 2`, true)}</p>
               <p class="solution-equation">${tex(String.raw`(s - 1)(s - 2)X = \frac{1}{s - 3}`, true)}</p>
               ${tex('s \\neq 1')}、${tex('s \\neq 2')}、${tex('s \\neq 3')} として両辺を割ります。
               <p class="solution-equation">${tex(String.raw`X(s) = \frac{1}{(s - 1)(s - 2)(s - 3)}`, true)}</p>
@@ -93,10 +94,10 @@ app.innerHTML = `
         </div>
       </section>
       ${relatedPages([
-        { href: './undetermined.html', title: '未定係数法', description: '同じ初期値問題を時間領域で特殊解を求めて解く方法です。' },
-        { href: './second-order.html', title: '定数係数の2階同次', description: 's の代数方程式の根に対応する同次方程式の特性根です。' },
-        { href: './euler.html', title: 'Euler法', description: '初期値問題を時間ステップで追跡する基本の数値解法です。' },
-        { href: './rk4.html', title: '古典的RK4', description: '4次のRunge–Kutta法による高精度な数値解法です。' },
+        { href: './undetermined.html', title: '未定係数法' },
+        { href: './second-order.html', title: '定数係数の2階同次' },
+        { href: './euler.html', title: 'Euler法' },
+        { href: './rk4.html', title: '古典的RK4' },
       ])}
       ${pageFooter('Laplace 変換は、初期値問題を s の代数に変え、逆変換で厳密解へ戻します。')}
       ${checkedProofs([{ statement: `初期値問題 ${tex(String.raw`x'' - 3x' + 2x = e^{3t}`)}、${tex('x(0) = 0')}、${tex("x'(0) = 0")} の解は、逆 Laplace 変換で時刻の関数に戻したものです。`, source: laplaceProof, moduleName: 'Ergion.Laplace', kind: '実数' }])}

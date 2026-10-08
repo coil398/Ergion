@@ -1160,6 +1160,9 @@ test('既存のページは、その図を明るい配色と暗い配色で示�
     if (await page.locator('#related').count()) {
       await expect(page.locator('#related .panel-heading')).toHaveText('関連ページ');
       await expect(page.locator('#related .quiet-label')).toHaveCount(0);
+      for (const item of await page.locator('#related li').all()) {
+        expect((await item.innerText()).trim(), href).toBe((await item.locator('a').innerText()).trim());
+      }
     }
     await page.locator('.page-figure').scrollIntoViewIfNeeded();
     await expect.poll(async () => JSON.stringify(await shown()), href).toBe(JSON.stringify([{ src: `http://127.0.0.1:${process.env.STUDIO_PORT ?? 4187}/Ergion/figures/${id}/figure.png`, ok: true }]));

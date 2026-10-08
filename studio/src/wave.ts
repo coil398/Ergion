@@ -101,9 +101,9 @@ renderLesson({
     `既定の条件（${tex('C = 0.8')}、250 ステップ、終わりの時刻 ${tex('t = 8')}）で再生すると、計器の厳密解は 1.00000、数値解は約 0.979（近似）です。三角形の角が格子の上で少し丸まるためです。時間刻みを ${tex(String.raw`\Delta t = 0.04`)}、ステップ数を 200 にすると ${tex('C = 1')} で、数値解は 1.00000 となり厳密解と一致します。${tex(String.raw`\Delta t = 0.044`)}（${tex('C = 1.1')}）にすると、数値解は発散します。`,
   ],
   related: [
-    { href: './heat.html', title: '熱伝導方程式', description: '同じ境界条件と固有関数で、モードが振動せずに減る方程式です。' },
-    { href: './sturm-liouville.html', title: 'Sturm–Liouville 問題', description: '固有振動 sin(nπx/L) は、この固有値問題の固有関数です。' },
-    { href: './maxwell.html', title: 'Maxwell 方程式と電磁波', description: '真空中の電場と磁場は、光速 c の波動方程式に従います。' },
+    { href: './heat.html', title: '熱伝導方程式' },
+    { href: './sturm-liouville.html', title: 'Sturm–Liouville 問題' },
+    { href: './maxwell.html', title: 'Maxwell 方程式と電磁波' },
   ],
   footer: 'この画面の計算は、両端を固定した1本の弦の波動方程式です。',
 });

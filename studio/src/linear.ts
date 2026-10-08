@@ -104,15 +104,19 @@ app.innerHTML = `
               <p class="solution-equation">${tex(String.raw`= 6`, true)}</p>
               右辺 ${tex('q = 6')} と一致します。この一致は近似ではなく、式のままの一致です。したがって ${tex('x(t) = 3 - 2 e^{-2t}')} はこの例の厳密解です。
             </li>
+            <li>図の下の欄と比べます。時刻 ${tex('t = 1')} では
+              <p class="solution-equation">${tex(String.raw`x(1) = 3 - 2 e^{-2 \cdot 1} = 3 - 2 e^{-2}`, true)}</p>
+              です。これは厳密な値です。欄の「厳密解」に出る 2.72933 は、ライブラリが返したこの値を小数5桁で表した近似の値です。「数値解」と「位置の誤差」は、選んだ数値解法で時間を刻んで得た近似の値です。
+            </li>
           </ol>
         </div>
       </section>
       ${relatedPages([
-        { href: './separation.html', title: '変数分離', description: '同次部分の方程式を解く基礎的な手法です。' },
-        { href: './bernoulli.html', title: 'ベルヌーイ', description: 'べきの非線形項をもつ方程式を1階線形に帰着させて解きます。' },
-        { href: './integrate.html', title: '積分して解く', description: '積分因子を掛けた後に現れる全微分の積分です。' },
-        { href: './euler.html', title: 'Euler法', description: '1階線形方程式を1ステップずつ進める基本の数値解法です。' },
-        { href: './rk4.html', title: '古典的RK4', description: '4次のRunge–Kutta法による高精度な数値解法です。' },
+        { href: './separation.html', title: '変数分離' },
+        { href: './bernoulli.html', title: 'ベルヌーイ' },
+        { href: './integrate.html', title: '積分して解く' },
+        { href: './euler.html', title: 'Euler法' },
+        { href: './rk4.html', title: '古典的RK4' },
       ])}
       ${pageFooter('積分因子で得る x(t) = q/p + (x_0 - q/p) e^{-pt} は、x\' + px = q の厳密解です。')}
       ${checkedProofs([{ statement: `${tex(String.raw`x' + px = q`)} で ${tex('p')} が 0 でないとき、厳密解は ${tex(String.raw`x(t) = \frac{q}{p} + \left(x_0 - \frac{q}{p}\right) e^{-pt}`)} です。`, source: linearProof, moduleName: 'Ergion.FirstOrderLinear', kind: '実数' }])}

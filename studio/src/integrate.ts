@@ -26,7 +26,7 @@ app.innerHTML = `
         <div class="panel-heading"><h2 id="study-heading">積分の手順</h2></div>
         <div class="study-body">
           <ol class="solution">
-            <li>速度 ${tex('v')} が一定のとき、位置は ${tex(String.raw`x' = v`)} を満たします。時刻 0 から ${tex('t')} まで両辺を積分します。
+            <li>速度 ${tex('v')} が一定のとき、位置は ${tex(String.raw`x' = v`)} を満たします。時刻 0 から ${tex('t')} まで両辺を積分します。${tex(String.raw`\tau`)} は積分の変数で、0 から ${tex('t')} までの時刻を表します。
               <p class="solution-equation">${tex(String.raw`\int_0^{t} x'(\tau)\,d\tau = \int_0^{t} v\,d\tau`, true)}</p>
               左辺は原始関数に上限と下限を代入した差です。
               <p class="solution-equation">${tex(String.raw`[x(\tau)]_0^{t} = x(t) - x(0)`, true)}</p>
@@ -62,12 +62,28 @@ app.innerHTML = `
         </div>
       </section>
       ${pageFigure('integrate', '右辺が未知関数を含まないとき、解は右辺を時刻で積分した値だけ増える。')}
+      <section class="study panel" id="example" aria-labelledby="example-heading">
+        <div class="panel-heading"><h2 id="example-heading">数を代入した例</h2></div>
+        <div class="study-body">
+          <ol class="solution">
+            <li>速度が一定の式に ${tex('x_0 = 1')}、${tex('v = 2')}、${tex('t = 3')} を代入します。
+              <p class="solution-equation">${tex(String.raw`x(3) = 1 + 2 \cdot 3 = 7`, true)}</p>
+              この ${tex('7')} は厳密な値です。
+            </li>
+            <li>加速度が一定の式に ${tex('x_0 = 1')}、${tex('v_0 = 1')}、${tex('a = 4')}、${tex('t = 2')} を代入します。
+              <p class="solution-equation">${tex(String.raw`v(2) = 1 + 4 \cdot 2 = 9`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`x(2) = 1 + 1 \cdot 2 + \frac{1}{2}\cdot 4 \cdot 2^{2} = 1 + 2 + 8 = 11`, true)}</p>
+              ${tex('9')} と ${tex('11')} はどちらも厳密な値です。
+            </li>
+          </ol>
+        </div>
+      </section>
       ${relatedPages([
-        { href: './fundamental-theorem.html', title: '定積分と微分積分学の基本定理', description: '原始関数の差で定積分が求まる理由を示すページです。' },
-        { href: './uniform.html', title: '等速直線運動', description: '速度が一定の方程式 x\' = v を積分して位置を求める例です。' },
-        { href: './accelerated.html', title: '等加速度直線運動', description: '加速度 a を二度積分して速度と位置を求める例です。' },
-        { href: './separation.html', title: '変数分離', description: '右辺が未知関数を含む場合に割ってから積分する解法です。' },
-        { href: './euler.html', title: 'Euler法', description: '積分を時間刻みの積で逐次近似する数値解法です。' },
+        { href: './fundamental-theorem.html', title: '定積分と微分積分学の基本定理' },
+        { href: './uniform.html', title: '等速直線運動' },
+        { href: './accelerated.html', title: '等加速度直線運動' },
+        { href: './separation.html', title: '変数分離' },
+        { href: './euler.html', title: 'Euler法' },
       ])}
       ${pageFooter('右辺が未知関数によらないとき、積分で得る位置と速度は厳密解です。')}
       ${checkedProofs([
