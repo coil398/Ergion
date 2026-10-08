@@ -1,4 +1,5 @@
 import './style.css';
+import { pageFigure } from './page-figure';
 import { appHeader, coreStepDoc, pageFooter, rail, relatedPages } from './chrome';
 import bernoulliProof from '../../formal/lean/Ergion/Bernoulli.lean?raw';
 import { checkedProofs } from './proof';
@@ -74,6 +75,7 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
+      ${pageFigure('bernoulli', 'ベルヌーイの例 x′ = x − x² は、x(0) = 1/2 から飽和値 x = 1 へシグモイドで近づく。')}
       ${steppedFigure()}
       <section class="study panel" id="example" aria-labelledby="example-heading">
         <div class="study-body">

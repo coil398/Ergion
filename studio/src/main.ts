@@ -1,4 +1,5 @@
 import './style.css';
+import { pageFigure } from './page-figure';
 import { appHeader, pageFooter, rail, relatedPages, simulationDoc } from './chrome';
 import { checkedVelocityProof } from './proof';
 import { clearFigure, drawErrorSeries, drawTimeSeries, drawUniformMotion } from './figures';
@@ -56,6 +57,7 @@ app.innerHTML = `
           <p>画面は、各時刻の位置と速度を描きます。式 ${tex('x(t) = x_0 + v t')} を、描画のために計算し直すことはありません。図の線分は、初期位置 ${tex('x_0')} に加わる変位 ${tex('vt')} です。青の実線が数値解、青緑の破線が厳密解です。誤差は、その破線とは別の実線です。</p>
         </div>
       </section>
+      ${pageFigure('uniform', '等速直線運動では、初期位置 x₀ から現在位置まで変位 vt が伸びる。')}
       <div class="experiment-grid">
         <section class="settings panel" aria-labelledby="conditions-heading">
           <div class="panel-heading"><h2 id="conditions-heading">計算条件</h2><span class="quiet-label">換算単位</span></div>

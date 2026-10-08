@@ -1,4 +1,5 @@
 import './style.css';
+import { pageFigure } from './page-figure';
 import { appHeader, coreStepDoc, pageFooter, rail, relatedPages } from './chrome';
 import seriesProof from '../../formal/lean/Ergion/PowerSeries.lean?raw';
 import { checkedProofs } from './proof';
@@ -67,6 +68,7 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
+      ${pageFigure('series', 'x″ + x = 0、x(0) = 1、x′(0) = 0 のべき級数の部分和は、原点の近くで厳密解 cos t に沿い、次数を上げるほど遠くまで沿う。')}
       ${steppedFigure()}
       <section class="study panel" id="example" aria-labelledby="example-heading">
         <div class="study-body">

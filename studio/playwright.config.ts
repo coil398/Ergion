@@ -1,11 +1,14 @@
 import { defineConfig } from '@playwright/test';
 
+const port = Number(process.env.STUDIO_PORT ?? 4187);
+const outDir = process.env.STUDIO_DIST ?? 'dist';
+
 export default defineConfig({
   testDir: './tests',
   timeout: 30000,
   fullyParallel: false,
   use: {
-    baseURL: 'http://127.0.0.1:4187/Ergion/',
+    baseURL: `http://127.0.0.1:${port}/Ergion/`,
     headless: true,
     colorScheme: 'light',
     launchOptions: {
@@ -13,8 +16,8 @@ export default defineConfig({
     },
   },
   webServer: {
-    command: 'npm run preview -- --port 4187 --strictPort',
-    wait: { stdout: /Local:\s+http:\/\/127\.0\.0\.1:4187\/Ergion\// },
+    command: `npm run preview -- --port ${port} --strictPort --outDir ${outDir}`,
+    wait: { stdout: new RegExp(`Local:\\s+http://127\\.0\\.0\\.1:${port}/Ergion/`) },
     timeout: 30_000,
   },
 });

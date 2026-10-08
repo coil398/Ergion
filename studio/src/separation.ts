@@ -1,4 +1,5 @@
 import './style.css';
+import { pageFigure } from './page-figure';
 import { appHeader, coreStepDoc, pageFooter, rail, relatedPages } from './chrome';
 import separationProof from '../../formal/lean/Ergion/Separation.lean?raw';
 import { checkedProofs } from './proof';
@@ -65,6 +66,7 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
+      ${pageFigure('separation', 'x′ = 2x の方向場と、初期値 x(0) = 3 から出る指数解 x = 3e^(2t)。')}
       ${steppedFigure()}
       <section class="study panel" id="example" aria-labelledby="example-heading">
         <div class="study-body">

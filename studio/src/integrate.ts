@@ -1,4 +1,5 @@
 import './style.css';
+import { pageFigure } from './page-figure';
 import { appHeader, pageFooter, rail, relatedPages } from './chrome';
 import constantVelocityProof from '../../formal/lean/Ergion/ConstantVelocity.lean?raw';
 import constantAccelerationProof from '../../formal/lean/Ergion/ConstantAcceleration.lean?raw';
@@ -61,6 +62,7 @@ app.innerHTML = `
           <p>これらの式は、右辺を積分して得た厳密解です。数値の1ステップは、<a class="doc-link" href="./derivative.html">位置の時間微分</a>で見ます。</p>
         </div>
       </section>
+      ${pageFigure('integrate', '右辺が未知関数を含まないとき、解は右辺を時刻で積分した値だけ増える。')}
       ${relatedPages([
         { href: './uniform.html', title: '等速直線運動', description: '速度が一定の方程式 x\' = v を積分して位置を求める例です。' },
         { href: './accelerated.html', title: '等加速度直線運動', description: '加速度 a を二度積分して速度と位置を求める例です。' },

@@ -1,4 +1,5 @@
 import './style.css';
+import { pageFigure } from './page-figure';
 import { codeDisclosure, mountCodeDisclosure } from './code-panel';
 import { appHeader, coreStepDoc, pageFooter, rail, relatedPages } from './chrome';
 import { drawErrorSeries, drawTimeSeries } from './figures';
@@ -43,6 +44,7 @@ app.innerHTML = `
           <p>図の点は、同じ更新を繰り返して返された値です。はじめの数回は、数を代入した例の分数と一致します。横軸は反復の番号 ${tex('n')} であり、時刻ではありません。青の実線が数値の近似 ${tex('x_n')}、青緑の破線が ${tex('\\sqrt{2}')}、誤差の実線が ${tex('x_n - \\sqrt{2}')} です。${tex('\\sqrt{2}')} も誤差も、返された値を描いています。</p>
         </div>
       </section>
+      ${pageFigure('newton', 'f(x) = x² − 2 について、x₀ = 1 の接線が x 軸と交わる点が次の近似 x₁ = 3/2 であり、そこから曲線へ垂直に戻る。')}
       <section class="plots panel" aria-labelledby="curve-heading">
         <div class="panel-heading"><h2 id="curve-heading">近似と √2 との差</h2><div class="legend"><span><i class="numerical"></i>数値の近似</span><span><i class="analytical"></i>√2</span><span><i class="difference"></i>誤差</span></div></div>
         <p class="scene-caption">横軸は反復の番号 ${tex('n')} です。関数は ${tex('f(x) = x^2 - 2')}、出発点は ${tex('x_0 = 1')} です。</p>

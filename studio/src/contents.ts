@@ -1,4 +1,5 @@
 import './style.css';
+import { pageFigure } from './page-figure';
 import { appHeader, pageFooter, rail, relatedPages } from './chrome';
 import constantVelocityProof from '../../formal/lean/Ergion/ConstantVelocity.lean?raw';
 import constantAccelerationProof from '../../formal/lean/Ergion/ConstantAcceleration.lean?raw';
@@ -18,6 +19,7 @@ app.innerHTML = `
           <p class="description">力学では、直線上の一つの粒子を扱います。位置の時間微分と、それを使う二つの運動を置いてあります。方程式を解く手順は<a href="./ode.html">微分方程式</a>の節、数値の進め方は数値計算の節に置いてあります。</p>
         </div>
       </section>
+      ${pageFigure('mechanics', '力学は、直線上の一つの粒子について、位置の時間微分と、等速・等加速度の二つの運動を置く。')}
       <div class="chapter-list">
         <a class="chapter" href="./derivative.html">
           <h2>位置の時間微分</h2>

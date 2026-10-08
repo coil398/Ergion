@@ -1,4 +1,5 @@
 import './style.css';
+import { pageFigure } from './page-figure';
 import { appHeader, coreStepDoc, pageFooter, rail, relatedPages } from './chrome';
 import secondOrderProof from '../../formal/lean/Ergion/SecondOrder.lean?raw';
 import { checkedProofs } from './proof';
@@ -51,6 +52,7 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
+      ${pageFigure('second-order', '定数係数の2階同次は、特性根が相異なる実数、重根、複素数のどれかで、三つの形の厳密解を持つ。')}
       ${steppedFigure()}
       <section class="study panel" id="example" aria-labelledby="real-heading">
         <div class="study-body">

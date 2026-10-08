@@ -1,4 +1,5 @@
 import './style.css';
+import { pageFigure } from './page-figure';
 import { appHeader, coreStepDoc, pageFooter, rail, relatedPages } from './chrome';
 import exactProof from '../../formal/lean/Ergion/Exact.lean?raw';
 import { checkedProofs } from './proof';
@@ -58,6 +59,7 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
+      ${pageFigure('exact', '完全微分 (2x+y)dx + (x+2y)dy = 0 の解は、ポテンシャル x² + xy + y² = C の等高線である。')}
       ${steppedFigure()}
       <section class="study panel" id="example" aria-labelledby="example-heading">
         <div class="study-body">

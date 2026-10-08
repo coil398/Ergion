@@ -1,4 +1,5 @@
 import './style.css';
+import { pageFigure } from './page-figure';
 import { appHeader, coreStepDoc, pageFooter, rail, relatedPages } from './chrome';
 import systemProof from '../../formal/lean/Ergion/LinearSystem.lean?raw';
 import { checkedProofs } from './proof';
@@ -90,6 +91,7 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
+      ${pageFigure('system', 'x′ = x + y、y′ = 4x + y は原点が鞍点で、固有直線 y = 2x と y = −2x を境に、解曲線が離れていく。')}
       ${steppedFigure(true)}
       <section class="study panel" id="example" aria-labelledby="example-heading">
         <div class="study-body">

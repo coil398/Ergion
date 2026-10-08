@@ -1,6 +1,7 @@
 import init, {
   ConstantAccelerationSimulation,
   EulerSimulation,
+  LessonSimulation,
   LinearSimulation,
   PositionDerivativeSimulation,
   SeparationSimulation,
@@ -73,7 +74,9 @@ onmessage = (event: MessageEvent<Command>) => {
         dt: number;
         steps: number;
       };
-      simulation = message.model === 'compare'
+      simulation = message.model === 'lesson'
+        ? new LessonSimulation(JSON.stringify(message.method ? { ...message.config, method: message.method } : message.config))
+        : message.model === 'compare'
         ? new StepCompareSimulation(JSON.stringify({ ...message.config, method: message.method ?? 'euler' }))
         : message.model === 'constant-acceleration' && message.method
           ? new StepCompareSimulation(JSON.stringify({

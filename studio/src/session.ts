@@ -1,4 +1,4 @@
-import type { MotionModel, Reply, Snapshot, StepMethod } from './protocol';
+import type { MotionModel, Reply, Snapshot } from './protocol';
 import { onThemeChange } from './theme';
 
 export interface TimedConfig {
@@ -30,7 +30,9 @@ export function mountSession<C extends TimedConfig>(options: {
   fillForm: (value: C) => void;
   paintFigures: (state: Snapshot | undefined, samples: Snapshot[], config: C) => void;
   /** 数値解法のページだけが渡す。タブは方法だけを切り替える。 */
-  method?: () => StepMethod;
+  method?: () => string;
+  /** 計器の下の一行。渡さないときは位置と速度の差を書く。 */
+  comparison?: (state: Snapshot) => string;
 }) {
   const form = document.querySelector<HTMLFormElement>('#config-form')!;
   const playButton = document.querySelector<HTMLButtonElement>('#play')!;
@@ -55,7 +57,7 @@ export function mountSession<C extends TimedConfig>(options: {
   let sampleStride = 1;
   let playAfterLoad = false;
 
-  function post(command: { id: number; command: 'load'; model: MotionModel; method?: StepMethod; config: C } | { id: number; command: 'start' | 'pause' | 'step' } | { id: number; command: 'extend'; steps: number }) {
+  function post(command: { id: number; command: 'load'; model: MotionModel; method?: string; config: C } | { id: number; command: 'start' | 'pause' | 'step' } | { id: number; command: 'extend'; steps: number }) {
     worker.postMessage(command);
   }
   function setText(selector: string, value: string) { document.querySelector(selector)!.textContent = value; }
@@ -105,7 +107,7 @@ export function mountSession<C extends TimedConfig>(options: {
     const velocityError = state ? Math.abs(state.velocity - state.exact_velocity) : undefined;
     setText('#energy-error', positionError === undefined ? '—' : positionError.toExponential(2));
     setText('#comparison', state
-      ? `解析解との位置の差  ${positionError!.toExponential(2)}    速度の差  ${velocityError!.toExponential(2)}`
+      ? options.comparison?.(state) ?? `解析解との位置の差  ${positionError!.toExponential(2)}    速度の差  ${velocityError!.toExponential(2)}`
       : '解析解との差を計算します。');
   }
   function load(value: C) {
@@ -214,7 +216,11 @@ export function mountSession<C extends TimedConfig>(options: {
       if (!value || typeof value !== 'object' || Array.isArray(value) || Object.keys(value).length !== keys.length || keys.some(key => !(key in value))) {
         throw new Error('設定の項目が一致しません。保存したJSON設定を選んでください。');
       }
-      if (value.schema_version !== 1 || keys.some(key => typeof value[key] !== 'number' || !Number.isFinite(value[key] as number))) {
+      const defaults = options.defaults as unknown as Record<string, unknown>;
+      const mismatch = (key: string) => typeof defaults[key] === 'string'
+        ? value[key] !== defaults[key]
+        : typeof value[key] !== 'number' || !Number.isFinite(value[key] as number);
+      if (value.schema_version !== 1 || keys.some(mismatch)) {
         throw new Error('設定の形式または数値が正しくありません。');
       }
       const next = value as unknown as C;

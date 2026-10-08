@@ -1,5 +1,5 @@
 import './style.css';
-import type { PageId } from './chrome';
+import { pageFigure } from './page-figure';
 import { appHeader, coreStepDoc, pageFooter, rail, relatedPages, type RelatedLink } from './chrome';
 import { clearFigure, drawConstantAcceleration, drawErrorSeries, drawTimeSeries, drawUniformMotion } from './figures';
 import type { Snapshot, StepMethod } from './protocol';
@@ -87,9 +87,11 @@ function getRelatedLinksForMethod(method: StepMethod): RelatedLink[] {
 
 /** 一つの数値解法だけを説明するページ。例は、速度が一定の x' = v です。 */
 export function mountMethodPage(options: {
-  page: Extract<PageId, 'euler' | 'midpoint' | 'rk4'>;
+  page: 'euler' | 'midpoint' | 'rk4';
   method: StepMethod;
   title: string;
+  /** ページの図の画像の代替テキスト。 */
+  figureAlt: string;
   fn: 'euler_step' | 'midpoint_step' | 'rk4_step';
   formula: string;
   prose: string;
@@ -145,6 +147,7 @@ export function mountMethodPage(options: {
             <p>画面は、各時刻に返された数値解の位置と、誤差 ${tex('x - x_{\\mathrm{exact}}')} を描きます。厳密解の式を、描画のために計算し直すことはありません。青の実線が数値解、青緑の破線が厳密解です。誤差は、その破線とは別の実線です。</p>
           </div>
         </section>
+        ${pageFigure(options.page, options.figureAlt)}
         <div class="experiment-grid">
           <section class="settings panel" aria-labelledby="conditions-heading">
             <div class="panel-heading"><h2 id="conditions-heading">計算条件</h2><span class="quiet-label">換算単位</span></div>

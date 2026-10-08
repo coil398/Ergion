@@ -1,4 +1,5 @@
 import './style.css';
+import { pageFigure } from './page-figure';
 import { appHeader, pageFooter, rail, relatedPages, simulationDoc } from './chrome';
 import accelerationProof from '../../formal/lean/Ergion/ConstantAcceleration.lean?raw';
 import { checkedProofs } from './proof';
@@ -65,6 +66,7 @@ app.innerHTML = `
           <p>画面は、各時刻の位置と速度を描きます。式 ${tex(String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`)} や ${tex('v(t) = v_0 + a t')} を、描画のために計算し直すことはありません。青の実線が数値解、青緑の破線が厳密解です。誤差は、その破線とは別の実線です。</p>
         </div>
       </section>
+      ${pageFigure('accelerated', '等加速度直線運動では、粒子が進むにつれて速度の矢が長くなる。')}
       <div class="experiment-grid">
         <section class="settings panel" aria-labelledby="conditions-heading">
           <div class="panel-heading"><h2 id="conditions-heading">計算条件</h2><span class="quiet-label">換算単位</span></div>

@@ -1,4 +1,5 @@
 import './style.css';
+import { pageFigure } from './page-figure';
 import { appHeader, coreStepDoc, pageFooter, rail, relatedPages } from './chrome';
 import homogeneousProof from '../../formal/lean/Ergion/Homogeneous.lean?raw';
 import { checkedProofs } from './proof';
@@ -57,6 +58,7 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
+      ${pageFigure('homogeneous', 'x′ = 1 + x/t の傾きは原点から出る半直線の上で一定で、例の解 x = t ln t は t = 0 を通らない。')}
       ${steppedFigure()}
       <section class="study panel" id="example" aria-labelledby="example-heading">
         <div class="study-body">

@@ -1,4 +1,5 @@
 import './style.css';
+import { pageFigure } from './page-figure';
 import { appHeader, coreStepDoc, pageFooter, rail, relatedPages } from './chrome';
 import variationProof from '../../formal/lean/Ergion/Variation.lean?raw';
 import { checkedProofs } from './proof';
@@ -76,6 +77,7 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
+      ${pageFigure('variation', 'x″ + x = tan t の解は開区間 (−π/2, π/2) の中にあり、境界へ近づくと傾きが限りなく大きくなる。')}
       ${steppedFigure()}
       <section class="study panel" id="example" aria-labelledby="example-heading">
         <div class="study-body">

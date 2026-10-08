@@ -1,5 +1,15 @@
 //! Domain-independent, double-precision time integration.
 
+pub mod analytical;
+pub mod calculus;
+pub mod differential;
+pub mod electromagnetism;
+pub mod finance;
+pub mod linalg;
+pub mod mechanics;
+pub mod molecular;
+pub mod statistics;
+
 /// 微分方程式 \(x' = f(x, t)\) を、古典的な4次の Runge–Kutta 法で1ステップ進める。
 ///
 /// \(x\) は未知関数、\(t\) は独立変数、\(f(x, t)\) は右辺です。

@@ -1,4 +1,5 @@
 import './style.css';
+import { pageFigure } from './page-figure';
 import { appHeader, pageFooter, rail } from './chrome';
 import { moduleHref } from './proof';
 import { tex } from './tex';
@@ -131,6 +132,7 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
+      ${pageFigure('proof', '証明の一覧が先頭に置く等式は有理数の帰納で、解であることは各時刻の差分商の極限が右辺と一致することである。')}
       ${pageFooter('証明の検査は公開前の lake build であり、この画面は Lean を実行しません。')}
     </main>
   </div>`;

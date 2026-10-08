@@ -5,6 +5,7 @@
 
 import { axisDomain, drawNumberLine, drawOrigin, mapLinear } from './axes';
 import { canvasContext, figurePalette } from './canvas';
+import { drawLabel } from './labels';
 import { drawExactOutline, drawParticle } from './particle';
 import { drawJoint, drawSegment, drawWitness } from './segment';
 
@@ -140,6 +141,8 @@ export interface ConstantAccelerationFrame {
   velocity: number;
   timeEnd: number;
   samples: MotionSample[];
+  /** 一定の外力 F。渡すと、質点を押す向きに矢印を描く。長さは向きだけを示す。 */
+  force?: number;
 }
 
 /**
@@ -233,6 +236,27 @@ export function drawConstantAcceleration(canvas: HTMLCanvasElement, frame: Const
     y: axisY,
     cue: sign !== 0 && arrowLength >= 12 ? { direction: frame.velocity, y: cueY, length: arrowLength } : undefined,
   });
+  if (frame.force !== undefined && frame.force !== 0) {
+    const push = Math.sign(frame.force);
+    const tip = positionX - push * 18;
+    const tail = tip - push * 34;
+    context.save();
+    context.strokeStyle = palette.text;
+    context.fillStyle = palette.text;
+    context.lineWidth = 2;
+    context.beginPath();
+    context.moveTo(tail, axisY);
+    context.lineTo(tip - push * 6, axisY);
+    context.stroke();
+    context.beginPath();
+    context.moveTo(tip, axisY);
+    context.lineTo(tip - push * 8, axisY - 4);
+    context.lineTo(tip - push * 8, axisY + 4);
+    context.closePath();
+    context.fill();
+    context.restore();
+    drawLabel(context, 'F', (tip + tail) / 2, axisY - 14, 'math');
+  }
 
   canvas.setAttribute(
     'aria-label',

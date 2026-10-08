@@ -1,6 +1,7 @@
 import { mountMethodPage } from './method-page';
 
 mountMethodPage({
+  figureAlt: '速度が一定のとき、中点法の始点の傾きと中点の傾きはどちらも v で、1ステップは厳密解と同じ一つの直線である。二つの解は一致し、打ち切り誤差は 0。',
   page: 'midpoint',
   method: 'midpoint',
   title: '中点法',

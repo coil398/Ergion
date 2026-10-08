@@ -18,6 +18,7 @@ export interface FigurePalette {
   exact: string;
   vector: string;
   difference: string;
+  tint: string;
 }
 
 const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -39,6 +40,7 @@ export function figurePalette(): FigurePalette {
     exact: token('--color-analytical'),
     vector: token('--color-vector'),
     difference: token('--color-difference'),
+    tint: token('--color-primary-tint'),
   };
   cached = { key, palette };
   return palette;

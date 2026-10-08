@@ -9,41 +9,29 @@ function tex(page: Page, source: string) {
   return page.locator(`xpath=//*[contains(@class,"tex") and @data-tex="${source}"]`);
 }
 
+/** 目次の節とページ。学習の順。 */
+const expectedRail: [string, string[]][] = [
+  ['力学', ['位置の時間微分', '等速直線運動', '等加速度直線運動']],
+  ['微分方程式', ['積分して解く', '変数分離', '1階線形', '同次形', '完全微分', 'ベルヌーイ', '定数係数の2階同次', '未定係数法', '定数変化法', 'Laplace 変換', 'べき級数', '連立1階']],
+  ['数値計算', ['一定速度の増分', 'Euler法', '中点法', '古典的RK4', 'ニュートン法']],
+  ['証明', ['証明の一覧']],
+];
+
 async function expectMechanicsSection(page: Page) {
   const sections = page.locator('.rail-section');
-  await expect(sections).toHaveCount(4);
-  const mechanicsTitle = sections.nth(0).locator('.rail-section-title');
-  await expect(mechanicsTitle).toHaveText('力学');
-  const motion = sections.nth(0).locator('.rail-pages a');
-  await expect(motion).toHaveCount(3);
-  await expect(motion.nth(0)).toHaveText('位置の時間微分');
-  await expect(motion.nth(1)).toHaveText('等速直線運動');
-  await expect(motion.nth(2)).toHaveText('等加速度直線運動');
-  const odeTitle = sections.nth(1).locator('.rail-section-title');
-  await expect(odeTitle).toHaveText('微分方程式');
-  const odePages = sections.nth(1).locator('.rail-pages a');
-  const odeLabels = ['積分して解く', '変数分離', '1階線形', '同次形', '完全微分', 'ベルヌーイ', '定数係数の2階同次', '未定係数法', '定数変化法', 'Laplace 変換', 'べき級数', '連立1階'];
-  await expect(odePages).toHaveCount(odeLabels.length);
-  for (let index = 0; index < odeLabels.length; index += 1) {
-    await expect(odePages.nth(index)).toHaveText(odeLabels[index]);
+  await expect(sections).toHaveCount(expectedRail.length);
+  for (let index = 0; index < expectedRail.length; index += 1) {
+    const [label, pages] = expectedRail[index];
+    const title = sections.nth(index).locator('.rail-section-title');
+    await expect(title).toHaveText(label);
+    const links = sections.nth(index).locator('.rail-pages a');
+    await expect(links).toHaveCount(pages.length);
+    for (let item = 0; item < pages.length; item += 1) await expect(links.nth(item)).toHaveText(pages[item]);
   }
-  const numericalTitle = sections.nth(2).locator('.rail-section-title');
-  await expect(numericalTitle).toHaveText('数値計算');
-  const numericalPages = sections.nth(2).locator('.rail-pages a');
-  const numericalLabels = ['一定速度の増分', 'Euler法', '中点法', '古典的RK4', 'ニュートン法'];
-  await expect(numericalPages).toHaveCount(numericalLabels.length);
-  for (let index = 0; index < numericalLabels.length; index += 1) {
-    await expect(numericalPages.nth(index)).toHaveText(numericalLabels[index]);
-  }
-  const proofTitle = sections.nth(3).locator('.rail-section-title');
-  await expect(proofTitle).toHaveText('証明');
-  const proofPages = sections.nth(3).locator('.rail-pages a');
-  await expect(proofPages).toHaveCount(1);
-  await expect(proofPages.nth(0)).toHaveText('証明の一覧');
   const titles = page.locator('button.rail-section-title');
-  await expect(titles).toHaveCount(4);
+  await expect(titles).toHaveCount(expectedRail.length);
   await expect(page.locator('.rail-section-title[aria-expanded="true"]')).toHaveCount(1);
-  await expect(page.locator('.rail-section-title[aria-expanded="false"]')).toHaveCount(3);
+  await expect(page.locator('.rail-section-title[aria-expanded="false"]')).toHaveCount(expectedRail.length - 1);
   const nested = await page.evaluate(() => {
     const blocks = [...document.querySelectorAll('.rail-section')];
     return blocks.every((block, index) => {
@@ -1138,4 +1126,35 @@ test('配色のボタンは一つのアイコンで、押すと ergion-theme に
   expect(await page.evaluate(() => document.documentElement.dataset.theme)).toBeUndefined();
   await expectThemeIcon(page, 'dark');
   await expectScheme(page, 'dark', { numerical: '#solution-chart' });
+});
+
+test('既存のページは、その図を明るい配色と暗い配色で示す', async ({ page }) => {
+  test.setTimeout(240_000);
+  const pages: [string, string][] = [
+    ['./', 'mechanics'], ['derivative.html', 'derivative'], ['uniform.html', 'uniform'], ['accelerated.html', 'accelerated'],
+    ['ode.html', 'ode'], ['integrate.html', 'integrate'], ['separation.html', 'separation'], ['linear.html', 'linear'],
+    ['homogeneous.html', 'homogeneous'], ['exact.html', 'exact'], ['bernoulli.html', 'bernoulli'], ['second-order.html', 'second-order'],
+    ['undetermined.html', 'undetermined'], ['variation.html', 'variation'], ['laplace.html', 'laplace'], ['series.html', 'series'],
+    ['system.html', 'system'], ['velocity-step.html', 'velocity-step'], ['euler.html', 'euler'], ['midpoint.html', 'midpoint'],
+    ['rk4.html', 'rk4'], ['newton.html', 'newton'], ['proof.html', 'proof'],
+  ];
+  const shown = () => page.locator('.page-figure img').evaluateAll(images => images
+    .filter(image => image.getBoundingClientRect().width > 0)
+    .map(image => ({ src: (image as HTMLImageElement).currentSrc, ok: (image as HTMLImageElement).naturalWidth > 0 })));
+  for (const [href, id] of pages) {
+    await page.setViewportSize({ width: 1440, height: 1050 });
+    await page.emulateMedia({ colorScheme: 'light' });
+    await page.goto(href);
+    await page.locator('.page-figure').scrollIntoViewIfNeeded();
+    await expect.poll(async () => JSON.stringify(await shown()), href).toBe(JSON.stringify([{ src: `http://127.0.0.1:${process.env.STUDIO_PORT ?? 4187}/Ergion/figures/${id}/figure.png`, ok: true }]));
+    await page.locator('.theme-toggle').click();
+    await page.locator('.page-figure').scrollIntoViewIfNeeded();
+    await expect.poll(async () => (await shown()).map(item => item.src.split('/').pop()).join(), href).toBe('figure-dark.png');
+    await page.locator('.theme-toggle').click();
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.locator('.page-figure').scrollIntoViewIfNeeded();
+    await expect.poll(async () => (await shown()).map(item => item.src.split('/').pop()).join(), href).toBe('figure-narrow.png');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), href).toBe(true);
+    await page.evaluate(() => localStorage.removeItem('ergion-theme'));
+  }
 });

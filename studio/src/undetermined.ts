@@ -1,4 +1,5 @@
 import './style.css';
+import { pageFigure } from './page-figure';
 import { appHeader, coreStepDoc, pageFooter, rail, relatedPages } from './chrome';
 import undeterminedProof from '../../formal/lean/Ergion/Undetermined.lean?raw';
 import { checkedProofs } from './proof';
@@ -74,6 +75,7 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
+      ${pageFigure('undetermined', 'x″ − 3x′ + 2x = e^(3t)、初期値 0 の解は、同次成分と駆動項 ½e^(3t) を足して急に大きくなる。')}
       ${steppedFigure()}
       <section class="study panel" id="example" aria-labelledby="example-heading">
         <div class="study-body">
