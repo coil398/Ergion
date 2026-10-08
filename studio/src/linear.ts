@@ -20,11 +20,10 @@ app.innerHTML = `
         </div>
         <div class="equation" aria-label="1階線形方程式。x プライム足す p x は q">
           ${tex(String.raw`x' + px = q`, true)}
-          <span class="equation-note">p と q は定数</span>
         </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
-        <div class="panel-heading"><h2 id="study-heading">積分因子の手順</h2><span class="quiet-label">厳密解</span></div>
+        <div class="panel-heading"><h2 id="study-heading">積分因子の手順</h2></div>
         <div class="study-body">
           <ol class="solution">
             <li>与えられているのは、次の1階線形方程式です。

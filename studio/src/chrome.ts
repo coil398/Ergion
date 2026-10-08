@@ -221,7 +221,7 @@ export function relatedPages(links: RelatedLink[]): string {
     .join('');
   return `
       <section class="study panel" id="related" aria-labelledby="related-heading">
-        <div class="panel-heading"><h2 id="related-heading">関連ページ</h2><span class="quiet-label">つながり</span></div>
+        <div class="panel-heading"><h2 id="related-heading">関連ページ</h2></div>
         <div class="study-body">
           <ul class="solution">
             ${items}

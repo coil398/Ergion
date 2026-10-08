@@ -1145,6 +1145,10 @@ test('既存のページは、その図を明るい配色と暗い配色で示�
     await page.setViewportSize({ width: 1440, height: 1050 });
     await page.emulateMedia({ colorScheme: 'light' });
     await page.goto(href);
+    if (await page.locator('#related').count()) {
+      await expect(page.locator('#related .panel-heading')).toHaveText('関連ページ');
+      await expect(page.locator('#related .quiet-label')).toHaveCount(0);
+    }
     await page.locator('.page-figure').scrollIntoViewIfNeeded();
     await expect.poll(async () => JSON.stringify(await shown()), href).toBe(JSON.stringify([{ src: `http://127.0.0.1:${process.env.STUDIO_PORT ?? 4187}/Ergion/figures/${id}/figure.png`, ok: true }]));
     await page.locator('.theme-toggle').click();

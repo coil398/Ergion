@@ -24,11 +24,10 @@ app.innerHTML = `
         </div>
         <div class="equation" aria-label="ニュートン法の更新。次の近似は、今の近似から関数値を導関数で割った量を引く">
           ${tex(String.raw`x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}`, true)}
-          <span class="equation-note">接線の零点</span>
         </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
-        <div class="panel-heading"><h2 id="study-heading">接線から次の近似を作る</h2><span class="quiet-label">根を求める</span></div>
+        <div class="panel-heading"><h2 id="study-heading">接線から次の近似を作る</h2></div>
         <div class="study-body">
           <ol class="solution">
             <li>${tex('f')} は微分できる実関数、${tex('x')} は未知数です。目標は ${tex('f(x) = 0')} を満たす ${tex('x')} を求めることです。${tex('n')} は反復の番号、${tex('x_n')} は ${tex('n')} 回目の近似、${tex('x_0')} は出発点です。${tex("f'(x_n)")} は ${tex('x_n')} における導関数です。</li>

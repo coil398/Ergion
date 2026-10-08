@@ -20,11 +20,10 @@ app.innerHTML = `
         </div>
         <div class="equation" aria-label="同次形。x プライムは 1 足す x 割る t">
           ${tex(String.raw`x' = 1 + \frac{x}{t}`, true)}
-          <span class="equation-note">右辺は x/t だけによる</span>
         </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
-        <div class="panel-heading"><h2 id="study-heading">同次形の手順</h2><span class="quiet-label">厳密解</span></div>
+        <div class="panel-heading"><h2 id="study-heading">同次形の手順</h2></div>
         <div class="study-body">
           <ol class="solution">
             <li>与えられているのは、次の方程式です。

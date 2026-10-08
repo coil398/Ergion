@@ -20,11 +20,10 @@ app.innerHTML = `
         </div>
         <div class="equation" aria-label="定数係数の2元連立1階方程式">
           ${tex(String.raw`\begin{aligned} x' &= x + y \\ y' &= 4x + y \end{aligned}`, true)}
-          <span class="equation-note">係数は定数</span>
         </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
-        <div class="panel-heading"><h2 id="study-heading">固有値の手順</h2><span class="quiet-label">厳密解</span></div>
+        <div class="panel-heading"><h2 id="study-heading">固有値の手順</h2></div>
         <div class="study-body">
           <ol class="solution">
             <li>与えられているのは、次の連立方程式です。初期条件は ${tex('x(0) = 1')}、${tex('y(0) = 0')} とします。

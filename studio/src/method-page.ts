@@ -131,11 +131,10 @@ export function mountMethodPage(options: {
           </div>
           <div class="equation" aria-label="${options.title}の更新式">
             ${tex(options.formula, true)}
-            <span class="equation-note">${options.title}</span>
           </div>
         </section>
         <section class="study panel" id="study" aria-labelledby="study-heading">
-          <div class="panel-heading"><h2 id="study-heading">${options.title}の1ステップ</h2><span class="quiet-label">例は速度が一定</span></div>
+          <div class="panel-heading"><h2 id="study-heading">${options.title}の1ステップ</h2></div>
           <div class="study-body">
             <ol class="solution">
               <li>直線上の位置を ${tex('x')}、時刻を ${tex('t')}、速度を ${tex('v')} とします。このページの例の方程式は ${tex(String.raw`x' = v`)} です。速度は時刻にも位置にもよりません。厳密解は ${tex('x(t) = x_0 + v t')} です。</li>
@@ -150,7 +149,7 @@ export function mountMethodPage(options: {
         ${pageFigure(options.page, options.figureAlt)}
         <div class="experiment-grid">
           <section class="settings panel" aria-labelledby="conditions-heading">
-            <div class="panel-heading"><h2 id="conditions-heading">計算条件</h2><span class="quiet-label">換算単位</span></div>
+            <div class="panel-heading"><h2 id="conditions-heading">計算条件</h2></div>
             <form id="config-form">
               <fieldset><legend>運動の設定</legend>
                 <div class="field-pair">

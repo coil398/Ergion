@@ -31,11 +31,10 @@ app.innerHTML = `
         </div>
         <div class="equation" aria-label="位置の時間微分。x プライムは v">
           ${tex(String.raw`x' = v`, true)}
-          <span class="equation-note">位置の時間変化率</span>
         </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
-        <div class="panel-heading"><h2 id="study-heading">位置の時間微分の計算と説明</h2><span class="quiet-label">1ステップの求め方</span></div>
+        <div class="panel-heading"><h2 id="study-heading">位置の時間微分の計算と説明</h2></div>
         <div class="study-body">
           <ol class="solution">
             <li>直線上の位置を ${tex('x')}、時刻を ${tex('t')}、速度を ${tex('v')} とします。位置を時刻で微分したものが速度なので、${tex(String.raw`x' = v`)} です。</li>
@@ -54,7 +53,7 @@ app.innerHTML = `
       ${pageFigure('derivative', '速度が一定の1ステップでは、位置は変位 vΔt だけ進む。')}
       <div class="experiment-grid">
         <section class="settings panel" aria-labelledby="conditions-heading">
-          <div class="panel-heading"><h2 id="conditions-heading">計算条件</h2><span class="quiet-label">換算単位</span></div>
+          <div class="panel-heading"><h2 id="conditions-heading">計算条件</h2></div>
           <form id="config-form">
             <fieldset><legend>運動の設定</legend>
               <div class="field-pair">

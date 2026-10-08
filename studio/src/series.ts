@@ -20,11 +20,10 @@ app.innerHTML = `
         </div>
         <div class="equation" aria-label="べき級数で解く方程式。x ダブルプライム足す x は 0">
           ${tex(String.raw`x'' + x = 0`, true)}
-          <span class="equation-note">t = 0 は通常点</span>
         </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
-        <div class="panel-heading"><h2 id="study-heading">級数の手順</h2><span class="quiet-label">厳密解</span></div>
+        <div class="panel-heading"><h2 id="study-heading">級数の手順</h2></div>
         <div class="study-body">
           <ol class="solution">
             <li>与えられているのは、次の方程式です。初期条件は ${tex('x(0) = 1')}、${tex("x'(0) = 0")} とします。

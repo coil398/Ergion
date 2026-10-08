@@ -20,11 +20,10 @@ app.innerHTML = `
         </div>
         <div class="equation" aria-label="右辺が時刻だけの微分方程式。x プライムは f(t)">
           ${tex(String.raw`x' = f(t)`, true)}
-          <span class="equation-note">右辺が x によらない</span>
         </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
-        <div class="panel-heading"><h2 id="study-heading">積分の手順</h2><span class="quiet-label">厳密解</span></div>
+        <div class="panel-heading"><h2 id="study-heading">積分の手順</h2></div>
         <div class="study-body">
           <ol class="solution">
             <li>速度 ${tex('v')} が一定のとき、位置は ${tex(String.raw`x' = v`)} を満たします。時刻 0 から ${tex('t')} まで両辺を積分します。

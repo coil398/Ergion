@@ -20,11 +20,10 @@ app.innerHTML = `
         </div>
         <div class="equation" aria-label="定数変化法の例。x ダブルプライム足す x は tan t">
           ${tex(String.raw`x'' + x = \tan t`, true)}
-          <span class="equation-note">右辺は tan t</span>
         </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
-        <div class="panel-heading"><h2 id="study-heading">定数変化の手順</h2><span class="quiet-label">厳密解</span></div>
+        <div class="panel-heading"><h2 id="study-heading">定数変化の手順</h2></div>
         <div class="study-body">
           <ol class="solution">
             <li>与えられているのは、次の方程式です。区間は ${tex('(-\\pi/2,\\ \\pi/2)')} とします。この区間では ${tex('\\cos t \\neq 0')} で、${tex('\\tan t')} は連続です。初期条件は ${tex('x(0) = 0')}、${tex("x'(0) = 0")} です。

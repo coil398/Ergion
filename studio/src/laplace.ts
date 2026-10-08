@@ -24,7 +24,7 @@ app.innerHTML = `
         </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
-        <div class="panel-heading"><h2 id="study-heading">変換と逆変換</h2><span class="quiet-label">厳密解</span></div>
+        <div class="panel-heading"><h2 id="study-heading">変換と逆変換</h2></div>
         <div class="study-body">
           <ol class="solution">
             <li>与えられている初期値問題は、次の式です。左辺は <a class="doc-link" href="./undetermined.html">未定係数法</a> の例と同じです。ここでは変換で解き、同じ厳密解に着くことを見ます。

@@ -20,9 +20,11 @@ export interface LessonSpec {
   /** ページの式。TeX のまま。 */
   equation: string[];
   equationLabel: string;
-  equationNote: string;
+  /** 式の下の注記。式に出る記号の定義のように、見出しにない具体的な事実だけを書く。 */
+  equationNote?: string;
   studyHeading: string;
-  studyLabel: string;
+  /** 使わない。見出しの隅に語を置かない。 */
+  studyLabel?: string;
   /** 解法の手順。各要素は一つの番号の中身。 */
   steps: string[];
   /** ページの図の画像の代替テキスト。 */
@@ -59,11 +61,11 @@ export function renderLesson(spec: LessonSpec) {
         </div>
         <div class="equation" aria-label="${spec.equationLabel}">
           ${spec.equation.map(source => tex(source, true)).join('\n          ')}
-          <span class="equation-note">${spec.equationNote}</span>
+          ${spec.equationNote ? `<span class="equation-note">${spec.equationNote}</span>` : ''}
         </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
-        <div class="panel-heading"><h2 id="study-heading">${spec.studyHeading}</h2><span class="quiet-label">${spec.studyLabel}</span></div>
+        <div class="panel-heading"><h2 id="study-heading">${spec.studyHeading}</h2></div>
         <div class="study-body">
           <ol class="solution">
             ${spec.steps.map(step => `<li>${step}</li>`).join('\n            ')}
@@ -196,7 +198,7 @@ export function experimentPanel(options: {
   return `
       <div class="experiment-grid">
         <section class="settings panel" aria-labelledby="conditions-heading">
-          <div class="panel-heading"><h2 id="conditions-heading">計算条件</h2><span class="quiet-label">換算単位</span></div>
+          <div class="panel-heading"><h2 id="conditions-heading">計算条件</h2></div>
           <form id="config-form">
             <fieldset><legend>${options.fieldsetLabel}</legend>
               ${pairs(options.fields)}

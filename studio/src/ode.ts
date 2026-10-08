@@ -19,11 +19,10 @@ app.innerHTML = `
         </div>
         <div class="equation" aria-label="微分方程式。x プライムは f(x, t)">
           ${tex(String.raw`x' = f(x, t)`, true)}
-          <span class="equation-note">一階の微分方程式</span>
         </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
-        <div class="panel-heading"><h2 id="study-heading">解とは何か</h2><span class="quiet-label">式を満たす関数</span></div>
+        <div class="panel-heading"><h2 id="study-heading">解とは何か</h2></div>
         <div class="study-body">
           <ol class="solution">
             <li>右辺 ${tex('f(x, t)')} は、位置 ${tex('x')} と時刻 ${tex('t')} から、その瞬間の変化率を決める関数です。</li>

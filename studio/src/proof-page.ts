@@ -125,7 +125,7 @@ app.innerHTML = `
         </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
-        <div class="panel-heading"><h2 id="study-heading">確かめた等式</h2><span class="quiet-label">公開の前</span></div>
+        <div class="panel-heading"><h2 id="study-heading">確かめた等式</h2></div>
         <div class="study-body">
           <ol class="solution">
             ${items}

@@ -20,11 +20,10 @@ app.innerHTML = `
         </div>
         <div class="equation" aria-label="定数係数の2階同次方程式">
           ${tex(String.raw`x'' + b x' + c x = 0`, true)}
-          <span class="equation-note">b と c は定数</span>
         </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
-        <div class="panel-heading"><h2 id="study-heading">特性根の手順</h2><span class="quiet-label">厳密解</span></div>
+        <div class="panel-heading"><h2 id="study-heading">特性根の手順</h2></div>
         <div class="study-body">
           <ol class="solution">
             <li>与えられている形は次の式です。${tex('b')} と ${tex('c')} は実定数です。

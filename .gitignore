@@ -8,3 +8,4 @@ __pycache__/
 /studio/test-results/
 /studio/playwright-report/
 /formal/lean/.lake/
+studio/dist-*/

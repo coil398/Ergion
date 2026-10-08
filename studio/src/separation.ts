@@ -20,11 +20,10 @@ app.innerHTML = `
         </div>
         <div class="equation" aria-label="変数分離する方程式。x プライムは k x">
           ${tex(String.raw`x' = kx`, true)}
-          <span class="equation-note">k は定数</span>
         </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
-        <div class="panel-heading"><h2 id="study-heading">変数分離の手順</h2><span class="quiet-label">厳密解</span></div>
+        <div class="panel-heading"><h2 id="study-heading">変数分離の手順</h2></div>
         <div class="study-body">
           <ol class="solution">
             <li>与えられているのは、位置の時間微分が、その位置に定数を掛けたものに等しい、という方程式です。

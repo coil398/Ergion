@@ -20,11 +20,10 @@ app.innerHTML = `
         </div>
         <div class="equation" aria-label="未定係数法の例。右辺は e の 3t">
           ${tex(String.raw`x'' - 3x' + 2x = e^{3t}`, true)}
-          <span class="equation-note">右辺は指数関数</span>
         </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
-        <div class="panel-heading"><h2 id="study-heading">未定係数の手順</h2><span class="quiet-label">厳密解</span></div>
+        <div class="panel-heading"><h2 id="study-heading">未定係数の手順</h2></div>
         <div class="study-body">
           <ol class="solution">
             <li>与えられているのは、次の非同次方程式です。初期条件は ${tex('x(0) = 0')}、${tex("x'(0) = 0")} とします。

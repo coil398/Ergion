@@ -20,11 +20,10 @@ app.innerHTML = `
         </div>
         <div class="equation" aria-label="ベルヌーイ方程式。x プライム足す p x は q x の n 乗">
           ${tex(String.raw`x' + px = q x^{n}`, true)}
-          <span class="equation-note">n は 0 でも 1 でもない</span>
         </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
-        <div class="panel-heading"><h2 id="study-heading">ベルヌーイの手順</h2><span class="quiet-label">厳密解</span></div>
+        <div class="panel-heading"><h2 id="study-heading">ベルヌーイの手順</h2></div>
         <div class="study-body">
           <ol class="solution">
             <li>一般の形は次の式です。${tex('p')} と ${tex('q')} はこの例では定数、${tex('n')} は実数です。

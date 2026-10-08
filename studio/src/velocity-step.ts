@@ -42,7 +42,7 @@ app.innerHTML = `
         </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
-        <div class="panel-heading"><h2 id="study-heading">仮定と、証明したこと</h2><span class="quiet-label">有理数</span></div>
+        <div class="panel-heading"><h2 id="study-heading">仮定と、証明したこと</h2></div>
         <div class="study-body">
           <ol class="solution">
             <li>位置を ${tex('x')}、速度を ${tex('v')}、1ステップの時間刻みを ${tex(String.raw`\Delta t`)}、回数を ${tex('n')} とします。${tex('v')} はステップごとに変わりません。${tex('x')}、${tex('v')}、${tex(String.raw`\Delta t`)} は有理数で、${tex('n')} は 0 以上の整数です。方程式は ${tex(String.raw`x' = v`)} です。
@@ -60,7 +60,7 @@ app.innerHTML = `
       ${pageFigure('velocity-step', '有理数の x₀ = 1/2、v = 1/3、Δt = 3/2 では、各ステップの増分 vΔt = 1/2 が等間隔に並び、点は直線上にある。')}
       <div class="experiment-grid">
         <section class="settings panel" aria-labelledby="conditions-heading">
-          <div class="panel-heading"><h2 id="conditions-heading">計算条件</h2><span class="quiet-label">換算単位</span></div>
+          <div class="panel-heading"><h2 id="conditions-heading">計算条件</h2></div>
           <form id="config-form">
             <fieldset><legend>運動の設定</legend>
               <div class="field-pair">

@@ -34,11 +34,10 @@ app.innerHTML = `
         <div class="equation" aria-label="等加速度直線運動の式。位置は x0 足す v0 t 足す 2分の1 a t の二乗。速度は v0 足す a t">
           ${tex(String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`, true)}
           ${tex('v(t) = v_0 + a t', true)}
-          <span class="equation-note">加速度一定の厳密解</span>
         </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
-        <div class="panel-heading"><h2 id="study-heading">等加速度直線運動の計算と説明</h2><span class="quiet-label">厳密解の求め方</span></div>
+        <div class="panel-heading"><h2 id="study-heading">等加速度直線運動の計算と説明</h2></div>
         <div class="study-body">
           <ol class="solution">
             <li>一つの粒子が直線上を動くとき、加速度 ${tex('a')} は速度 ${tex('v')} の時間微分であり、位置 ${tex('x')} を時刻 ${tex('t')} で二度微分したものです。${tex(String.raw`a = v' = x''`)}。この運動では、${tex('a')} は時刻にも位置にもよらず一定です。</li>
@@ -69,7 +68,7 @@ app.innerHTML = `
       ${pageFigure('accelerated', '等加速度直線運動では、粒子が進むにつれて速度の矢が長くなる。')}
       <div class="experiment-grid">
         <section class="settings panel" aria-labelledby="conditions-heading">
-          <div class="panel-heading"><h2 id="conditions-heading">計算条件</h2><span class="quiet-label">換算単位</span></div>
+          <div class="panel-heading"><h2 id="conditions-heading">計算条件</h2></div>
           <form id="config-form">
             <fieldset><legend>運動の設定</legend>
               <div class="field-pair">

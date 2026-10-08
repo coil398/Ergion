@@ -20,11 +20,10 @@ app.innerHTML = `
         </div>
         <div class="equation" aria-label="完全微分。(2x + y) dx + (x + 2y) dy = 0">
           ${tex(String.raw`(2x + y)\,dx + (x + 2y)\,dy = 0`, true)}
-          <span class="equation-note">M dx + N dy = 0</span>
         </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
-        <div class="panel-heading"><h2 id="study-heading">完全微分の手順</h2><span class="quiet-label">厳密解</span></div>
+        <div class="panel-heading"><h2 id="study-heading">完全微分の手順</h2></div>
         <div class="study-body">
           <ol class="solution">
             <li>与えられているのは、次の微分形式です。

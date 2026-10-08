@@ -31,11 +31,10 @@ app.innerHTML = `
         </div>
         <div class="equation" aria-label="等速直線運動の式。x(t) は x0 足す v t">
           ${tex('x(t) = x_0 + v t', true)}
-          <span class="equation-note">加速度ゼロの厳密解</span>
         </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
-        <div class="panel-heading"><h2 id="study-heading">等速直線運動の計算と説明</h2><span class="quiet-label">厳密解の求め方</span></div>
+        <div class="panel-heading"><h2 id="study-heading">等速直線運動の計算と説明</h2></div>
         <div class="study-body">
           <ol class="solution">
             <li>質量 ${tex('m')} の粒子の運動方程式は ${tex(String.raw`m x'' = F`)} です。${tex('x')} は直線上の位置、${tex('t')} は時刻、${tex(String.raw`x''`)} は位置を時刻で二度微分した加速度、${tex('F')} は外力です。</li>
@@ -60,7 +59,7 @@ app.innerHTML = `
       ${pageFigure('uniform', '等速直線運動では、初期位置 x₀ から現在位置まで変位 vt が伸びる。')}
       <div class="experiment-grid">
         <section class="settings panel" aria-labelledby="conditions-heading">
-          <div class="panel-heading"><h2 id="conditions-heading">計算条件</h2><span class="quiet-label">換算単位</span></div>
+          <div class="panel-heading"><h2 id="conditions-heading">計算条件</h2></div>
           <form id="config-form">
             <fieldset><legend>運動の設定</legend>
               <div class="field-pair">
