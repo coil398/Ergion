@@ -21,6 +21,7 @@ const expectedRail: [string, string[]][] = [
   ['金融数学', ['連続複利と指数成長', '幾何 Brownian 運動', 'Black–Scholes 方程式', 'Monte Carlo 価格評価']],
   ['電磁気学', ['Coulomb の法則と静電場', '静電ポテンシャルと電位', 'Gauss の法則', '定常電流と静磁場', '磁場中の荷電粒子', 'Faraday の電磁誘導の法則', 'Maxwell 方程式と電磁波']],
   ['解析力学', ['拘束条件と一般化座標', "仮想仕事の原理と d'Alembert の原理", '最小作用の原理と Euler–Lagrange 方程式', '対称性と保存則', 'Legendre 変換と Hamilton の正準方程式', '相空間と Liouville の定理', '正準変換と Poisson 括弧']],
+  ['分子動力学', ['Lennard–Jones ポテンシャル', '周期境界条件と最小イメージ法', 'NVE アンサンブルと速度 Verlet 法', '温度・圧力・動径分布関数', 'NVT アンサンブルと熱浴法', '近接リスト法とセル分割法', 'Born–Oppenheimer 近似', '密度汎関数理論と Kohn–Sham 方程式', 'Hellmann–Feynman の定理', '第一原理分子動力学']],
 ];
 
 async function expectMechanicsSection(page: Page) {

@@ -152,9 +152,7 @@ const allSections: RailSection[] = [
 ];
 
 /** まだ公開しないページ。ビルドの環境変数 VITE_RAIL_ALL=1 のときだけ目次に出す。 */
-const drafts = new Set<PageId>([
-  'lennard-jones', 'periodic', 'nve', 'observables', 'nvt', 'neighbor-list', 'born-oppenheimer', 'kohn-sham', 'hellmann-feynman', 'first-principles',
-]);
+const drafts = new Set<PageId>([]);
 
 const showDrafts = import.meta.env.VITE_RAIL_ALL === '1';
 
