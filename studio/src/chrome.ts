@@ -54,24 +54,42 @@ function pageLink(active: PageId, id: PageId, href: string, label: string): stri
   return `<li><a class="rail-page${current ? ' active' : ''}" href="${href}"${current ? ' aria-current="page"' : ''}>${label}</a></li>`;
 }
 
-/** 力学、微分方程式、数値計算、証明は並ぶ節。各ページはその節の下に縦に置く。 */
-export function rail(active: PageId): string {
-  const mechanicsCurrent = active === 'mechanics' ? ' aria-current="page"' : '';
-  const odeCurrent = active === 'ode' ? ' aria-current="page"' : '';
+const mechanicsPages = new Set<PageId>(['mechanics', 'derivative', 'uniform', 'accelerated']);
+const odePages = new Set<PageId>(['ode', 'integrate', 'separation', 'linear', 'homogeneous', 'exact', 'bernoulli', 'second-order', 'undetermined', 'variation', 'laplace', 'series', 'system']);
+const numericalPages = new Set<PageId>(['velocity-step', 'euler', 'midpoint', 'rk4', 'newton']);
+const proofPages = new Set<PageId>(['proof']);
+
+function sectionDisclosure(id: string, label: string, open: boolean, current: boolean, pages: string): string {
   return `
-    <aside class="rail" aria-label="実験ナビゲーション">
-      <span class="rail-heading">実験室</span>
       <div class="rail-section">
-        <a class="rail-section-title${active === 'mechanics' ? ' active' : ''}" href="./"${mechanicsCurrent}>力学</a>
-        <ul class="rail-pages">
+        <button type="button" class="rail-section-title${current ? ' active' : ''}" aria-expanded="${open ? 'true' : 'false'}" aria-controls="${id}">${label}</button>
+        <ul class="rail-pages" id="${id}"${open ? '' : ' hidden'}>
+          ${pages}
+        </ul>
+      </div>`;
+}
+
+document.addEventListener('click', (event) => {
+  const target = event.target;
+  if (!(target instanceof Element)) return;
+  const button = target.closest('button.rail-section-title');
+  if (!(button instanceof HTMLButtonElement)) return;
+  const open = button.getAttribute('aria-expanded') !== 'true';
+  button.setAttribute('aria-expanded', open ? 'true' : 'false');
+  const panel = document.getElementById(button.getAttribute('aria-controls') ?? '');
+  if (panel) panel.hidden = !open;
+});
+
+/** 力学、微分方程式、数値計算、証明は、幅によらず開閉する節。いまのページの節だけが開いて始まる。 */
+export function rail(active: PageId): string {
+  return `
+    <aside class="rail" aria-label="目次">
+      ${sectionDisclosure('rail-mechanics', '力学', mechanicsPages.has(active), active === 'mechanics', `
           ${pageLink(active, 'derivative', './derivative.html', '位置の時間微分')}
           ${pageLink(active, 'uniform', './uniform.html', '等速直線運動')}
           ${pageLink(active, 'accelerated', './accelerated.html', '等加速度直線運動')}
-        </ul>
-      </div>
-      <div class="rail-section">
-        <a class="rail-section-title${active === 'ode' ? ' active' : ''}" href="./ode.html"${odeCurrent}>微分方程式</a>
-        <ul class="rail-pages">
+      `)}
+      ${sectionDisclosure('rail-ode', '微分方程式', odePages.has(active), active === 'ode', `
           ${pageLink(active, 'integrate', './integrate.html', '積分して解く')}
           ${pageLink(active, 'separation', './separation.html', '変数分離')}
           ${pageLink(active, 'linear', './linear.html', '1階線形')}
@@ -84,24 +102,17 @@ export function rail(active: PageId): string {
           ${pageLink(active, 'laplace', './laplace.html', 'Laplace 変換')}
           ${pageLink(active, 'series', './series.html', 'べき級数')}
           ${pageLink(active, 'system', './system.html', '連立1階')}
-        </ul>
-      </div>
-      <div class="rail-section">
-        <span class="rail-section-title">数値計算</span>
-        <ul class="rail-pages">
+      `)}
+      ${sectionDisclosure('rail-numerical', '数値計算', numericalPages.has(active), false, `
           ${pageLink(active, 'velocity-step', './velocity-step.html', '一定速度の増分')}
           ${pageLink(active, 'euler', './euler.html', 'Euler法')}
           ${pageLink(active, 'midpoint', './midpoint.html', '中点法')}
           ${pageLink(active, 'rk4', './rk4.html', '古典的RK4')}
           ${pageLink(active, 'newton', './newton.html', 'ニュートン法')}
-        </ul>
-      </div>
-      <div class="rail-section">
-        <span class="rail-section-title${active === 'proof' ? ' active' : ''}">証明</span>
-        <ul class="rail-pages">
+      `)}
+      ${sectionDisclosure('rail-proof', '証明', proofPages.has(active), active === 'proof', `
           ${pageLink(active, 'proof', './proof.html', '証明の一覧')}
-        </ul>
-      </div>
+      `)}
       <div class="rail-note"><span class="orbit-icon" aria-hidden="true">◎</span><p>小さな系から、<br>確かな計算へ。</p><span>直線上の一粒子</span></div>
       <a class="source-link" href="https://github.com/coil398/Ergion" target="_blank" rel="noreferrer">ソースコード ↗</a>
     </aside>`;

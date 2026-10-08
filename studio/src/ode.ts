@@ -12,7 +12,7 @@ app.innerHTML = `
     <main id="lesson">
       <section class="intro">
         <div>
-          <p class="breadcrumb">実験室 <span>/</span> 微分方程式</p>
+          <p class="breadcrumb">微分方程式</p>
           <h1>微分方程式<span class="title-dot">.</span></h1>
           <p class="description">未知の関数と、その導関数との関係を、微分方程式と呼びます。ここでは独立変数を時刻 ${tex('t')}、未知関数を ${tex('x(t)')} とします。</p>
         </div>

@@ -40,15 +40,24 @@ async function expectMechanicsSection(page: Page) {
   const proofPages = sections.nth(3).locator('.rail-pages a');
   await expect(proofPages).toHaveCount(1);
   await expect(proofPages.nth(0)).toHaveText('証明の一覧');
+  const titles = page.locator('button.rail-section-title');
+  await expect(titles).toHaveCount(4);
+  await expect(page.locator('.rail-section-title[aria-expanded="true"]')).toHaveCount(1);
+  await expect(page.locator('.rail-section-title[aria-expanded="false"]')).toHaveCount(3);
   const nested = await page.evaluate(() => {
     const blocks = [...document.querySelectorAll('.rail-section')];
     return blocks.every((block, index) => {
-      const title = block.querySelector('.rail-section-title')!.getBoundingClientRect();
-      const items = [...block.querySelectorAll('.rail-pages a')].map(node => node.getBoundingClientRect());
-      const under = items.every(item => item.top >= title.bottom - 1 && item.left > title.left + 4);
+      const title = block.querySelector('.rail-section-title')!;
+      const titleBox = title.getBoundingClientRect();
+      const expanded = title.getAttribute('aria-expanded') === 'true';
+      const items = [...block.querySelectorAll('.rail-pages a')]
+        .map(node => node.getBoundingClientRect())
+        .filter(item => item.width > 0 && item.height > 0);
+      const belowPrevious = index === 0 || titleBox.top >= blocks[index - 1].getBoundingClientRect().bottom - 1;
+      if (!expanded) return items.length === 0 && belowPrevious;
+      const under = items.every(item => item.top >= titleBox.bottom - 1 && item.left > titleBox.left + 4);
       const vertical = items.every((item, itemIndex) => itemIndex === 0 || item.top >= items[itemIndex - 1].bottom - 1);
-      const belowPrevious = index === 0 || title.top >= blocks[index - 1].getBoundingClientRect().bottom - 1;
-      return under && vertical && belowPrevious;
+      return items.length > 0 && under && vertical && belowPrevious;
     });
   });
   expect(nested).toBe(true);
@@ -204,6 +213,33 @@ test('デスクトップとモバイルの表示', async ({ page }, testInfo) =>
   await page.screenshot({ path: testInfo.outputPath('studio-mobile.png'), fullPage: true });
 });
 
+test('節の名前はボタンで、閉じた節を開きいまの節を閉じる', async ({ page }) => {
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: width === 1440 ? 1050 : 844 });
+    await page.goto('uniform.html');
+    await expect(page.locator('body')).not.toContainText('実験室');
+    const mechanics = page.getByRole('button', { name: '力学', exact: true });
+    const ode = page.getByRole('button', { name: '微分方程式', exact: true });
+    await expect(mechanics).toHaveAttribute('aria-expanded', 'true');
+    await expect(ode).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.getByRole('link', { name: '等速直線運動', exact: true })).toBeVisible();
+    await expect(page.getByRole('link', { name: '変数分離', exact: true })).toHaveCount(0);
+    if (width === 390) {
+      const headingTop = await page.locator('h1').evaluate((node) => node.getBoundingClientRect().top);
+      expect(headingTop).toBeLessThan(844);
+    }
+    await ode.focus();
+    await page.keyboard.press('Enter');
+    await expect(ode).toHaveAttribute('aria-expanded', 'true');
+    await expect(page.getByRole('link', { name: '変数分離', exact: true })).toBeVisible();
+    await mechanics.focus();
+    await page.keyboard.press('Enter');
+    await expect(mechanics).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.getByRole('link', { name: '等速直線運動', exact: true })).toHaveCount(0);
+    await expect(ode).toHaveAttribute('aria-expanded', 'true');
+  }
+});
+
 test('粗い刻みでも数値軌道が表示範囲に収まる', async ({ page }, testInfo) => {
   await page.goto('uniform.html');
   await expect(page.locator('#status')).toHaveText('準備完了');
@@ -261,10 +297,13 @@ test('微分方程式をデスクトップと狭い画面で読む', async ({ pa
   await expect(page.getByRole('link', { name: '1階線形' }).first()).toBeVisible();
   await expect(page.locator('.chapter-list a').nth(1)).toHaveAttribute('href', './separation.html');
   await expect(page.locator('.chapter-list a').nth(2)).toHaveAttribute('href', './linear.html');
+  const numerical = page.getByRole('button', { name: '数値計算', exact: true });
+  await numerical.click();
   await expect(page.getByRole('link', { name: 'Euler法' }).first()).toBeVisible();
   await expect(page.getByRole('link', { name: '中点法' }).first()).toBeVisible();
   await expect(page.getByRole('link', { name: '古典的RK4', exact: true })).toBeVisible();
   await expect(page.getByRole('link', { name: 'ニュートン法', exact: true }).first()).toBeVisible();
+  await numerical.click();
   const text = await page.locator('#lesson').innerText();
   for (const word of ['crates/', '正本', '計算核', 'ばね', '電磁気', 'RK4']) {
     expect(text).not.toContain(word);
