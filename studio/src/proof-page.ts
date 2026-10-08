@@ -121,7 +121,6 @@ app.innerHTML = `
         </div>
         <div class="equation" aria-label="一定速度の n ステップ。位置は出発点に n v Δt を足す">
           ${tex(String.raw`x_n = x_0 + n v \Delta t`, true)}
-          <span class="equation-note">有理数の上で厳密</span>
         </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">

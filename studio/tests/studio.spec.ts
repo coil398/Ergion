@@ -450,7 +450,8 @@ test('一定速度の増分は有理数の等式としてデスクトップと�
     const link = page.locator('#study').getByRole('link', { name: 'Ergion.ConstantVelocity', exact: true });
     await expect(link).toHaveCount(1);
     await expect(link).toHaveAttribute('href', /ConstantVelocity\.lean$/);
-    await expect(page.locator('.proof').getByRole('link', { name: 'Ergion.ConstantVelocity', exact: true })).toHaveCount(1);
+    await expect(page.locator('.proof').getByRole('link')).toHaveCount(0);
+    await expect(page.locator('.equation-note')).toHaveCount(0);
     await expectReadingPage(page);
   }
 });
@@ -503,6 +504,7 @@ test('証明の節は画面が Lean を実行しないと述べ、各ページ�
   const numerical = ['euler.html', 'midpoint.html', 'rk4.html', 'newton.html'];
   async function expectCheckedProse() {
     await expect(page.locator('#proof-heading')).toHaveText('証明');
+    await expect(page.locator('.proof .quiet-label')).toHaveCount(0);
     await expect(page.locator('.proof')).not.toContainText('まだ確かめていません');
     await expect(page.locator('.proof')).not.toContainText('sorry');
     const proofProse = await page.locator('.proof').evaluate((node) => {
@@ -510,6 +512,10 @@ test('証明の節は画面が Lean を実行しないと述べ、各ページ�
       clone.querySelectorAll('.proof-source').forEach((element) => element.remove());
       return clone.innerText;
     });
+    expect(proofProse).not.toContain('この等式は');
+    expect(proofProse).not.toContain('確認済');
+    expect(proofProse).not.toContain('f64');
+    expect(proofProse).not.toContain('有理数の上で厳密');
     for (const word of ['crates/', 'formal/', 'Rat', '正本', '計算核', 'sorry']) {
       expect(proofProse).not.toContain(word);
     }
@@ -529,12 +535,12 @@ test('証明の節は画面が Lean を実行しないと述べ、各ページ�
     await expect(source.nth(1)).toContainText('constantAcceleration_solves');
     await expectCheckedProse();
   }
-  for (const [href, theorem, moduleName] of realProofs) {
+  for (const [href, theorem] of realProofs) {
     await page.goto(href);
     const source = page.locator('.proof-source');
     await expect(source).toHaveCount(1);
     await expect(source).toContainText(theorem);
-    await expect(page.locator('.proof').getByRole('link', { name: moduleName, exact: true })).toHaveCount(1);
+    await expect(page.locator('.proof').getByRole('link')).toHaveCount(0);
     await expectCheckedProse();
   }
   for (const href of numerical) {

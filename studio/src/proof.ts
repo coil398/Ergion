@@ -18,20 +18,14 @@ export function moduleHref(moduleName: string): string {
   return `https://github.com/coil398/Ergion/blob/main/formal/lean/Ergion/${file}.lean`;
 }
 
-/** lake build が通した証明。画面は Lean を実行しない。 */
+/** lake build が通した証明。画面は Lean を実行しない。領域は番号のついた命題と原文だけ。 */
 export function checkedProofs(items: ProofItem[]): string {
-  const kinds = new Set(items.map((item) => item.kind));
-  const label = kinds.size === 1 ? [...kinds][0] : '確認済';
-  const blocks = items.map((item) => {
-    const link = `<a class="doc-link" href="${moduleHref(item.moduleName)}">${item.moduleName}</a>`;
-    return `
+  const blocks = items.map((item) => `
         <ol class="solution"><li>${item.statement}</li></ol>
-        <p>この等式は${item.kind}の上で確かめてあります。画面の計算が使う倍精度の f64 の丸めは、ここでは証明していません。証明の名前は ${link} です。下は、その証明そのものです。</p>
-        <pre class="proof-source">${escapeHtml(item.source)}</pre>`;
-  }).join('');
+        <pre class="proof-source">${escapeHtml(item.source)}</pre>`).join('');
   return `
     <section class="study panel proof" aria-labelledby="proof-heading">
-      <div class="panel-heading"><h2 id="proof-heading">証明</h2><span class="quiet-label">${label}</span></div>
+      <div class="panel-heading"><h2 id="proof-heading">証明</h2></div>
       <div class="study-body">
         ${blocks}
       </div>

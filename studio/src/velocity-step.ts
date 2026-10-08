@@ -17,7 +17,6 @@ app.innerHTML = `
         </div>
         <div class="equation" aria-label="一定速度の1ステップ。位置は速度と時間刻みの積だけ進む">
           ${tex(String.raw`x \mapsto x + v \Delta t`, true)}
-          <span class="equation-note">有理数の上で厳密</span>
         </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
