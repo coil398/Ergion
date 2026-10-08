@@ -58,7 +58,7 @@ app.innerHTML = `
         </div>
       </section>
       ${pageFigure('homogeneous', 'x′ = 1 + x/t の傾きは原点から出る半直線の上で一定で、例の解 x = t ln t は t = 0 を通らない。')}
-      ${steppedFigure()}
+      ${steppedFigure(false, 'homogeneous')}
       <section class="study panel" id="example" aria-labelledby="example-heading">
         <div class="study-body">
           <h2 id="example-heading">数を代入した例</h2>

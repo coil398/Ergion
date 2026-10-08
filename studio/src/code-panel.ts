@@ -1,79 +1,20 @@
+import { renderSample, type CodeMethod, type CodeProblem } from './code-sample';
+
+export type { CodeMethod, CodeProblem };
+import { drawPlot } from './figures/plot';
 import { runPython, runTypeScript } from './step-run';
 
 /** 開閉だけを入れる。ページをまたいで同じキーを使う。 */
 export const CODE_KEY = 'ergion-code';
 
-const TS_INSTALL = 'npm install ./studio/wasm';
-const PY_INSTALL = 'pip install ./py/ergion';
-
-const snippets = {
-  euler: {
-    ts: `import init, { euler_step } from "ergion-lab";
-
-await init();
-const state = new Float64Array([0]);
-euler_step(state, 0, 0.1, (_time, _state) => 1);
-console.log(Array.from(state));
-`,
-    py: `from ergion import euler_step
-
-state = [0.0]
-euler_step(state, 0.0, 0.1, lambda time, state: 1.0)
-print(state)
-`,
-  },
-  midpoint: {
-    ts: `import init, { midpoint_step } from "ergion-lab";
-
-await init();
-const state = new Float64Array([0]);
-midpoint_step(state, 0, 0.1, (_time, _state) => 1);
-console.log(Array.from(state));
-`,
-    py: `from ergion import midpoint_step
-
-state = [0.0]
-midpoint_step(state, 0.0, 0.1, lambda time, state: 1.0)
-print(state)
-`,
-  },
-  rk4: {
-    ts: `import init, { rk4_step } from "ergion-lab";
-
-await init();
-const state = new Float64Array([0]);
-rk4_step(state, 0, 0.1, (_time, _state) => 1);
-console.log(Array.from(state));
-`,
-    py: `from ergion import rk4_step
-
-state = [0.0]
-rk4_step(state, 0.0, 0.1, lambda time, state: 1.0)
-print(state)
-`,
-  },
-  newton: {
-    ts: `import init, { newton_step } from "ergion-lab";
-
-await init();
-console.log(newton_step(1, (x) => x * x - 2, (x) => 2 * x));
-`,
-    py: `from ergion import newton_step
-
-print(newton_step(1.0, lambda x: x * x - 2.0, lambda x: 2.0 * x))
-`,
-  },
-} as const;
-
 function escapeHtml(value: string): string {
   return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-function languageBlock(name: string, install: string, source: string, lang: 'typescript' | 'python'): string {
+function languageBlock(name: string, source: string, lang: 'typescript' | 'python'): string {
   return `
         <section class="code-lang" aria-label="${name}">
           <h3>${name}</h3>
-          <p class="code-install">${install}</p>
           <pre class="code-snippet">${escapeHtml(source.trim())}</pre>
           <div class="code-run-row">
             <button class="button secondary code-run" type="button" data-run="${lang}">実行</button>
@@ -91,31 +32,60 @@ export function codeIsOpen(): boolean {
   }
 }
 
-/** 選ばれている数値解法の関数に、表示中のコードを合わせる。 */
-export function setCodeMethod(kind: 'euler' | 'midpoint' | 'rk4') {
+function writeSources(problem: CodeProblem, method: CodeMethod) {
   const details = document.querySelector<HTMLDetailsElement>('details.code-disclosure');
   if (!details) return;
-  const pair = snippets[kind];
+  const pair = renderSample(problem, method === 'euler' || method === 'midpoint' || method === 'rk4' ? method : 'euler');
   const typescript = details.querySelector<HTMLElement>('[aria-label="TypeScript"] pre');
   const python = details.querySelector<HTMLElement>('[aria-label="Python"] pre');
   if (typescript) typescript.textContent = pair.ts.trim();
   if (python) python.textContent = pair.py.trim();
+  details.dataset.problem = problem;
+  details.dataset.method = method;
   for (const result of details.querySelectorAll<HTMLElement>('.code-result')) {
     result.textContent = '';
     delete result.dataset.state;
   }
 }
 
-export function codeDisclosure(kind: keyof typeof snippets): string {
-  const pair = snippets[kind];
+/** 選ばれている数値解法に、表示中のコードの傾きを合わせる。 */
+export function setCodeMethod(kind: CodeMethod) {
+  const details = document.querySelector<HTMLDetailsElement>('details.code-disclosure');
+  if (!details?.dataset.problem || details.dataset.problem === 'newton') return;
+  writeSources(details.dataset.problem as CodeProblem, kind);
+}
+
+/** ページの方程式が変わったとき、その右辺でコードを書き直す。 */
+export function setCodeProblem(problem: CodeProblem) {
+  const details = document.querySelector<HTMLDetailsElement>('details.code-disclosure');
+  const method = (details?.dataset.method as CodeMethod | undefined) ?? 'euler';
+  writeSources(problem, problem === 'newton' ? 'euler' : method);
+}
+
+export function codeDisclosure(problem: CodeProblem, method: CodeMethod = 'euler'): string {
+  const pair = renderSample(problem, method);
   return `
-          <details class="code-disclosure panel"${codeIsOpen() ? ' open' : ''}>
+          <details class="code-disclosure panel" data-problem="${problem}" data-method="${method}"${codeIsOpen() ? ' open' : ''}>
             <summary>コード</summary>
             <div class="code-body">
-              ${languageBlock('TypeScript', TS_INSTALL, pair.ts, 'typescript')}
-              ${languageBlock('Python', PY_INSTALL, pair.py, 'python')}
+              ${languageBlock('TypeScript', pair.ts, 'typescript')}
+              ${languageBlock('Python', pair.py, 'python')}
             </div>
+            <canvas id="code-chart" class="code-chart" role="img" aria-label="コードが描く点"></canvas>
           </details>`;
+}
+
+function drawCodeChart(text: string) {
+  const canvas = document.querySelector<HTMLCanvasElement>('#code-chart');
+  if (!canvas) return;
+  const points = JSON.parse(text) as [number, number][];
+  if (!Array.isArray(points) || points.length === 0) return;
+  drawPlot(canvas, {
+    key: 'code-chart',
+    label: 'コードが描く点',
+    lines: [{ x: points.map(point => point[0]), y: points.map(point => point[1]), role: 'numerical' }],
+    dots: points.map(([x, y]) => ({ x, y, role: 'numerical', radius: 3.5 })),
+  });
 }
 
 export function mountCodeDisclosure() {
@@ -143,8 +113,11 @@ export function mountCodeDisclosure() {
       spinner.hidden = false;
       result.dataset.state = '';
       result.textContent = '';
+      await new Promise(resolve => setTimeout(resolve, 30));
       try {
-        result.textContent = button.dataset.run === 'python' ? await runPython(source) : await runTypeScript(source);
+        const text = button.dataset.run === 'python' ? await runPython(source) : await runTypeScript(source);
+        result.textContent = text;
+        drawCodeChart(text);
       } catch (error) {
         result.dataset.state = 'error';
         result.textContent = error instanceof Error ? error.message : String(error);

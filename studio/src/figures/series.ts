@@ -2,6 +2,7 @@
 
 import { axisDomain, drawCartesianAxes, mapX, mapY, type PlotFrame } from './axes';
 import { canvasContext, figurePalette } from './canvas';
+import { mirrorOpening } from './opening-mirror';
 import { drawSamplePoint } from './particle';
 
 export interface SeriesSample {
@@ -93,6 +94,7 @@ export function drawTimeSeries(canvas: HTMLCanvasElement, frame: TimeSeriesFrame
   stroke(context, plot, frame.samples, sample => sample.exact);
   context.restore();
   drawSamplePoint(context, mapX(plot, frame.time), mapY(plot, frame.current));
+  mirrorOpening(canvas);
 }
 
 export interface ErrorSample {
@@ -181,6 +183,7 @@ export function drawErrorSeries(canvas: HTMLCanvasElement, frame: ErrorSeriesFra
     context.arc(pointX, pointY, 3.5, 0, Math.PI * 2);
     context.fill();
   }
+  mirrorOpening(canvas);
 }
 
 export interface ExactSample {
@@ -262,4 +265,5 @@ export function drawExactCurve(canvas: HTMLCanvasElement, frame: ExactCurveFrame
     context.arc(pointX, pointY, 3.5, 0, Math.PI * 2);
     context.fill();
   }
+  mirrorOpening(canvas);
 }

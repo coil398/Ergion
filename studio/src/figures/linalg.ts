@@ -4,6 +4,7 @@
  */
 
 import { canvasContext, figurePalette } from './canvas';
+import { mirrorOpening } from './opening-mirror';
 import { drawLabel } from './labels';
 
 /** 数を TeX の文字にする。有効数字 digits 桁。極端に大きいか小さい数は 10 の累乗で書く。 */
@@ -134,4 +135,5 @@ export function drawMatrixBlocks(canvas: HTMLCanvasElement, blocks: MatrixBlock[
     });
     top += lineHeights[lineIndex];
   });
+  mirrorOpening(canvas);
 }

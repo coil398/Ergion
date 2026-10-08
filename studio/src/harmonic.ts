@@ -82,7 +82,7 @@ renderLesson({
     plotsHeading: '位置の時間変化と位相図',
     tabs: methodTabs('この方程式の数値解法'),
     plots: `<div class="plot-grid"><div class="plot-main"><h3>位置の時間変化 ${tex('x(t)')}</h3><canvas id="time-chart" role="img"></canvas><p>時間 t</p></div><div class="plot-phase"><h3>位置と速度の位相図</h3><canvas id="phase-chart" role="img"></canvas><p>位置 x（縦軸は速度 v）</p></div></div>`,
-    code: codeDisclosure('euler'),
+    code: codeDisclosure('harmonic'),
   }),
   exampleHeading: '数を代入した例',
   example: [
@@ -102,7 +102,7 @@ renderLesson({
     { href: './rk4.html', title: '古典的RK4' },
     { href: './damped.html', title: '減衰振動' },
   ],
-  footer: 'この画面の計算は、ばねにつながれた一つの質点の単振動です。',
+  footer: '',
   proof: writtenProof([{
     statement: `${tex(`m x'' = -k x`)} の解では、${tex(String.raw`E = \frac{1}{2} m (x')^2 + \frac{1}{2} k x^2`)} は時刻によらない定数です。`,
     proof: [

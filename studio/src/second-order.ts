@@ -81,7 +81,7 @@ app.innerHTML = `
         </div>
       </section>
       ${pageFigure('second-order', '定数係数の2階同次は、特性根が相異なる実数、重根、複素数のどれかで、三つの形の厳密解を持つ。')}
-      ${steppedFigure()}
+      ${steppedFigure(false, 'second-order')}
       <section class="study panel" id="example" aria-labelledby="real-heading">
         <div class="study-body">
           <h2 id="real-heading">相異なる実根の例</h2>

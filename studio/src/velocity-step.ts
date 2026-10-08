@@ -77,13 +77,12 @@ app.innerHTML = `
                 <label>時間刻み <span class="field-symbol">${tex(String.raw`\Delta t`)}</span><input name="dt" type="number" min="0" max="1000000000000" step="any" required value="0.01"></label>
                 <label>ステップ数<input name="steps" type="number" min="1" max="1000000" step="1" required value="1000"></label>
               </div>
-              <p class="field-hint" id="time-hint">計算時間 10.00</p>
+              <p class="field-hint" id="time-hint">t = 10.00</p>
             </fieldset>
             <button class="button secondary apply" id="apply" type="submit" disabled>条件を適用してリセット</button>
-            <p class="form-note" id="form-note">現在の条件で実行できます。</p>
+            <p class="form-note" id="form-note" hidden></p>
           </form>
           <div class="config-files"><button id="export" class="text-button" type="button">設定を保存 ↓</button><label class="text-button file-label">設定を読み込む<input id="import" type="file" accept=".json,application/json"></label></div>
-          <p class="file-note">同じJSON設定をCLIでも使えます。途中の計算状態は保存しません。</p>
         </section>
         <div class="results">
           <section class="scene panel" aria-labelledby="scene-heading">
@@ -100,7 +99,7 @@ app.innerHTML = `
             <div class="plot-footer"><span id="comparison">解析解との差を計算します。</span></div>
           </section>
           ${transportPanel()}
-          ${codeDisclosure(currentMethod)}
+          ${codeDisclosure('uniform', currentMethod)}
           <p id="error" role="alert" hidden></p>
           <p class="experiment-note">数値計算はブラウザ内で実行します。条件や結果をサーバーへ送信しません。</p>
         </div>

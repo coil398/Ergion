@@ -76,7 +76,7 @@ app.innerHTML = `
         </div>
       </section>
       ${pageFigure('laplace', 'X(s) = 1/((s−1)(s−2)(s−3)) の三つの実極が、逆変換 x = ½e^t − e^(2t) + ½e^(3t) の指数を決める。')}
-      ${steppedFigure()}
+      ${steppedFigure(false, 'laplace')}
       <section class="study panel" id="example" aria-labelledby="example-heading">
         <div class="study-body">
           <h2 id="example-heading">数を代入した検算</h2>

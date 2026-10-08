@@ -1,11 +1,11 @@
-import { codeDisclosure, mountCodeDisclosure, setCodeMethod } from './code-panel';
+import { codeDisclosure, mountCodeDisclosure, setCodeMethod, type CodeProblem } from './code-panel';
 import { drawErrorSeries, drawTimeSeries } from './figures';
 import { bindMethodTabs, methodTabs } from './method-tabs';
 import type { CompareConfig, Reply, Snapshot, StepMethod } from './protocol';
 import { onThemeChange } from './theme';
 
 /** 厳密解の図に、その方程式の数値解と誤差を重ねる。 */
-export function steppedFigure(companion = false): string {
+export function steppedFigure(companion = false, problem: CodeProblem = 'separation'): string {
   return `
       <section class="plots panel" aria-labelledby="curve-heading">
         <div class="panel-heading"><h2 id="curve-heading">数値解と厳密解</h2><div class="legend"><span><i class="numerical"></i>数値解</span><span><i class="analytical"></i>厳密解</span><span><i class="difference"></i>誤差</span></div></div>
@@ -23,7 +23,7 @@ export function steppedFigure(companion = false): string {
           ${companion ? '<div><span>もう一つの厳密解</span><output id="solution-companion">—</output></div><div><span>もう一つの数値解</span><output id="companion-numerical">—</output></div><div><span>もう一つの誤差</span><output id="companion-error-value">—</output></div>' : ''}
         </div>
       </section>
-      ${codeDisclosure('euler')}`;
+      ${codeDisclosure(problem)}`;
 }
 
 /** ページに書いた例を、ライブラリの数値解と厳密解として描く。式の値はここでは計算しない。 */

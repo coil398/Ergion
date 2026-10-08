@@ -77,7 +77,7 @@ app.innerHTML = `
         </div>
       </section>
       ${pageFigure('bernoulli', 'ベルヌーイの例 x′ = x − x² は、x(0) = 1/2 から飽和値 x = 1 へシグモイドで近づく。')}
-      ${steppedFigure()}
+      ${steppedFigure(false, 'bernoulli')}
       <section class="study panel" id="example" aria-labelledby="example-heading">
         <div class="study-body">
           <h2 id="example-heading">数を代入した例</h2>

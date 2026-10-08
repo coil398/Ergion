@@ -70,7 +70,7 @@ renderLesson({
     plotsHeading: '位置と誤差の時間変化',
     tabs: methodTabs('この方程式の数値解法'),
     plots: `<div class="plot-grid"><div class="plot-main"><h3>位置の時間変化 ${tex('x(t)')}</h3><canvas id="time-chart" role="img"></canvas><p>時間 t</p></div><div class="plot-phase"><h3>位置の誤差 ${tex(String.raw`x - x_{\mathrm{exact}}`)}</h3><canvas id="error-chart" role="img"></canvas><p>時間 t</p></div></div>`,
-    code: codeDisclosure('euler'),
+    code: codeDisclosure('constant-force'),
   }),
   exampleHeading: '数を代入した例',
   example: [
@@ -89,7 +89,7 @@ renderLesson({
     { href: './derivative.html', title: '位置の時間微分' },
     { href: './second-order.html', title: '定数係数の2階同次' },
   ],
-  footer: 'この画面の計算は、一定の力を受ける一つの質点の直線運動です。',
+  footer: '',
 });
 
 const form = formReader(defaults);

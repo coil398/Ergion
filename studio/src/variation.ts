@@ -77,7 +77,7 @@ app.innerHTML = `
         </div>
       </section>
       ${pageFigure('variation', 'x″ + x = tan t の解は開区間 (−π/2, π/2) の中にあり、境界へ近づくと傾きが限りなく大きくなる。')}
-      ${steppedFigure()}
+      ${steppedFigure(false, 'variation')}
       <section class="study panel" id="example" aria-labelledby="example-heading">
         <div class="study-body">
           <h2 id="example-heading">数を代入した検算</h2>

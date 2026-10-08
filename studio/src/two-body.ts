@@ -122,7 +122,7 @@ renderLesson({
     plotsHeading: '角運動量と相対位置の時間変化',
     tabs: methodTabs('この方程式の数値解法'),
     plots: `<div class="plot-grid"><div class="plot-main"><h3>角運動量の時間変化 ${tex('h(t)')}</h3><canvas id="momentum-chart" role="img"></canvas><p>時間 t</p></div><div class="plot-phase"><h3>相対位置の時間変化 ${tex('x(t)')}</h3><canvas id="position-chart" role="img"></canvas><p>時間 t</p></div></div>`,
-    code: codeDisclosure('euler'),
+    code: codeDisclosure('two-body'),
   }),
   exampleHeading: '数を代入した例',
   example: [
@@ -135,7 +135,7 @@ renderLesson({
     `遠点距離、長半径、短半径、周期は
       ${eq(String.raw`r_a = \frac{1.5}{1 - 0.5} = 3,\qquad a = \frac{1 + 3}{2} = 2,\qquad b = 2\sqrt{1 - 0.25} = \sqrt{3}`)}
       ${eq(String.raw`T = 2\pi\sqrt{\frac{2^3}{3}} = 2\pi\sqrt{8/3} \approx 10.26040`)}
-      です。根号の形が厳密な値で、小数は近似です。既定の条件 ${tex(String.raw`\Delta t = 0.005`)}、4104 ステップの計算時間 ${tex(String.raw`4104 \cdot 0.005 = 20.52`)}（厳密）は、${tex(String.raw`2T \approx 20.5208`)} とほぼ等しく、約2周期です。`,
+      です。根号の形が厳密な値で、小数は近似です。既定の条件 ${tex(String.raw`\Delta t = 0.005`)}、4104 ステップの終端は ${tex(String.raw`t = 4104 \cdot 0.005 = 20.52`)}（厳密）で、${tex(String.raw`2T \approx 20.5208`)} とほぼ等しく、約2周期です。`,
     `相対運動のエネルギーは ${tex(String.raw`E = \mu\left(\frac{v_p^2}{2} - \frac{GM}{r_p}\right) = \frac{2}{3}\left(\frac{4.5}{2} - 3\right) = -\frac{1}{2}`)} で、厳密です。古典的RK4 の数値解では、計器の角運動量 ${tex('h')} は計算の終わりまで ${tex('2.12132')}（近似）のままです。Euler 法では1周ごとに ${tex('h')} とエネルギーが増え、軌跡は楕円の外へ広がります。`,
   ],
   related: [

@@ -68,7 +68,7 @@ app.innerHTML = `
         </div>
       </section>
       ${pageFigure('series', 'x″ + x = 0、x(0) = 1、x′(0) = 0 のべき級数の部分和は、原点の近くで厳密解 cos t に沿い、次数を上げるほど遠くまで沿う。')}
-      ${steppedFigure()}
+      ${steppedFigure(false, 'series')}
       <section class="study panel" id="example" aria-labelledby="example-heading">
         <div class="study-body">
           <h2 id="example-heading">数を代入した検算</h2>

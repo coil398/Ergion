@@ -69,7 +69,7 @@ app.innerHTML = `
         </div>
       </section>
       ${pageFigure('linear', 'x′ + 2x = 6、x(0) = 1 の解は、水平な平衡 x = 3 へ指数的に近づく。')}
-      ${steppedFigure()}
+      ${steppedFigure(false, 'linear')}
       <section class="study panel" id="example" aria-labelledby="example-heading">
         <div class="study-body">
           <h2 id="example-heading">数を代入した例</h2>

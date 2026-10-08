@@ -53,7 +53,7 @@ test('Monte Carlo 法は+t を持ち、種 1 で N = 4020 のとき N_in = 3206�
   test.setTimeout(90_000);
   await page.goto('monte-carlo.html');
   await expect(page.locator('#status')).toHaveText('準備完了');
-  for (const name of ['再生', '一時停止', 'ループ再生', '+t']) {
+  for (const name of ['再生', '一時停止', 'ループ再生', '+t', '-t']) {
     await expect(page.getByRole('button', { name, exact: true })).toBeVisible();
   }
   await expect(page.locator('#exact-position')).toHaveText('3.14159');

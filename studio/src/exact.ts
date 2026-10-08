@@ -59,7 +59,7 @@ app.innerHTML = `
         </div>
       </section>
       ${pageFigure('exact', '完全微分 (2x+y)dx + (x+2y)dy = 0 の解は、ポテンシャル x² + xy + y² = C の等高線である。')}
-      ${steppedFigure()}
+      ${steppedFigure(false, 'exact')}
       <section class="study panel" id="example" aria-labelledby="example-heading">
         <div class="study-body">
           <h2 id="example-heading">数を代入した例</h2>

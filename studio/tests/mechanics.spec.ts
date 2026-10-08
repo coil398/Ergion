@@ -35,7 +35,7 @@ test('一定の力の例は t = 2 で x = 9、Euler 法は 8.96 になる', asyn
 test('単振動はループ再生と+t を持ち、エネルギーを示す', async ({ page }) => {
   await page.goto('harmonic.html');
   await expect(page.locator('#status')).toHaveText('準備完了');
-  for (const name of ['再生', '一時停止', 'ループ再生', '+t']) {
+  for (const name of ['再生', '一時停止', 'ループ再生', '+t', '-t']) {
     await expect(page.getByRole('button', { name, exact: true })).toBeVisible();
   }
   await page.getByRole('tab', { name: '古典的RK4' }).click();

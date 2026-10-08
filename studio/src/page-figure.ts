@@ -1,19 +1,10 @@
 /**
- * ページの図。明るい配色と暗い配色の画像を置き、配色に合うほうだけを見せる。
- * 幅の狭い画面では、文字を縮めずに縦に組んだ画像を使う。
+ * ページの図。式の直後に軸のあるグラフを置く。
+ * 画素はページのグラフを写し、配色は図のトークンに従う。
  */
-export function pageFigure(id: string, alt: string): string {
-  const base = `${import.meta.env.BASE_URL}figures/${id}/`;
-  const narrow = '(max-width: 560px)';
+export function pageFigure(_id: string, alt: string): string {
   return `
-      <figure class="page-figure panel" data-figure="${id}">
-        <picture class="figure-light">
-          <source media="${narrow}" srcset="${base}figure-narrow.png">
-          <img src="${base}figure.png" alt="${alt}" loading="lazy" decoding="async">
-        </picture>
-        <picture class="figure-dark">
-          <source media="${narrow}" srcset="${base}figure-dark-narrow.png">
-          <img src="${base}figure-dark.png" alt="${alt}" loading="lazy" decoding="async">
-        </picture>
+      <figure class="page-figure panel">
+        <canvas id="opening-chart" style="height:280px" aria-label="${alt}" role="img"></canvas>
       </figure>`;
 }

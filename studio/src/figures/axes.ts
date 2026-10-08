@@ -62,7 +62,7 @@ function padded(values: number[], padRatio: number, padMin: number): Domain {
   return { min: min - padMin, max: max + padMin };
 }
 
-/** 軸の端。二点以上あるときは、記録された直線を計算時間の端まで延ばして固定する。 */
+/** 軸の端。二点以上あるときは、記録された直線を終端時刻 t = Δt × ステップ数まで延ばして固定する。 */
 export function axisDomain(
   key: string,
   samples: TimedValue[],

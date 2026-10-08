@@ -33,7 +33,7 @@ test('SCF の反復は +t と再生を持ち、V_nn = 1/√3.25 を示し、α �
   test.setTimeout(90_000);
   await page.goto('kohn-sham.html');
   await expect(page.locator('#status')).toHaveText('準備完了');
-  for (const name of ['再生', '一時停止', 'ループ再生', '+t']) {
+  for (const name of ['再生', '一時停止', 'ループ再生', '+t', '-t']) {
     await expect(page.getByRole('button', { name, exact: true })).toBeVisible();
   }
   await expect(page.locator('#example-vnn')).toHaveText('0.5547002');

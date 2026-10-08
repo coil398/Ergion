@@ -43,7 +43,7 @@ test('幾何 Brownian 運動は+t を持ち、1ステップの例と、タブご
   test.setTimeout(90_000);
   await page.goto('gbm.html');
   await expect(page.locator('#status')).toHaveText('準備完了');
-  for (const name of ['再生', '一時停止', 'ループ再生', '+t']) {
+  for (const name of ['再生', '一時停止', 'ループ再生', '+t', '-t']) {
     await expect(page.getByRole('button', { name, exact: true })).toBeVisible();
   }
   await expect(page.locator('#example-em')).toHaveText('101.580000');

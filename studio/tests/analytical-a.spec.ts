@@ -35,7 +35,7 @@ test('斜面の例は F ≈ 11.31607、t = 2 で s = 9.8、Euler 法は 9.751 �
   test.setTimeout(90_000);
   await page.goto('virtual-work.html');
   await expect(page.locator('#status')).toHaveText('準備完了');
-  for (const name of ['再生', '一時停止', 'ループ再生', '+t']) {
+  for (const name of ['再生', '一時停止', 'ループ再生', '+t', '-t']) {
     await expect(page.getByRole('button', { name, exact: true })).toBeVisible();
   }
   await expect(page.locator('#holding-force')).toHaveText('11.31607');

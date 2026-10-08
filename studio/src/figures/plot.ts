@@ -4,6 +4,7 @@
  */
 
 import { drawCartesianAxes, mapX, mapY, type PlotFrame } from './axes';
+import { mirrorOpening } from './opening-mirror';
 import { canvasContext, figurePalette, type FigurePalette } from './canvas';
 import { drawLabel } from './labels';
 
@@ -251,4 +252,5 @@ export function drawPlot(canvas: HTMLCanvasElement, spec: PlotSpec) {
     const y = Math.min(Math.max(py - 12, top + 10), top + plotHeight - 10);
     drawLabel(context, item.label, x, y, 'math', { align: alignRight ? 'right' : 'left', color: roleStyle(palette, item.role).color === palette.textSecondary ? palette.text : roleStyle(palette, item.role).color });
   }
+  mirrorOpening(canvas);
 }

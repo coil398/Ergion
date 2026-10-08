@@ -1,102 +1,72 @@
-import wasmUrl from '../wasm/ergion_lab_bg.wasm?url';
+/**
+ * 画面に出しているコードを、その文のまま実行する。
+ * TypeScript は関数として走らせ、Python は同じ文の並びを同じ演算に写して走らせる。
+ * どちらもサーバーへ送らない。
+ */
 
-const PYODIDE_INDEX = 'https://cdn.jsdelivr.net/pyodide/v0.27.7/full/';
-
-interface LabModule {
-  default: (input?: { module_or_path: string }) => Promise<unknown>;
-  euler_step: (state: Float64Array, time: number, dt: number, derivative: (time: number, state: Float64Array) => unknown) => void;
-  midpoint_step: (state: Float64Array, time: number, dt: number, derivative: (time: number, state: Float64Array) => unknown) => void;
-  rk4_step: (state: Float64Array, time: number, dt: number, derivative: (time: number, state: Float64Array) => unknown) => void;
-  newton_step: (x: number, value: (x: number) => unknown, derivative: (x: number) => unknown) => number;
-}
-
-interface PyodideRuntime {
-  setStdout(options: { batched: (line: string) => void }): void;
-  registerJsModule(name: string, module: object): void;
-  runPythonAsync(code: string): Promise<unknown>;
-}
-
-const STEPS = ['euler_step', 'midpoint_step', 'rk4_step', 'newton_step'] as const;
-let loading: Promise<LabModule> | undefined;
-let pyodideLoading: Promise<PyodideRuntime> | undefined;
-let pythonBridgeReady = false;
-
-function loadLab(): Promise<LabModule> {
-  loading ??= import('../wasm/ergion_lab.js').then(async (wasm) => {
-    const lab = wasm as LabModule;
-    try {
-      await lab.default({ module_or_path: wasmUrl });
-      return lab;
-    } catch (error) {
-      loading = undefined;
-      throw error;
-    }
-  });
-  return loading;
-}
-
-function formatValue(value: unknown): string {
-  if (typeof value === 'number') return String(value);
-  if (Array.isArray(value)) return `[${value.map(item => formatValue(item)).join(', ')}]`;
-  return String(value);
-}
-
-/** 表示している TypeScript を、ページの WASM の同名の関数に結びつけて実行する。 */
-export async function runTypeScript(source: string): Promise<string> {
-  const imported = source.match(/^import\s+init\s*,\s*\{([^}]+)\}\s+from\s+["']ergion-lab["'];?/);
-  if (!imported) throw new Error('ergion-lab から関数を読み込みます。');
-  const names = imported[1].split(',').map(name => name.trim()).filter(Boolean);
-  const lab = await loadLab();
-  const AsyncFunction = Object.getPrototypeOf(async function () { return undefined; }).constructor as new (
-    ...args: string[]
-  ) => (...values: unknown[]) => Promise<unknown>;
+function capture(source: string): string {
   const lines: string[] = [];
-  const args = ['init', ...names, 'console'];
-  const values: unknown[] = [
-    async () => { await loadLab(); },
-    ...names.map(name => {
-      if (!STEPS.includes(name as typeof STEPS[number])) throw new Error('ergion-lab から関数を読み込みます。');
-      return lab[name as typeof STEPS[number]];
-    }),
-    { log: (...items: unknown[]) => { lines.push(items.map(formatValue).join(' ')); } },
-  ];
-  await new AsyncFunction(...args, source.replace(imported[0], ''))(...values);
+  const console = { log: (...items: unknown[]) => { lines.push(items.map(item => String(item)).join(' ')); } };
+  const run = new Function('console', 'Math', source) as (console: { log: (...items: unknown[]) => void }, math: Math) => void;
+  run(console, Math);
   return lines.join('\n').trim();
 }
 
-function pythonBridge(lab: LabModule) {
-  const advance = (
-    step: LabModule['euler_step'],
-    state: { [index: number]: unknown; length: number; toJs?: () => unknown },
-    time: number,
-    dt: number,
-    derivative: (time: number, state: number[]) => unknown,
-  ) => {
-    const current = typeof state.toJs === 'function' ? state.toJs() : Array.from({ length: state.length }, (_, index) => state[index]);
-    if (!Array.isArray(current)) throw new Error('状態は数の列です。');
-    const buffer = Float64Array.from(current.map(Number));
-    step(buffer, time, dt, (t, y) => derivative(t, Array.from(y)));
-    for (let index = 0; index < buffer.length; index += 1) state[index] = buffer[index];
-  };
-  return {
-    euler_step: (state: { [index: number]: unknown; length: number }, time: number, dt: number, derivative: (time: number, state: number[]) => unknown) => advance(lab.euler_step, state, time, dt, derivative),
-    midpoint_step: (state: { [index: number]: unknown; length: number }, time: number, dt: number, derivative: (time: number, state: number[]) => unknown) => advance(lab.midpoint_step, state, time, dt, derivative),
-    rk4_step: (state: { [index: number]: unknown; length: number }, time: number, dt: number, derivative: (time: number, state: number[]) => unknown) => advance(lab.rk4_step, state, time, dt, derivative),
-    newton_step: (x: number, value: (x: number) => unknown, derivative: (x: number) => unknown) => lab.newton_step(x, value, derivative),
-  };
+/** 表示している TypeScript を実行し、console.log の出力を返す。 */
+export function runTypeScript(source: string): Promise<string> {
+  return Promise.resolve(capture(source));
 }
 
-/** 表示している Python を Pyodide で実行する。ergion はページの WASM の同名の関数を呼ぶ。 */
-export async function runPython(source: string): Promise<string> {
-  const lab = await loadLab();
-  pyodideLoading ??= import(/* @vite-ignore */ `${PYODIDE_INDEX}pyodide.mjs`).then(async (module: { loadPyodide: (options: { indexURL: string }) => Promise<PyodideRuntime> }) => module.loadPyodide({ indexURL: PYODIDE_INDEX }));
-  const pyodide = await pyodideLoading;
-  if (!pythonBridgeReady) {
-    pyodide.registerJsModule('ergion', pythonBridge(lab));
-    pythonBridgeReady = true;
+function pythonToJs(source: string): string {
+  const rows = source.replace(/\r/g, '').split('\n');
+  const out: string[] = [];
+  const indents: number[] = [0];
+  const declared = new Set<string>();
+  const closeTo = (indent: number) => {
+    while (indents[indents.length - 1] > indent) {
+      indents.pop();
+      out.push(`${' '.repeat(indents[indents.length - 1])}}`);
+    }
+  };
+  for (const row of rows) {
+    if (!row.trim() || row.trim().startsWith('#')) continue;
+    const indent = row.match(/^ */)?.[0].length ?? 0;
+    closeTo(indent);
+    const code = row.trim();
+    const pad = ' '.repeat(indent);
+    if (code.startsWith('from math import ')) {
+      for (const name of code.slice('from math import '.length).split(',')) {
+        const item = name.trim();
+        out.push(`const ${item} = Math.${item === 'pi' ? 'PI' : item};`);
+        declared.add(item);
+      }
+      continue;
+    }
+    if (code.startsWith('print(') && code.endsWith(')')) {
+      out.push(`${pad}console.log(JSON.stringify(${code.slice(6, -1)}));`);
+      continue;
+    }
+    const loop = code.match(/^for\s+([A-Za-z_][A-Za-z0-9_]*)\s+in\s+range\(([A-Za-z_][A-Za-z0-9_]*)\):$/);
+    if (loop) {
+      out.push(`${pad}for (let ${loop[1]} = 0; ${loop[1]} < ${loop[2]}; ${loop[1]}++) {`);
+      indents.push(indent + 4);
+      declared.add(loop[1]);
+      continue;
+    }
+    const call = code.replace(/\.append\(/g, '.push(');
+    const assign = call.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*=\s*([\s\S]+)$/);
+    if (assign && !declared.has(assign[1])) {
+      declared.add(assign[1]);
+      out.push(`${pad}let ${assign[1]} = ${assign[2]};`);
+    } else {
+      out.push(`${pad}${call};`);
+    }
   }
-  let text = '';
-  pyodide.setStdout({ batched: line => { text += line.endsWith('\n') ? line : `${line}\n`; } });
-  await pyodide.runPythonAsync(source);
-  return text.trim();
+  closeTo(0);
+  return out.join('\n');
+}
+
+/** 表示している Python を、その代入と繰り返しのまま実行する。 */
+export function runPython(source: string): Promise<string> {
+  return Promise.resolve(capture(pythonToJs(source)));
 }

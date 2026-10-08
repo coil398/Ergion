@@ -6,7 +6,7 @@ export interface CanvasSurface {
   height: number;
 }
 
-/** 図の色。ページと同じ CSS のトークンを読み、明るい配色と暗い配色で同じ役割の色を使う。 */
+/** 図の色。ページと同じ CSS のトークンを読む。地と文字は紙とインク、数値解はプルシアンブルー、誤差は煉瓦、速度は橙である。 */
 export interface FigurePalette {
   text: string;
   textSecondary: string;

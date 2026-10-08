@@ -91,7 +91,7 @@ renderLesson({
         plotsHeading: '斜面に沿った距離の時間変化',
         tabs: methodTabs('この方程式の数値解法'),
         plots: `<div class="plot-pair"><div><h3>距離の時間変化 ${tex('s(t)')}</h3><canvas id="time-chart" role="img"></canvas><p>時間 t</p></div><div><h3>距離の差 ${tex(String.raw`s - s_{\mathrm{exact}}`)}</h3><canvas id="error-chart" role="img"></canvas><p>時間 t</p></div></div>`,
-        code: codeDisclosure('euler'),
+        code: codeDisclosure('incline'),
       })}`,
   exampleHeading: '数を代入した例',
   example: [

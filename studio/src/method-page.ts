@@ -3,7 +3,7 @@ import { pageFigure } from './page-figure';
 import { appHeader, coreStepDoc, pageFooter, rail, relatedPages, type RelatedLink } from './chrome';
 import { clearFigure, drawConstantAcceleration, drawErrorSeries, drawTimeSeries, drawUniformMotion } from './figures';
 import type { Snapshot, StepMethod } from './protocol';
-import { codeDisclosure, mountCodeDisclosure, setCodeMethod } from './code-panel';
+import { codeDisclosure, mountCodeDisclosure, setCodeMethod, setCodeProblem } from './code-panel';
 import { mountSession, transportPanel, type TimedConfig } from './session';
 import { tex } from './tex';
 
@@ -147,7 +147,7 @@ export function mountMethodPage(options: {
           <div>
             <p class="breadcrumb">数値計算 <span>/</span> ${options.title}</p>
             <h1>${options.title}<span class="title-dot">.</span></h1>
-            <p class="description">このページは ${options.title} だけを説明します。例は ${tex(String.raw`x' = v`)} で、速度 ${tex('v')} は一定です。厳密解は ${tex('x(t) = x_0 + v t')} です。</p>
+            <p class="description">例は ${tex(String.raw`x' = v`)} で、速度 ${tex('v')} は一定です。厳密解は ${tex('x(t) = x_0 + v t')} です。</p>
           </div>
           <div class="equation" aria-label="${options.title}の更新式">
             ${tex(options.formula, true)}
@@ -186,13 +186,12 @@ export function mountMethodPage(options: {
                   <label>時間刻み <span class="field-symbol">${tex(String.raw`\Delta t`)}</span><input name="dt" type="number" min="0" max="1000000000000" step="any" required value="0.01"></label>
                   <label>ステップ数<input name="steps" type="number" min="1" max="1000000" step="1" required value="1000"></label>
                 </div>
-                <p class="field-hint" id="time-hint">計算時間 10.00</p>
+                <p class="field-hint" id="time-hint">t = 10.00</p>
               </fieldset>
               <button class="button secondary apply" id="apply" type="submit" disabled>条件を適用してリセット</button>
-              <p class="form-note" id="form-note">現在の条件で実行できます。</p>
+              <p class="form-note" id="form-note" hidden></p>
             </form>
             <div class="config-files"><button id="export" class="text-button" type="button">設定を保存 ↓</button><label class="text-button file-label">設定を読み込む<input id="import" type="file" accept=".json,application/json"></label></div>
-            <p class="file-note">同じJSON設定をCLIでも使えます。途中の計算状態は保存しません。</p>
           </section>
           <div class="results">
             <section class="scene panel" aria-labelledby="scene-heading">
@@ -208,7 +207,7 @@ export function mountMethodPage(options: {
               <div class="plot-footer"><span id="comparison">解析解との差を計算します。</span></div>
             </section>
             ${transportPanel()}
-            ${codeDisclosure(method)}
+            ${codeDisclosure(currentTopic, method)}
             <p id="error" role="alert" hidden></p>
             <p class="experiment-note">数値計算はブラウザ内で実行します。条件や結果をサーバーへ送信しません。</p>
           </div>
@@ -226,7 +225,7 @@ export function mountMethodPage(options: {
           </div>
         </section>
         ${relatedPages(getRelatedLinksForMethod(method))}
-        ${pageFooter(`この画面は、速度が一定の x' = v を、${options.title}で1ステップ進めます。`)}
+        ${pageFooter('')}
       </main>
     </div>`;
   mountCodeDisclosure();
@@ -327,6 +326,7 @@ export function mountMethodPage(options: {
       }
       const caption = document.querySelector<HTMLParagraphElement>('#sim-caption');
       if (caption) caption.textContent = getCaption(currentTopic, method);
+      setCodeProblem(currentTopic);
       const current = readForm();
       session.reloadConfig({ kind: currentTopic, initial_position: current.initial_position, velocity: current.velocity, acceleration: current.acceleration, k: current.k });
     });

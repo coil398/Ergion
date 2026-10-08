@@ -123,7 +123,8 @@ export interface Batch { samples: Snapshot[]; state: Snapshot }
 export type Command =
   | { id: number; command: 'load'; model?: MotionModel; method?: string; config: Config | ConstantAccelerationConfig | SeparationConfig | LinearConfig | TextbookConfig | CompareConfig | NewtonConfig | LessonConfig }
   | { id: number; command: 'start' | 'pause' | 'step' }
-  | { id: number; command: 'extend'; steps: number };
+  | { id: number; command: 'extend'; steps: number }
+  | { id: number; command: 'shorten'; steps: number };
 export interface Update extends Batch {
   id: number;
   phase: 'ready' | 'running' | 'paused' | 'finished';

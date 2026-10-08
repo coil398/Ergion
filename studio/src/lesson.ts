@@ -44,6 +44,13 @@ export function eq(source: string): string {
   return `<p class="solution-equation">${tex(source, true)}</p>`;
 }
 
+/** 式が一つだけのページでは、記号の定義を最初の手順へ移す。後から出る式は手順に残し、見出しのカードには置かない。 */
+function stepsWithNote(spec: LessonSpec): string[] {
+  if (!spec.equationNote || spec.equation.length !== 1 || spec.steps.length === 0) return spec.steps;
+  const glue = /。\s*$/.test(spec.equationNote) ? '' : '。';
+  return [`${spec.equationNote}${glue}${spec.steps[0]}`, ...spec.steps.slice(1)];
+}
+
 /** 単元のページを #app に置く。 */
 export function renderLesson(spec: LessonSpec) {
   const crumb = spec.section.href ? `<a href="${spec.section.href}">${spec.section.label}</a>` : spec.section.label;
@@ -60,19 +67,18 @@ export function renderLesson(spec: LessonSpec) {
           <p class="description">${spec.description}</p>
         </div>
         <div class="equation" aria-label="${spec.equationLabel}">
-          ${spec.equation.map(source => tex(source, true)).join('\n          ')}
-          ${spec.equationNote ? `<span class="equation-note">${spec.equationNote}</span>` : ''}
+          ${tex(spec.equation[0], true)}
         </div>
       </section>
+      ${pageFigure(spec.id, spec.figureAlt)}
       <section class="study panel" id="study" aria-labelledby="study-heading">
         <div class="panel-heading"><h2 id="study-heading">${spec.studyHeading}</h2></div>
         <div class="study-body">
           <ol class="solution">
-            ${spec.steps.map(step => `<li>${step}</li>`).join('\n            ')}
+            ${stepsWithNote(spec).map(step => `<li>${step}</li>`).join('\n            ')}
           </ol>
         </div>
       </section>
-      ${pageFigure(spec.id, spec.figureAlt)}
       ${spec.figure}
       <section class="study panel" id="example" aria-labelledby="example-heading">
         <div class="study-body">
@@ -208,13 +214,12 @@ export function experimentPanel(options: {
                 <label>時間刻み <span class="field-symbol">${tex(String.raw`\Delta t`)}</span><input name="dt" type="number" min="0" max="1000000000000" step="any" required value="${options.dt}"></label>
                 <label>ステップ数<input name="steps" type="number" min="1" max="1000000" step="1" required value="${options.steps}"></label>
               </div>
-              <p class="field-hint" id="time-hint">計算時間 ${(options.dt * options.steps).toFixed(2)}</p>
+              <p class="field-hint" id="time-hint">t = ${(options.dt * options.steps).toFixed(2)}</p>
             </fieldset>
             <button class="button secondary apply" id="apply" type="submit" disabled>条件を適用してリセット</button>
-            <p class="form-note" id="form-note">現在の条件で実行できます。</p>
+            <p class="form-note" id="form-note" hidden></p>
           </form>
           <div class="config-files"><button id="export" class="text-button" type="button">設定を保存 ↓</button><label class="text-button file-label">設定を読み込む<input id="import" type="file" accept=".json,application/json"></label></div>
-          <p class="file-note">途中の計算状態は保存しません。</p>
         </section>
         <div class="results">
           <section class="scene panel" aria-labelledby="scene-heading">

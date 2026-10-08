@@ -89,7 +89,7 @@ renderLesson({
     legend: '<span><i class="numerical"></i>1本目の軌道</span><span><i class="analytical"></i>2本目の軌道（初期値を δ ずらす）</span>',
     tabs: methodTabs('この方程式の数値解法'),
     plots: `<div class="lesson-figure"><h3>距離の常用対数 ${tex(String.raw`\log_{10} d(t)`)}</h3><canvas id="separation-chart" role="img"></canvas><p>時間 t</p></div>`,
-    code: codeDisclosure('euler'),
+    code: codeDisclosure('lorenz'),
   }),
   exampleHeading: '数を代入した例',
   example: [

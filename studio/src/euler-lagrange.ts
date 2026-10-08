@@ -109,7 +109,7 @@ renderLesson({
         plotsHeading: '振れ角の時間変化と位相図',
         tabs: methodTabs('この方程式の数値解法'),
         plots: `<div class="plot-grid"><div class="plot-main"><h3>振れ角の時間変化 ${tex(String.raw`\theta(t)`)}</h3><canvas id="time-chart" role="img"></canvas><p>時間 t</p></div><div class="plot-phase"><h3>振れ角と角速度の位相図</h3><canvas id="phase-chart" role="img"></canvas><p>振れ角 θ（縦軸は角速度 θ′）</p></div></div>`,
-        code: codeDisclosure('euler'),
+        code: codeDisclosure('pendulum'),
       })}`,
   exampleHeading: '数を代入した例',
   example: [

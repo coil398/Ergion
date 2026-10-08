@@ -75,7 +75,7 @@ app.innerHTML = `
         </div>
       </section>
       ${pageFigure('undetermined', 'x″ − 3x′ + 2x = e^(3t)、初期値 0 の解は、同次成分と駆動項 ½e^(3t) を足して急に大きくなる。')}
-      ${steppedFigure()}
+      ${steppedFigure(false, 'undetermined')}
       <section class="study panel" id="example" aria-labelledby="example-heading">
         <div class="study-body">
           <h2 id="example-heading">数を代入した検算</h2>

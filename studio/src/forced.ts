@@ -95,9 +95,9 @@ renderLesson({
     readouts: { position: '位置 x', velocity: '速度 v', exact: '厳密解の位置', error: '位置の差 x − x_exact' },
     plotsHeading: '位置の時間変化と共鳴曲線',
     tabs: methodTabs('この方程式の数値解法'),
-    plots: `<div class="plot-grid"><div class="plot-main"><h3>位置の時間変化 ${tex('x(t)')}</h3><canvas id="time-chart" role="img"></canvas><p>時間 t（細い破線は定常解 ${tex('x_p(t)')}）</p></div><div class="plot-phase"><h3>定常振幅の共鳴曲線 ${tex(String.raw`A(\omega)`)}</h3><canvas id="resonance-chart" role="img"></canvas><p>外力の角振動数 ω（点は現在の ω）</p></div></div>
+    plots: `<div class="plot-grid"><div class="plot-main"><h3>位置の時間変化 ${tex('x(t)')}</h3><canvas id="time-chart" role="img"></canvas><p>時間 t（細い破線は定常解 ${tex('x_p(t)')}）</p></div><div class="plot-phase"><h3>定常振幅の共鳴曲線 ${tex(String.raw`A(\omega)`)}</h3><canvas id="resonance-chart" data-lead="true" role="img"></canvas><p>外力の角振動数 ω（点は現在の ω）</p></div></div>
             <div class="readouts"><div><span>外力の角振動数 ω</span><output id="drive-frequency">—</output></div><div><span>固有角振動数 ω₀（厳密）</span><output id="natural-frequency" ${exactValue}>—</output></div><div><span>定常振幅 A（厳密）</span><output id="amplitude" ${exactValue}>—</output></div><div><span>位相の遅れ δ（厳密）</span><output id="phase" ${exactValue}>—</output></div></div>`,
-    code: codeDisclosure('euler'),
+    code: codeDisclosure('forced'),
   }),
   exampleHeading: '数を代入した例',
   example: [
@@ -127,7 +127,7 @@ renderLesson({
     { href: './variation.html', title: '定数変化法' },
     { href: './laplace.html', title: 'Laplace 変換' },
   ],
-  footer: 'この画面の計算は、周期的な外力を受けてばねにつながれた一つの質点の強制振動です。',
+  footer: '',
 });
 
 const form = formReader(defaults);

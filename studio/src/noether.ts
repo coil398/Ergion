@@ -90,7 +90,7 @@ renderLesson({
       です。${tex('E_0 < 0')} なので軌道は閉じた楕円です。`,
     `楕円の大きさと周期は、半直弦 ${tex(String.raw`p = L_0^2/(mk)`)}、離心率 ${tex('e = p/r_0 - 1')}、長半径 ${tex('a = -k/(2E_0)')} から
       ${eq(String.raw`p = 1.21,\qquad e = 0.21,\qquad a = \frac{1}{0.79} \approx 1.26582,\qquad T = 2\pi\sqrt{\frac{m a^3}{k}} \approx 8.948`)}
-      です（小数は近似）。既定の ${tex(String.raw`\Delta t = 0.3`)}、3000 ステップの計算時間 900 は、約 100 周です。`,
+      です（小数は近似）。既定の ${tex(String.raw`\Delta t = 0.3`)}、3000 ステップの終端は ${tex('t = 900')} で、約 100 周です。`,
     `終わりまで再生すると、古典的RK4 ではエネルギーの差が単調に減り、終わりで約 ${tex(String.raw`-1.0\times 10^{-2}`)}、角運動量の差も約 ${tex(String.raw`-1.0\times 10^{-2}`)} になります（近似）。速度 Verlet 法では、エネルギーの差は 1 周ごとに振動して最大でも約 ${tex(String.raw`5\times 10^{-3}`)} にとどまり、角運動量は ${tex('1.10000')} のまま変わりません。`,
   ],
   related: [

@@ -110,7 +110,7 @@ renderLesson({
     plotsHeading: '位置の時間変化と位相図',
     tabs: methodTabs('この方程式の数値解法'),
     plots: `<div class="plot-grid"><div class="plot-main"><h3>位置の時間変化 ${tex('x(t)')}</h3><canvas id="time-chart" role="img"></canvas><p>時間 t（細い破線は包絡線 ${tex(String.raw`\pm C e^{-\beta t}`)}）</p></div><div class="plot-phase"><h3>位置と速度の位相図</h3><canvas id="phase-chart" role="img"></canvas><p>位置 x（縦軸は速度 v）</p></div></div>`,
-    code: codeDisclosure('euler'),
+    code: codeDisclosure('damped'),
   }),
   exampleHeading: '数を代入した例',
   example: [
@@ -137,7 +137,7 @@ renderLesson({
     { href: './second-order.html', title: '定数係数の2階同次' },
     { href: './forced.html', title: '強制振動と共鳴' },
   ],
-  footer: 'この画面の計算は、抵抗を受けてばねにつながれた一つの質点の減衰振動です。',
+  footer: '',
   proof: writtenProof([{
     statement: `${tex(`m x'' + \\gamma x' + k x = 0`)} の解では、${tex(String.raw`E = \frac{1}{2} m (x')^2 + \frac{1}{2} k x^2`)} の時間変化率は ${tex(String.raw`\frac{dE}{dt} = -\gamma (x')^2`)} です。とくに ${tex(String.raw`\gamma \ge 0`)} のとき ${tex('E')} は増えません。`,
     proof: [

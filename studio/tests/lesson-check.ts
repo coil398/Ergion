@@ -1,6 +1,6 @@
 import { expect, type Page } from '@playwright/test';
 
-export const banned = ['正本', 'source of truth', '計算核', '実験台', '乖離', '集約', 'f64', '.lean', 'crates/', 'Lean のファイル', 'つながり', '確認済', '換算単位', '公開の前', '式を満たす関数', '配色', '明るい', '暗い', '端末', '暗くする', '明るくする', '誤差は実線', '計算時間を延ばす'];
+export const banned = ['正本', 'source of truth', '計算核', '実験台', '乖離', '集約', 'f64', '.lean', 'crates/', 'Lean のファイル', 'つながり', '確認済', '換算単位', '公開の前', '式を満たす関数', '配色', '明るい', '暗い', '端末', '暗くする', '明るくする', '誤差は実線', '計算時間を延ばす', '計算時間', 'CLI', '変更した条件は、適用後の新しい計算に使います。', '同じJSON設定をCLIでも使えます。', '途中の計算状態は保存しません。', '現在の条件で実行できます。'];
 
 export interface LessonPage {
   href: string;
@@ -13,10 +13,13 @@ export interface LessonPage {
   proof?: boolean;
 }
 
-async function visibleFigure(page: Page) {
-  return page.locator('.page-figure img').evaluateAll(images => images
-    .filter(image => image.getBoundingClientRect().width > 0)
-    .map(image => ({ src: (image as HTMLImageElement).currentSrc, loaded: (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0 })));
+async function openingHasInk(page: Page) {
+  return page.locator('#opening-chart').evaluate((canvas: HTMLCanvasElement) => {
+    if (canvas.width < 2 || canvas.height < 2) return false;
+    const { data } = canvas.getContext('2d')!.getImageData(0, 0, canvas.width, canvas.height);
+    for (let i = 0; i < data.length; i += 4) if (data[i + 3] > 20) return true;
+    return false;
+  });
 }
 
 /** 単元のページの読み順、図、配色、文言を確かめる。 */
@@ -37,8 +40,9 @@ export async function checkLessonPage(page: Page, item: LessonPage) {
       const proof = at('.proof');
       return {
         equationSteps: before(at('.equation'), at('#study .solution')),
-        stepsFigure: before(at('#study'), at('.page-figure')),
+        figureBeforeSteps: before(at('.page-figure'), at('#study')),
         figureExample: before(at('.page-figure'), at('#example')),
+        oneHeadline: document.querySelectorAll('.intro .equation .tex-display').length <= 1,
         exampleRelated: before(at('#example'), at('#related')),
         proofLast: !proof || main.lastElementChild === proof,
         hasProof: Boolean(proof),
@@ -47,7 +51,8 @@ export async function checkLessonPage(page: Page, item: LessonPage) {
       };
     });
     expect(order.equationSteps, item.href).toBe(true);
-    expect(order.stepsFigure, item.href).toBe(true);
+    expect(order.figureBeforeSteps, item.href).toBe(true);
+    expect(order.oneHeadline, item.href).toBe(true);
     expect(order.figureExample, item.href).toBe(true);
     expect(order.exampleRelated, item.href).toBe(true);
     expect(order.proofLast, item.href).toBe(true);
@@ -60,9 +65,7 @@ export async function checkLessonPage(page: Page, item: LessonPage) {
       expect((await item.innerText()).trim()).toBe((await item.locator('a').innerText()).trim());
     }
     await page.locator('.page-figure').scrollIntoViewIfNeeded();
-    await expect.poll(async () => (await visibleFigure(page)).every(image => image.loaded) && (await visibleFigure(page)).length === 1, item.href).toBe(true);
-    const light = (await visibleFigure(page))[0].src;
-    expect(light).toMatch(width === 390 ? /figure-narrow\.png$/ : /figure\.png$/);
+    await expect.poll(() => openingHasInk(page), item.href).toBe(true);
     for (const selector of item.canvases ?? []) {
       await expect.poll(() => page.locator(selector).evaluate((canvas: HTMLCanvasElement) => {
         const { data } = canvas.getContext('2d')!.getImageData(0, 0, canvas.width, canvas.height);
@@ -72,7 +75,7 @@ export async function checkLessonPage(page: Page, item: LessonPage) {
       }), `${item.href} ${selector}`).toBeGreaterThan(0);
     }
     await page.emulateMedia({ colorScheme: 'dark' });
-    await expect.poll(async () => (await visibleFigure(page))[0]?.src ?? '').toMatch(width === 390 ? /figure-dark-narrow\.png$/ : /figure-dark\.png$/);
+    await expect.poll(() => openingHasInk(page), `${item.href} dark`).toBe(true);
   }
   await page.emulateMedia({ colorScheme: 'light' });
 }

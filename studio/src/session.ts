@@ -15,6 +15,7 @@ export function transportPanel(): string {
               <button id="pause" class="button secondary" type="button" disabled>一時停止</button>
               <button id="loop" class="button secondary" type="button" aria-pressed="false">ループ再生</button>
               <button id="extend" class="button secondary" type="button" disabled>+t</button>
+              <button id="shorten" class="button secondary" type="button" disabled>-t</button>
               <button id="step" class="button secondary" type="button" disabled>1ステップ</button>
               <button id="reset" class="icon-button" type="button" aria-label="初期状態にリセット" title="初期状態にリセット" disabled>↺</button>
             </div>
@@ -39,6 +40,7 @@ export function mountSession<C extends TimedConfig>(options: {
   const pauseButton = document.querySelector<HTMLButtonElement>('#pause')!;
   const loopButton = document.querySelector<HTMLButtonElement>('#loop')!;
   const extendButton = document.querySelector<HTMLButtonElement>('#extend')!;
+  const shortenButton = document.querySelector<HTMLButtonElement>('#shorten')!;
   const stepButton = document.querySelector<HTMLButtonElement>('#step')!;
   const resetButton = document.querySelector<HTMLButtonElement>('#reset')!;
   const applyButton = document.querySelector<HTMLButtonElement>('#apply')!;
@@ -48,6 +50,7 @@ export function mountSession<C extends TimedConfig>(options: {
   const formNote = document.querySelector<HTMLParagraphElement>('#form-note')!;
   const worker = new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' });
   let config = { ...options.defaults };
+  let floorSteps = options.defaults.steps;
   let id = 0;
   let phase: 'loading' | 'ready' | 'running' | 'paused' | 'finished' | 'error' | 'pausing' = 'loading';
   let dirty = false;
@@ -57,7 +60,7 @@ export function mountSession<C extends TimedConfig>(options: {
   let sampleStride = 1;
   let playAfterLoad = false;
 
-  function post(command: { id: number; command: 'load'; model: MotionModel; method?: string; config: C } | { id: number; command: 'start' | 'pause' | 'step' } | { id: number; command: 'extend'; steps: number }) {
+  function post(command: { id: number; command: 'load'; model: MotionModel; method?: string; config: C } | { id: number; command: 'start' | 'pause' | 'step' } | { id: number; command: 'extend' | 'shorten'; steps: number }) {
     worker.postMessage(command);
   }
   function setText(selector: string, value: string) { document.querySelector(selector)!.textContent = value; }
@@ -73,18 +76,20 @@ export function mountSession<C extends TimedConfig>(options: {
     pauseButton.disabled = phase !== 'running';
     loopButton.disabled = busy || phase === 'error';
     extendButton.disabled = busy || dirty || phase === 'error' || config.steps >= 1_000_000;
+    shortenButton.disabled = busy || dirty || phase === 'error' || config.steps <= floorSteps;
     stepButton.disabled = busy || dirty || phase === 'running' || phase === 'finished' || phase === 'error';
     resetButton.disabled = busy;
     applyButton.disabled = busy || (!dirty && phase !== 'error');
     const labels = { loading: '計算環境を準備中', ready: '準備完了', running: '計算中', paused: '一時停止', finished: '計算完了', error: '条件を確認してください', pausing: '停止中' };
     status.querySelector('span')!.textContent = labels[phase];
     status.dataset.phase = phase;
-    formNote.textContent = dirty ? '変更した条件は、適用後の新しい計算に使います。' : '現在の条件で実行できます。';
+    formNote.hidden = true;
+    formNote.textContent = '';
   }
   function updateHint() {
     const value = options.readForm();
     const duration = value.dt * value.steps;
-    setText('#time-hint', Number.isFinite(duration) ? `計算時間 ${duration.toFixed(2)}` : '有限の正しい数値を入力してください。');
+    setText('#time-hint', Number.isFinite(duration) ? `t = ${duration.toFixed(2)}` : '有限の正しい数値を入力してください。');
   }
   function shownSamples() {
     if (state && samples.at(-1)?.step !== state.step) return [...samples, state];
@@ -110,8 +115,9 @@ export function mountSession<C extends TimedConfig>(options: {
       ? options.comparison?.(state) ?? `解析解との位置の差 ${positionError!.toExponential(2)}\n速度の差 ${velocityError!.toExponential(2)}`
       : '解析解との差を計算します。');
   }
-  function load(value: C) {
+  function load(value: C, rememberFloor = false) {
     config = { ...value };
+    if (rememberFloor) floorSteps = value.steps;
     phase = 'loading';
     dirty = false;
     state = undefined;
@@ -135,7 +141,9 @@ export function mountSession<C extends TimedConfig>(options: {
     phase = reply.phase;
     state = reply.state;
     if (typeof reply.extended === 'number') {
+      if (reply.extended < 0) samples = [];
       config.steps += reply.extended;
+      sampleStride = Math.max(1, Math.ceil(config.steps / 2500));
       const stepsInput = form.elements.namedItem('steps');
       if (stepsInput instanceof HTMLInputElement) stepsInput.value = String(config.steps);
       updateHint();
@@ -153,9 +161,15 @@ export function mountSession<C extends TimedConfig>(options: {
       return;
     }
     controls();
-    if (!paintQueued) {
-      paintQueued = true;
-      requestAnimationFrame(() => { paintQueued = false; paint(); });
+    // 再生中だけ描画をフレームにまとめる。停止後のステップ数は、その返答の時点で表示する。
+    if (phase === 'running') {
+      if (!paintQueued) {
+        paintQueued = true;
+        requestAnimationFrame(() => { paintQueued = false; paint(); });
+      }
+    } else {
+      paintQueued = false;
+      paint();
     }
   };
   worker.onerror = () => {
@@ -166,7 +180,7 @@ export function mountSession<C extends TimedConfig>(options: {
   form.addEventListener('input', () => { dirty = true; updateHint(); controls(); });
   form.addEventListener('submit', event => {
     event.preventDefault();
-    if (form.reportValidity()) load(options.readForm());
+    if (form.reportValidity()) load(options.readForm(), true);
   });
   playButton.addEventListener('click', () => {
     if (phase !== 'ready' && phase !== 'paused') return;
@@ -192,6 +206,12 @@ export function mountSession<C extends TimedConfig>(options: {
     const added = Math.min(config.steps, 1_000_000 - config.steps);
     if (added < 1 || phase === 'loading' || phase === 'pausing' || phase === 'error') return;
     post({ id, command: 'extend', steps: added });
+  });
+  shortenButton.addEventListener('click', () => {
+    const cut = Math.min(config.steps, 1_000_000 - config.steps);
+    const next = Math.max(floorSteps, config.steps - cut);
+    if (next >= config.steps || phase === 'loading' || phase === 'pausing' || phase === 'error') return;
+    post({ id, command: 'shorten', steps: config.steps - next });
   });
   stepButton.addEventListener('click', () => post({ id, command: 'step' }));
   resetButton.addEventListener('click', () => { options.fillForm(config); updateHint(); load(config); });
@@ -225,7 +245,7 @@ export function mountSession<C extends TimedConfig>(options: {
       }
       const next = value as unknown as C;
       options.fillForm(next);
-      load(next);
+      load(next, true);
     } catch (error) { showError(String(error)); }
   });
 
@@ -233,7 +253,7 @@ export function mountSession<C extends TimedConfig>(options: {
   onThemeChange(() => paint());
   options.fillForm(config);
   updateHint();
-  load(config);
+  load(config, true);
   return {
     /** 適用済みの条件のまま、選ばれている数値解法だけを読み直す。 */
     reloadMethod() {

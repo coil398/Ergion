@@ -9,58 +9,97 @@ function tex(page: Page, source: string) {
   return page.locator(`xpath=//*[contains(@class,"tex") and @data-tex="${source}"]`);
 }
 
-/** 目次の節とページ。学習の順。 */
-const expectedRail: [string, string[]][] = [
-  ['力学', ['位置の時間微分', '等速直線運動', '等加速度直線運動', '運動方程式と一定の力', '単振動', '減衰振動', '強制振動と共鳴', '中心力場と2体問題']],
-  ['微分積分', ['極限と連続', '微分の定義', '積の微分と合成関数の微分', '平均値の定理', '定積分と微分積分学の基本定理', '置換積分と部分積分', 'Taylor 展開', '偏微分', '重積分', '数値微分', '数値積分']],
-  ['微分方程式', ['積分して解く', '変数分離', '1階線形', '同次形', '完全微分', 'ベルヌーイ', '定数係数の2階同次', '未定係数法', '定数変化法', 'Laplace 変換', 'べき級数', '連立1階', 'Sturm–Liouville 問題', '非線形力学系とカオス', '熱伝導方程式', '波動方程式']],
-  ['数値計算', ['一定速度の増分', 'Euler法', '中点法', '古典的RK4', 'ニュートン法']],
-  ['証明', ['証明の一覧']],
-  ['線形代数', ['連立1次方程式と消去法', 'LU 分解', '固有値と固有ベクトル', '最小二乗法']],
-  ['統計学', ['標本・平均・分散', '大数の法則と中心極限定理', '線形回帰', 'Monte Carlo 法', '主成分分析']],
-  ['金融数学', ['連続複利と指数成長', '幾何 Brownian 運動', 'Black–Scholes 方程式', 'Monte Carlo 価格評価']],
-  ['電磁気学', ['Coulomb の法則と静電場', '静電ポテンシャルと電位', 'Gauss の法則', '定常電流と静磁場', '磁場中の荷電粒子', 'Faraday の電磁誘導の法則', 'Maxwell 方程式と電磁波']],
-  ['解析力学', ['拘束条件と一般化座標', "仮想仕事の原理と d'Alembert の原理", '最小作用の原理と Euler–Lagrange 方程式', '対称性と保存則', 'Legendre 変換と Hamilton の正準方程式', '相空間と Liouville の定理', '正準変換と Poisson 括弧']],
-  ['分子動力学', ['Lennard–Jones ポテンシャル', '周期境界条件と最小イメージ法', 'NVE アンサンブルと速度 Verlet 法', '温度・圧力・動径分布関数', 'NVT アンサンブルと熱浴法', '近接リスト法とセル分割法', 'Born–Oppenheimer 近似', '密度汎関数理論と Kohn–Sham 方程式', 'Hellmann–Feynman の定理', '第一原理分子動力学']],
+/** 目次は四つの開閉。中の節とページは学習の順。 */
+const expectedGroups: [string, [string, string[]][]][] = [
+  ['物理', [
+    ['力学', ['位置の時間微分', '等速直線運動', '等加速度直線運動', '運動方程式と一定の力', '単振動', '減衰振動', '強制振動と共鳴', '中心力場と2体問題']],
+    ['電磁気学', ['Coulomb の法則と静電場', '静電ポテンシャルと電位', 'Gauss の法則', '定常電流と静磁場', '磁場中の荷電粒子', 'Faraday の電磁誘導の法則', 'Maxwell 方程式と電磁波']],
+    ['解析力学', ['拘束条件と一般化座標', "仮想仕事の原理と d'Alembert の原理", '最小作用の原理と Euler–Lagrange 方程式', '対称性と保存則', 'Legendre 変換と Hamilton の正準方程式', '相空間と Liouville の定理', '正準変換と Poisson 括弧']],
+    ['分子動力学', ['Lennard–Jones ポテンシャル', '周期境界条件と最小イメージ法', 'NVE アンサンブルと速度 Verlet 法', '温度・圧力・動径分布関数', 'NVT アンサンブルと熱浴法', '近接リスト法とセル分割法', 'Born–Oppenheimer 近似', '密度汎関数理論と Kohn–Sham 方程式', 'Hellmann–Feynman の定理', '第一原理分子動力学']],
+  ]],
+  ['数学', [
+    ['微分積分', ['極限と連続', '微分の定義', '積の微分と合成関数の微分', '平均値の定理', '定積分と微分積分学の基本定理', '置換積分と部分積分', 'Taylor 展開', '偏微分', '重積分', '数値微分', '数値積分']],
+    ['微分方程式', ['積分して解く', '変数分離', '1階線形', '同次形', '完全微分', 'ベルヌーイ', '定数係数の2階同次', '未定係数法', '定数変化法', 'Laplace 変換', 'べき級数', '連立1階', 'Sturm–Liouville 問題', '非線形力学系とカオス', '熱伝導方程式', '波動方程式']],
+    ['線形代数', ['連立1次方程式と消去法', 'LU 分解', '固有値と固有ベクトル', '最小二乗法']],
+    ['証明', ['証明の一覧']],
+  ]],
+  ['応用数学', [
+    ['統計学', ['標本・平均・分散', '大数の法則と中心極限定理', '線形回帰', 'Monte Carlo 法', '主成分分析']],
+    ['金融数学', ['連続複利と指数成長', '幾何 Brownian 運動', 'Black–Scholes 方程式', 'Monte Carlo 価格評価']],
+  ]],
+  ['計算', [
+    ['数値計算', ['一定速度の増分', 'Euler法', '中点法', '古典的RK4', 'ニュートン法']],
+  ]],
 ];
 
+const expectedSectionCount = expectedGroups.reduce((count, [, sections]) => count + sections.length, 0);
+
 async function expectMechanicsSection(page: Page) {
-  const sections = page.locator('.rail-section');
-  await expect(sections).toHaveCount(expectedRail.length);
-  for (let index = 0; index < expectedRail.length; index += 1) {
-    const [label, pages] = expectedRail[index];
-    const title = sections.nth(index).locator('.rail-section-title');
-    await expect(title).toHaveText(label);
-    const links = sections.nth(index).locator('.rail-pages a');
-    await expect(links).toHaveCount(pages.length);
-    for (let item = 0; item < pages.length; item += 1) await expect(links.nth(item)).toHaveText(pages[item]);
+  const groups = page.locator('.rail-group');
+  await expect(groups).toHaveCount(expectedGroups.length);
+  for (let groupIndex = 0; groupIndex < expectedGroups.length; groupIndex += 1) {
+    const [label, sections] = expectedGroups[groupIndex];
+    const group = groups.nth(groupIndex);
+    await expect(group.locator('.rail-group-title')).toHaveText(label);
+    const blocks = group.locator('.rail-section');
+    await expect(blocks).toHaveCount(sections.length);
+    for (let index = 0; index < sections.length; index += 1) {
+      const [sectionLabel, pages] = sections[index];
+      await expect(blocks.nth(index).locator('.rail-section-title')).toHaveText(sectionLabel);
+      const links = blocks.nth(index).locator('.rail-pages a');
+      await expect(links).toHaveCount(pages.length);
+      for (let item = 0; item < pages.length; item += 1) await expect(links.nth(item)).toHaveText(pages[item]);
+    }
   }
-  const titles = page.locator('button.rail-section-title');
-  await expect(titles).toHaveCount(expectedRail.length);
+  await expect(page.locator('.rail-group-title')).toHaveCount(expectedGroups.length);
+  await expect(page.locator('.rail-section-title')).toHaveCount(expectedSectionCount);
+  await expect(page.locator('.rail-group-title[aria-expanded="true"]')).toHaveCount(1);
+  await expect(page.locator('.rail-group-title[aria-expanded="false"]')).toHaveCount(expectedGroups.length - 1);
   await expect(page.locator('.rail-section-title[aria-expanded="true"]')).toHaveCount(1);
-  await expect(page.locator('.rail-section-title[aria-expanded="false"]')).toHaveCount(expectedRail.length - 1);
+  await expect(page.locator('.rail-section-title[aria-expanded="false"]')).toHaveCount(expectedSectionCount - 1);
   const nested = await page.evaluate(() => {
-    const blocks = [...document.querySelectorAll('.rail-section')];
-    return blocks.every((block, index) => {
-      const title = block.querySelector('.rail-section-title')!;
+    const groups = [...document.querySelectorAll('.rail-group')];
+    let previousBottom = Number.NEGATIVE_INFINITY;
+    for (const group of groups) {
+      const title = group.querySelector('.rail-group-title')!;
       const titleBox = title.getBoundingClientRect();
-      const expanded = title.getAttribute('aria-expanded') === 'true';
-      const items = [...block.querySelectorAll('.rail-pages a')]
-        .map(node => node.getBoundingClientRect())
-        .filter(item => item.width > 0 && item.height > 0);
-      const belowPrevious = index === 0 || titleBox.top >= blocks[index - 1].getBoundingClientRect().bottom - 1;
-      if (!expanded) return items.length === 0 && belowPrevious;
-      const under = items.every(item => item.top >= titleBox.bottom - 1 && item.left > titleBox.left + 4);
-      const vertical = items.every((item, itemIndex) => itemIndex === 0 || item.top >= items[itemIndex - 1].bottom - 1);
-      return items.length > 0 && under && vertical && belowPrevious;
-    });
+      if (titleBox.height === 0 || titleBox.top < previousBottom - 1) return false;
+      previousBottom = titleBox.bottom;
+      const open = title.getAttribute('aria-expanded') === 'true';
+      const sections = [...group.querySelectorAll('.rail-section')];
+      const visibleSections = sections.filter(section => section.getBoundingClientRect().height > 0);
+      if (!open) {
+        if (visibleSections.length > 0) return false;
+        continue;
+      }
+      if (visibleSections.length !== sections.length) return false;
+      for (const section of sections) {
+        const sectionTitle = section.querySelector('.rail-section-title')!;
+        const sectionBox = sectionTitle.getBoundingClientRect();
+        if (sectionBox.height === 0 || sectionBox.top < previousBottom - 1) return false;
+        previousBottom = sectionBox.bottom;
+        const expanded = sectionTitle.getAttribute('aria-expanded') === 'true';
+        const items = [...section.querySelectorAll('.rail-pages a')]
+          .map(node => node.getBoundingClientRect())
+          .filter(item => item.width > 0 && item.height > 0);
+        if (!expanded) {
+          if (items.length > 0) return false;
+          continue;
+        }
+        const under = items.every(item => item.top >= sectionBox.bottom - 1 && item.left > sectionBox.left + 4);
+        const vertical = items.every((item, itemIndex) => itemIndex === 0 || item.top >= items[itemIndex - 1].bottom - 1);
+        if (!(items.length > 0 && under && vertical)) return false;
+        previousBottom = items[items.length - 1].bottom;
+      }
+    }
+    return true;
   });
   expect(nested).toBe(true);
 }
 
 const palettes = {
-  light: { bg: 'rgb(244, 239, 230)', text: 'rgb(28, 25, 21)', plate: 'rgb(232, 223, 208)', numerical: [0, 49, 83], exact: [22, 123, 135], error: [168, 98, 64] },
-  dark: { bg: 'rgb(28, 25, 21)', text: 'rgb(244, 239, 230)', plate: 'rgb(44, 40, 36)', numerical: [158, 195, 221], exact: [110, 200, 210], error: [227, 168, 138] },
+  light: { bg: 'rgb(247, 248, 246)', text: 'rgb(28, 28, 27)', plate: 'rgb(227, 228, 223)', numerical: [0, 49, 83], exact: [47, 90, 85], error: [168, 98, 64] },
+  dark: { bg: 'rgb(26, 26, 25)', text: 'rgb(232, 232, 228)', plate: 'rgb(49, 49, 46)', numerical: [158, 195, 221], exact: [143, 175, 166], error: [227, 168, 138] },
 } as const;
 
 type Scheme = keyof typeof palettes;
@@ -109,7 +148,7 @@ async function expectTypeSize(page: Page) {
       katex: px('.equation .katex'),
       heading: px('h1'),
       equationPlate: plate('.equation'),
-      stepPlate: plate('.solution-equation'),
+      stepPlate: (document.querySelector('.equation-plate') ? plate('.equation-plate') : plate('.solution-equation')),
       scheme: document.documentElement.dataset.theme ?? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'),
     };
   });
@@ -206,6 +245,12 @@ test('再生、一時停止、ループ再生、+t', async ({ page }) => {
     await expect(page.locator('[name=velocity]')).toHaveValue(velocity);
     await expect(page.locator('[name=steps]')).toHaveValue('48');
     await expect(page.locator('#extend')).toHaveText('+t');
+    await expect(page.locator('#shorten')).toHaveText('-t');
+    await page.getByRole('button', { name: '-t', exact: true }).click();
+    await expect(page.locator('#progress-text')).toContainText('/ 24 ステップ');
+    await expect(page.locator('#position')).toHaveText(held);
+    await expect(page.locator('[name=steps]')).toHaveValue('24');
+    await expect(page.locator('[name=initial_position]')).toHaveValue(initial);
     const lines = (await page.locator('#comparison').innerText()).split('\n');
     expect(lines).toHaveLength(2);
     expect(lines[0]).toMatch(/^解析解との位置の差 \S+$/);
@@ -234,9 +279,11 @@ test('コードはページをまたいで開き、Euler法の TypeScript を実
     await expect(page.locator('details.code-disclosure > summary')).toHaveText('コード');
     const typescript = page.getByRole('region', { name: 'TypeScript' });
     const python = page.getByRole('region', { name: 'Python' });
-    await expect(typescript.locator('.code-install')).toHaveText('npm install ./studio/wasm');
-    await expect(python.locator('.code-install')).toHaveText('pip install ./py/ergion');
-    await expect(python.locator('pre')).toContainText('from ergion import euler_step');
+    await expect(typescript.locator('.code-install')).toHaveCount(0);
+    await expect(typescript.locator('pre')).toContainText('slope_x');
+    await expect(typescript.locator('pre')).not.toContainText('euler_step');
+    await expect(python.locator('pre')).toContainText('slope_x');
+    await expect(python.locator('pre')).not.toContainText('ergion');
     await expect(python.locator('pre')).not.toContainText('pyodide');
     const spinner = typescript.locator('.code-spinner');
     await expect(spinner).toBeHidden();
@@ -257,19 +304,25 @@ test('コードはページをまたいで開き、Euler法の TypeScript を実
       await expect.poll(() => page.evaluate(() => (window as unknown as { __ergionSpinnerSeen?: boolean }).__ergionSpinnerSeen)).toBe(true);
       expect(await spinner.evaluate(node => getComputedStyle(node).position)).not.toBe('fixed');
     }
-    await expect(typescript.locator('.code-result')).toHaveText('[0.1]');
+    await expect(typescript.locator('.code-result')).toHaveText('[[0.25,0.25],[0.5,0.5],[0.75,0.75],[1,1]]');
+    await expect.poll(() => page.locator('#code-chart').evaluate((canvas: HTMLCanvasElement) => {
+      const { data } = canvas.getContext('2d')!.getImageData(0, 0, canvas.width, canvas.height);
+      let count = 0;
+      for (let i = 0; i < data.length; i += 4) if (data[i + 3] > 250 && Math.abs(data[i] - 0) < 3 && Math.abs(data[i + 1] - 49) < 3 && Math.abs(data[i + 2] - 83) < 3) count += 1;
+      return count;
+    })).toBeGreaterThan(0);
     await expect(spinner).toBeHidden();
     await expect(python.locator('.code-spinner')).toBeHidden();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     await page.goto('midpoint.html');
     await page.reload();
     await expect(page.locator('details.code-disclosure')).toHaveJSProperty('open', true);
-    await expect(page.getByRole('region', { name: 'TypeScript' }).locator('pre')).toContainText('midpoint_step');
+    await expect(page.getByRole('region', { name: 'TypeScript' }).locator('pre')).toContainText('slope_x_mid');
     await expect(page.locator('#status')).toHaveText('準備完了');
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     await page.goto('newton.html');
     await expect(page.locator('details.code-disclosure')).toHaveJSProperty('open', true);
-    await expect(page.getByRole('region', { name: 'TypeScript' }).locator('pre')).toContainText('newton_step');
+    await expect(page.getByRole('region', { name: 'TypeScript' }).locator('pre')).toContainText('x * x - 2');
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   }
 });
@@ -286,17 +339,17 @@ test('方程式のページではコードが選んだ数値解法に従う', as
     await expect(disclosure).toHaveJSProperty('open', true);
     const typescript = page.getByRole('region', { name: 'TypeScript' });
     const python = page.getByRole('region', { name: 'Python' });
-    await expect(typescript.locator('.code-install')).toHaveText('npm install ./studio/wasm');
-    await expect(python.locator('.code-install')).toHaveText('pip install ./py/ergion');
-    await expect(typescript.locator('pre')).toContainText('import init, { euler_step } from "ergion-lab"');
-    await expect(python.locator('pre')).toContainText('from ergion import euler_step');
-    await page.getByRole('tab', { name: '中点法', exact: true }).click();
-    await expect(typescript.locator('pre')).toContainText('import init, { midpoint_step } from "ergion-lab"');
+    await expect(typescript.locator('pre')).toContainText('slope_x = k * x');
     await expect(typescript.locator('pre')).not.toContainText('euler_step');
-    await expect(python.locator('pre')).toContainText('from ergion import midpoint_step');
+    await expect(python.locator('pre')).toContainText('slope_x = k * x');
+    await page.getByRole('tab', { name: '中点法', exact: true }).click();
+    await expect(typescript.locator('pre')).toContainText('slope_x_mid');
+    await expect(typescript.locator('pre')).not.toContainText('euler_step');
+    await expect(python.locator('pre')).toContainText('slope_x_mid');
     await page.getByRole('tab', { name: '古典的RK4', exact: true }).click();
-    await expect(typescript.locator('pre')).toContainText('import init, { rk4_step } from "ergion-lab"');
-    await expect(python.locator('pre')).toContainText('from ergion import rk4_step');
+    await expect(typescript.locator('pre')).toContainText('k1_x');
+    await expect(typescript.locator('pre')).toContainText('k4_x');
+    await expect(python.locator('pre')).toContainText('k1_x');
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   }
 });
@@ -390,16 +443,30 @@ test('節の名前はボタンで、閉じた節を開きいまの節を閉じ�
     await page.setViewportSize({ width, height: width === 1440 ? 1050 : 844 });
     await page.goto('uniform.html');
     await expect(page.locator('body')).not.toContainText('実験室');
+    const physics = page.getByRole('button', { name: '物理', exact: true });
+    const math = page.getByRole('button', { name: '数学', exact: true });
+    const applied = page.getByRole('button', { name: '応用数学', exact: true });
     const mechanics = page.getByRole('button', { name: '力学', exact: true });
-    const ode = page.getByRole('button', { name: '微分方程式', exact: true });
+    await expect(physics).toHaveAttribute('aria-expanded', 'true');
+    await expect(math).toHaveAttribute('aria-expanded', 'false');
+    await expect(applied).toHaveAttribute('aria-expanded', 'false');
     await expect(mechanics).toHaveAttribute('aria-expanded', 'true');
-    await expect(ode).toHaveAttribute('aria-expanded', 'false');
     await expect(page.getByRole('link', { name: '等速直線運動', exact: true })).toBeVisible();
-    await expect(page.getByRole('link', { name: '変数分離', exact: true })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: '微分方程式', exact: true })).toHaveCount(0);
     if (width === 390) {
       const headingTop = await page.locator('h1').evaluate((node) => node.getBoundingClientRect().top);
       expect(headingTop).toBeLessThan(844);
+      const railBox = await page.locator('.rail').evaluate(node => {
+        const style = getComputedStyle(node);
+        return { client: node.clientHeight, max: parseFloat(style.maxHeight), scroll: node.scrollHeight > node.clientHeight };
+      });
+      expect(railBox.max).toBeLessThanOrEqual(320);
+      expect(railBox.client).toBeLessThanOrEqual(320);
     }
+    await math.click();
+    const ode = page.getByRole('button', { name: '微分方程式', exact: true });
+    await expect(ode).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.getByRole('link', { name: '変数分離', exact: true })).toHaveCount(0);
     await ode.focus();
     await page.keyboard.press('Enter');
     await expect(ode).toHaveAttribute('aria-expanded', 'true');
@@ -410,6 +477,35 @@ test('節の名前はボタンで、閉じた節を開きいまの節を閉じ�
     await expect(page.getByRole('link', { name: '等速直線運動', exact: true })).toHaveCount(0);
     await expect(ode).toHaveAttribute('aria-expanded', 'true');
   }
+});
+
+test('等速直線運動の導出は一つの板に番号を付ける', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1050 });
+  await page.goto('uniform.html');
+  const joined = await page.evaluate(() => {
+    const plateOf = (source: string) => [...document.querySelectorAll<HTMLElement>('#study .tex')].find(node => node.dataset.tex === source)?.closest('.equation-plate');
+    const integral = plateOf(String.raw`\int_0^{t} x'(\tau)\,d\tau = \int_0^{t} v\,d\tau`);
+    const difference = plateOf('x(t) - x(0) = v t');
+    const closed = plateOf('x(t) = x_0 + v t');
+    const step = plateOf(String.raw`x_{n+1} = x_n + v \Delta t`);
+    const velocity = plateOf(String.raw`v_{n+1} = v`);
+    return Boolean(integral && integral === difference && difference === closed && closed === step && step === velocity);
+  });
+  expect(joined).toBe(true);
+  const plate = page.locator('#study .equation-plate').first();
+  await expect(plate.locator('.equation-number').first()).toHaveText('（1）');
+  const aligned = await plate.evaluate(node => {
+    const number = node.querySelector('.equation-number');
+    const formula = number?.parentElement?.querySelector('.tex-display');
+    if (!number || !formula) return false;
+    const numberBox = number.getBoundingClientRect();
+    const formulaBox = formula.getBoundingClientRect();
+    return numberBox.left >= formulaBox.right - 1 && numberBox.right <= node.getBoundingClientRect().right + 1;
+  });
+  expect(aligned).toBe(true);
+  await page.goto('numerical-differentiation.html');
+  await expect(page.locator('#lesson')).toContainText('（1）から（2）を引きます');
+  await expect(page.locator('#lesson')).not.toContainText('上の式');
 });
 
 test('粗い刻みでも数値軌道が表示範囲に収まる', async ({ page }, testInfo) => {
@@ -469,6 +565,7 @@ test('微分方程式をデスクトップと狭い画面で読む', async ({ pa
   await expect(page.getByRole('link', { name: '1階線形' }).first()).toBeVisible();
   await expect(page.locator('.chapter-list a').nth(1)).toHaveAttribute('href', './separation.html');
   await expect(page.locator('.chapter-list a').nth(2)).toHaveAttribute('href', './linear.html');
+  await page.getByRole('button', { name: '計算', exact: true }).click();
   const numerical = page.getByRole('button', { name: '数値計算', exact: true });
   await numerical.click();
   await expect(page.locator('.rail-pages').getByRole('link', { name: 'Euler法' }).first()).toBeVisible();
@@ -476,6 +573,7 @@ test('微分方程式をデスクトップと狭い画面で読む', async ({ pa
   await expect(page.locator('.rail-pages').getByRole('link', { name: '古典的RK4', exact: true })).toBeVisible();
   await expect(page.locator('.rail-pages').getByRole('link', { name: 'ニュートン法', exact: true }).first()).toBeVisible();
   await numerical.click();
+  await page.getByRole('button', { name: '計算', exact: true }).click();
   const text = await page.locator('#lesson').innerText();
   for (const word of ['crates/', '正本', '計算核', 'ばね', '電磁気', 'RK4']) {
     expect(text).not.toContain(word);
@@ -1145,18 +1243,19 @@ test('配色のボタンは一つのアイコンで、押すと ergion-theme に
 
 test('既存のページは、その図を明るい配色と暗い配色で示す', async ({ page }) => {
   test.setTimeout(240_000);
-  const pages: [string, string][] = [
-    ['./', 'mechanics'], ['derivative.html', 'derivative'], ['uniform.html', 'uniform'], ['accelerated.html', 'accelerated'],
-    ['ode.html', 'ode'], ['integrate.html', 'integrate'], ['separation.html', 'separation'], ['linear.html', 'linear'],
-    ['homogeneous.html', 'homogeneous'], ['exact.html', 'exact'], ['bernoulli.html', 'bernoulli'], ['second-order.html', 'second-order'],
-    ['undetermined.html', 'undetermined'], ['variation.html', 'variation'], ['laplace.html', 'laplace'], ['series.html', 'series'],
-    ['system.html', 'system'], ['velocity-step.html', 'velocity-step'], ['euler.html', 'euler'], ['midpoint.html', 'midpoint'],
-    ['rk4.html', 'rk4'], ['newton.html', 'newton'], ['proof.html', 'proof'],
+  const pages = [
+    './', 'derivative.html', 'uniform.html', 'accelerated.html', 'ode.html', 'integrate.html', 'separation.html', 'linear.html',
+    'homogeneous.html', 'exact.html', 'bernoulli.html', 'second-order.html', 'undetermined.html', 'variation.html', 'laplace.html',
+    'series.html', 'system.html', 'velocity-step.html', 'euler.html', 'midpoint.html', 'rk4.html', 'newton.html', 'proof.html',
   ];
-  const shown = () => page.locator('.page-figure img').evaluateAll(images => images
-    .filter(image => image.getBoundingClientRect().width > 0)
-    .map(image => ({ src: (image as HTMLImageElement).currentSrc, ok: (image as HTMLImageElement).naturalWidth > 0 })));
-  for (const [href, id] of pages) {
+  const ink = () => page.locator('#opening-chart').evaluate((canvas: HTMLCanvasElement) => {
+    if (canvas.width < 2 || canvas.height < 2) return 0;
+    const { data } = canvas.getContext('2d')!.getImageData(0, 0, canvas.width, canvas.height);
+    let count = 0;
+    for (let i = 0; i < data.length; i += 4) if (data[i + 3] > 20) count += 1;
+    return count;
+  });
+  for (const href of pages) {
     await page.setViewportSize({ width: 1440, height: 1050 });
     await page.emulateMedia({ colorScheme: 'light' });
     await page.goto(href);
@@ -1168,14 +1267,15 @@ test('既存のページは、その図を明るい配色と暗い配色で示�
       }
     }
     await page.locator('.page-figure').scrollIntoViewIfNeeded();
-    await expect.poll(async () => JSON.stringify(await shown()), href).toBe(JSON.stringify([{ src: `http://127.0.0.1:${process.env.STUDIO_PORT ?? 4187}/Ergion/figures/${id}/figure.png`, ok: true }]));
+    await expect.poll(ink, href).toBeGreaterThan(0);
+    await expect(page.locator('.intro .equation .tex-display')).toHaveCount(await page.locator('.intro .equation').count() ? 1 : 0);
     await page.locator('.theme-toggle').click();
     await page.locator('.page-figure').scrollIntoViewIfNeeded();
-    await expect.poll(async () => (await shown()).map(item => item.src.split('/').pop()).join(), href).toBe('figure-dark.png');
+    await expect.poll(ink, href).toBeGreaterThan(0);
     await page.locator('.theme-toggle').click();
     await page.setViewportSize({ width: 390, height: 844 });
     await page.locator('.page-figure').scrollIntoViewIfNeeded();
-    await expect.poll(async () => (await shown()).map(item => item.src.split('/').pop()).join(), href).toBe('figure-narrow.png');
+    await expect.poll(ink, href).toBeGreaterThan(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), href).toBe(true);
     await page.evaluate(() => localStorage.removeItem('ergion-theme'));
   }

@@ -1,3 +1,4 @@
+import { mountEquationPlates } from './equations';
 import { themeControl } from './theme';
 
 export type PageId = string;
@@ -181,7 +182,7 @@ setTimeout(() => {
 document.addEventListener('click', (event) => {
   const target = event.target;
   if (!(target instanceof Element)) return;
-  const button = target.closest('button.rail-section-title');
+  const button = target.closest('button.rail-group-title, button.rail-section-title');
   if (!(button instanceof HTMLButtonElement)) return;
   const open = button.getAttribute('aria-expanded') !== 'true';
   button.setAttribute('aria-expanded', open ? 'true' : 'false');
@@ -189,22 +190,65 @@ document.addEventListener('click', (event) => {
   if (panel) panel.hidden = !open;
 });
 
-/** 節は幅によらず開閉する。いまのページの節だけが開いて始まる。 */
+/** 本文を置いたあと、式の板と番号を整える。本文より先に呼ばれたときは、置き直してからもう一度整える。 */
+function scheduleEquations(): void {
+  queueMicrotask(mountEquationPlates);
+  document.addEventListener('DOMContentLoaded', mountEquationPlates);
+}
+scheduleEquations();
+
+interface RailGroup {
+  id: string;
+  label: string;
+  sectionIds: string[];
+}
+
+/** 目次の四つの開閉。節の順は、この中の順である。 */
+const railGroups: RailGroup[] = [
+  { id: 'rail-physics', label: '物理', sectionIds: ['rail-mechanics', 'rail-em', 'rail-analytical', 'rail-md'] },
+  { id: 'rail-math', label: '数学', sectionIds: ['rail-calculus', 'rail-ode', 'rail-linalg', 'rail-proof'] },
+  { id: 'rail-applied-math', label: '応用数学', sectionIds: ['rail-statistics', 'rail-finance'] },
+  { id: 'rail-compute', label: '計算', sectionIds: ['rail-numerical'] },
+];
+
+function sectionOpen(section: RailSection, active: PageId): boolean {
+  return section.index === active || section.pages.some(([id]) => id === active);
+}
+
+/**
+ * 目次は物理、数学、応用数学、計算の四つの開閉である。
+ * いまのページのまとまりと節だけが開いて始まる。見出しは文字だけである。
+ */
 export function rail(active: PageId): string {
-  const sections = railSections.map(section => {
-    const open = section.index === active || section.pages.some(([id]) => id === active);
-    const links = section.pages.map(([id, label]) => pageLink(active, id, `./${id}.html`, label)).join('\n          ');
-    return sectionDisclosure(section.id, section.label, open, section.index === active, links);
+  const byId = new Map(railSections.map(section => [section.id, section]));
+  const groups = railGroups.map(group => {
+    const sections = group.sectionIds.flatMap(id => {
+      const section = byId.get(id);
+      return section ? [section] : [];
+    });
+    const open = sections.some(section => sectionOpen(section, active));
+    const blocks = sections.map(section => {
+      const links = section.pages.map(([id, label]) => pageLink(active, id, `./${id}.html`, label)).join('\n          ');
+      return sectionDisclosure(section.id, section.label, sectionOpen(section, active), section.index === active, links);
+    }).join('');
+    return `
+      <div class="rail-group">
+        <button type="button" class="rail-group-title" aria-expanded="${open ? 'true' : 'false'}" aria-controls="${group.id}">${group.label}</button>
+        <div class="rail-group-body" id="${group.id}"${open ? '' : ' hidden'}>
+          ${blocks}
+        </div>
+      </div>`;
   }).join('');
   return `
     <aside class="rail" aria-label="目次">
-      ${sections}
+      ${groups}
       <a class="source-link" href="https://github.com/coil398/Ergion" target="_blank" rel="noreferrer">ソースコード ↗</a>
     </aside>`;
 }
 
 export function pageFooter(note: string): string {
-  return `<footer class="page-footer"><span>Ergion</span><span>${note}</span></footer>`;
+  const extra = note ? `<span>${note}</span>` : '';
+  return `<footer class="page-footer"><span>Ergion</span>${extra}</footer>`;
 }
 
 export interface RelatedLink {
