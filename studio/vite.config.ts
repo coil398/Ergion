@@ -27,6 +27,7 @@ export default defineConfig({
         midpoint: resolve(import.meta.dirname, 'midpoint.html'),
         rk4: resolve(import.meta.dirname, 'rk4.html'),
         newton: resolve(import.meta.dirname, 'newton.html'),
+        velocityStep: resolve(import.meta.dirname, 'velocity-step.html'),
       },
     },
   },

@@ -30,7 +30,7 @@ async function expectMechanicsSection(page: Page) {
   const numericalTitle = sections.nth(2).locator('.rail-section-title');
   await expect(numericalTitle).toHaveText('数値計算');
   const numericalPages = sections.nth(2).locator('.rail-pages a');
-  const numericalLabels = ['Euler法', '中点法', '古典的RK4', 'ニュートン法'];
+  const numericalLabels = ['一定速度の増分', 'Euler法', '中点法', '古典的RK4', 'ニュートン法'];
   await expect(numericalPages).toHaveCount(numericalLabels.length);
   for (let index = 0; index < numericalLabels.length; index += 1) {
     await expect(numericalPages.nth(index)).toHaveText(numericalLabels[index]);
@@ -377,6 +377,28 @@ test('ニュートン法は根の反復であり、微分方程式のタブで�
     await expect(page.locator('#exact-root')).toHaveText('1.41421');
     await expect(page.locator('#root-error')).toHaveText('1.59e-12');
     await expect(page.locator('#solution-error')).toHaveAttribute('aria-label', /誤差/);
+    await expectReadingPage(page);
+  }
+});
+
+test('一定速度の増分は有理数の等式としてデスクトップと狭い画面で読む', async ({ page }) => {
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: width === 1440 ? 1050 : 844 });
+    await page.goto('velocity-step.html');
+    await expect(page.getByRole('heading', { level: 1, name: '一定速度の増分.' })).toBeVisible();
+    await expect(page.locator('[role=tablist]')).toHaveCount(0);
+    await expect(tex(page, String.raw`x' = v`).first()).toBeVisible();
+    await expect(tex(page, String.raw`x \mapsto x + v \Delta t`).first()).toBeVisible();
+    await expect(tex(page, String.raw`x_n = x_0 + n v \Delta t`).first()).toBeVisible();
+    await expect(page.locator('#study')).toContainText('有理数');
+    await expect(page.locator('#study')).toContainText('f64');
+    const lesson = await page.locator('#lesson').innerText();
+    for (const word of ['crates/', 'formal/', 'Rat', '正本', '計算核']) {
+      expect(lesson).not.toContain(word);
+    }
+    const link = page.locator('#study').getByRole('link', { name: 'Ergion.ConstantVelocity', exact: true });
+    await expect(link).toHaveCount(1);
+    await expect(link).toHaveAttribute('href', /ConstantVelocity\.lean$/);
     await expectReadingPage(page);
   }
 });

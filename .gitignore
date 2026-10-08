@@ -4,3 +4,4 @@
 /studio/wasm/
 /studio/test-results/
 /studio/playwright-report/
+/formal/lean/.lake/

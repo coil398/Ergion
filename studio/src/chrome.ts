@@ -19,7 +19,8 @@ export type PageId =
   | 'euler'
   | 'midpoint'
   | 'rk4'
-  | 'newton';
+  | 'newton'
+  | 'velocity-step';
 
 /** rustdoc へのリンク。見える文字は日本語とし、型名やソースのパスは文に出さない。 */
 export function simulationDoc(module: 'uniform' | 'constant_acceleration', name: string, label: string): string {
@@ -87,6 +88,7 @@ export function rail(active: PageId): string {
       <div class="rail-section">
         <span class="rail-section-title">数値計算</span>
         <ul class="rail-pages">
+          ${pageLink(active, 'velocity-step', './velocity-step.html', '一定速度の増分')}
           ${pageLink(active, 'euler', './euler.html', 'Euler法')}
           ${pageLink(active, 'midpoint', './midpoint.html', '中点法')}
           ${pageLink(active, 'rk4', './rk4.html', '古典的RK4')}
