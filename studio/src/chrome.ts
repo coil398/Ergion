@@ -153,7 +153,6 @@ const allSections: RailSection[] = [
 
 /** まだ公開しないページ。ビルドの環境変数 VITE_RAIL_ALL=1 のときだけ目次に出す。 */
 const drafts = new Set<PageId>([
-  'compound', 'gbm', 'black-scholes', 'mc-pricing',
   'coulomb', 'potential', 'gauss', 'magnetostatics', 'lorentz', 'faraday', 'maxwell',
   'constraints', 'virtual-work', 'euler-lagrange', 'noether', 'hamilton', 'liouville', 'poisson',
   'lennard-jones', 'periodic', 'nve', 'observables', 'nvt', 'neighbor-list', 'born-oppenheimer', 'kohn-sham', 'hellmann-feynman', 'first-principles',
