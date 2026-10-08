@@ -209,6 +209,33 @@ test('コードはページをまたいで開き、Euler法の TypeScript を実
   }
 });
 
+test('方程式のページではコードが選んだ数値解法に従う', async ({ page }) => {
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: width === 1440 ? 1050 : 844 });
+    await page.goto('separation.html');
+    await page.evaluate(() => localStorage.removeItem('ergion-code'));
+    await page.reload();
+    const disclosure = page.locator('details.code-disclosure');
+    await expect(disclosure).toHaveJSProperty('open', false);
+    await disclosure.locator('summary').click();
+    await expect(disclosure).toHaveJSProperty('open', true);
+    const typescript = page.getByRole('region', { name: 'TypeScript' });
+    const python = page.getByRole('region', { name: 'Python' });
+    await expect(typescript.locator('.code-install')).toHaveText('npm install ./studio/wasm');
+    await expect(python.locator('.code-install')).toHaveText('pip install ./py/ergion');
+    await expect(typescript.locator('pre')).toContainText('import init, { euler_step } from "ergion-lab"');
+    await expect(python.locator('pre')).toContainText('from ergion import euler_step');
+    await page.getByRole('tab', { name: '中点法', exact: true }).click();
+    await expect(typescript.locator('pre')).toContainText('import init, { midpoint_step } from "ergion-lab"');
+    await expect(typescript.locator('pre')).not.toContainText('euler_step');
+    await expect(python.locator('pre')).toContainText('from ergion import midpoint_step');
+    await page.getByRole('tab', { name: '古典的RK4', exact: true }).click();
+    await expect(typescript.locator('pre')).toContainText('import init, { rk4_step } from "ergion-lab"');
+    await expect(python.locator('pre')).toContainText('from ergion import rk4_step');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  }
+});
+
 test('NativeとブラウザWasmが一致する', async ({ page }, testInfo) => {
   await page.goto('uniform.html');
   await expect(page.locator('#status')).toHaveText('準備完了');

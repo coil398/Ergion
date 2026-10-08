@@ -88,6 +88,21 @@ export function codeIsOpen(): boolean {
   }
 }
 
+/** 選ばれている数値解法の関数に、表示中のコードを合わせる。 */
+export function setCodeMethod(kind: 'euler' | 'midpoint' | 'rk4') {
+  const details = document.querySelector<HTMLDetailsElement>('details.code-disclosure');
+  if (!details) return;
+  const pair = snippets[kind];
+  const typescript = details.querySelector<HTMLElement>('[aria-label="TypeScript"] pre');
+  const python = details.querySelector<HTMLElement>('[aria-label="Python"] pre');
+  if (typescript) typescript.textContent = pair.ts.trim();
+  if (python) python.textContent = pair.py.trim();
+  for (const result of details.querySelectorAll<HTMLElement>('.code-result')) {
+    result.textContent = '';
+    delete result.dataset.state;
+  }
+}
+
 export function codeDisclosure(kind: keyof typeof snippets): string {
   const pair = snippets[kind];
   return `

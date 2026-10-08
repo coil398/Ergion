@@ -3,6 +3,7 @@ import { appHeader, pageFooter, rail, simulationDoc } from './chrome';
 import accelerationProof from '../../formal/lean/Ergion/ConstantAcceleration.lean?raw';
 import { checkedProofs } from './proof';
 import { clearFigure, drawConstantAcceleration, drawErrorSeries, drawTimeSeries } from './figures';
+import { codeDisclosure, mountCodeDisclosure, setCodeMethod } from './code-panel';
 import { bindMethodTabs, methodTabs } from './method-tabs';
 import { tex } from './tex';
 import type { ConstantAccelerationConfig, Snapshot, StepMethod } from './protocol';
@@ -94,6 +95,7 @@ app.innerHTML = `
             <div class="plot-footer"><span id="comparison">解析解との差を計算します。</span><span>誤差は実線</span></div>
           </section>
           ${transportPanel()}
+          ${codeDisclosure('euler')}
           <p id="error" role="alert" hidden></p>
           <p class="experiment-note">数値計算はブラウザ内で実行します。条件や結果をサーバーへ送信しません。</p>
         </div>
@@ -169,7 +171,9 @@ const session = mountSession({
   paintFigures,
   method: () => method,
 });
+mountCodeDisclosure();
 bindMethodTabs(next => {
   method = next;
+  setCodeMethod(next);
   session.reloadMethod();
 });

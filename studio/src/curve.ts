@@ -1,3 +1,4 @@
+import { codeDisclosure, mountCodeDisclosure, setCodeMethod } from './code-panel';
 import { drawErrorSeries, drawTimeSeries } from './figures';
 import { bindMethodTabs, methodTabs } from './method-tabs';
 import type { CompareConfig, Reply, Snapshot, StepMethod } from './protocol';
@@ -20,7 +21,8 @@ export function steppedFigure(companion = false): string {
           <div><span>位置の誤差</span><output id="position-error">—</output></div>
           ${companion ? '<div><span>もう一つの厳密解</span><output id="solution-companion">—</output></div><div><span>もう一つの数値解</span><output id="companion-numerical">—</output></div><div><span>もう一つの誤差</span><output id="companion-error-value">—</output></div>' : ''}
         </div>
-      </section>`;
+      </section>
+      ${codeDisclosure('euler')}`;
 }
 
 /** ページに書いた例を、ライブラリの数値解と厳密解として描く。式の値はここでは計算しない。 */
@@ -127,8 +129,10 @@ export function mountSteppedFigure(options: {
   window.addEventListener('resize', () => {
     if (drawn) paint(drawn.samples, drawn.state);
   });
+  mountCodeDisclosure();
   bindMethodTabs(next => {
     method = next;
+    setCodeMethod(next);
     load();
   });
   load();

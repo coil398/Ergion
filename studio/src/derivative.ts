@@ -2,6 +2,7 @@ import './style.css';
 import { appHeader, pageFooter, rail, stepDoc } from './chrome';
 import { checkedVelocityProof } from './proof';
 import { clearFigure, drawErrorSeries, drawTimeSeries, drawUniformMotion } from './figures';
+import { codeDisclosure, mountCodeDisclosure, setCodeMethod } from './code-panel';
 import { bindMethodTabs, methodTabs } from './method-tabs';
 import type { Config, Snapshot, StepMethod } from './protocol';
 import { mountSession, transportPanel } from './session';
@@ -86,6 +87,7 @@ app.innerHTML = `
             <div class="plot-footer"><span id="comparison">解析解との差を計算します。</span><span>誤差は実線</span></div>
           </section>
           ${transportPanel()}
+          ${codeDisclosure('euler')}
           <p id="error" role="alert" hidden></p>
           <p class="experiment-note">数値計算はブラウザ内で実行します。条件や結果をサーバーへ送信しません。</p>
         </div>
@@ -160,7 +162,9 @@ const session = mountSession({
   paintFigures,
   method: () => method,
 });
+mountCodeDisclosure();
 bindMethodTabs(next => {
   method = next;
+  setCodeMethod(next);
   session.reloadMethod();
 });
