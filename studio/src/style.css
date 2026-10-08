@@ -124,16 +124,16 @@ canvas{display:block;width:100%}
 .readouts span{font-size:16px;color:var(--color-text-secondary);line-height:1.5}
 .readouts output{font-family:ui-monospace,"Cascadia Code",monospace;font-size:18px;font-weight:500;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .readouts>div:last-child output{color:var(--color-difference)}
-.plots{padding:20px 23px 0;overflow:hidden}
+.plots{padding:20px 23px 0;overflow:hidden;min-width:0}
 .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:16px;color:var(--color-text)}
 .legend span{display:flex;align-items:center;gap:6px}
 .legend i{display:block;width:22px;border-top:2px solid}
 .legend .numerical{border-color:var(--color-primary)}
 .legend .analytical{border-color:var(--color-analytical);border-top-style:dashed}
 .legend .difference{border-color:var(--color-difference)}
-.method-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}
-.method-tab{min-height:44px;padding:8px 14px;border-radius:6px;border:1px solid var(--color-border);background:var(--color-paper);color:var(--color-text-secondary);font-size:16px;font-weight:700;line-height:1.5}
-.method-tab[aria-selected=true]{background:var(--color-primary-tint);color:var(--color-primary-active);border-color:var(--color-border)}
+.method-tabs{display:flex;flex-wrap:nowrap;align-items:stretch;gap:0;margin:0 0 16px;width:100%;min-width:0;max-width:100%;overflow-x:auto;border-bottom:1px solid var(--color-border)}
+.method-tab{flex:0 0 auto;min-height:44px;padding:8px 16px;border:0;border-bottom:2px solid transparent;border-radius:0;background:transparent;color:var(--color-text-secondary);font-size:16px;font-weight:700;line-height:1.5;white-space:nowrap}
+.method-tab[aria-selected=true]{background:var(--color-primary-tint);color:var(--color-primary-active);border-bottom-color:var(--color-primary)}
 .plot-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:21px;margin-top:16px}
 .plot-grid canvas{height:220px}
 .plot-grid p{text-align:center;font-size:16px;color:var(--color-text-secondary);margin:8px 0 16px}

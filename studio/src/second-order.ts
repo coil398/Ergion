@@ -51,7 +51,7 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
-      ${steppedFigure(`タブは、実根の例 ${tex(String.raw`x'' - 3x' + 2x = 0`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
+      ${steppedFigure()}
       <section class="study panel" id="example" aria-labelledby="real-heading">
         <div class="study-body">
           <h2 id="real-heading">相異なる実根の例</h2>

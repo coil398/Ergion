@@ -54,7 +54,7 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
-      ${steppedFigure(`タブは、連立 ${tex(String.raw`x' = x + y`)}、${tex(String.raw`y' = 4x + y`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。誤差は ${tex('x')} と ${tex('y')} の両方に出ます。どちらも時間刻みによる打ち切りであり、丸めだけではありません。表示は、厳密解を小数第5位まで示したものです。`, true)}
+      ${steppedFigure(true)}
       <section class="study panel" id="example" aria-labelledby="example-heading">
         <div class="study-body">
           <h2 id="example-heading">数を代入した検算</h2>

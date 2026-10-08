@@ -46,7 +46,7 @@ app.innerHTML = `
               <p class="solution-equation">${tex('x(t) = x_0 + v t', true)}</p>
             </li>
           </ol>
-          <p>画面は、各時刻の位置と速度を描きます。式 ${tex(String.raw`x' = v`)} や ${tex('x(t) = x_0 + v t')} を、描画のために計算し直すことはありません。図の線分は、初期位置 ${tex('x_0')} に加わる変位 ${tex('vt')} です。青の実線が数値解、青緑の破線が厳密解です。誤差は、その破線とは別の実線です。タブは、この同じ方程式を進める数値解法だけを切り替えます。速度が一定なので、どの方法も上の増分と一致し、誤差は丸めだけです。</p>
+          <p>画面は、各時刻の位置と速度を描きます。式 ${tex(String.raw`x' = v`)} や ${tex('x(t) = x_0 + v t')} を、描画のために計算し直すことはありません。図の線分は、初期位置 ${tex('x_0')} に加わる変位 ${tex('vt')} です。青の実線が数値解、青緑の破線が厳密解です。誤差は、その破線とは別の実線です。</p>
         </div>
       </section>
       <div class="experiment-grid">
@@ -82,7 +82,6 @@ app.innerHTML = `
           <section class="plots panel" aria-labelledby="plots-heading">
             <div class="panel-heading"><h2 id="plots-heading">位置と誤差の時間変化</h2><div class="legend"><span><i class="numerical"></i>数値解</span><span><i class="analytical"></i>解析解</span><span><i class="difference"></i>誤差</span></div></div>
             ${methodTabs('この方程式の数値解法')}
-            <p class="scene-caption">タブは、方程式 ${tex(String.raw`x' = v`)} を進める数値解法だけを切り替えます。上の導出は変わりません。速度が一定なので、誤差は丸めだけです。</p>
             <div class="plot-grid"><div class="plot-main"><h3>位置の時間変化 ${tex('x(t)')}</h3><canvas id="time-chart" aria-label="位置と時間のグラフ" role="img"></canvas><p>時間 t</p></div><div class="plot-phase"><h3>位置の誤差 ${tex('x - x_{\\mathrm{exact}}')}</h3><canvas id="phase-chart" aria-label="位置の誤差と時間のグラフ" role="img"></canvas><p>時間 t</p></div></div>
             <div class="plot-footer"><span id="comparison">解析解との差を計算します。</span><span>誤差は実線</span></div>
           </section>

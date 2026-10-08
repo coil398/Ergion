@@ -773,6 +773,58 @@ test('学部の標準的な解法をデスクトップと狭い画面で読む',
   }
 });
 
+test('数値解法の切り替えは390pxでも一行のタブである', async ({ page }) => {
+  test.setTimeout(60_000);
+  for (const href of ['uniform.html', 'separation.html']) {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(href);
+    const tabs = page.getByRole('tab');
+    await expect(tabs).toHaveCount(3);
+    await expect(tabs.nth(0)).toHaveText('Euler法');
+    await expect(tabs.nth(1)).toHaveText('中点法');
+    await expect(tabs.nth(2)).toHaveText('古典的RK4');
+    const strip = () => page.locator('.method-tabs').evaluate((list) => {
+      const items = [...list.querySelectorAll<HTMLElement>('.method-tab')];
+      const rows = new Set(items.map((tab) => Math.round(tab.getBoundingClientRect().top))).size;
+      const extra = document.createElement('button');
+      extra.className = 'method-tab';
+      extra.setAttribute('role', 'tab');
+      extra.textContent = '仮の方法';
+      list.appendChild(extra);
+      const withExtra = [...list.querySelectorAll<HTMLElement>('.method-tab')];
+      const rowsWithExtra = new Set(withExtra.map((tab) => Math.round(tab.getBoundingClientRect().top))).size;
+      const metrics = {
+        rows,
+        rowsWithExtra,
+        nowrap: getComputedStyle(list).flexWrap === 'nowrap',
+        scrolls: list.scrollWidth > list.clientWidth + 1,
+        pageFits: document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1,
+        selected: items.filter((tab) => tab.getAttribute('aria-selected') === 'true').length,
+        oneLine: list.getBoundingClientRect().height <= items[0].getBoundingClientRect().height + 4,
+      };
+      extra.remove();
+      return metrics;
+    });
+    const before = await strip();
+    expect(before.rows, href).toBe(1);
+    expect(before.rowsWithExtra, href).toBe(1);
+    expect(before.nowrap, href).toBe(true);
+    expect(before.scrolls, href).toBe(true);
+    expect(before.pageFits, href).toBe(true);
+    expect(before.selected, href).toBe(1);
+    expect(before.oneLine, href).toBe(true);
+    await page.getByRole('tab', { name: '古典的RK4', exact: true }).click();
+    await expect(page.getByRole('tab', { name: '古典的RK4', exact: true })).toHaveAttribute('aria-selected', 'true');
+    await expect(page.getByRole('tab', { name: 'Euler法', exact: true })).toHaveAttribute('aria-selected', 'false');
+    await expect(page.getByRole('tab', { name: '中点法', exact: true })).toHaveAttribute('aria-selected', 'false');
+    const after = await strip();
+    expect(after.rows, href).toBe(1);
+    expect(after.oneLine, href).toBe(true);
+    expect(after.selected, href).toBe(1);
+    expect(after.pageFits, href).toBe(true);
+  }
+});
+
 test('証明は式と図と例のあとで、ページの最後にある', async ({ page }) => {
   test.setTimeout(180_000);
   const pages = [

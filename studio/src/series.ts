@@ -61,7 +61,7 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
-      ${steppedFigure(`タブは、方程式 ${tex(String.raw`x'' + x = 0`)} を進める数値解法だけを切り替えます。上の導出と、べき級数の和である厳密解は変わりません。青緑の破線はその和です。誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、その和を小数第5位まで示したものです。`)}
+      ${steppedFigure()}
       <section class="study panel" id="example" aria-labelledby="example-heading">
         <div class="study-body">
           <h2 id="example-heading">数を代入した検算</h2>

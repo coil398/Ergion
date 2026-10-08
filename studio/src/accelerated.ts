@@ -50,7 +50,7 @@ app.innerHTML = `
             <li>位置は時刻の二次式、速度は時刻の一次式であり、三階以上の導関数はゼロです。時刻 ${tex('t_n')} から ${tex(String.raw`\Delta t`)} だけ進んだ厳密な増分は次の式です（${simulationDoc('constant_acceleration', 'ConstantAccelerationSimulation', '1ステップの説明')}）。
               <p class="solution-equation">${tex(String.raw`x_{n+1} = x_n + v_n \Delta t + \frac{1}{2} a (\Delta t)^2`, true)}</p>
               <p class="solution-equation">${tex(String.raw`v_{n+1} = v_n + a \Delta t`, true)}</p>
-              中点法と古典的な4次の Runge–Kutta 法では、数値ステップの増分は厳密解の増分と一致します。残る差は、倍精度浮動小数点の丸めだけです。Euler 法は区間の始点の速度だけで位置を進めるので、位置には ${tex(String.raw`\frac{1}{2} a (\Delta t)^2`)} の打ち切りが残ります。この誤差は丸めだけではありません。図のタブは方法だけを切り替え、上の式は変わりません。
+              中点法と古典的な4次の Runge–Kutta 法では、数値ステップの増分は厳密解の増分と一致します。残る差は、倍精度浮動小数点の丸めだけです。Euler 法は区間の始点の速度だけで位置を進めるので、位置には ${tex(String.raw`\frac{1}{2} a (\Delta t)^2`)} の打ち切りが残ります。この誤差は丸めだけではありません。
             </li>
           </ol>
           <p>画面は、各時刻の位置と速度を描きます。式 ${tex(String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`)} や ${tex('v(t) = v_0 + a t')} を、描画のために計算し直すことはありません。青の実線が数値解、青緑の破線が厳密解です。誤差は、その破線とは別の実線です。</p>
@@ -90,7 +90,6 @@ app.innerHTML = `
           <section class="plots panel" aria-labelledby="plots-heading">
             <div class="panel-heading"><h2 id="plots-heading">位置と誤差の時間変化</h2><div class="legend"><span><i class="numerical"></i>数値解</span><span><i class="analytical"></i>解析解</span><span><i class="difference"></i>誤差</span></div></div>
             ${methodTabs('この方程式の数値解法')}
-            <p class="scene-caption">タブは、${tex(String.raw`x' = v`)} と ${tex(String.raw`v' = a`)} を進める数値解法だけを切り替えます。上の導出は変わりません。Euler 法の位置の誤差は打ち切りです。中点法と古典的な4次の Runge–Kutta 法では、この二次式に対する差は丸めだけです。</p>
             <div class="plot-grid"><div class="plot-main"><h3>位置の時間変化 ${tex('x(t)')}</h3><canvas id="time-chart" aria-label="位置と時間のグラフ" role="img"></canvas><p>時間 t</p></div><div class="plot-phase"><h3>位置の誤差 ${tex('x - x_{\\mathrm{exact}}')}</h3><canvas id="phase-chart" aria-label="位置の誤差と時間のグラフ" role="img"></canvas><p>時間 t</p></div></div>
             <div class="plot-footer"><span id="comparison">解析解との差を計算します。</span><span>誤差は実線</span></div>
           </section>

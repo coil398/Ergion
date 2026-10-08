@@ -2,13 +2,12 @@ import { drawErrorSeries, drawTimeSeries } from './figures';
 import { bindMethodTabs, methodTabs } from './method-tabs';
 import type { CompareConfig, Reply, Snapshot, StepMethod } from './protocol';
 
-/** 厳密解の図に、その方程式の数値解と誤差を重ねる。タブは数値解法だけを切り替える。 */
-export function steppedFigure(caption: string, companion = false): string {
+/** 厳密解の図に、その方程式の数値解と誤差を重ねる。 */
+export function steppedFigure(companion = false): string {
   return `
       <section class="plots panel" aria-labelledby="curve-heading">
         <div class="panel-heading"><h2 id="curve-heading">数値解と厳密解</h2><div class="legend"><span><i class="numerical"></i>数値解</span><span><i class="analytical"></i>厳密解</span><span><i class="difference"></i>誤差</span></div></div>
         ${methodTabs('この方程式の数値解法')}
-        <p class="scene-caption">${caption}</p>
         <div class="plot-grid">
           <div class="plot-main"><h3>位置の時間変化</h3><canvas id="solution-chart" role="img"></canvas><p>時間 t</p></div>
           <div class="plot-phase"><h3>位置の誤差</h3><canvas id="solution-error" role="img"></canvas><p>時間 t</p></div>
