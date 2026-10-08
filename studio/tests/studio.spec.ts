@@ -11,7 +11,7 @@ function tex(page: Page, source: string) {
 
 async function expectMechanicsSection(page: Page) {
   const sections = page.locator('.rail-section');
-  await expect(sections).toHaveCount(2);
+  await expect(sections).toHaveCount(3);
   const mechanicsTitle = sections.nth(0).locator('.rail-section-title');
   await expect(mechanicsTitle).toHaveText('力学');
   const motion = sections.nth(0).locator('.rail-pages a');
@@ -22,10 +22,18 @@ async function expectMechanicsSection(page: Page) {
   const odeTitle = sections.nth(1).locator('.rail-section-title');
   await expect(odeTitle).toHaveText('微分方程式');
   const odePages = sections.nth(1).locator('.rail-pages a');
-  const odeLabels = ['積分して解く', '変数分離', '1階線形', '同次形', '完全微分', 'ベルヌーイ', '定数係数の2階同次', '未定係数法', '定数変化法', 'Laplace 変換', 'べき級数', '連立1階', '位置の時間微分', 'Euler法', '中点法', '古典的RK4', 'ニュートン法'];
+  const odeLabels = ['積分して解く', '変数分離', '1階線形', '同次形', '完全微分', 'ベルヌーイ', '定数係数の2階同次', '未定係数法', '定数変化法', 'Laplace 変換', 'べき級数', '連立1階'];
   await expect(odePages).toHaveCount(odeLabels.length);
   for (let index = 0; index < odeLabels.length; index += 1) {
     await expect(odePages.nth(index)).toHaveText(odeLabels[index]);
+  }
+  const numericalTitle = sections.nth(2).locator('.rail-section-title');
+  await expect(numericalTitle).toHaveText('数値計算');
+  const numericalPages = sections.nth(2).locator('.rail-pages a');
+  const numericalLabels = ['Euler法', '中点法', '古典的RK4', 'ニュートン法'];
+  await expect(numericalPages).toHaveCount(numericalLabels.length);
+  for (let index = 0; index < numericalLabels.length; index += 1) {
+    await expect(numericalPages.nth(index)).toHaveText(numericalLabels[index]);
   }
   const nested = await page.evaluate(() => {
     const blocks = [...document.querySelectorAll('.rail-section')];

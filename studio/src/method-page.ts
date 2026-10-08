@@ -36,7 +36,7 @@ export function mountMethodPage(options: {
       <main id="experiment">
         <section class="intro">
           <div>
-            <p class="breadcrumb"><a href="./ode.html">微分方程式</a> <span>/</span> ${options.title}</p>
+            <p class="breadcrumb">数値計算 <span>/</span> ${options.title}</p>
             <h1>${options.title}<span class="title-dot">.</span></h1>
             <p class="description">このページは ${options.title} だけを説明します。例は ${tex(String.raw`x' = v`)} で、速度 ${tex('v')} は一定です。厳密解は ${tex('x(t) = x_0 + v t')} です。</p>
           </div>

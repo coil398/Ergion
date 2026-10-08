@@ -12,7 +12,7 @@ app.innerHTML = `
         <div>
           <p class="breadcrumb">実験室 <span>/</span> 力学</p>
           <h1>力学<span class="title-dot">.</span></h1>
-          <p class="description">力学では、直線上の一つの粒子を扱います。位置の時間微分と、それを使う二つの運動を置いてあります。微分方程式の解き方は、<a href="./ode.html">隣の節</a>に置いてあります。</p>
+          <p class="description">力学では、直線上の一つの粒子を扱います。位置の時間微分と、それを使う二つの運動を置いてあります。方程式を解く手順は<a href="./ode.html">微分方程式</a>の節、数値の進め方は数値計算の節に置いてあります。</p>
         </div>
       </section>
       <div class="chapter-list">

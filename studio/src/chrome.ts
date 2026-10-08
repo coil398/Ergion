@@ -52,7 +52,7 @@ function pageLink(active: PageId, id: PageId, href: string, label: string): stri
   return `<li><a class="rail-page${current ? ' active' : ''}" href="${href}"${current ? ' aria-current="page"' : ''}>${label}</a></li>`;
 }
 
-/** 力学と微分方程式は並ぶ節。各ページはその節の下に縦に置く。 */
+/** 力学、微分方程式、数値計算は並ぶ節。各ページはその節の下に縦に置く。 */
 export function rail(active: PageId): string {
   const mechanicsCurrent = active === 'mechanics' ? ' aria-current="page"' : '';
   const odeCurrent = active === 'ode' ? ' aria-current="page"' : '';
@@ -82,7 +82,11 @@ export function rail(active: PageId): string {
           ${pageLink(active, 'laplace', './laplace.html', 'Laplace 変換')}
           ${pageLink(active, 'series', './series.html', 'べき級数')}
           ${pageLink(active, 'system', './system.html', '連立1階')}
-          ${pageLink(active, 'derivative', './derivative.html', '位置の時間微分')}
+        </ul>
+      </div>
+      <div class="rail-section">
+        <span class="rail-section-title">数値計算</span>
+        <ul class="rail-pages">
           ${pageLink(active, 'euler', './euler.html', 'Euler法')}
           ${pageLink(active, 'midpoint', './midpoint.html', '中点法')}
           ${pageLink(active, 'rk4', './rk4.html', '古典的RK4')}
