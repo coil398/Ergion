@@ -34,7 +34,8 @@ Ergion のレイアウト、色、タイポグラフィ、ページ構造、Canv
 
 - 「少し学術的で、ほんのり野暮ったい道具（academic and slightly dorky）」という風情を崩してはいけません。
 - 一般的なSaaSのようなグラデーションや、丸みの強すぎる過剰にモダンなUIに均してはいけません。
-- ページの数式は TeX を KaTeX で描く。図の中の記号は Georgia。等幅フォントによる計器表示（monospace / tabular-nums）、実線（数値解：`#003153`）と破線（解析解：`#167b87`）の対比を大切に維持します。本文は 16px、数式と解法の手順は 18px。表示する式の地は `#e8dfd0`。新しい色は作らない。
+- ページの数式は TeX を KaTeX で描く。図の中の記号は Georgia。等幅フォントによる計器表示（monospace / tabular-nums）、実線（数値解：`--color-primary`）と破線（解析解：`--color-analytical`）の対比を大切に維持します。本文は 16px、数式と解法の手順は 18px。表示する式の地は `--color-primary-tint`。新しい色は作らない。
+- 配色は明るい配色と暗い配色の二つで、トークンは一組です。明るい配色は地 `#f4efe6`、文字 `#1c1915`、数値解 `#003153`、厳密解 `#167b87`、誤差 `#a86240`、式の地 `#e8dfd0`。暗い配色は温かいインクの地で、地 `#1c1915`、文字 `#f4efe6`、数値解 `#9ec3dd`、厳密解 `#6ec8d2`、誤差 `#e3a88a`、式の地 `#2c2824`。青みの灰色にはしない。ページは `prefers-color-scheme` に従い、ヘッダーの「明るい」「暗い」「端末」の選択は、どのページも同じ localStorage のキー `ergion-theme` に置く。図、KaTeX、式の地も同じトークンで描き、暗いページに紙色のグラフを残さない。
 - 文書には、あるべき状態だけを書きます。そこに至る経緯は書きません。
 
 ## 4. 図は studio/src/figures/ に置き、チャートパッケージを入れない
@@ -42,6 +43,6 @@ Ergion のレイアウト、色、タイポグラフィ、ページ構造、Canv
 - 軸、動く粒子、\(vt\) として伸びる線分、ラベル、時系列グラフは `studio/src/figures/` が描く。公開モジュールは `canvas`、`axes`、`particle`、`segment`、`labels`、`series`、`motion`。
 - ページや `studio/src/main.ts` に、図を描く第二の実装を持たない。`CanvasRenderingContext2D` のパスをページに書かない。
 - Chart.js、D3、その他の第三者チャートパッケージを依存関係に加えない。描画は TypeScript と Canvas 2D だけ。
-- 色は `DESIGN.md` のパレットを使う。新しいパレットを作らない。
+- 色は `DESIGN.md` のパレットを使う。新しいパレットを作らない。図の中に色の値を書かず、`studio/src/figures/canvas.ts` の `figurePalette()` が返すトークンの値で描く。
 - 数値は Rust の `UniformSimulation` が Wasm で返した値を描く。TypeScript で式 \(x = x_0 + v t\) を計算し直さない。
 - 等速直線運動の図は、粒子の移動と、伸びる変位 \(vt\) で \(x = x_0 + v t\) を説明する。数値解は青の実線、解析解は青緑の破線。一度に見せるアイデアは一つ。
