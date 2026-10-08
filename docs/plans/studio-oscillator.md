@@ -19,7 +19,7 @@
 
 ## 画面方針
 
-計算と学習の画面である。結果を中心にした確認の場で、式の解説・理論・引数仕様・テスト検証は計算する関数の rustdoc（`crates/ergion-lab/src/uniform.rs` の `UniformSimulation`）に置き、画面は動く粒子を示してその関数を参照する。GitHub Pages（https://coil398.github.io/Ergion/）やCursorローカルで閲覧する。図は別の描画スタックにしない。白い作図面、薄い藤色の作業背景、紫の数値解、青緑の解析解、橙の誤差表示を使う。配色は紙面 #ffffff、背景 #f1f2f8、文字 #25243c、数値解 #6552b8、解析解 #167b87、誤差 #b65b37。書体は日本語の可読性を優先したシステムゴシック、数式はserif、数値は等幅で桁をそろえる。
+計算と学習の画面である。結果を中心にした確認の場で、式の解説・理論・引数仕様・テスト検証は計算する関数の rustdoc（`crates/ergion-lab/src/uniform.rs` の `UniformSimulation`）に置き、画面は動く粒子を示してその関数を参照する。GitHub Pages（https://coil398.github.io/Ergion/）やCursorローカルで閲覧する。図は別の描画スタックにしない。白い作図面、温かい紙色のページ、青の数値解、青緑の解析解、煉瓦色の誤差を使う。配色は紙面 #ffffff、背景 #f4efe6、文字 #1c1915、数値解 #003153、解析解 #167b87、誤差 #a86240。書体は日本語の可読性を優先したシステムゴシック、数式はserif、数値は等幅で桁をそろえる。
 
 ```text
 Ergion Studio                    計算状態

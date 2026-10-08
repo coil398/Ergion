@@ -82,8 +82,8 @@ async function expectTypeSize(page: Page) {
   expect(type.equation).toBe(18);
   expect(type.katex).toBe(18);
   expect(type.heading).toBe(18);
-  expect(type.equationPlate).toBe('rgb(234, 231, 246)');
-  expect(type.stepPlate).toBe('rgb(234, 231, 246)');
+  expect(type.equationPlate).toBe('rgb(232, 223, 208)');
+  expect(type.stepPlate).toBe('rgb(232, 223, 208)');
 }
 
 async function expectSimulationDoc(page: Page, module: string, name: string) {
@@ -266,7 +266,7 @@ test('力学の目次はいまページにしてあるものだけを示す', as
   await expect(tex(page, String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`).first()).toBeVisible();
   await expect(tex(page, 'v(t) = v_0 + a t').first()).toBeVisible();
   await expect(page.locator('#contents .katex').first()).toBeVisible();
-  await expect(page.locator('#contents .equation').first()).toHaveCSS('background-color', 'rgb(234, 231, 246)');
+  await expect(page.locator('#contents .equation').first()).toHaveCSS('background-color', 'rgb(232, 223, 208)');
   await expect(page.getByRole('link', { name: '位置の時間微分' }).first()).toBeVisible();
   await expect(page.getByRole('link', { name: '等速直線運動' }).first()).toBeVisible();
   await expect(page.getByRole('link', { name: '等加速度直線運動' }).first()).toBeVisible();

@@ -111,14 +111,14 @@ export function drawOrigin(
 ) {
   context.save();
   context.setLineDash([3, 5]);
-  context.strokeStyle = '#c4c0d6';
+  context.strokeStyle = '#b7ad9c';
   context.lineWidth = 1;
   context.beginPath();
   context.moveTo(x, y1);
   context.lineTo(x, y2);
   context.stroke();
   context.restore();
-  if (label) drawLabel(context, label.text, x, label.y, 'math', { color: '#5d5873' });
+  if (label) drawLabel(context, label.text, x, label.y, 'math', { color: '#4a453c' });
 }
 
 function interior(pixel: number, start: number, length: number) {
@@ -130,7 +130,7 @@ export function drawCartesianAxes(context: CanvasRenderingContext2D, frame: Plot
   context.lineWidth = 1;
   for (let index = 0; index <= 4; index += 1) {
     const y = frame.top + frame.height * index / 4;
-    context.strokeStyle = '#eeedf5';
+    context.strokeStyle = '#efe8da';
     context.beginPath();
     context.moveTo(frame.left, y);
     context.lineTo(frame.left + frame.width, y);
@@ -139,7 +139,7 @@ export function drawCartesianAxes(context: CanvasRenderingContext2D, frame: Plot
     drawLabel(context, yValue.toPrecision(3), frame.left - 8, y, 'tick', { align: 'right' });
 
     const x = frame.left + frame.width * index / 4;
-    context.strokeStyle = '#eeedf5';
+    context.strokeStyle = '#efe8da';
     context.beginPath();
     context.moveTo(x, frame.top);
     context.lineTo(x, frame.top + frame.height);
@@ -153,20 +153,20 @@ export function drawCartesianAxes(context: CanvasRenderingContext2D, frame: Plot
   if (frame.yMin <= 0 && frame.yMax >= 0 && interior(yZero, frame.top, frame.height)) {
     context.save();
     context.setLineDash([3, 5]);
-    context.strokeStyle = '#c4c0d6';
+    context.strokeStyle = '#b7ad9c';
     context.lineWidth = 1;
     context.beginPath();
     context.moveTo(frame.left, yZero);
     context.lineTo(frame.left + frame.width, yZero);
     context.stroke();
     context.restore();
-    if (zeroLabel) drawLabel(context, zeroLabel, frame.left + 36, yZero - 12, 'math', { color: '#5d5873' });
+    if (zeroLabel) drawLabel(context, zeroLabel, frame.left + 36, yZero - 12, 'math', { color: '#4a453c' });
   }
 }
 
 export function drawNumberLine(context: CanvasRenderingContext2D, line: NumberLine) {
   context.save();
-  context.strokeStyle = '#e7e6ef';
+  context.strokeStyle = '#e4dccb';
   context.lineWidth = 2;
   context.beginPath();
   context.moveTo(line.left, line.y);
@@ -176,7 +176,7 @@ export function drawNumberLine(context: CanvasRenderingContext2D, line: NumberLi
   for (let index = 0; index <= 4; index += 1) {
     const value = line.xMin + (line.xMax - line.xMin) * index / 4;
     const x = mapLinear(value, line.xMin, line.xMax, line.left, line.width);
-    context.strokeStyle = '#c4c0d6';
+    context.strokeStyle = '#b7ad9c';
     context.beginPath();
     context.moveTo(x, line.y);
     context.lineTo(x, line.y + 6);

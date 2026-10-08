@@ -89,12 +89,12 @@ export function drawUniformMotion(canvas: HTMLCanvasElement, frame: UniformMotio
     x1: originX,
     x2: jointX,
     y: bracketY,
-    color: '#5d5873',
+    color: '#4a453c',
     width: 1.6,
     dash: [],
     caps: 'start',
     label: 'x₀',
-    labelColor: '#5d5873',
+    labelColor: '#4a453c',
     labelY,
     labelAlways: true,
     clampX,
@@ -103,20 +103,20 @@ export function drawUniformMotion(canvas: HTMLCanvasElement, frame: UniformMotio
     x1: jointX,
     x2: positionX,
     y: bracketY,
-    color: '#6552b8',
+    color: '#003153',
     width: 2.5,
     dash: [],
     caps: 'none',
     arrow: true,
     label: vtLabel,
-    labelColor: '#6552b8',
+    labelColor: '#003153',
     labelY,
     labelMinPx: 48,
     clampX,
   });
   drawJoint(context, jointX, bracketY);
 
-  if (axisY - 16 > bracketY + 6) drawWitness(context, positionX, bracketY + 6, axisY - 16, '#6552b8');
+  if (axisY - 16 > bracketY + 6) drawWitness(context, positionX, bracketY + 6, axisY - 16, '#003153');
   if (Math.abs(positionX - exactX) > 6 && axisY - 22 > exactY + 6) {
     drawWitness(context, exactX, exactY + 6, axisY - 22, '#167b87', [5, 4]);
   }
@@ -128,7 +128,7 @@ export function drawUniformMotion(canvas: HTMLCanvasElement, frame: UniformMotio
     cue: Math.abs(frame.velocity) > 1e-6 ? { direction: frame.velocity, y: cueY } : undefined,
   });
 
-  canvas.setAttribute('aria-label', '直線上を進む粒子。初期位置に変位 vt を加えた位置を示します。数値解は紫の実線、解析解は青緑の破線。');
+  canvas.setAttribute('aria-label', '直線上を進む粒子。初期位置に変位 vt を加えた位置を示します。数値解は青の実線、解析解は青緑の破線。');
 }
 
 export interface ConstantAccelerationFrame {
@@ -193,12 +193,12 @@ export function drawConstantAcceleration(canvas: HTMLCanvasElement, frame: Const
     x1: originX,
     x2: jointX,
     y: bracketY,
-    color: '#5d5873',
+    color: '#4a453c',
     width: 1.6,
     dash: [],
     caps: 'start',
     label: 'x₀',
-    labelColor: '#5d5873',
+    labelColor: '#4a453c',
     labelY,
     labelAlways: true,
     clampX,
@@ -207,7 +207,7 @@ export function drawConstantAcceleration(canvas: HTMLCanvasElement, frame: Const
     x1: jointX,
     x2: positionX,
     y: bracketY,
-    color: '#6552b8',
+    color: '#003153',
     width: 2.5,
     dash: [],
     caps: 'none',
@@ -216,7 +216,7 @@ export function drawConstantAcceleration(canvas: HTMLCanvasElement, frame: Const
   });
   drawJoint(context, jointX, bracketY);
 
-  if (axisY - 16 > bracketY + 6) drawWitness(context, positionX, bracketY + 6, axisY - 16, '#6552b8');
+  if (axisY - 16 > bracketY + 6) drawWitness(context, positionX, bracketY + 6, axisY - 16, '#003153');
   if (Math.abs(positionX - exactX) > 6 && axisY - 22 > exactY + 6) {
     drawWitness(context, exactX, exactY + 6, axisY - 22, '#167b87', [5, 4]);
   }
@@ -234,6 +234,6 @@ export function drawConstantAcceleration(canvas: HTMLCanvasElement, frame: Const
 
   canvas.setAttribute(
     'aria-label',
-    '直線上を進む粒子。速度の矢印の長さは、その時刻の速度の大きさに比例します。数値解は紫の実線、解析解は青緑の破線。',
+    '直線上を進む粒子。速度の矢印の長さは、その時刻の速度の大きさに比例します。数値解は青の実線、解析解は青緑の破線。',
   );
 }

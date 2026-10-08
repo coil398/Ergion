@@ -70,13 +70,13 @@ app.innerHTML = `
                   <p class="solution-equation">${tex('x(t) = x_0 + v t', true)}</p>
                 </li>
               </ol>
-              <p>画面は、各時刻の位置と速度を描きます。式 ${tex(String.raw`x' = v`)} や ${tex('x(t) = x_0 + v t')} を、描画のために計算し直すことはありません。図の線分は、初期位置 ${tex('x_0')} に加わる変位 ${tex('vt')} です。紫の実線が数値解、青緑の破線が厳密解です。誤差は、その破線とは別の実線です。タブは、この同じ方程式を進める数値解法だけを切り替えます。速度が一定なので、どの方法も上の増分と一致し、誤差は丸めだけです。</p>
+              <p>画面は、各時刻の位置と速度を描きます。式 ${tex(String.raw`x' = v`)} や ${tex('x(t) = x_0 + v t')} を、描画のために計算し直すことはありません。図の線分は、初期位置 ${tex('x_0')} に加わる変位 ${tex('vt')} です。青の実線が数値解、青緑の破線が厳密解です。誤差は、その破線とは別の実線です。タブは、この同じ方程式を進める数値解法だけを切り替えます。速度が一定なので、どの方法も上の増分と一致し、誤差は丸めだけです。</p>
             </div>
           </section>
           <section class="scene panel" aria-labelledby="scene-heading">
             <div class="panel-heading"><h2 id="scene-heading">粒子の直線運動</h2><span id="scene-time" class="numeric">t = 0.000</span></div>
             <p class="scene-caption">速度 ${tex('v')} が一定のあいだ、粒子は1ステップごとに変位 ${tex(String.raw`v \Delta t`)} だけ進みます。変位を重ねた長さが ${tex('vt')} です。</p>
-            <canvas id="oscillator" aria-label="直線上を進む粒子。速度が一定の1ステップで、位置は速度と時間刻みの積だけ進みます。数値解は紫の実線、解析解は青緑の破線。" role="img"></canvas>
+            <canvas id="oscillator" aria-label="直線上を進む粒子。速度が一定の1ステップで、位置は速度と時間刻みの積だけ進みます。数値解は青の実線、解析解は青緑の破線。" role="img"></canvas>
             <div class="readouts"><div><span>位置 x</span><output id="position">—</output></div><div><span>速度 v</span><output id="velocity">—</output></div><div><span>解析解の位置</span><output id="exact-position">—</output></div><div><span>位置の絶対差 |x − x_exact|</span><output id="energy-error">—</output></div></div>
           </section>
           <section class="plots panel" aria-labelledby="plots-heading">

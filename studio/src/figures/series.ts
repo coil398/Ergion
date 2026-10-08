@@ -20,7 +20,7 @@ export interface TimeSeriesFrame {
   xMin?: number;
 }
 
-const numericalColor = '#6552b8';
+const numericalColor = '#003153';
 const exactColor = '#167b87';
 const differenceColor = '#a86240';
 

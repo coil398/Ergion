@@ -72,13 +72,13 @@ app.innerHTML = `
                   これは厳密解を刻み幅 ${tex(String.raw`\Delta t`)} だけ進めた増分と一致します。位置は時刻の一次式なので、この数値ステップに打ち切り誤差はありません。表示される差は、倍精度浮動小数点の丸めだけです。図のタブは方法だけを切り替え、この式は変わりません。
                 </li>
               </ol>
-              <p>画面は、各時刻の位置と速度を描きます。式 ${tex('x(t) = x_0 + v t')} を、描画のために計算し直すことはありません。図の線分は、初期位置 ${tex('x_0')} に加わる変位 ${tex('vt')} です。紫の実線が数値解、青緑の破線が厳密解です。誤差は、その破線とは別の実線です。</p>
+              <p>画面は、各時刻の位置と速度を描きます。式 ${tex('x(t) = x_0 + v t')} を、描画のために計算し直すことはありません。図の線分は、初期位置 ${tex('x_0')} に加わる変位 ${tex('vt')} です。青の実線が数値解、青緑の破線が厳密解です。誤差は、その破線とは別の実線です。</p>
             </div>
           </section>
           <section class="scene panel" aria-labelledby="scene-heading">
             <div class="panel-heading"><h2 id="scene-heading">粒子の直線運動</h2><span id="scene-time" class="numeric">t = 0.000</span></div>
             <p class="scene-caption">粒子は、初期位置 ${tex('x_0')} に変位 ${tex('vt')} を加えた位置まで進みます。速度は一定なので、変位は時刻に比例して伸びます。</p>
-            <canvas id="oscillator" aria-label="直線上を進む粒子。初期位置に変位 vt を加えた位置を示します。数値解は紫の実線、解析解は青緑の破線。" role="img"></canvas>
+            <canvas id="oscillator" aria-label="直線上を進む粒子。初期位置に変位 vt を加えた位置を示します。数値解は青の実線、解析解は青緑の破線。" role="img"></canvas>
             <div class="readouts"><div><span>位置 x</span><output id="position">—</output></div><div><span>速度 v</span><output id="velocity">—</output></div><div><span>解析解の位置</span><output id="exact-position">—</output></div><div><span>位置の絶対差 |x − x_exact|</span><output id="energy-error">—</output></div></div>
           </section>
           <section class="plots panel" aria-labelledby="plots-heading">

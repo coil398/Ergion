@@ -9,9 +9,9 @@ const fonts: Record<LabelRole, string> = {
 };
 
 const colors: Record<LabelRole, string> = {
-  math: '#25243c',
-  tick: '#5d5873',
-  note: '#5d5873',
+  math: '#1c1915',
+  tick: '#4a453c',
+  note: '#4a453c',
 };
 
 export function drawLabel(

@@ -46,7 +46,7 @@ app.innerHTML = `
               ${tex('f(\\sqrt{2}) = 0')} であり、出発点が正なので、以後の近似も正の側に残ります。列の極限は、正の根 ${tex('\\sqrt{2}')} です。
             </li>
           </ol>
-          <p>図の点は、同じ更新を繰り返して返された値です。はじめの数回は上の分数と一致します。横軸は反復の番号 ${tex('n')} であり、時刻ではありません。紫の実線が数値の近似 ${tex('x_n')}、青緑の破線が ${tex('\\sqrt{2}')}、誤差の実線が ${tex('x_n - \\sqrt{2}')} です。${tex('\\sqrt{2}')} も誤差も、返された値を描いています。</p>
+          <p>図の点は、同じ更新を繰り返して返された値です。はじめの数回は上の分数と一致します。横軸は反復の番号 ${tex('n')} であり、時刻ではありません。青の実線が数値の近似 ${tex('x_n')}、青緑の破線が ${tex('\\sqrt{2}')}、誤差の実線が ${tex('x_n - \\sqrt{2}')} です。${tex('\\sqrt{2}')} も誤差も、返された値を描いています。</p>
         </div>
       </section>
       <section class="plots panel" aria-labelledby="curve-heading">
@@ -94,7 +94,7 @@ function paint(points: Snapshot[], state: Snapshot) {
     current: state.position,
     samples: points.map(sample => ({ time: sample.time, numerical: sample.position, exact: sample.exact_position })),
   });
-  chart.setAttribute('aria-label', '反復の番号 n に対する近似 x_n と √2。数値の近似は紫の実線、√2 は青緑の破線。');
+  chart.setAttribute('aria-label', '反復の番号 n に対する近似 x_n と √2。数値の近似は青の実線、√2 は青緑の破線。');
   drawErrorSeries(errorChart, {
     key: 'newton-error',
     timeEnd: steps,

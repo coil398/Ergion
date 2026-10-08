@@ -21,7 +21,7 @@ export interface SegmentStyle {
 
 export function drawJoint(context: CanvasRenderingContext2D, x: number, y: number) {
   context.save();
-  context.fillStyle = '#25243c';
+  context.fillStyle = '#1c1915';
   context.beginPath();
   context.arc(x, y, 2.5, 0, Math.PI * 2);
   context.fill();

@@ -78,13 +78,13 @@ app.innerHTML = `
                   中点法と古典的な4次の Runge–Kutta 法では、数値ステップの増分は厳密解の増分と一致します。残る差は、倍精度浮動小数点の丸めだけです。Euler 法は区間の始点の速度だけで位置を進めるので、位置には ${tex(String.raw`\frac{1}{2} a (\Delta t)^2`)} の打ち切りが残ります。この誤差は丸めだけではありません。図のタブは方法だけを切り替え、上の式は変わりません。
                 </li>
               </ol>
-              <p>画面は、各時刻の位置と速度を描きます。式 ${tex(String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`)} や ${tex('v(t) = v_0 + a t')} を、描画のために計算し直すことはありません。紫の実線が数値解、青緑の破線が厳密解です。誤差は、その破線とは別の実線です。</p>
+              <p>画面は、各時刻の位置と速度を描きます。式 ${tex(String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`)} や ${tex('v(t) = v_0 + a t')} を、描画のために計算し直すことはありません。青の実線が数値解、青緑の破線が厳密解です。誤差は、その破線とは別の実線です。</p>
             </div>
           </section>
           <section class="scene panel" aria-labelledby="scene-heading">
             <div class="panel-heading"><h2 id="scene-heading">粒子の直線運動</h2><span id="scene-time" class="numeric">t = 0.000</span></div>
             <p class="scene-caption">粒子は数値解の位置にあります。青緑の破線は、同じ時刻の厳密解の位置です。橙の矢印の長さは、返された速度の大きさに比例します。加速度が一定なので、速度も矢印の長さも一定の割合で変わります。</p>
-            <canvas id="oscillator" aria-label="直線上を進む粒子。速度の矢印の長さは、その時刻の速度の大きさに比例します。数値解は紫の実線、解析解は青緑の破線。" role="img"></canvas>
+            <canvas id="oscillator" aria-label="直線上を進む粒子。速度の矢印の長さは、その時刻の速度の大きさに比例します。数値解は青の実線、解析解は青緑の破線。" role="img"></canvas>
             <div class="readouts"><div><span>位置 x</span><output id="position">—</output></div><div><span>速度 v</span><output id="velocity">—</output></div><div><span>解析解の位置</span><output id="exact-position">—</output></div><div><span>位置の絶対差 |x − x_exact|</span><output id="energy-error">—</output></div></div>
           </section>
           <section class="plots panel" aria-labelledby="plots-heading">

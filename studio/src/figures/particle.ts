@@ -15,7 +15,7 @@ export function drawExactOutline(context: CanvasRenderingContext2D, x: number, y
 
 export function drawSamplePoint(context: CanvasRenderingContext2D, x: number, y: number) {
   context.save();
-  context.fillStyle = '#6552b8';
+  context.fillStyle = '#003153';
   context.beginPath();
   context.arc(x, y, 3.5, 0, Math.PI * 2);
   context.fill();
@@ -28,7 +28,7 @@ export function drawParticle(
 ) {
   const radius = particle.radius ?? 16;
   context.save();
-  context.fillStyle = '#6552b8';
+  context.fillStyle = '#003153';
   context.beginPath();
   context.arc(particle.x, particle.y, radius, 0, Math.PI * 2);
   context.fill();
