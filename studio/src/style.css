@@ -191,6 +191,7 @@ canvas{display:block;width:100%}
 .plot-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:21px;margin-top:16px}
 .plot-grid canvas{height:220px}
 .plot-grid p{text-align:center;font-size:16px;color:var(--color-text-secondary);margin:8px 0 16px}
+.plot-footer #comparison{white-space:pre-line;font-family:ui-monospace,"Cascadia Code",monospace;font-variant-numeric:tabular-nums}
 .plot-footer{border-top:1px solid var(--color-border-subtle);display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap;padding:12px 0;font-size:16px;color:var(--color-text-secondary)}
 .transport{display:flex;align-items:center;gap:16px;padding:16px 20px;flex-wrap:wrap}
 .transport-buttons{display:flex;gap:8px;align-items:center;flex-wrap:wrap}

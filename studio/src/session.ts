@@ -14,7 +14,7 @@ export function transportPanel(): string {
               <button id="play" class="button primary" type="button" disabled>再生</button>
               <button id="pause" class="button secondary" type="button" disabled>一時停止</button>
               <button id="loop" class="button secondary" type="button" aria-pressed="false">ループ再生</button>
-              <button id="extend" class="button secondary" type="button" disabled>計算時間を延ばす</button>
+              <button id="extend" class="button secondary" type="button" disabled>+t</button>
               <button id="step" class="button secondary" type="button" disabled>1ステップ</button>
               <button id="reset" class="icon-button" type="button" aria-label="初期状態にリセット" title="初期状態にリセット" disabled>↺</button>
             </div>
@@ -31,7 +31,7 @@ export function mountSession<C extends TimedConfig>(options: {
   paintFigures: (state: Snapshot | undefined, samples: Snapshot[], config: C) => void;
   /** 数値解法のページだけが渡す。タブは方法だけを切り替える。 */
   method?: () => string;
-  /** 計器の下の一行。渡さないときは位置と速度の差を書く。 */
+  /** 計器の下の文。改行で行を分ける。渡さないときは位置の差と速度の差を一行ずつ書く。 */
   comparison?: (state: Snapshot) => string;
 }) {
   const form = document.querySelector<HTMLFormElement>('#config-form')!;
@@ -107,7 +107,7 @@ export function mountSession<C extends TimedConfig>(options: {
     const velocityError = state ? Math.abs(state.velocity - state.exact_velocity) : undefined;
     setText('#energy-error', positionError === undefined ? '—' : positionError.toExponential(2));
     setText('#comparison', state
-      ? options.comparison?.(state) ?? `解析解との位置の差  ${positionError!.toExponential(2)}    速度の差  ${velocityError!.toExponential(2)}`
+      ? options.comparison?.(state) ?? `解析解との位置の差 ${positionError!.toExponential(2)}\n速度の差 ${velocityError!.toExponential(2)}`
       : '解析解との差を計算します。');
   }
   function load(value: C) {

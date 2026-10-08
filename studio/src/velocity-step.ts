@@ -93,7 +93,7 @@ app.innerHTML = `
             ${topicTabs(currentTopic)}
             ${patternTabs(currentMethod)}
             <div class="plot-grid"><div class="plot-main"><h3>位置の時間変化 ${tex('x(t)')}</h3><canvas id="time-chart" aria-label="位置と時間のグラフ" role="img"></canvas><p>時間 t</p></div><div class="plot-phase"><h3>位置の誤差 ${tex('x - x_{\\mathrm{exact}}')}</h3><canvas id="phase-chart" aria-label="位置の誤差と時間のグラフ" role="img"></canvas><p>時間 t</p></div></div>
-            <div class="plot-footer"><span id="comparison">解析解との差を計算します。</span><span>誤差は実線</span></div>
+            <div class="plot-footer"><span id="comparison">解析解との差を計算します。</span></div>
           </section>
           ${transportPanel()}
           ${codeDisclosure(currentMethod)}

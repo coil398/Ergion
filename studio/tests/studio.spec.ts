@@ -159,7 +159,7 @@ test('開始・停止・再開・1ステップと条件の適用', async ({ page
   expect(errors).toEqual([]);
 });
 
-test('再生、一時停止、ループ再生、計算時間を延ばす', async ({ page }) => {
+test('再生、一時停止、ループ再生、+t', async ({ page }) => {
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: width === 1440 ? 1050 : 844 });
     await page.goto('uniform.html');
@@ -192,12 +192,20 @@ test('再生、一時停止、ループ再生、計算時間を延ばす', async
     const held = await page.locator('#position').innerText();
     await page.waitForTimeout(180);
     await expect(page.locator('#progress-text')).toHaveText(stopped);
-    await page.getByRole('button', { name: '計算時間を延ばす', exact: true }).click();
+    await page.getByRole('button', { name: '+t', exact: true }).click();
     await expect(page.locator('#progress-text')).toContainText('/ 48 ステップ');
     await expect(page.locator('#position')).toHaveText(held);
     await expect(page.locator('[name=initial_position]')).toHaveValue(initial);
     await expect(page.locator('[name=velocity]')).toHaveValue(velocity);
     await expect(page.locator('[name=steps]')).toHaveValue('48');
+    await expect(page.locator('#extend')).toHaveText('+t');
+    const lines = (await page.locator('#comparison').innerText()).split('\n');
+    expect(lines).toHaveLength(2);
+    expect(lines[0]).toMatch(/^解析解との位置の差 \S+$/);
+    expect(lines[1]).toMatch(/^速度の差 \S+$/);
+    const box = await page.locator('#comparison').boundingBox();
+    expect(box!.height).toBeGreaterThan(40);
+    await expect(page.locator('.plot-footer')).not.toContainText('誤差は実線');
     const before = await page.locator('#progress-text').innerText();
     await page.getByRole('button', { name: '再生', exact: true }).click();
     await expect.poll(async () => page.locator('#progress-text').innerText()).not.toBe(before);
