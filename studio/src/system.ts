@@ -1,5 +1,5 @@
 import './style.css';
-import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
+import { appHeader, coreStepDoc, pageFooter, rail, relatedPages } from './chrome';
 import systemProof from '../../formal/lean/Ergion/LinearSystem.lean?raw';
 import { checkedProofs } from './proof';
 import { mountSteppedFigure, steppedFigure } from './curve';
@@ -32,19 +32,55 @@ app.innerHTML = `
               <p class="solution-equation">${tex(String.raw`\mathbf{z}' = \begin{pmatrix} 1 & 1 \\ 4 & 1 \end{pmatrix} \mathbf{z}`, true)}</p>
               です。係数はすべて定数です。
             </li>
-            <li>${tex('\\mathbf{z} = e^{rt} \\mathbf{v}')} と置くと、係数行列から ${tex('r')} 倍の単位行列を引いた行列を ${tex('\\mathbf{v}')} に掛けると ${tex('0')} です。固有値は
-              <p class="solution-equation">${tex(String.raw`\det\begin{pmatrix} 1 - r & 1 \\ 4 & 1 - r \end{pmatrix} = (1 - r)^{2} - 4 = r^{2} - 2r - 3 = 0`, true)}</p>
+            <li>${tex('\\mathbf{z} = e^{rt} \\mathbf{v}')} と置くと、係数行列から ${tex('r')} 倍の単位行列を引いた行列を ${tex('\\mathbf{v}')} に掛けると ${tex('\\mathbf{0}')} です。非自明な解をもつための条件は、特性方程式です。
+              <p class="solution-equation">${tex(String.raw`\det\begin{pmatrix} 1 - r & 1 \\ 4 & 1 - r \end{pmatrix} = 0`, true)}</p>
+              行列式を行列の定義から展開します。
+              <p class="solution-equation">${tex(String.raw`(1 - r)(1 - r) - 1 \cdot 4 = 0`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`(1 - r)^{2} - 4 = 0`, true)}</p>
+              括弧を展開します。
+              <p class="solution-equation">${tex(String.raw`(1 - 2r + r^{2}) - 4 = 0`, true)}</p>
+              同類項をまとめます。
+              <p class="solution-equation">${tex(String.raw`r^{2} - 2r - 3 = 0`, true)}</p>
+              因数分解します。
               <p class="solution-equation">${tex(String.raw`(r - 3)(r + 1) = 0`, true)}</p>
-              なので ${tex('r_1 = 3')}、${tex('r_2 = -1')} です。二つの実数で、互いに異なります。
+              固有値は ${tex('r_1 = 3')}、${tex('r_2 = -1')} です。二つの実数で、互いに異なります。
             </li>
-            <li>${tex('r = 3')} のとき ${tex('(1 - 3)v_1 + v_2 = 0')}、つまり ${tex('v_2 = 2 v_1')} です。固有ベクトルを ${tex('\\mathbf{v}_1 = (1, 2)')} に取ります。
-              ${tex('r = -1')} のとき ${tex('(1 - (-1))v_1 + v_2 = 0')}、つまり ${tex('v_2 = -2 v_1')} です。固有ベクトルを ${tex('\\mathbf{v}_2 = (1, -2)')} に取ります。
+            <li>各固有値について、固有ベクトル ${tex('\\mathbf{v} = (v_1, v_2)')} を求めます。${tex('r = 3')} のとき、行の方程式は
+              <p class="solution-equation">${tex(String.raw`(1 - 3)v_1 + 1 \cdot v_2 = 0`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`-2v_1 + v_2 = 0`, true)}</p>
+              成分の比は
+              <p class="solution-equation">${tex(String.raw`v_2 = 2v_1`, true)}</p>
+              です。${tex('v_1 = 1')} と選ぶと、残す固有ベクトルは
+              <p class="solution-equation">${tex(String.raw`\mathbf{v}_1 = \begin{pmatrix} 1 \\ 2 \end{pmatrix}`, true)}</p>
+              です。${tex('r = -1')} のとき、行の方程式は
+              <p class="solution-equation">${tex(String.raw`(1 - (-1))v_1 + 1 \cdot v_2 = 0`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`2v_1 + v_2 = 0`, true)}</p>
+              成分の比は
+              <p class="solution-equation">${tex(String.raw`v_2 = -2v_1`, true)}</p>
+              です。${tex('v_1 = 1')} と選ぶと、残す固有ベクトルは
+              <p class="solution-equation">${tex(String.raw`\mathbf{v}_2 = \begin{pmatrix} 1 \\ -2 \end{pmatrix}`, true)}</p>
+              です。
             </li>
             <li>一般解は、任意定数 ${tex('A')}、${tex('B')} を用いて
+              <p class="solution-equation">${tex(String.raw`\mathbf{z}(t) = A e^{3t} \mathbf{v}_1 + B e^{-t} \mathbf{v}_2`, true)}</p>
+              各成分で書くと
               <p class="solution-equation">${tex(String.raw`\begin{aligned} x(t) &= A e^{3t} + B e^{-t} \\ y(t) &= 2A e^{3t} - 2B e^{-t} \end{aligned}`, true)}</p>
-              です。初期条件 ${tex('x(0) = A + B = 1')}、${tex('y(0) = 2A - 2B = 0')} を入れます。第2式から ${tex('A = B')} です。第1式から ${tex('2A = 1')}、したがって ${tex('A = B = 1/2')} です。厳密解は
+              です。初期条件 ${tex('x(0) = 1')}、${tex('y(0) = 0')} を入れます。
+              <p class="solution-equation">${tex(String.raw`x(0) = A e^{0} + B e^{0} = A + B = 1`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`y(0) = 2A e^{0} - 2B e^{0} = 2A - 2B = 0`, true)}</p>
+              第2式の両辺を 2 で割ります。
+              <p class="solution-equation">${tex(String.raw`A - B = 0`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`A = B`, true)}</p>
+              これを第1式へ代入します。
+              <p class="solution-equation">${tex(String.raw`A + A = 1`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`2A = 1`, true)}</p>
+              したがって
+              <p class="solution-equation">${tex(String.raw`A = \frac{1}{2},\qquad B = \frac{1}{2}`, true)}</p>
+              です。各成分の式へ代入します。
+              <p class="solution-equation">${tex(String.raw`x(t) = \frac{1}{2} e^{3t} + \frac{1}{2} e^{-t}`, true)}</p>
+              共通因数でくくると、厳密解は次の式です。
               <p class="solution-equation">${tex(String.raw`x(t) = \frac{1}{2}\bigl(e^{3t} + e^{-t}\bigr)`, true)}</p>
-              <p class="solution-equation">${tex(String.raw`y(t) = e^{3t} - e^{-t}`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`y(t) = 2 \cdot \frac{1}{2} e^{3t} - 2 \cdot \frac{1}{2} e^{-t} = e^{3t} - e^{-t}`, true)}</p>
               です。
             </li>
             <li>記号を定めます。${tex('x(t)')} と ${tex('y(t)')} は時刻 ${tex('t')} の二つの未知関数です。${tex('t')} は時刻です。${tex('\\mathbf{z}')} は ${tex('(x, y)')} を縦に並べたベクトルです。${tex('r')} は固有値、${tex('r_1')} と ${tex('r_2')} はその二つの値です。${tex('\\mathbf{v}')}、${tex('\\mathbf{v}_1')}、${tex('\\mathbf{v}_2')} は固有ベクトルで、成分は ${tex('(v_1, v_2)')} です。${tex('A')} と ${tex('B')} は一般解の任意定数です。${tex('e')} は自然対数の底です。係数行列は成分 ${tex('1, 1, 4, 1')} で書いてあり、別の文字は付けていません。
@@ -76,6 +112,12 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
+      ${relatedPages([
+        { href: './second-order.html', title: '定数係数の2階同次', description: '特性方程式の根から指数関数解を作る2階の方程式です。' },
+        { href: './euler.html', title: 'Euler法', description: '連立1階の方程式を1ステップずつ進める基本の数値解法です。' },
+        { href: './midpoint.html', title: '中点法', description: '中点の傾きを用いて精度を高める2次の数値解法です。' },
+        { href: './rk4.html', title: '古典的RK4', description: '4次のRunge–Kutta法による高精度な数値解法です。' },
+      ])}
       ${pageFooter('定数係数の連立1階方程式は、相異なる実固有値ごとに指数関数と固有ベクトルの積を重ねた厳密解を持ちます。')}
       ${checkedProofs([{ statement: `${tex(String.raw`x' = x + y`)} と ${tex(String.raw`y' = 4x + y`)} の解は、相異なる実固有値ごとの指数関数と固有ベクトルの積の和です。`, source: systemProof, moduleName: 'Ergion.LinearSystem', kind: '実数' }])}
     </main>

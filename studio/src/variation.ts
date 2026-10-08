@@ -1,5 +1,5 @@
 import './style.css';
-import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
+import { appHeader, coreStepDoc, pageFooter, rail, relatedPages } from './chrome';
 import variationProof from '../../formal/lean/Ergion/Variation.lean?raw';
 import { checkedProofs } from './proof';
 import { mountSteppedFigure, steppedFigure } from './curve';
@@ -40,28 +40,32 @@ app.innerHTML = `
               <p class="solution-equation">${tex(String.raw`u_1' y_1 + u_2' y_2 = 0`, true)}</p>
               <p class="solution-equation">${tex(String.raw`u_1' y_1' + u_2' y_2' = g(t)`, true)}</p>
               を課すと、${tex('W = 1')} のとき
-              <p class="solution-equation">${tex(String.raw`u_1' = -y_2 g = -\sin t \tan t = -\frac{\sin^{2} t}{\cos t}`, true)}</p>
-              <p class="solution-equation">${tex(String.raw`u_2' = y_1 g = \cos t \tan t = \sin t`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`u_1' = -y_2 g = -\sin t \tan t = -\sin t \cdot \frac{\sin t}{\cos t} = -\frac{\sin^{2} t}{\cos t}`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`u_2' = y_1 g = \cos t \tan t = \cos t \cdot \frac{\sin t}{\cos t} = \sin t`, true)}</p>
               です。${tex('\\sin^{2} t = 1 - \\cos^{2} t')} を使うと
-              <p class="solution-equation">${tex(String.raw`u_1' = -(\sec t - \cos t)`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`u_1' = -\frac{1 - \cos^{2} t}{\cos t} = -(\sec t - \cos t) = -\sec t + \cos t`, true)}</p>
               です。積分定数は同次解へ移すので、一つの原始関数を取ります。
-              <p class="solution-equation">${tex(String.raw`u_2 = -\cos t`, true)}</p>
-              <p class="solution-equation">${tex(String.raw`u_1 = -\ln|\sec t + \tan t| + \sin t`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`u_2(t) = \int \sin t\,dt = -\cos t`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`u_1(t) = \int (-\sec t + \cos t)\,dt = -\ln|\sec t + \tan t| + \sin t`, true)}</p>
             </li>
             <li>特殊解を組み立てます。
               <p class="solution-equation">${tex(String.raw`x_p = u_1 \cos t + u_2 \sin t`, true)}</p>
               <p class="solution-equation">${tex(String.raw`= \bigl(-\ln|\sec t + \tan t| + \sin t\bigr)\cos t + (-\cos t)\sin t`, true)}</p>
-              ${tex('\\sin t \\cos t')} の項は打ち消し合います。
+              積を展開します。
+              <p class="solution-equation">${tex(String.raw`= -\cos t \cdot \ln|\sec t + \tan t| + \sin t \cos t - \cos t \sin t`, true)}</p>
+              ${tex('\\sin t \\cos t')} の項は相殺します。
               <p class="solution-equation">${tex(String.raw`x_p = -\cos t \cdot \ln|\sec t + \tan t|`, true)}</p>
               一般解は任意定数 ${tex('A')}、${tex('B')} を加えて
               <p class="solution-equation">${tex(String.raw`x(t) = A\cos t + B\sin t - \cos t \cdot \ln|\sec t + \tan t|`, true)}</p>
               です。
             </li>
             <li>初期条件を入れます。${tex('L(t) = \\ln|\\sec t + \\tan t|')} と書きます。${tex('t = 0')} では ${tex('\\sec 0 + \\tan 0 = 1')}、${tex('L(0) = \\ln 1 = 0')} です。
-              <p class="solution-equation">${tex(String.raw`x(0) = A = 0`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`x(0) = A \cos 0 + B \sin 0 - \cos 0 \cdot L(0) = A \cdot 1 + 0 - 0 = A = 0`, true)}</p>
               したがって ${tex('x = B \\sin t - \\cos t\\, L')} です。${tex('(\\sec t + \\tan t)\' = \\sec t(\\sec t + \\tan t)')} なので ${tex("L' = \\sec t")} です。
               <p class="solution-equation">${tex(String.raw`x' = B\cos t + \sin t \cdot L - \cos t \cdot \sec t = B\cos t + \sin t \cdot L - 1`, true)}</p>
-              ${tex("x'(0) = B - 1 = 0")} なので ${tex('B = 1')} です。厳密解は
+              ${tex('t = 0')} を代入すると
+              <p class="solution-equation">${tex(String.raw`x'(0) = B\cos 0 + \sin 0 \cdot L(0) - 1 = B \cdot 1 + 0 - 1 = B - 1 = 0`, true)}</p>
+              したがって ${tex('B = 1')} です。厳密解は
               <p class="solution-equation">${tex(String.raw`x(t) = \sin t - \cos t \cdot \ln|\sec t + \tan t|`, true)}</p>
               です。
             </li>
@@ -92,6 +96,12 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
+      ${relatedPages([
+        { href: './second-order.html', title: '定数係数の2階同次', description: '基本解 cos t と sin t を導出する同次方程式です。' },
+        { href: './undetermined.html', title: '未定係数法', description: '特殊解の形を仮定して解くもう一つの標準的な解法です。' },
+        { href: './euler.html', title: 'Euler法', description: 'tan t を含む2階非同次方程式の数値解法です。' },
+        { href: './rk4.html', title: '古典的RK4', description: '非同次方程式の振動を高い精度で追跡する4次の数値解法です。' },
+      ])}
       ${pageFooter('定数変化法は、同次解の任意定数を時刻の関数にして、右辺 tan t の厳密解を作ります。')}
       ${checkedProofs([{ statement: `${tex(String.raw`x'' + x = \tan t`)} は、同次解の定数を時刻の関数にして解きます。`, source: variationProof, moduleName: 'Ergion.Variation', kind: '実数' }])}
     </main>

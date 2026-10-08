@@ -1,5 +1,5 @@
 import './style.css';
-import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
+import { appHeader, coreStepDoc, pageFooter, rail, relatedPages } from './chrome';
 import homogeneousProof from '../../formal/lean/Ergion/Homogeneous.lean?raw';
 import { checkedProofs } from './proof';
 import { mountSteppedFigure, steppedFigure } from './curve';
@@ -34,15 +34,19 @@ app.innerHTML = `
               <p class="solution-equation">${tex(String.raw`x' = u' t + u`, true)}</p>
               です。これを方程式へ入れます。
               <p class="solution-equation">${tex(String.raw`u' t + u = 1 + u`, true)}</p>
-              ${tex('u')} は両辺から消えます。
+              両辺から ${tex('u')} を引きます。
+              <p class="solution-equation">${tex(String.raw`u' t = 1`, true)}</p>
+              導関数を ${tex('du/dt')} と書きます。
               <p class="solution-equation">${tex(String.raw`t \frac{du}{dt} = 1`, true)}</p>
-              ${tex('t > 0')} で割ると、${tex('u')} だけの方程式になります。
+              ${tex('t > 0')} で両辺を割ると、${tex('u')} だけの方程式になります。
               <p class="solution-equation">${tex(String.raw`\frac{du}{dt} = \frac{1}{t}`, true)}</p>
             </li>
-            <li>変数を分けます。これは変数分離です。
+            <li>変数を分けます。両辺に ${tex('dt')} を掛けます。
               <p class="solution-equation">${tex(String.raw`du = \frac{1}{t}\,dt`, true)}</p>
-              両辺を積分します。${tex('t > 0')} なので ${tex('\\ln|t| = \\ln t')} です。積分定数を ${tex('C')} とすると、
-              <p class="solution-equation">${tex(String.raw`u = \ln t + C`, true)}</p>
+              両辺を積分します。
+              <p class="solution-equation">${tex(String.raw`\int 1\,du = \int \frac{1}{t}\,dt`, true)}</p>
+              ${tex('t > 0')} なので ${tex('\\ln|t| = \\ln t')} です。積分定数を ${tex('C')} とすると、
+              <p class="solution-equation">${tex(String.raw`u(t) = \ln t + C`, true)}</p>
               ${tex('x = ut')} へ戻します。
               <p class="solution-equation">${tex(String.raw`x(t) = t(\ln t + C)`, true)}</p>
             </li>
@@ -72,6 +76,12 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
+      ${relatedPages([
+        { href: './separation.html', title: '変数分離', description: '置換 u = x/t によって帰着する基本解法です。' },
+        { href: './linear.html', title: '1階線形', description: '置換後の導関数を解くための線形理論です。' },
+        { href: './euler.html', title: 'Euler法', description: '同次形の方程式を1ステップずつ進める数値解法です。' },
+        { href: './rk4.html', title: '古典的RK4', description: '4次のRunge–Kutta法による高精度な数値解法です。' },
+      ])}
       ${pageFooter('同次形の置換 u = x/t で得る x(t) = t(ln t + C) は、t > 0 における厳密解です。')}
       ${checkedProofs([{ statement: `${tex(String.raw`x' = 1 + \frac{x}{t}`)} の、${tex('t > 0')} における厳密解は ${tex(String.raw`x(t) = t(\ln t + C)`)} です。`, source: homogeneousProof, moduleName: 'Ergion.Homogeneous', kind: '実数' }])}
     </main>

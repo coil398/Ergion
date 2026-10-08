@@ -1,5 +1,5 @@
 import './style.css';
-import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
+import { appHeader, coreStepDoc, pageFooter, rail, relatedPages } from './chrome';
 import seriesProof from '../../formal/lean/Ergion/PowerSeries.lean?raw';
 import { checkedProofs } from './proof';
 import { mountSteppedFigure, steppedFigure } from './curve';
@@ -36,18 +36,24 @@ app.innerHTML = `
               <p class="solution-equation">${tex(String.raw`x''(t) = \sum_{n=2}^{\infty} n(n-1)a_n t^{n-2}`, true)}</p>
               指数を ${tex('m = n - 2')} にずらすと、
               <p class="solution-equation">${tex(String.raw`x''(t) = \sum_{m=0}^{\infty} (m+2)(m+1)a_{m+2} t^{m}`, true)}</p>
-              方程式 ${tex(String.raw`x'' + x = 0`)} の各べきの係数は 0 です。
+              方程式 ${tex(String.raw`x'' + x = 0`)} へ代入すると
+              <p class="solution-equation">${tex(String.raw`\sum_{m=0}^{\infty} \bigl[(m+2)(m+1)a_{m+2} + a_m\bigr] t^{m} = 0`, true)}</p>
+              すべての ${tex('m \\ge 0')} について、各べきの係数は 0 です。
               <p class="solution-equation">${tex(String.raw`(m+2)(m+1)a_{m+2} + a_m = 0`, true)}</p>
+              ${tex('a_m')} を移項します。
+              <p class="solution-equation">${tex(String.raw`(m+2)(m+1)a_{m+2} = -a_m`, true)}</p>
               ${tex('m \\ge 0')} では ${tex('(m+1)(m+2) \\neq 0')} なので、漸化式は
               <p class="solution-equation">${tex(String.raw`a_{m+2} = -\frac{a_m}{(m+1)(m+2)}`, true)}</p>
               です。
             </li>
             <li>初期条件が最初の二つの係数です。
               <p class="solution-equation">${tex(String.raw`a_0 = x(0) = 1,\qquad a_1 = x'(0) = 0`, true)}</p>
-              ${tex('a_1 = 0')} から、奇数番号の係数はすべて 0 です。偶数は次のとおりです。
-              <p class="solution-equation">${tex(String.raw`a_2 = -\frac{a_0}{1\cdot 2} = -\frac{1}{2}`, true)}</p>
-              <p class="solution-equation">${tex(String.raw`a_4 = -\frac{a_2}{3\cdot 4} = \frac{1}{24}`, true)}</p>
-              <p class="solution-equation">${tex(String.raw`a_6 = -\frac{a_4}{5\cdot 6} = -\frac{1}{720}`, true)}</p>
+              ${tex('a_1 = 0')} から、奇数番号の係数はすべて 0 です。偶数は漸化式から順に計算します。${tex('m = 0')} のとき
+              <p class="solution-equation">${tex(String.raw`a_2 = -\frac{a_0}{(0+1)(0+2)} = -\frac{1}{1\cdot 2} = -\frac{1}{2}`, true)}</p>
+              ${tex('m = 2')} のとき
+              <p class="solution-equation">${tex(String.raw`a_4 = -\frac{a_2}{(2+1)(2+2)} = -\frac{-1/2}{3\cdot 4} = \frac{1/2}{12} = \frac{1}{24}`, true)}</p>
+              ${tex('m = 4')} のとき
+              <p class="solution-equation">${tex(String.raw`a_6 = -\frac{a_4}{(4+1)(4+2)} = -\frac{1/24}{5\cdot 6} = -\frac{1/24}{30} = -\frac{1}{720}`, true)}</p>
               したがって、最初の項は
               <p class="solution-equation">${tex(String.raw`x(t) = 1 - \frac{t^{2}}{2} + \frac{t^{4}}{24} - \frac{t^{6}}{720} + \cdots`, true)}</p>
               です。これは ${tex('\\cos t')} のテイラー級数です。無限和は
@@ -79,6 +85,12 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
+      ${relatedPages([
+        { href: './second-order.html', title: '定数係数の2階同次', description: '同じ方程式 x\'\' + x = 0 を特性方程式で解く方法です。' },
+        { href: './variation.html', title: '定数変化法', description: '基本解 cos t と sin t を用いて非同次方程式を解く発展形です。' },
+        { href: './euler.html', title: 'Euler法', description: 'べき級数の1次打ち切りと共通する構造をもつ数値解法です。' },
+        { href: './rk4.html', title: '古典的RK4', description: 'テイラー級数の4次まで一致する高精度な数値解法です。' },
+      ])}
       ${pageFooter('通常点のべき級数は、漸化式で係数が決まり、この方程式では和が cos t という厳密解です。')}
       ${checkedProofs([{ statement: `${tex(String.raw`x'' + x = 0`)} のべき級数は、係数の漸化式 ${tex(String.raw`a_{m+2} = -\frac{a_m}{(m+1)(m+2)}`)} を満たし、和は ${tex(String.raw`\cos t`)} です。`, source: seriesProof, moduleName: 'Ergion.PowerSeries', kind: '実数' }])}
     </main>

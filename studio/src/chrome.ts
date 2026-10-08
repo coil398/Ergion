@@ -119,3 +119,25 @@ export function rail(active: PageId): string {
 export function pageFooter(note: string): string {
   return `<footer class="page-footer"><span>Ergion</span><span>${note}</span></footer>`;
 }
+
+export interface RelatedLink {
+  href: string;
+  title: string;
+  description: string;
+}
+
+export function relatedPages(links: RelatedLink[]): string {
+  const items = links
+    .map(link => `<li><a class="doc-link" href="${link.href}">${link.title}</a>: ${link.description}</li>`)
+    .join('');
+  return `
+      <section class="study panel" id="related" aria-labelledby="related-heading">
+        <div class="panel-heading"><h2 id="related-heading">関連ページ</h2><span class="quiet-label">つながり</span></div>
+        <div class="study-body">
+          <ul class="solution">
+            ${items}
+          </ul>
+        </div>
+      </section>`;
+}
+

@@ -1,5 +1,5 @@
 import './style.css';
-import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
+import { appHeader, coreStepDoc, pageFooter, rail, relatedPages } from './chrome';
 import secondOrderProof from '../../formal/lean/Ergion/SecondOrder.lean?raw';
 import { checkedProofs } from './proof';
 import { mountSteppedFigure, steppedFigure } from './curve';
@@ -58,12 +58,28 @@ app.innerHTML = `
           <ol class="solution">
             <li>方程式と初期条件は次のとおりです。
               <p class="solution-equation">${tex(String.raw`x'' - 3x' + 2x = 0,\qquad x(0) = 1,\qquad x'(0) = 3`, true)}</p>
-              特性方程式は ${tex('r^{2} - 3r + 2 = 0')}、つまり ${tex('(r - 1)(r - 2) = 0')} です。根は ${tex('r_1 = 1')}、${tex('r_2 = 2')} で、相異なります。
+              特性方程式は
+              <p class="solution-equation">${tex(String.raw`r^{2} - 3r + 2 = 0`, true)}</p>
+              因数分解します。
+              <p class="solution-equation">${tex(String.raw`(r - 1)(r - 2) = 0`, true)}</p>
+              根は ${tex('r_1 = 1')}、${tex('r_2 = 2')} で、相異なります。一般解は
               <p class="solution-equation">${tex(String.raw`x(t) = A e^{t} + B e^{2t}`, true)}</p>
+              です。導関数は
+              <p class="solution-equation">${tex(String.raw`x'(t) = A e^{t} + 2B e^{2t}`, true)}</p>
+              です。
             </li>
-            <li>初期条件を入れます。${tex('x(0) = A + B = 1')} です。微分は ${tex(String.raw`x' = A e^{t} + 2B e^{2t}`)} なので ${tex('x\'(0) = A + 2B = 3')} です。差を取ると ${tex('B = 2')}、したがって ${tex('A = -1')} です。
+            <li>初期条件を代入します。
+              <p class="solution-equation">${tex(String.raw`x(0) = A e^{0} + B e^{0} = A + B = 1`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`x'(0) = A e^{0} + 2B e^{0} = A + 2B = 3`, true)}</p>
+              第2式から第1式を引きます。
+              <p class="solution-equation">${tex(String.raw`(A + 2B) - (A + B) = 3 - 1`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`B = 2`, true)}</p>
+              第1式へ代入します。
+              <p class="solution-equation">${tex(String.raw`A + 2 = 1`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`A = 1 - 2 = -1`, true)}</p>
+              したがって厳密解は
               <p class="solution-equation">${tex(String.raw`x(t) = -e^{t} + 2e^{2t}`, true)}</p>
-              計算の説明は ${coreStepDoc('characteristic_two_real', '厳密解の説明')} です。
+              です。計算の説明は ${coreStepDoc('characteristic_two_real', '厳密解の説明')} です。
             </li>
             <li>手で確かめます。${tex('t = 0')} では ${tex('x(0) = -1 + 2 = 1')} です。
               <p class="solution-equation">${tex(String.raw`x'(t) = -e^{t} + 4e^{2t},\qquad x'(0) = 3`, true)}</p>
@@ -77,12 +93,25 @@ app.innerHTML = `
           <ol class="solution">
             <li>方程式と初期条件は次のとおりです。
               <p class="solution-equation">${tex(String.raw`x'' - 2x' + x = 0,\qquad x(0) = 1,\qquad x'(0) = 0`, true)}</p>
-              特性方程式は ${tex('(r - 1)^{2} = 0')} です。根は ${tex('r = 1')} の重根です。
+              特性方程式は
+              <p class="solution-equation">${tex(String.raw`r^{2} - 2r + 1 = 0`, true)}</p>
+              因数分解します。
+              <p class="solution-equation">${tex(String.raw`(r - 1)^{2} = 0`, true)}</p>
+              根は ${tex('r = 1')} の重根です。一般解は
               <p class="solution-equation">${tex(String.raw`x(t) = (A + Bt)\,e^{t}`, true)}</p>
+              です。積の微分により
+              <p class="solution-equation">${tex(String.raw`x'(t) = B e^{t} + (A + Bt)e^{t} = (A + B + Bt)e^{t}`, true)}</p>
+              です。
             </li>
-            <li>${tex('x(0) = A = 1')} です。微分は ${tex(String.raw`x' = (A + B + Bt)e^{t}`)} なので ${tex('x\'(0) = A + B = 0')}、したがって ${tex('B = -1')} です。
+            <li>初期条件を代入します。
+              <p class="solution-equation">${tex(String.raw`x(0) = (A + B \cdot 0)e^{0} = A = 1`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`x'(0) = (A + B + B \cdot 0)e^{0} = A + B = 0`, true)}</p>
+              ${tex('A = 1')} を代入すると
+              <p class="solution-equation">${tex(String.raw`1 + B = 0`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`B = -1`, true)}</p>
+              したがって厳密解は
               <p class="solution-equation">${tex(String.raw`x(t) = (1 - t)e^{t}`, true)}</p>
-              計算の説明は ${coreStepDoc('characteristic_repeated', '重根の解の説明')} です。
+              です。計算の説明は ${coreStepDoc('characteristic_repeated', '重根の解の説明')} です。
             </li>
             <li>手で確かめます。${tex('x(0) = 1')} です。
               <p class="solution-equation">${tex(String.raw`x'(t) = -e^{t} + (1 - t)e^{t} = -t e^{t}`, true)}</p>
@@ -95,12 +124,21 @@ app.innerHTML = `
           <ol class="solution">
             <li>方程式と初期条件は次のとおりです。
               <p class="solution-equation">${tex(String.raw`x'' + x = 0,\qquad x(0) = 1,\qquad x'(0) = 0`, true)}</p>
-              特性方程式は ${tex('r^{2} + 1 = 0')}、根は ${tex('r = \\pm i')} です。実部 ${tex('\\alpha = 0')}、虚部 ${tex('\\beta = 1')} なので、
-              <p class="solution-equation">${tex(String.raw`x(t) = A \cos t + B \sin t`, true)}</p>
+              特性方程式は
+              <p class="solution-equation">${tex(String.raw`r^{2} + 1 = 0`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`r^{2} = -1`, true)}</p>
+              根は ${tex('r = \\pm i')} です。実部 ${tex('\\alpha = 0')}、虚部 ${tex('\\beta = 1')} なので、一般解は
+              <p class="solution-equation">${tex(String.raw`x(t) = e^{0 \cdot t}(A \cos t + B \sin t) = A \cos t + B \sin t`, true)}</p>
+              です。導関数は
+              <p class="solution-equation">${tex(String.raw`x'(t) = -A \sin t + B \cos t`, true)}</p>
+              です。
             </li>
-            <li>${tex('x(0) = A = 1')} です。${tex(String.raw`x' = -A \sin t + B \cos t`)} なので ${tex('x\'(0) = B = 0')} です。
+            <li>初期条件を代入します。
+              <p class="solution-equation">${tex(String.raw`x(0) = A \cos 0 + B \sin 0 = A \cdot 1 + B \cdot 0 = A = 1`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`x'(0) = -A \sin 0 + B \cos 0 = -A \cdot 0 + B \cdot 1 = B = 0`, true)}</p>
+              したがって ${tex('A = 1')}、${tex('B = 0')} です。厳密解は
               <p class="solution-equation">${tex(String.raw`x(t) = \cos t`, true)}</p>
-              計算の説明は ${coreStepDoc('characteristic_complex', '複素根の解の説明')} です。
+              です。計算の説明は ${coreStepDoc('characteristic_complex', '複素根の解の説明')} です。
             </li>
             <li>手で確かめます。${tex('x(0) = \\cos 0 = 1')}、${tex(String.raw`x'(0) = -\sin 0 = 0`)} です。
               <p class="solution-equation">${tex(String.raw`x''(t) + x(t) = -\cos t + \cos t = 0`, true)}</p>
@@ -109,6 +147,14 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
+      ${relatedPages([
+        { href: './undetermined.html', title: '未定係数法', description: '非同次方程式の同次解として特性方程式の根を利用します。' },
+        { href: './variation.html', title: '定数変化法', description: '2階同次方程式の基本解から任意の外力に対する特殊解を作ります。' },
+        { href: './series.html', title: 'べき級数', description: '通常点のまわりで2階同次方程式を級数展開して解く別法です。' },
+        { href: './system.html', title: '連立1階', description: '2階同次方程式を行列の固有値問題に読み替えて解きます。' },
+        { href: './euler.html', title: 'Euler法', description: '2階の方程式を1階の組にして進める基本の数値解法です。' },
+        { href: './rk4.html', title: '古典的RK4', description: '2階方程式の振動や減衰を高精度に追跡する数値解法です。' },
+      ])}
       ${pageFooter('定数係数の2階同次方程式の解は、特性根が実数、重根、複素数のどれかで厳密に書けます。')}
       ${checkedProofs([{ statement: `${tex(String.raw`x'' + b x' + c x = 0`)} の一般解は、特性根が相異なる実数、重根、複素数のどれかで書けます。`, source: secondOrderProof, moduleName: 'Ergion.SecondOrder', kind: '実数' }])}
     </main>

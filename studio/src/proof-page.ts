@@ -128,7 +128,6 @@ app.innerHTML = `
         <div class="study-body">
           <ol class="solution">
             ${items}
-            <li>一定速度の増分だけは有理数です。それ以外は実数です。この画面の中では Lean を動かしていません。粒子を進める計算が使う倍精度の f64 の丸めは、証明していません。</li>
           </ol>
         </div>
       </section>

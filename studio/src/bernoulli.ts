@@ -1,5 +1,5 @@
 import './style.css';
-import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
+import { appHeader, coreStepDoc, pageFooter, rail, relatedPages } from './chrome';
 import bernoulliProof from '../../formal/lean/Ergion/Bernoulli.lean?raw';
 import { checkedProofs } from './proof';
 import { mountSteppedFigure, steppedFigure } from './curve';
@@ -38,21 +38,31 @@ app.innerHTML = `
               <p class="solution-equation">${tex(String.raw`x' = -\frac{u'}{u^{2}}`, true)}</p>
               方程式へ入れます。
               <p class="solution-equation">${tex(String.raw`-\frac{u'}{u^{2}} - \frac{1}{u} = -\frac{1}{u^{2}}`, true)}</p>
-              両辺に ${tex('-u^{2}')} を掛けます。${tex('u \\neq 0')} は ${tex('x')} が有限であることから従います。
+              両辺に ${tex('-u^{2}')} を掛けます。
+              <p class="solution-equation">${tex(String.raw`\left(-\frac{u'}{u^{2}}\right)(-u^{2}) - \left(\frac{1}{u}\right)(-u^{2}) = \left(-\frac{1}{u^{2}}\right)(-u^{2})`, true)}</p>
+              各項を整理すると
               <p class="solution-equation">${tex(String.raw`u' + u = 1`, true)}</p>
+              です。${tex('u \\neq 0')} は ${tex('x')} が有限であることから従います。
             </li>
             <li>これは定数係数の1階線形方程式です。積分因子は ${tex('e^{t}')} です。
               <p class="solution-equation">${tex(String.raw`e^{t} u' + e^{t} u = e^{t}`, true)}</p>
               <p class="solution-equation">${tex(String.raw`\frac{d}{dt}\bigl(u e^{t}\bigr) = e^{t}`, true)}</p>
-              積分します。積分定数を ${tex('C')} とすると、
+              両辺を積分します。
+              <p class="solution-equation">${tex(String.raw`\int \frac{d}{dt}\bigl(u e^{t}\bigr)\,dt = \int e^{t}\,dt`, true)}</p>
+              積分定数を ${tex('C')} とすると、
               <p class="solution-equation">${tex(String.raw`u e^{t} = e^{t} + C`, true)}</p>
-              ${tex('e^{t} \\neq 0')} で割ります。
-              <p class="solution-equation">${tex(String.raw`u = 1 + C e^{-t}`, true)}</p>
+              両辺に ${tex('e^{-t}')} を掛けます。
+              <p class="solution-equation">${tex(String.raw`u(t) = 1 + C e^{-t}`, true)}</p>
               ${tex('x = 1/u')} へ戻します。
               <p class="solution-equation">${tex(String.raw`x(t) = \frac{1}{1 + C e^{-t}}`, true)}</p>
             </li>
             <li>初期位置を ${tex('x(0) = x_0 \\neq 0')} とします。
-              <p class="solution-equation">${tex(String.raw`x(0) = \frac{1}{1 + C} = x_0`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`x(0) = \frac{1}{1 + C e^{0}} = \frac{1}{1 + C}`, true)}</p>
+              これを ${tex('x_0')} と等置します。
+              <p class="solution-equation">${tex(String.raw`\frac{1}{1 + C} = x_0`, true)}</p>
+              両辺の逆数をとります。
+              <p class="solution-equation">${tex(String.raw`1 + C = \frac{1}{x_0}`, true)}</p>
+              1 を移項します。
               <p class="solution-equation">${tex(String.raw`C = \frac{1}{x_0} - 1`, true)}</p>
               厳密解は次の式です。
               <p class="solution-equation">${tex(String.raw`x(t) = \frac{1}{1 + \left(\dfrac{1}{x_0} - 1\right) e^{-t}}`, true)}</p>
@@ -70,7 +80,9 @@ app.innerHTML = `
           <h2 id="example-heading">数を代入した例</h2>
           <p>${tex('x_0 = 1/2')} とします。${tex('x_0 \\neq 0')} かつ ${tex('n = 2 \\neq 0, 1')} なので、上の仮定を満たします。</p>
           <ol class="solution">
-            <li>積分定数は ${tex('C = 1/(1/2) - 1 = 1')} です。
+            <li>積分定数は
+              <p class="solution-equation">${tex(String.raw`C = \frac{1}{1/2} - 1 = 2 - 1 = 1`, true)}</p>
+              です。厳密解は次の式です。
               <p class="solution-equation">${tex(String.raw`x(t) = \frac{1}{1 + e^{-t}}`, true)}</p>
             </li>
             <li>手で確かめます。${tex('t = 0')} では ${tex('e^{0} = 1')} なので ${tex('x(0) = 1/2')} です。初期位置と一致します。微分すると、
@@ -82,6 +94,12 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
+      ${relatedPages([
+        { href: './linear.html', title: '1階線形', description: '置換 u = x^{1-n} によって帰着する線形方程式の解法です。' },
+        { href: './separation.html', title: '変数分離', description: 'n が 0 または 1 に退化するときの方程式の解法です。' },
+        { href: './euler.html', title: 'Euler法', description: 'ロジスティック方程式を1ステップずつ進める数値解法です。' },
+        { href: './rk4.html', title: '古典的RK4', description: '非線形方程式を高い精度で追跡する4次の数値解法です。' },
+      ])}
       ${pageFooter('ベルヌーイ方程式は、u = x^{1-n} と置くと1階線形になり、その解は厳密です。')}
       ${checkedProofs([{ statement: `${tex('n')} が 0 でも 1 でもないとき、${tex(String.raw`u = x^{1-n}`)} と置くと ${tex(String.raw`x' + px = q x^{n}`)} は1階線形になります。`, source: bernoulliProof, moduleName: 'Ergion.Bernoulli', kind: '実数' }])}
     </main>

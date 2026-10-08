@@ -1,5 +1,5 @@
 import './style.css';
-import { appHeader, pageFooter, rail } from './chrome';
+import { appHeader, pageFooter, rail, relatedPages } from './chrome';
 import solutionProof from '../../formal/lean/Ergion/Solution.lean?raw';
 import { checkedProofs } from './proof';
 import { tex } from './tex';
@@ -97,6 +97,12 @@ app.innerHTML = `
           <p class="equation">${tex(String.raw`x' = x + y`, true)}</p>
         </a>
       </div>
+      ${relatedPages([
+        { href: './integrate.html', title: '積分して解く', description: '右辺が未知関数によらない場合の最も基本的な解法です。' },
+        { href: './separation.html', title: '変数分離', description: '未知関数と独立変数を分けて積分する解法です。' },
+        { href: './linear.html', title: '1階線形', description: '積分因子を用いて解く1階方程式の解法です。' },
+        { href: './euler.html', title: 'Euler法', description: '微分方程式を数値的に解く基本アルゴリズムです。' },
+      ])}
       ${pageFooter('この節は、1階の解法、2階の解法、Laplace 変換、べき級数、連立です。')}
       ${checkedProofs([{ statement: `関数 ${tex('x(t)')} が解であるとは、各時刻で ${tex(String.raw`\frac{d}{dt} x(t) = f(x(t), t)`)} が成り立つことです。`, source: solutionProof, moduleName: 'Ergion.Solution', kind: '実数' }])}
     </main>

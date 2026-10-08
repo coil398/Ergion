@@ -1,6 +1,6 @@
 import './style.css';
 import { codeDisclosure, mountCodeDisclosure } from './code-panel';
-import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
+import { appHeader, coreStepDoc, pageFooter, rail, relatedPages } from './chrome';
 import { drawErrorSeries, drawTimeSeries } from './figures';
 import type { NewtonConfig, Reply, Snapshot } from './protocol';
 import { tex } from './tex';
@@ -72,6 +72,10 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
+      ${relatedPages([
+        { href: './euler.html', title: 'Euler法', description: '導関数を用いて次の点を近似する点で幾何学的に共通する解法です。' },
+        { href: './ode.html', title: '微分方程式', description: '導関数とその性質を扱う基礎理論です。' },
+      ])}
       ${pageFooter('ニュートン法は、接線の零点で f(x) = 0 の近似を更新します。')}
     </main>
   </div>`;

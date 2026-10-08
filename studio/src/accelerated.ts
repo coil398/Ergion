@@ -1,5 +1,5 @@
 import './style.css';
-import { appHeader, pageFooter, rail, simulationDoc } from './chrome';
+import { appHeader, pageFooter, rail, relatedPages, simulationDoc } from './chrome';
 import accelerationProof from '../../formal/lean/Ergion/ConstantAcceleration.lean?raw';
 import { checkedProofs } from './proof';
 import { clearFigure, drawConstantAcceleration, drawErrorSeries, drawTimeSeries } from './figures';
@@ -41,11 +41,19 @@ app.innerHTML = `
         <div class="study-body">
           <ol class="solution">
             <li>一つの粒子が直線上を動くとき、加速度 ${tex('a')} は速度 ${tex('v')} の時間微分であり、位置 ${tex('x')} を時刻 ${tex('t')} で二度微分したものです。${tex(String.raw`a = v' = x''`)}。この運動では、${tex('a')} は時刻にも位置にもよらず一定です。</li>
-            <li>加速度が一定なので ${tex(String.raw`v' = a`)} です。時刻 0 から ${tex('t')} まで積分すると ${tex('v(t) - v(0) = a t')} です。初期速度を ${tex('v(0) = v_0')} と書くと、速度の厳密解は次の一次式です。
+            <li>加速度が一定なので ${tex(String.raw`v' = a`)} です。時刻 0 から ${tex('t')} まで積分します。
+              <p class="solution-equation">${tex(String.raw`\int_0^{t} v'(\tau)\,d\tau = \int_0^{t} a\,d\tau`, true)}</p>
+              原始関数を評価します。
+              <p class="solution-equation">${tex(String.raw`[v(\tau)]_0^{t} = v(t) - v(0) = at`, true)}</p>
+              初期速度を ${tex('v(0) = v_0')} と書き、移項すると、速度の厳密解は次の一次式です。
               <p class="solution-equation">${tex('v(t) = v_0 + a t', true)}</p>
               速度は一定の割合 ${tex('a')} で変わります。速度の時間変化のグラフは、傾き ${tex('a')} の直線です。
             </li>
-            <li>速度は位置の時間微分なので ${tex(String.raw`x' = v_0 + a t`)} です。もう一度、時刻 0 から ${tex('t')} まで積分すると ${tex(String.raw`x(t) - x(0) = v_0 t + \frac{1}{2} a t^2`)} です。初期位置を ${tex('x(0) = x_0')} と書くと、位置の厳密解は次の二次式です。
+            <li>速度は位置の時間微分なので ${tex(String.raw`x' = v_0 + a t`)} です。もう一度、時刻 0 から ${tex('t')} まで積分します。
+              <p class="solution-equation">${tex(String.raw`\int_0^{t} x'(\tau)\,d\tau = \int_0^{t} (v_0 + a \tau)\,d\tau`, true)}</p>
+              各項の原始関数を評価します。
+              <p class="solution-equation">${tex(String.raw`[x(\tau)]_0^{t} = x(t) - x(0) = v_0 t + \frac{1}{2} a t^2`, true)}</p>
+              初期位置を ${tex('x(0) = x_0')} と書き、移項すると、位置の厳密解は次の二次式です。
               <p class="solution-equation">${tex(String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`, true)}</p>
             </li>
             <li>位置は時刻の二次式、速度は時刻の一次式であり、三階以上の導関数はゼロです。時刻 ${tex('t_n')} から ${tex(String.raw`\Delta t`)} だけ進んだ厳密な増分は次の式です（${simulationDoc('constant_acceleration', 'ConstantAccelerationSimulation', '1ステップの説明')}）。
@@ -100,6 +108,13 @@ app.innerHTML = `
           <p class="experiment-note">数値計算はブラウザ内で実行します。条件や結果をサーバーへ送信しません。</p>
         </div>
       </div>
+      ${relatedPages([
+        { href: './integrate.html', title: '積分して解く', description: '加速度 a を二度積分して速度と位置を求める導出です。' },
+        { href: './uniform.html', title: '等速直線運動', description: '加速度がゼロの場合の直線運動です。' },
+        { href: './euler.html', title: 'Euler法', description: '加速度一定の運動で打ち切り誤差の累積を観察できる数値解法です。' },
+        { href: './midpoint.html', title: '中点法', description: '2次の増分が厳密に一致する高精度な数値解法です。' },
+        { href: './rk4.html', title: '古典的RK4', description: '高次の増分を捉える4次のRunge–Kutta法です。' },
+      ])}
       ${pageFooter('この画面の計算は一粒子の等加速度直線運動です。')}
       ${checkedProofs([{ statement: `加速度 ${tex('a')} が一定のとき、速度は ${tex('v(t) = v_0 + a t')}、位置は ${tex(String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`)} です。`, source: accelerationProof, moduleName: 'Ergion.ConstantAcceleration', kind: '実数' }])}
     </main>

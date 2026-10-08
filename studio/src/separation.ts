@@ -1,5 +1,5 @@
 import './style.css';
-import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
+import { appHeader, coreStepDoc, pageFooter, rail, relatedPages } from './chrome';
 import separationProof from '../../formal/lean/Ergion/Separation.lean?raw';
 import { checkedProofs } from './proof';
 import { mountSteppedFigure, steppedFigure } from './curve';
@@ -38,17 +38,21 @@ app.innerHTML = `
             </li>
             <li>両辺を積分します。左辺は ${tex('x')} について、右辺は ${tex('t')} について積分します。
               <p class="solution-equation">${tex(String.raw`\int \frac{1}{x}\,dx = \int k\,dt`, true)}</p>
-              ${tex('k')} は定数なので、右辺は ${tex('kt')} です。左辺は自然対数です。積分定数を ${tex('C')} と書くと、
+              ${tex('k')} は定数なので、右辺の原始関数は ${tex('kt')} です。左辺は自然対数です。積分定数を ${tex('C')} と書くと、
               <p class="solution-equation">${tex(String.raw`\ln|x| = kt + C`, true)}</p>
-              絶対値を外すために、両辺を指数関数にします。${tex('e^{C}')} は正の定数です。
-              <p class="solution-equation">${tex(String.raw`|x| = e^{kt+C} = e^{C} e^{kt}`, true)}</p>
+              両辺の指数関数をとります。
+              <p class="solution-equation">${tex(String.raw`e^{\ln|x|} = e^{kt + C}`, true)}</p>
+              指数法則 ${tex('e^{kt+C} = e^{C} e^{kt}')} を用います。
+              <p class="solution-equation">${tex(String.raw`|x| = e^{C} e^{kt}`, true)}</p>
               絶対値を外すと、符号は正にも負にも取れます。0 でない定数 ${tex('A = \\pm e^{C}')} を使って、
-              <p class="solution-equation">${tex(String.raw`x = A e^{kt}`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`x(t) = A e^{kt}`, true)}</p>
               と書けます。仮定 ${tex('x \\neq 0')} から ${tex('A \\neq 0')} です。この段階では ${tex('A = 0')} は入っていません。
             </li>
-            <li>初期条件を入れます。${tex('t = 0')} のとき ${tex('e^{k \\cdot 0} = e^{0} = 1')} なので、
-              <p class="solution-equation">${tex(String.raw`x(0) = A = x_0`, true)}</p>
-              ここまでの仮定は ${tex('x_0 \\neq 0')} です。したがって
+            <li>初期条件を入れます。${tex('t = 0')} を代入すると
+              <p class="solution-equation">${tex(String.raw`x(0) = A e^{k \cdot 0} = A e^{0} = A \cdot 1 = A`, true)}</p>
+              初期位置 ${tex('x(0) = x_0')} と等置します。
+              <p class="solution-equation">${tex(String.raw`A = x_0`, true)}</p>
+              ここまでの仮定は ${tex('x_0 \\neq 0')} です。したがって厳密解は
               <p class="solution-equation">${tex(String.raw`x(t) = x_0 e^{kt}`, true)}</p>
               です。同じ式は、${tex('k')} が正でも負でも成り立ちます。${tex('k > 0')} なら位置の絶対値は時刻とともに増え、${tex('k < 0')} なら 0 に近づきます。
             </li>
@@ -74,12 +78,16 @@ app.innerHTML = `
               <p class="solution-equation">${tex(String.raw`\frac{dx}{x} = 2\,dt`, true)}</p>
             </li>
             <li>両辺を積分します。
+              <p class="solution-equation">${tex(String.raw`\int \frac{1}{x}\,dx = \int 2\,dt`, true)}</p>
               <p class="solution-equation">${tex(String.raw`\ln|x| = 2t + C`, true)}</p>
-              <p class="solution-equation">${tex(String.raw`|x| = e^{C} e^{2t}`, true)}</p>
-              <p class="solution-equation">${tex(String.raw`x = A e^{2t}`, true)}</p>
+              両辺の指数関数をとります。
+              <p class="solution-equation">${tex(String.raw`|x| = e^{2t + C} = e^{C} e^{2t}`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`x(t) = A e^{2t}`, true)}</p>
               ${tex('A = \\pm e^{C}')} で、${tex('A \\neq 0')} です。
             </li>
-            <li>初期条件 ${tex('x(0) = 3')} を入れます。${tex('e^{0} = 1')} なので ${tex('A = 3')} です。厳密解は次の式です。
+            <li>初期条件 ${tex('x(0) = 3')} を入れます。
+              <p class="solution-equation">${tex(String.raw`x(0) = A e^{2 \cdot 0} = A e^{0} = A \cdot 1 = A = 3`, true)}</p>
+              したがって ${tex('A = 3')} です。厳密解は次の式です。
               <p class="solution-equation">${tex(String.raw`x(t) = 3 e^{2t}`, true)}</p>
             </li>
             <li>手で確かめます。${tex('t = 0')} では ${tex('e^{0} = 1')} なので ${tex('x(0) = 3 \\cdot 1 = 3')} です。初期位置と一致します。微分すると、
@@ -91,6 +99,13 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
+      ${relatedPages([
+        { href: './integrate.html', title: '積分して解く', description: '右辺が未知関数によらない場合の積分による解法です。' },
+        { href: './linear.html', title: '1階線形', description: '積分因子を掛けて1階方程式を解く標準的な解法です。' },
+        { href: './homogeneous.html', title: '同次形', description: '比の変数変換によって変数分離に帰着する方程式です。' },
+        { href: './euler.html', title: 'Euler法', description: '指数関数解に対する1ステップの数値的近似です。' },
+        { href: './rk4.html', title: '古典的RK4', description: '指数関数の増分を高い精度で追跡する数値解法です。' },
+      ])}
       ${pageFooter('変数分離で得る x(t) = x_0 e^{kt} は、x\' = kx の厳密解です。')}
       ${checkedProofs([{ statement: `${tex(String.raw`x' = kx`)} の厳密解は ${tex(String.raw`x(t) = x_0 e^{kt}`)} です。`, source: separationProof, moduleName: 'Ergion.Separation', kind: '実数' }])}
     </main>

@@ -1,19 +1,89 @@
 import './style.css';
 import type { PageId } from './chrome';
-import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
-import { clearFigure, drawErrorSeries, drawTimeSeries, drawUniformMotion } from './figures';
-import type { Config, Snapshot, StepMethod } from './protocol';
-import { codeDisclosure, mountCodeDisclosure } from './code-panel';
-import { mountSession, transportPanel } from './session';
+import { appHeader, coreStepDoc, pageFooter, rail, relatedPages, type RelatedLink } from './chrome';
+import { clearFigure, drawConstantAcceleration, drawErrorSeries, drawTimeSeries, drawUniformMotion } from './figures';
+import type { Snapshot, StepMethod } from './protocol';
+import { codeDisclosure, mountCodeDisclosure, setCodeMethod } from './code-panel';
+import { mountSession, transportPanel, type TimedConfig } from './session';
 import { tex } from './tex';
 
-const defaults: Config = {
-  schema_version: 1,
-  initial_position: 0,
-  velocity: 1,
-  dt: 0.01,
-  steps: 1000,
-};
+export type TopicKind = 'uniform' | 'accelerated' | 'separation';
+
+export interface CompareSimConfig extends TimedConfig {
+  schema_version: 1;
+  kind: TopicKind;
+  t0: number;
+  initial_position: number;
+  initial_velocity: number;
+  velocity: number;
+  acceleration: number;
+  k: number;
+  dt: number;
+  steps: number;
+}
+
+export function getCaption(topic: TopicKind, method: StepMethod): string {
+  if (topic === 'uniform') {
+    return '速度 v が一定のとき、ステップの繰り返しは厳密解 x_0 + v t と一致します。位置の差は浮動小数点の丸めだけです。';
+  }
+  if (topic === 'accelerated') {
+    if (method === 'euler') {
+      return '加速度 a が一定のとき、Euler法ではステップを繰り返すにつれて位置の打ち切り誤差が累積し、増大します。';
+    }
+    if (method === 'midpoint') {
+      return '加速度 a が一定のとき、中点法の増分は2次の厳密な増分と一致し、残る差は浮動小数点の丸めだけです。';
+    }
+    return '加速度 a が一定のとき、古典的RK4の増分は2次の厳密な増分と一致し、残る差は浮動小数点の丸めだけです。';
+  }
+  return '変数分離 x\' = kx では、どの数値解法も打ち切り誤差を持ち、誤差は時刻とともに増大します。古典的RK4はEuler法より厳密解の近くに留まります。';
+}
+
+export function topicTabs(current: TopicKind = 'uniform'): string {
+  return `
+    <div class="method-tabs" role="tablist" aria-label="シミュレーションの題材">
+      <button type="button" class="method-tab" role="tab" data-topic="uniform" aria-selected="${current === 'uniform' ? 'true' : 'false'}">一定速度</button>
+      <button type="button" class="method-tab" role="tab" data-topic="accelerated" aria-selected="${current === 'accelerated' ? 'true' : 'false'}">等加速度</button>
+      <button type="button" class="method-tab" role="tab" data-topic="separation" aria-selected="${current === 'separation' ? 'true' : 'false'}">変数分離</button>
+    </div>`;
+}
+
+export function patternTabs(current: StepMethod = 'euler'): string {
+  return `
+    <div class="method-tabs" role="tablist" aria-label="数値解法のパターン">
+      <button type="button" class="method-tab" role="tab" data-method="euler" aria-selected="${current === 'euler' ? 'true' : 'false'}">Euler法</button>
+      <button type="button" class="method-tab" role="tab" data-method="midpoint" aria-selected="${current === 'midpoint' ? 'true' : 'false'}">中点法</button>
+      <button type="button" class="method-tab" role="tab" data-method="rk4" aria-selected="${current === 'rk4' ? 'true' : 'false'}">古典的RK4</button>
+    </div>`;
+}
+
+function getRelatedLinksForMethod(method: StepMethod): RelatedLink[] {
+  if (method === 'euler') {
+    return [
+      { href: './midpoint.html', title: '中点法', description: '2次の精度に改良したRunge–Kutta法です。' },
+      { href: './rk4.html', title: '古典的RK4', description: '4次の精度をもつ標準的な数値解法です。' },
+      { href: './velocity-step.html', title: '一定速度の増分', description: '増分を繰り返し適用する数値計算の基礎です。' },
+      { href: './uniform.html', title: '等速直線運動', description: '丸め誤差のみが現れる等速運動のシミュレーションです。' },
+      { href: './accelerated.html', title: '等加速度直線運動', description: '打ち切り誤差の累積が現れる運動のシミュレーションです。' },
+      { href: './separation.html', title: '変数分離', description: '指数関数解に対する打ち切り誤差が現れる例です。' },
+    ];
+  }
+  if (method === 'midpoint') {
+    return [
+      { href: './euler.html', title: 'Euler法', description: '1次の基本数値解法です。' },
+      { href: './rk4.html', title: '古典的RK4', description: '4次の精度をもつ標準的な数値解法です。' },
+      { href: './accelerated.html', title: '等加速度直線運動', description: '中点法で2次の増分が厳密に一致する運動です。' },
+      { href: './velocity-step.html', title: '一定速度の増分', description: '1ステップの反復と誤差を比較するページです。' },
+      { href: './separation.html', title: '変数分離', description: '中点法による打ち切り誤差の推移を見る例です。' },
+    ];
+  }
+  return [
+    { href: './euler.html', title: 'Euler法', description: '1次の基本数値解法です。' },
+    { href: './midpoint.html', title: '中点法', description: '2次のRunge–Kutta法です。' },
+    { href: './accelerated.html', title: '等加速度直線運動', description: '高次の増分まで一致する運動のシミュレーションです。' },
+    { href: './separation.html', title: '変数分離', description: 'Euler法に比べ誤差が極めて小さく保たれる例です。' },
+    { href: './velocity-step.html', title: '一定速度の増分', description: '1ステップの反復と誤差を比較するページです。' },
+  ];
+}
 
 /** 一つの数値解法だけを説明するページ。例は、速度が一定の x' = v です。 */
 export function mountMethodPage(options: {
@@ -24,9 +94,25 @@ export function mountMethodPage(options: {
   formula: string;
   prose: string;
 }) {
-  const reduction = options.method === 'euler'
+  let currentTopic: TopicKind = 'uniform';
+  const method = options.method;
+
+  const defaults: CompareSimConfig = {
+    schema_version: 1,
+    kind: 'uniform',
+    t0: 0,
+    initial_position: 0,
+    initial_velocity: 0,
+    velocity: 1,
+    acceleration: 1,
+    k: 1,
+    dt: 0.01,
+    steps: 1000,
+  };
+
+  const reduction = method === 'euler'
     ? `このページでは ${tex('f(x_n, t_n) = v')} です。${tex('v')} は一定なので、上の式は ${tex(String.raw`x_{n+1} = x_n + v \Delta t`)} と同じです。`
-    : options.method === 'midpoint'
+    : method === 'midpoint'
       ? `${tex('v')} が一定ならば、始点の傾きも中点の傾きも ${tex('v')} です。したがって ${tex('k_2 = v')} であり、更新は ${tex(String.raw`x_{n+1} = x_n + v \Delta t`)} と一致します。`
       : `${tex('v')} が一定ならば、四つの傾きはみな ${tex('v')} です。重み付きの和は ${tex('v')} になり、更新は ${tex(String.raw`x_{n+1} = x_n + v \Delta t`)} と一致します。`;
   const app = document.querySelector<HTMLDivElement>('#app')!;
@@ -85,61 +171,86 @@ export function mountMethodPage(options: {
           <div class="results">
             <section class="scene panel" aria-labelledby="scene-heading">
               <div class="panel-heading"><h2 id="scene-heading">粒子の直線運動</h2><span id="scene-time" class="numeric">t = 0.000</span></div>
-              <p class="scene-caption">速度 ${tex('v')} が一定のあいだ、この方法の1ステップは変位 ${tex(String.raw`v \Delta t`)} だけ位置を進めます。</p>
+              <p class="scene-caption" id="sim-caption">${getCaption(currentTopic, method)}</p>
               <canvas id="oscillator" aria-label="直線上を進む粒子。速度が一定のとき、この数値解法の1ステップで位置は速度と時間刻みの積だけ進みます。数値解は青の実線、解析解は青緑の破線。" role="img"></canvas>
               <div class="readouts"><div><span>位置 x</span><output id="position">—</output></div><div><span>速度 v</span><output id="velocity">—</output></div><div><span>解析解の位置</span><output id="exact-position">—</output></div><div><span>位置の誤差 x − x_exact</span><output id="energy-error">—</output></div></div>
             </section>
             <section class="plots panel" aria-labelledby="plots-heading">
               <div class="panel-heading"><h2 id="plots-heading">位置と誤差の時間変化</h2><div class="legend"><span><i class="numerical"></i>数値解</span><span><i class="analytical"></i>解析解</span><span><i class="difference"></i>誤差</span></div></div>
+              ${topicTabs(currentTopic)}
               <div class="plot-grid"><div class="plot-main"><h3>位置の時間変化 ${tex('x(t)')}</h3><canvas id="time-chart" aria-label="位置と時間のグラフ" role="img"></canvas><p>時間 t</p></div><div class="plot-phase"><h3>位置の誤差 ${tex('x - x_{\\mathrm{exact}}')}</h3><canvas id="phase-chart" aria-label="位置の誤差と時間のグラフ" role="img"></canvas><p>時間 t</p></div></div>
               <div class="plot-footer"><span id="comparison">解析解との差を計算します。</span><span>誤差は実線</span></div>
             </section>
             ${transportPanel()}
-            ${codeDisclosure(options.method)}
+            ${codeDisclosure(method)}
             <p id="error" role="alert" hidden></p>
             <p class="experiment-note">数値計算はブラウザ内で実行します。条件や結果をサーバーへ送信しません。</p>
           </div>
         </div>
+        ${relatedPages(getRelatedLinksForMethod(method))}
         ${pageFooter(`この画面は、速度が一定の x' = v を、${options.title}で1ステップ進めます。`)}
       </main>
     </div>`;
   mountCodeDisclosure();
 
   const form = document.querySelector<HTMLFormElement>('#config-form')!;
-  function readForm(): Config {
+  function readForm(): CompareSimConfig {
     const data = new FormData(form);
+    const initialPosition = Number(data.get('initial_position'));
+    const velocity = Number(data.get('velocity'));
+    const dt = Number(data.get('dt'));
+    const steps = Number(data.get('steps'));
     return {
       schema_version: 1,
-      initial_position: Number(data.get('initial_position')),
-      velocity: Number(data.get('velocity')),
-      dt: Number(data.get('dt')),
-      steps: Number(data.get('steps')),
+      kind: currentTopic,
+      t0: 0,
+      initial_position: currentTopic === 'separation' && initialPosition === 0 ? 1 : initialPosition,
+      initial_velocity: 0,
+      velocity,
+      acceleration: currentTopic === 'accelerated' ? (velocity !== 0 ? velocity : 1) : 0,
+      k: currentTopic === 'separation' ? (velocity !== 0 ? velocity : 1) : 0,
+      dt,
+      steps,
     };
   }
-  function fillForm(value: Config) {
+
+  function fillForm(value: CompareSimConfig) {
     for (const [key, item] of Object.entries(value)) {
       const input = form.elements.namedItem(key) as HTMLInputElement | null;
       if (input) input.value = String(item);
     }
   }
-  function paintFigures(state: Snapshot | undefined, points: Snapshot[], config: Config) {
+
+  function paintFigures(state: Snapshot | undefined, points: Snapshot[], config: CompareSimConfig) {
     const canvases = ['oscillator', 'time-chart', 'phase-chart'].map(id => document.getElementById(id) as HTMLCanvasElement);
     if (!state) {
       for (const canvas of canvases) clearFigure(canvas);
       return;
     }
-    const key = `${config.initial_position}|${config.velocity}|${config.dt}|${config.steps}|${options.method}`;
+    const key = `${config.initial_position}|${config.velocity}|${config.dt}|${config.steps}|${currentTopic}|${method}`;
     const timeEnd = config.steps * config.dt;
     const x0 = points.reduce((earliest, point) => point.time < earliest.time ? point : earliest, points[0] ?? state).position;
-    drawUniformMotion(canvases[0], {
-      key,
-      x0,
-      position: state.position,
-      exactPosition: state.exact_position,
-      velocity: state.velocity,
-      timeEnd,
-      samples: points.map(point => ({ time: point.time, position: point.position, exactPosition: point.exact_position })),
-    });
+    if (currentTopic === 'accelerated') {
+      drawConstantAcceleration(canvases[0], {
+        key,
+        x0,
+        position: state.position,
+        exactPosition: state.exact_position,
+        velocity: state.velocity,
+        timeEnd,
+        samples: points.map(point => ({ time: point.time, position: point.position, exactPosition: point.exact_position })),
+      });
+    } else {
+      drawUniformMotion(canvases[0], {
+        key,
+        x0,
+        position: state.position,
+        exactPosition: state.exact_position,
+        velocity: state.velocity,
+        timeEnd,
+        samples: points.map(point => ({ time: point.time, position: point.position, exactPosition: point.exact_position })),
+      });
+    }
     drawTimeSeries(canvases[1], {
       key: `${key}|position`,
       kind: 'position',
@@ -156,13 +267,30 @@ export function mountMethodPage(options: {
       samples: points.map(point => ({ time: point.time, error: point.position_error ?? 0 })),
     });
   }
-  mountSession({
+
+  const session = mountSession<CompareSimConfig>({
     defaults,
-    model: 'euler',
-    downloadName: `ergion-${options.method}.json`,
+    model: 'compare',
+    downloadName: `ergion-${method}.json`,
     readForm,
     fillForm,
     paintFigures,
-    method: () => options.method,
+    method: () => method,
   });
+
+  const topicButtons = document.querySelectorAll<HTMLButtonElement>('[data-topic]');
+  for (const button of topicButtons) {
+    button.addEventListener('click', () => {
+      const topic = button.dataset.topic as TopicKind;
+      if (topic === currentTopic) return;
+      currentTopic = topic;
+      for (const item of topicButtons) {
+        item.setAttribute('aria-selected', item === button ? 'true' : 'false');
+      }
+      const caption = document.querySelector<HTMLParagraphElement>('#sim-caption');
+      if (caption) caption.textContent = getCaption(currentTopic, method);
+      const current = readForm();
+      session.reloadConfig({ kind: currentTopic, initial_position: current.initial_position, velocity: current.velocity, acceleration: current.acceleration, k: current.k });
+    });
+  }
 }

@@ -1,5 +1,5 @@
 import './style.css';
-import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
+import { appHeader, coreStepDoc, pageFooter, rail, relatedPages } from './chrome';
 import exactProof from '../../formal/lean/Ergion/Exact.lean?raw';
 import { checkedProofs } from './proof';
 import { mountSteppedFigure, steppedFigure } from './curve';
@@ -38,10 +38,13 @@ app.innerHTML = `
             </li>
             <li>ポテンシャル ${tex('\\varphi(x, y)')} を求めます。${tex('\\partial \\varphi/\\partial x = M')} なので、${tex('y')} を固定して ${tex('x')} で積分します。
               <p class="solution-equation">${tex(String.raw`\varphi(x, y) = \int (2x + y)\,dx = x^2 + xy + h(y)`, true)}</p>
-              ${tex('h(y)')} は ${tex('x')} を含まない関数です。${tex('y')} で微分して ${tex('N')} と比べます。
-              <p class="solution-equation">${tex(String.raw`\frac{\partial \varphi}{\partial y} = x + h'(y) = N = x + 2y`, true)}</p>
-              したがって ${tex("h'(y) = 2y")} です。積分定数は、あとでレベル ${tex('C')} に吸収するので、ここでは 0 に取ります。
-              <p class="solution-equation">${tex(String.raw`h(y) = y^2`, true)}</p>
+              ${tex('h(y)')} は ${tex('x')} を含まない関数です。${tex('y')} で偏微分します。
+              <p class="solution-equation">${tex(String.raw`\frac{\partial \varphi}{\partial y} = \frac{\partial}{\partial y}\bigl(x^{2} + xy + h(y)\bigr) = x + h'(y)`, true)}</p>
+              これを ${tex('N = x + 2y')} と等置します。
+              <p class="solution-equation">${tex(String.raw`x + h'(y) = x + 2y`, true)}</p>
+              両辺から ${tex('x')} を引くと、${tex("h'(y) = 2y")} です。${tex('y')} で積分します。積分定数は、あとでレベル ${tex('C')} に吸収するので、ここでは 0 に取ります。
+              <p class="solution-equation">${tex(String.raw`h(y) = \int 2y\,dy = y^{2}`, true)}</p>
+              したがってポテンシャルは
               <p class="solution-equation">${tex(String.raw`\varphi(x, y) = x^2 + xy + y^2`, true)}</p>
             </li>
             <li>解曲線の上では ${tex('\\varphi')} が一定です。陰関数の厳密解は
@@ -63,9 +66,21 @@ app.innerHTML = `
           <ol class="solution">
             <li>レベルは次の式です。
               <p class="solution-equation">${tex(String.raw`x^2 + xt + t^2 = 1`, true)}</p>
-              ${tex('x')} の2次方程式として解きます。
-              <p class="solution-equation">${tex(String.raw`x = \frac{-t \pm \sqrt{t^2 - 4(t^2 - 1)}}{2} = \frac{-t \pm \sqrt{4 - 3t^2}}{2}`, true)}</p>
-              平方根の中が負でない範囲は ${tex('4 - 3t^2 \\ge 0')}、つまり ${tex('|t| \\le 2/\\sqrt{3}')} です。
+              ${tex('x')} について整理します。
+              <p class="solution-equation">${tex(String.raw`x^{2} + tx + (t^{2} - 1) = 0`, true)}</p>
+              2次方程式の根の公式を用います。
+              <p class="solution-equation">${tex(String.raw`x = \frac{-t \pm \sqrt{t^{2} - 4 \cdot 1 \cdot (t^{2} - 1)}}{2 \cdot 1}`, true)}</p>
+              根号の中を展開します。
+              <p class="solution-equation">${tex(String.raw`t^{2} - 4(t^{2} - 1) = t^{2} - 4t^{2} + 4 = 4 - 3t^{2}`, true)}</p>
+              したがって
+              <p class="solution-equation">${tex(String.raw`x = \frac{-t \pm \sqrt{4 - 3t^2}}{2}`, true)}</p>
+              平方根の中が負でない範囲を求めます。
+              <p class="solution-equation">${tex(String.raw`4 - 3t^{2} \ge 0`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`3t^{2} \le 4`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`t^{2} \le \frac{4}{3}`, true)}</p>
+              平方根をとると、実数解をもつ範囲は
+              <p class="solution-equation">${tex(String.raw`|t| \le \frac{2}{\sqrt{3}}`, true)}</p>
+              です。
             </li>
             <li>${tex('t = 0')} で ${tex('x = 1')} となる枝を取ります。プラスの符号です。
               <p class="solution-equation">${tex(String.raw`x(t) = \frac{-t + \sqrt{4 - 3t^2}}{2}`, true)}</p>
@@ -79,6 +94,12 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
+      ${relatedPages([
+        { href: './integrate.html', title: '積分して解く', description: '偏積分からポテンシャル関数を構成する基礎となる積分です。' },
+        { href: './separation.html', title: '変数分離', description: '微分形式として完全になる特別な場合の方程式です。' },
+        { href: './euler.html', title: 'Euler法', description: '陰関数で定義される解曲線を1ステップずつ進める数値解法です。' },
+        { href: './rk4.html', title: '古典的RK4', description: '解曲線を高い精度で追跡する4次の数値解法です。' },
+      ])}
       ${pageFooter('完全性の判定を満たすとき、解はポテンシャルが一定という陰関数です。')}
       ${checkedProofs([{ statement: `${tex(String.raw`(2x + y)\,dx + (x + 2y)\,dy = 0`)} の陰関数の厳密解は ${tex(String.raw`x^2 + xy + y^2 = C`)} です。`, source: exactProof, moduleName: 'Ergion.Exact', kind: '実数' }])}
     </main>

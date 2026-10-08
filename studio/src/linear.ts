@@ -1,5 +1,5 @@
 import './style.css';
-import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
+import { appHeader, coreStepDoc, pageFooter, rail, relatedPages } from './chrome';
 import linearProof from '../../formal/lean/Ergion/FirstOrderLinear.lean?raw';
 import { checkedProofs } from './proof';
 import { mountSteppedFigure, steppedFigure } from './curve';
@@ -39,16 +39,20 @@ app.innerHTML = `
               したがって、方程式は一つの微分にまとまります。
               <p class="solution-equation">${tex(String.raw`\frac{d}{dt}\bigl(x e^{pt}\bigr) = q e^{pt}`, true)}</p>
             </li>
-            <li>両辺を時刻で積分します。${tex('p \\neq 0')} なので、右辺の原始関数は ${tex('(q/p) e^{pt}')} です。積分定数を ${tex('C')} とすると、
+            <li>両辺を時刻で積分します。
+              <p class="solution-equation">${tex(String.raw`\int \frac{d}{dt}\bigl(x e^{pt}\bigr)\,dt = \int q e^{pt}\,dt`, true)}</p>
+              ${tex('p \\neq 0')} なので、右辺の原始関数は ${tex('(q/p) e^{pt}')} です。積分定数を ${tex('C')} とすると、
               <p class="solution-equation">${tex(String.raw`x e^{pt} = \frac{q}{p} e^{pt} + C`, true)}</p>
-              ${tex('e^{pt}')} は、どの有限の時刻でも 0 ではありません。両辺を ${tex('e^{pt}')} で割ります。
-              <p class="solution-equation">${tex(String.raw`x = \frac{q}{p} + C e^{-pt}`, true)}</p>
+              ${tex('e^{pt}')} は、どの有限の時刻でも 0 ではありません。両辺に ${tex('e^{-pt}')} を掛けます。
+              <p class="solution-equation">${tex(String.raw`x(t) = \frac{q}{p} \frac{e^{pt}}{e^{pt}} + \frac{C}{e^{pt}} = \frac{q}{p} + C e^{-pt}`, true)}</p>
             </li>
-            <li>初期条件を入れます。${tex('t = 0')} では ${tex('e^{0} = 1')} なので、
-              <p class="solution-equation">${tex(String.raw`x(0) = \frac{q}{p} + C = x_0`, true)}</p>
-              したがって積分定数は
+            <li>初期条件を入れます。${tex('t = 0')} を代入すると
+              <p class="solution-equation">${tex(String.raw`x(0) = \frac{q}{p} + C e^{-p \cdot 0} = \frac{q}{p} + C e^{0} = \frac{q}{p} + C`, true)}</p>
+              初期位置 ${tex('x(0) = x_0')} と等置します。
+              <p class="solution-equation">${tex(String.raw`\frac{q}{p} + C = x_0`, true)}</p>
+              ${tex('q/p')} を移項すると、積分定数は
               <p class="solution-equation">${tex(String.raw`C = x_0 - \frac{q}{p}`, true)}</p>
-              です。厳密解は次の式です。
+              です。これを解の式へ代入すると、厳密解は次の式です。
               <p class="solution-equation">${tex(String.raw`x(t) = \frac{q}{p} + \left(x_0 - \frac{q}{p}\right) e^{-pt}`, true)}</p>
             </li>
             <li>記号を定めます。${tex('x(t)')} は時刻 ${tex('t')} の位置です。${tex('t')} は時刻です。${tex('x_0')} は時刻 0 の位置です。${tex('p')} は未知関数の係数です。${tex('q')} は右辺の定数です。${tex('e')} は自然対数の底です。${tex('C')} は積分定数です。${tex('e^{pt}')} は積分因子です。
@@ -77,12 +81,16 @@ app.innerHTML = `
               <p class="solution-equation">${tex(String.raw`e^{2t} x' + 2 e^{2t} x = 6 e^{2t}`, true)}</p>
               <p class="solution-equation">${tex(String.raw`\frac{d}{dt}\bigl(x e^{2t}\bigr) = 6 e^{2t}`, true)}</p>
             </li>
-            <li>${tex('p = 2 \\neq 0')} として積分します。${tex('6/2 = 3')} です。
-              <p class="solution-equation">${tex(String.raw`x e^{2t} = 3 e^{2t} + C`, true)}</p>
-              ${tex('e^{2t} \\neq 0')} で割ります。
-              <p class="solution-equation">${tex(String.raw`x = 3 + C e^{-2t}`, true)}</p>
+            <li>${tex('p = 2 \\neq 0')} として積分します。
+              <p class="solution-equation">${tex(String.raw`x e^{2t} = \frac{6}{2} e^{2t} + C = 3 e^{2t} + C`, true)}</p>
+              両辺に ${tex('e^{-2t}')} を掛けます。
+              <p class="solution-equation">${tex(String.raw`x(t) = 3 + C e^{-2t}`, true)}</p>
             </li>
-            <li>初期条件 ${tex('x(0) = 1')} を入れます。${tex('e^{0} = 1')} なので ${tex('1 = 3 + C')}、したがって ${tex('C = -2')} です。厳密解は次の式です。
+            <li>初期条件 ${tex('x(0) = 1')} を入れます。
+              <p class="solution-equation">${tex(String.raw`x(0) = 3 + C e^{-2 \cdot 0} = 3 + C e^{0} = 3 + C = 1`, true)}</p>
+              3 を移項すると
+              <p class="solution-equation">${tex(String.raw`C = 1 - 3 = -2`, true)}</p>
+              です。厳密解は次の式です。
               <p class="solution-equation">${tex(String.raw`x(t) = 3 - 2 e^{-2t}`, true)}</p>
             </li>
             <li>手で確かめます。${tex('t = 0')} では ${tex('x(0) = 3 - 2 \\cdot 1 = 1')} です。初期位置と一致します。微分すると、
@@ -98,6 +106,13 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
+      ${relatedPages([
+        { href: './separation.html', title: '変数分離', description: '同次部分の方程式を解く基礎的な手法です。' },
+        { href: './bernoulli.html', title: 'ベルヌーイ', description: 'べきの非線形項をもつ方程式を1階線形に帰着させて解きます。' },
+        { href: './integrate.html', title: '積分して解く', description: '積分因子を掛けた後に現れる全微分の積分です。' },
+        { href: './euler.html', title: 'Euler法', description: '1階線形方程式を1ステップずつ進める基本の数値解法です。' },
+        { href: './rk4.html', title: '古典的RK4', description: '4次のRunge–Kutta法による高精度な数値解法です。' },
+      ])}
       ${pageFooter('積分因子で得る x(t) = q/p + (x_0 - q/p) e^{-pt} は、x\' + px = q の厳密解です。')}
       ${checkedProofs([{ statement: `${tex(String.raw`x' + px = q`)} で ${tex('p')} が 0 でないとき、厳密解は ${tex(String.raw`x(t) = \frac{q}{p} + \left(x_0 - \frac{q}{p}\right) e^{-pt}`)} です。`, source: linearProof, moduleName: 'Ergion.FirstOrderLinear', kind: '実数' }])}
     </main>

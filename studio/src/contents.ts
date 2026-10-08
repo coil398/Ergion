@@ -1,5 +1,5 @@
 import './style.css';
-import { appHeader, pageFooter, rail } from './chrome';
+import { appHeader, pageFooter, rail, relatedPages } from './chrome';
 import constantVelocityProof from '../../formal/lean/Ergion/ConstantVelocity.lean?raw';
 import constantAccelerationProof from '../../formal/lean/Ergion/ConstantAcceleration.lean?raw';
 import { checkedProofs } from './proof';
@@ -36,6 +36,12 @@ app.innerHTML = `
           <p class="equation equation-follow">${tex('v(t) = v_0 + a t', true)}</p>
         </a>
       </div>
+      ${relatedPages([
+        { href: './velocity-step.html', title: '一定速度の増分', description: '速度が一定の1ステップを繰り返し適用する数値計算です。' },
+        { href: './integrate.html', title: '積分して解く', description: '未知関数を含まない微分方程式を積分して解く理論です。' },
+        { href: './euler.html', title: 'Euler法', description: '力学の微分方程式を数値的に解く基本のアルゴリズムです。' },
+        { href: './ode.html', title: '微分方程式', description: 'より広いクラスの微分方程式を体系的に学ぶ節です。' },
+      ])}
       ${pageFooter('力学のページは、位置の時間微分、等速直線運動、等加速度直線運動です。')}
       ${checkedProofs([
         {

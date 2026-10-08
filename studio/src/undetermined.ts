@@ -1,5 +1,5 @@
 import './style.css';
-import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
+import { appHeader, coreStepDoc, pageFooter, rail, relatedPages } from './chrome';
 import undeterminedProof from '../../formal/lean/Ergion/Undetermined.lean?raw';
 import { checkedProofs } from './proof';
 import { mountSteppedFigure, steppedFigure } from './curve';
@@ -38,18 +38,32 @@ app.innerHTML = `
             </li>
             <li>特殊解を仮定します。右辺の指数 ${tex('3')} は特性根 ${tex('1')} でも ${tex('2')} でもありません。したがって ${tex('t')} のべきを掛ける必要はなく、
               <p class="solution-equation">${tex(String.raw`x_p(t) = K e^{3t}`, true)}</p>
-              と置けます。${tex('K')} が未定係数です。微分は ${tex(String.raw`x_p' = 3K e^{3t}`)}、${tex(String.raw`x_p'' = 9K e^{3t}`)} です。方程式へ入れます。
-              <p class="solution-equation">${tex(String.raw`(9K - 9K + 2K)e^{3t} = e^{3t}`, true)}</p>
-              ${tex('e^{3t} \\neq 0')} で割ると ${tex('2K = 1')}、したがって ${tex('K = 1/2')} です。
+              と置けます。${tex('K')} が未定係数です。導関数は
+              <p class="solution-equation">${tex(String.raw`x_p'(t) = 3K e^{3t}`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`x_p''(t) = 9K e^{3t}`, true)}</p>
+              です。方程式の左辺へ代入します。
+              <p class="solution-equation">${tex(String.raw`x_p'' - 3x_p' + 2x_p = 9K e^{3t} - 3(3K e^{3t}) + 2(K e^{3t}) = (9K - 9K + 2K)e^{3t} = 2K e^{3t}`, true)}</p>
+              右辺 ${tex('e^{3t}')} と等置します。
+              <p class="solution-equation">${tex(String.raw`2K e^{3t} = e^{3t}`, true)}</p>
+              ${tex('e^{3t} \\neq 0')} で割ると ${tex('2K = 1')}、したがって ${tex('K = 1/2')} です。特殊解は
               <p class="solution-equation">${tex(String.raw`x_p(t) = \frac{1}{2} e^{3t}`, true)}</p>
+              です。
             </li>
             <li>一般解は同次解と特殊解の和です。
               <p class="solution-equation">${tex(String.raw`x(t) = A e^{t} + B e^{2t} + \frac{1}{2} e^{3t}`, true)}</p>
-              初期条件を入れます。${tex('x(0) = A + B + 1/2 = 0')} なので
+              導関数は
+              <p class="solution-equation">${tex(String.raw`x'(t) = A e^{t} + 2B e^{2t} + \frac{3}{2} e^{3t}`, true)}</p>
+              です。初期条件を入れます。${tex('x(0) = A + B + 1/2 = 0')} なので
               <p class="solution-equation">${tex(String.raw`A + B = -\frac{1}{2}`, true)}</p>
-              微分は ${tex(String.raw`x' = A e^{t} + 2B e^{2t} + \frac{3}{2} e^{3t}`)} です。${tex("x'(0) = A + 2B + 3/2 = 0")} なので
+              ${tex("x'(0) = A + 2B + 3/2 = 0")} なので
               <p class="solution-equation">${tex(String.raw`A + 2B = -\frac{3}{2}`, true)}</p>
-              差を取ると ${tex('B = -1')} です。第1式から ${tex('A - 1 = -1/2')}、したがって ${tex('A = 1/2')} です。厳密解は
+              第2式から第1式を引きます。
+              <p class="solution-equation">${tex(String.raw`(A + 2B) - (A + B) = -\frac{3}{2} - \left(-\frac{1}{2}\right) = -1`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`B = -1`, true)}</p>
+              第1式へ代入します。
+              <p class="solution-equation">${tex(String.raw`A + (-1) = -\frac{1}{2}`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`A = 1 - \frac{1}{2} = \frac{1}{2}`, true)}</p>
+              厳密解は
               <p class="solution-equation">${tex(String.raw`x(t) = \frac{1}{2} e^{t} - e^{2t} + \frac{1}{2} e^{3t}`, true)}</p>
               です。
             </li>
@@ -83,6 +97,13 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
+      ${relatedPages([
+        { href: './second-order.html', title: '定数係数の2階同次', description: '非同次方程式の解の基礎となる同次解の求め方です。' },
+        { href: './variation.html', title: '定数変化法', description: '右辺が特殊な関数形を持たない場合の一般的な解法です。' },
+        { href: './laplace.html', title: 'Laplace 変換', description: '同じ非同次初期値問題を代数的に解く別法です。' },
+        { href: './euler.html', title: 'Euler法', description: '2階非同次方程式を1ステップずつ進める数値解法です。' },
+        { href: './rk4.html', title: '古典的RK4', description: '4次のRunge–Kutta法による高精度な数値解法です。' },
+      ])}
       ${pageFooter('未定係数法は、右辺と同じ形の特殊解を仮定し、同次解と合わせて厳密解を作ります。')}
       ${checkedProofs([{ statement: `右辺が ${tex(String.raw`e^{3t}`)} のとき、特殊解を ${tex(String.raw`x_p = K e^{3t}`)} と仮定して ${tex(String.raw`x'' - 3x' + 2x = e^{3t}`)} を解きます。`, source: undeterminedProof, moduleName: 'Ergion.Undetermined', kind: '実数' }])}
     </main>

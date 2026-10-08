@@ -1,5 +1,5 @@
 import './style.css';
-import { appHeader, pageFooter, rail, stepDoc } from './chrome';
+import { appHeader, pageFooter, rail, relatedPages, stepDoc } from './chrome';
 import { checkedVelocityProof } from './proof';
 import { clearFigure, drawErrorSeries, drawTimeSeries, drawUniformMotion } from './figures';
 import { codeDisclosure, mountCodeDisclosure, setCodeMethod } from './code-panel';
@@ -92,6 +92,12 @@ app.innerHTML = `
           <p class="experiment-note">数値計算はブラウザ内で実行します。条件や結果をサーバーへ送信しません。</p>
         </div>
       </div>
+      ${relatedPages([
+        { href: './uniform.html', title: '等速直線運動', description: '位置の時間微分から導かれる直線の運動と厳密解です。' },
+        { href: './velocity-step.html', title: '一定速度の増分', description: '時間刻みごとの位置更新の反復を扱うページです。' },
+        { href: './integrate.html', title: '積分して解く', description: '速度から位置を積分によって復元する理論です。' },
+        { href: './euler.html', title: 'Euler法', description: '導関数を用いて1ステップ進める最も基本的な数値解法です。' },
+      ])}
       ${pageFooter('この画面の計算は、位置の時間微分の1ステップです。')}
       ${checkedVelocityProof(`速度が一定のとき、1ステップは ${tex(String.raw`x_{n+1} = x_n + v \Delta t`)} であり、${tex('n')} 回の後は ${tex(String.raw`x_n = x_0 + n v \Delta t`)} です。`)}
     </main>

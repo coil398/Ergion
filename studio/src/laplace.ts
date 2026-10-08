@@ -1,5 +1,5 @@
 import './style.css';
-import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
+import { appHeader, coreStepDoc, pageFooter, rail, relatedPages } from './chrome';
 import laplaceProof from '../../formal/lean/Ergion/Laplace.lean?raw';
 import { checkedProofs } from './proof';
 import { mountSteppedFigure, steppedFigure } from './curve';
@@ -38,18 +38,29 @@ app.innerHTML = `
               ${tex('a')} は実定数です。初期条件 ${tex('x(0) = x\'(0) = 0')} を入れると、${tex('\\mathcal{L}\\{x\'\\} = sX')}、${tex('\\mathcal{L}\\{x\'\'\\} = s^{2}X')} です。
             </li>
             <li>方程式の両辺を変換します。
-              <p class="solution-equation">${tex(String.raw`(s^{2}X - 3sX + 2X) = \frac{1}{s - 3}`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`(s^{2}X - sx(0) - x'(0)) - 3(sX - x(0)) + 2X = \frac{1}{s - 3}`, true)}</p>
+              初期条件 ${tex('x(0) = 0')}、${tex("x'(0) = 0")} を代入します。
+              <p class="solution-equation">${tex(String.raw`s^{2}X - 3sX + 2X = \frac{1}{s - 3}`, true)}</p>
+              ${tex('X(s)')} をくくります。
               <p class="solution-equation">${tex(String.raw`(s^{2} - 3s + 2)X = \frac{1}{s - 3}`, true)}</p>
-              左辺の2次式は ${tex('(s - 1)(s - 2)')} です。${tex('s \\neq 1')}、${tex('s \\neq 2')}、${tex('s \\neq 3')} として割ります。
+              左辺の2次式を因数分解します。
+              <p class="solution-equation">${tex(String.raw`(s - 1)(s - 2)X = \frac{1}{s - 3}`, true)}</p>
+              ${tex('s \\neq 1')}、${tex('s \\neq 2')}、${tex('s \\neq 3')} として両辺を割ります。
               <p class="solution-equation">${tex(String.raw`X(s) = \frac{1}{(s - 1)(s - 2)(s - 3)}`, true)}</p>
             </li>
             <li>部分分数に分けます。
               <p class="solution-equation">${tex(String.raw`\frac{1}{(s - 1)(s - 2)(s - 3)} = \frac{A}{s - 1} + \frac{B}{s - 2} + \frac{C}{s - 3}`, true)}</p>
-              分母を払うと ${tex('A(s - 2)(s - 3) + B(s - 1)(s - 3) + C(s - 1)(s - 2) = 1')} です。
-              ${tex('s = 1')} では ${tex('A(-1)(-2) = 1')}、したがって ${tex('A = 1/2')} です。
-              ${tex('s = 2')} では ${tex('B(1)(-1) = 1')}、したがって ${tex('B = -1')} です。
-              ${tex('s = 3')} では ${tex('C(2)(1) = 1')}、したがって ${tex('C = 1/2')} です。
+              両辺に分母を掛けます。
+              <p class="solution-equation">${tex(String.raw`A(s - 2)(s - 3) + B(s - 1)(s - 3) + C(s - 1)(s - 2) = 1`, true)}</p>
+              ${tex('s = 1')} を代入します。
+              <p class="solution-equation">${tex(String.raw`A(1 - 2)(1 - 3) = A(-1)(-2) = 2A = 1`, true)}</p>
+              したがって ${tex('A = 1/2')} です。${tex('s = 2')} を代入します。
+              <p class="solution-equation">${tex(String.raw`B(2 - 1)(2 - 3) = B(1)(-1) = -B = 1`, true)}</p>
+              したがって ${tex('B = -1')} です。${tex('s = 3')} を代入します。
+              <p class="solution-equation">${tex(String.raw`C(3 - 1)(3 - 2) = C(2)(1) = 2C = 1`, true)}</p>
+              したがって ${tex('C = 1/2')} です。各係数を戻すと
               <p class="solution-equation">${tex(String.raw`X(s) = \frac{1/2}{s - 1} - \frac{1}{s - 2} + \frac{1/2}{s - 3}`, true)}</p>
+              です。
             </li>
             <li>書き出した逆変換を項ごとに使います。
               <p class="solution-equation">${tex(String.raw`x(t) = \frac{1}{2} e^{t} - e^{2t} + \frac{1}{2} e^{3t}`, true)}</p>
@@ -79,6 +90,12 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
+      ${relatedPages([
+        { href: './undetermined.html', title: '未定係数法', description: '同じ初期値問題を時間領域で特殊解を求めて解く方法です。' },
+        { href: './second-order.html', title: '定数係数の2階同次', description: 's の代数方程式の根に対応する同次方程式の特性根です。' },
+        { href: './euler.html', title: 'Euler法', description: '初期値問題を時間ステップで追跡する基本の数値解法です。' },
+        { href: './rk4.html', title: '古典的RK4', description: '4次のRunge–Kutta法による高精度な数値解法です。' },
+      ])}
       ${pageFooter('Laplace 変換は、初期値問題を s の代数に変え、逆変換で厳密解へ戻します。')}
       ${checkedProofs([{ statement: `初期値問題 ${tex(String.raw`x'' - 3x' + 2x = e^{3t}`)}、${tex('x(0) = 0')}、${tex("x'(0) = 0")} の解は、逆 Laplace 変換で時刻の関数に戻したものです。`, source: laplaceProof, moduleName: 'Ergion.Laplace', kind: '実数' }])}
     </main>

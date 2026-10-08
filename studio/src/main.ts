@@ -1,5 +1,5 @@
 import './style.css';
-import { appHeader, pageFooter, rail, simulationDoc } from './chrome';
+import { appHeader, pageFooter, rail, relatedPages, simulationDoc } from './chrome';
 import { checkedVelocityProof } from './proof';
 import { clearFigure, drawErrorSeries, drawTimeSeries, drawUniformMotion } from './figures';
 import { codeDisclosure, mountCodeDisclosure, setCodeMethod } from './code-panel';
@@ -40,7 +40,11 @@ app.innerHTML = `
             <li>質量 ${tex('m')} の粒子の運動方程式は ${tex(String.raw`m x'' = F`)} です。${tex('x')} は直線上の位置、${tex('t')} は時刻、${tex(String.raw`x''`)} は位置を時刻で二度微分した加速度、${tex('F')} は外力です。</li>
             <li>この運動では外力が働きません。${tex('F = 0')} なので、加速度は ${tex(String.raw`a = x'' = 0`)} です。</li>
             <li>加速度がゼロのとき、速度 ${tex(String.raw`v = x'`)} は時刻によって変わりません。最初の速度を ${tex('v')} と書くと、どの時刻でも ${tex('v(t) = v')} です。</li>
-            <li>速度は位置の時間変化なので ${tex(String.raw`x' = v`)} です。時刻 0 から ${tex('t')} まで積分すると ${tex('x(t) - x(0) = v t')} です。初期位置を ${tex('x(0) = x_0')} と書くと、厳密解は次の式です。
+            <li>速度は位置の時間変化なので ${tex(String.raw`x' = v`)} です。時刻 0 から ${tex('t')} まで両辺を積分します。
+              <p class="solution-equation">${tex(String.raw`\int_0^{t} x'(\tau)\,d\tau = \int_0^{t} v\,d\tau`, true)}</p>
+              左辺は原始関数に上限と下限を代入した差 ${tex('x(t) - x(0)')}、右辺は ${tex('vt')} です。
+              <p class="solution-equation">${tex('x(t) - x(0) = v t', true)}</p>
+              初期位置を ${tex('x(0) = x_0')} と書き、移項すると、厳密解は次の式です。
               <p class="solution-equation">${tex('x(t) = x_0 + v t', true)}</p>
             </li>
             <li>速度が一定のとき、Euler 法、中点法、古典的な4次の Runge–Kutta 法の1ステップは、どれも次の増分になります（${simulationDoc('uniform', 'UniformSimulation', '1ステップの説明')}）。
@@ -94,6 +98,12 @@ app.innerHTML = `
           <p class="experiment-note">数値計算はブラウザ内で実行します。条件や結果をサーバーへ送信しません。</p>
         </div>
       </div>
+      ${relatedPages([
+        { href: './derivative.html', title: '位置の時間微分', description: '速度の定義と1ステップの微小変位を説明するページです。' },
+        { href: './velocity-step.html', title: '一定速度の増分', description: '一定速度の増分を繰り返し適用する数値計算の基礎です。' },
+        { href: './integrate.html', title: '積分して解く', description: '未知関数を含まない微分方程式を積分して解く導出です。' },
+        { href: './euler.html', title: 'Euler法', description: '等速直線運動を1ステップずつ進める基本の数値解法です。' },
+      ])}
       ${pageFooter('この画面の計算は一粒子の等速直線運動です。')}
       ${checkedVelocityProof(`速度が一定のとき、${tex('n')} 回の後は ${tex(String.raw`x_n = x_0 + n v \Delta t`)} です。時刻を ${tex(String.raw`t = n \Delta t`)} と置けば、これは ${tex('x(t) = x_0 + v t')} と同じ増分です。`)}
     </main>

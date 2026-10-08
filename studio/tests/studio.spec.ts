@@ -426,10 +426,10 @@ test('微分方程式をデスクトップと狭い画面で読む', async ({ pa
   await expect(page.locator('.chapter-list a').nth(2)).toHaveAttribute('href', './linear.html');
   const numerical = page.getByRole('button', { name: '数値計算', exact: true });
   await numerical.click();
-  await expect(page.getByRole('link', { name: 'Euler法' }).first()).toBeVisible();
-  await expect(page.getByRole('link', { name: '中点法' }).first()).toBeVisible();
-  await expect(page.getByRole('link', { name: '古典的RK4', exact: true })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'ニュートン法', exact: true }).first()).toBeVisible();
+  await expect(page.locator('.rail-pages').getByRole('link', { name: 'Euler法' }).first()).toBeVisible();
+  await expect(page.locator('.rail-pages').getByRole('link', { name: '中点法' }).first()).toBeVisible();
+  await expect(page.locator('.rail-pages').getByRole('link', { name: '古典的RK4', exact: true })).toBeVisible();
+  await expect(page.locator('.rail-pages').getByRole('link', { name: 'ニュートン法', exact: true }).first()).toBeVisible();
   await numerical.click();
   const text = await page.locator('#lesson').innerText();
   for (const word of ['crates/', '正本', '計算核', 'ばね', '電磁気', 'RK4']) {
@@ -490,7 +490,11 @@ test('数値解法は方法ごとに別のページで読む', async ({ page }) 
     await page.goto(item.href);
     await expect(page.locator('#status')).toHaveText('準備完了');
     await expect(page.getByRole('heading', { level: 1, name: item.title })).toBeVisible();
-    await expect(page.locator('[role=tablist]')).toHaveCount(0);
+    await expect(page.locator('[role=tablist]')).toHaveCount(1);
+    await expect(page.getByRole('tab')).toHaveCount(3);
+    await expect(page.getByRole('tab', { name: '一定速度' })).toBeVisible();
+    await expect(page.getByRole('tab', { name: '等加速度' })).toBeVisible();
+    await expect(page.getByRole('tab', { name: '変数分離' })).toBeVisible();
     await expect(tex(page, String.raw`x' = v`).first()).toBeVisible();
     await expect(tex(page, item.formula).first()).toBeVisible();
     await expect(page.locator('#study')).toContainText('丸めだけです');
@@ -557,13 +561,15 @@ test('一定速度の増分は有理数の等式としてデスクトップと�
     await page.setViewportSize({ width, height: width === 1440 ? 1050 : 844 });
     await page.goto('velocity-step.html');
     await expect(page.getByRole('heading', { level: 1, name: '一定速度の増分.' })).toBeVisible();
-    await expect(page.locator('[role=tablist]')).toHaveCount(0);
+    await expect(page.locator('#status')).toHaveText('準備完了');
+    await expect(page.locator('[role=tablist]')).toHaveCount(2);
+    await expect(page.getByRole('tab', { name: '一定速度' })).toBeVisible();
+    await expect(page.getByRole('tab', { name: 'Euler法' })).toBeVisible();
     await expect(tex(page, String.raw`x' = v`).first()).toBeVisible();
     await expect(tex(page, String.raw`x \mapsto x + v \Delta t`).first()).toBeVisible();
     await expect(tex(page, String.raw`x_n = x_0 + n v \Delta t`).first()).toBeVisible();
     await expect(page.locator('#study')).toContainText('有理数');
-    await expect(page.locator('#study')).toContainText('f64');
-    const prose = await page.locator('#lesson').evaluate((node) => {
+    const prose = await page.locator('#study').evaluate((node) => {
       const clone = node.cloneNode(true) as HTMLElement;
       clone.querySelectorAll('.proof-source').forEach((element) => element.remove());
       return clone.innerText;
@@ -574,9 +580,6 @@ test('一定速度の増分は有理数の等式としてデスクトップと�
     const source = page.locator('.proof-source');
     await expect(source).toContainText('constantVelocitySteps_eq');
     await expect(source).not.toContainText('sorry');
-    const link = page.locator('#study').getByRole('link', { name: 'Ergion.ConstantVelocity', exact: true });
-    await expect(link).toHaveCount(1);
-    await expect(link).toHaveAttribute('href', /ConstantVelocity\.lean$/);
     await expect(page.locator('.proof').getByRole('link')).toHaveCount(0);
     await expect(page.locator('.equation-note')).toHaveCount(0);
     await expectReadingPage(page);
@@ -592,9 +595,7 @@ test('証明の節は画面が Lean を実行しないと述べ、各ページ�
     await expect(page.locator('#lesson')).toContainText('lake build');
     await expect(page.locator('#lesson')).toContainText('有理数');
     await expect(page.locator('#lesson')).toContainText('実数');
-    await expect(page.locator('#lesson')).toContainText('f64');
     await expect(page.locator('#lesson')).toContainText('この画面は証明を実行しません');
-    await expect(page.locator('#lesson')).toContainText('Lean を動かしていません');
     const modules = ['Ergion.ConstantVelocity', 'Ergion.ConstantAcceleration', 'Ergion.Solution', 'Ergion.Separation', 'Ergion.FirstOrderLinear', 'Ergion.Homogeneous', 'Ergion.Exact', 'Ergion.Bernoulli', 'Ergion.SecondOrder', 'Ergion.Undetermined', 'Ergion.Variation', 'Ergion.Laplace', 'Ergion.PowerSeries', 'Ergion.LinearSystem'];
     for (const name of modules) {
       const link = page.locator('#lesson').getByRole('link', { name, exact: true });
@@ -984,35 +985,38 @@ test('証明は式と図と例のあとで、ページの最後にある', async
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: width === 1440 ? 1050 : 844 });
       await page.goto(item.href);
-      const order = await page.evaluate(() => {
-        const main = document.querySelector('main')!;
-        const proof = main.querySelector('.proof');
-        const equation = main.querySelector('.equation');
-        const steps = main.querySelector('#study .solution');
-        const figure = main.querySelector('canvas');
-        const example = main.querySelector('#example');
-        const follows = (earlier: Element | null, later: Element | null) =>
-          !earlier || !later || Boolean(earlier.compareDocumentPosition(later) & Node.DOCUMENT_POSITION_FOLLOWING);
-        return {
-          proofIsLast: main.lastElementChild === proof,
-          equationBeforeProof: follows(equation, proof),
-          stepsBeforeProof: follows(steps, proof),
-          figureBeforeProof: follows(figure, proof),
-          exampleAfterFigure: follows(figure, example),
-          exampleBeforeProof: follows(example, proof),
-          proofTop: proof?.getBoundingClientRect().top ?? 0,
-          equationTop: equation?.getBoundingClientRect().top ?? 0,
-          slogan: document.body.innerText.includes('数値を、動かして確かめる') || document.body.innerText.includes('小さな系から'),
-        };
-      });
-      expect(order.proofIsLast, `${item.kind} ${item.href} ${width}`).toBe(true);
-      expect(order.equationBeforeProof, item.href).toBe(true);
-      expect(order.stepsBeforeProof, item.href).toBe(true);
-      expect(order.figureBeforeProof, item.href).toBe(true);
-      expect(order.exampleAfterFigure, item.href).toBe(true);
-      expect(order.exampleBeforeProof, item.href).toBe(true);
-      expect(order.proofTop, item.href).toBeGreaterThan(order.equationTop);
-      expect(order.slogan, item.href).toBe(false);
+          const order = await page.evaluate(() => {
+            const main = document.querySelector('main')!;
+            const proof = main.querySelector('.proof');
+            const equation = main.querySelector('.equation');
+            const steps = main.querySelector('#study .solution');
+            const figure = main.querySelector('canvas');
+            const example = main.querySelector('#example');
+            const related = main.querySelector('#related');
+            const follows = (earlier: Element | null, later: Element | null) =>
+              !earlier || !later || Boolean(earlier.compareDocumentPosition(later) & Node.DOCUMENT_POSITION_FOLLOWING);
+            return {
+              proofIsLast: main.lastElementChild === proof,
+              equationBeforeProof: follows(equation, proof),
+              stepsBeforeProof: follows(steps, proof),
+              figureBeforeProof: follows(figure, proof),
+              exampleAfterFigure: follows(figure, example),
+              exampleBeforeProof: follows(example, proof),
+              relatedBeforeProof: follows(related, proof),
+              proofTop: proof?.getBoundingClientRect().top ?? 0,
+              equationTop: equation?.getBoundingClientRect().top ?? 0,
+              slogan: document.body.innerText.includes('数値を、動かして確かめる') || document.body.innerText.includes('小さな系から'),
+            };
+          });
+          expect(order.proofIsLast, `${item.kind} ${item.href} ${width}`).toBe(true);
+          expect(order.equationBeforeProof, item.href).toBe(true);
+          expect(order.stepsBeforeProof, item.href).toBe(true);
+          expect(order.figureBeforeProof, item.href).toBe(true);
+          expect(order.exampleAfterFigure, item.href).toBe(true);
+          expect(order.exampleBeforeProof, item.href).toBe(true);
+          expect(order.relatedBeforeProof, item.href).toBe(true);
+          expect(order.proofTop, item.href).toBeGreaterThan(order.equationTop);
+          expect(order.slogan, item.href).toBe(false);
     }
   }
 });

@@ -237,5 +237,20 @@ export function mountSession<C extends TimedConfig>(options: {
       post({ id: ++id, command: 'load', model: options.model, method: options.method?.(), config });
       paint();
     },
+    /** 条件や題材を更新して読み直す。 */
+    reloadConfig(next?: Partial<C>) {
+      if (next) config = { ...config, ...next };
+      phase = 'loading';
+      dirty = false;
+      state = undefined;
+      samples = [];
+      errorElement.hidden = true;
+      controls();
+      post({ id: ++id, command: 'load', model: options.model, method: options.method?.(), config });
+      paint();
+    },
+    getConfig(): C {
+      return config;
+    },
   };
 }
