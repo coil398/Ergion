@@ -153,7 +153,6 @@ const allSections: RailSection[] = [
 
 /** まだ公開しないページ。ビルドの環境変数 VITE_RAIL_ALL=1 のときだけ目次に出す。 */
 const drafts = new Set<PageId>([
-  'elimination', 'lu', 'eigen', 'least-squares',
   'sample-stats', 'limit-theorems', 'regression', 'monte-carlo', 'pca',
   'compound', 'gbm', 'black-scholes', 'mc-pricing',
   'coulomb', 'potential', 'gauss', 'magnetostatics', 'lorentz', 'faraday', 'maxwell',
@@ -176,6 +175,14 @@ function sectionDisclosure(id: string, label: string, open: boolean, current: bo
         </ul>
       </div>`;
 }
+
+/** 幅の狭い画面では目次は高さの限られた枠で、いまのページがその枠の中に見えるように送る。 */
+setTimeout(() => {
+  const box = document.querySelector<HTMLElement>('.rail');
+  const current = box?.querySelector<HTMLElement>('.rail-page.active');
+  if (!box || !current || box.scrollHeight <= box.clientHeight) return;
+  box.scrollTop += current.getBoundingClientRect().top - box.getBoundingClientRect().top - box.clientHeight / 3;
+});
 
 document.addEventListener('click', (event) => {
   const target = event.target;
