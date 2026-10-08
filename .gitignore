@@ -1,4 +1,5 @@
 /target/
+*.egg-info/
 /studio/node_modules/
 /studio/dist/
 /studio/wasm/

@@ -175,6 +175,40 @@ test('再生、一時停止、ループ再生、計算時間を延ばす', async
   }
 });
 
+test('コードはページをまたいで開き、Euler法の TypeScript を実行する', async ({ page }) => {
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: width === 1440 ? 1050 : 844 });
+    await page.goto('euler.html');
+    await page.evaluate(() => localStorage.removeItem('ergion-code'));
+    await page.reload();
+    const disclosure = page.locator('details.code-disclosure');
+    await expect(disclosure).toHaveJSProperty('open', false);
+    await expect(page.locator('#status')).toHaveText('準備完了');
+    await page.locator('details.code-disclosure > summary').click();
+    await expect(disclosure).toHaveJSProperty('open', true);
+    await expect(page.locator('details.code-disclosure > summary')).toHaveText('コード');
+    const typescript = page.getByRole('region', { name: 'TypeScript' });
+    const python = page.getByRole('region', { name: 'Python' });
+    await expect(typescript.locator('.code-install')).toHaveText('npm install ./studio/wasm');
+    await expect(python.locator('.code-install')).toHaveText('pip install ./py/ergion');
+    await expect(python.locator('pre')).toContainText('from ergion import euler_step');
+    await expect(python.locator('pre')).not.toContainText('pyodide');
+    await typescript.getByRole('button', { name: '実行', exact: true }).click();
+    await expect(typescript.locator('.code-result')).toHaveText('[0.1]');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    await page.goto('midpoint.html');
+    await page.reload();
+    await expect(page.locator('details.code-disclosure')).toHaveJSProperty('open', true);
+    await expect(page.getByRole('region', { name: 'TypeScript' }).locator('pre')).toContainText('midpoint_step');
+    await expect(page.locator('#status')).toHaveText('準備完了');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    await page.goto('newton.html');
+    await expect(page.locator('details.code-disclosure')).toHaveJSProperty('open', true);
+    await expect(page.getByRole('region', { name: 'TypeScript' }).locator('pre')).toContainText('newton_step');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  }
+});
+
 test('NativeとブラウザWasmが一致する', async ({ page }, testInfo) => {
   await page.goto('uniform.html');
   await expect(page.locator('#status')).toHaveText('準備完了');

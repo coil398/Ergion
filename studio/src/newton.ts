@@ -1,4 +1,5 @@
 import './style.css';
+import { codeDisclosure, mountCodeDisclosure } from './code-panel';
 import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
 import { drawErrorSeries, drawTimeSeries } from './figures';
 import type { NewtonConfig, Reply, Snapshot } from './protocol';
@@ -55,6 +56,7 @@ app.innerHTML = `
           <div><span>誤差 x_n − √2</span><output id="root-error">—</output></div>
         </div>
       </section>
+      ${codeDisclosure('newton')}
       <section class="study panel" id="example" aria-labelledby="example-heading">
         <div class="panel-heading"><h2 id="example-heading">数を代入した例</h2><span class="quiet-label">${tex('f(x) = x^2 - 2')}</span></div>
         <div class="study-body">
@@ -73,6 +75,7 @@ app.innerHTML = `
       ${pageFooter('ニュートン法は、接線の零点で f(x) = 0 の近似を更新します。')}
     </main>
   </div>`;
+mountCodeDisclosure();
 
 const status = document.querySelector<HTMLElement>('#status')!;
 const label = status.querySelector('span')!;

@@ -31,7 +31,7 @@ button,a,input,select{touch-action:manipulation}
 button{cursor:pointer}
 button:disabled{cursor:default;opacity:.48}
 a{color:inherit}
-button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,.file-label:focus-within{outline:3px solid var(--color-focus-ring);outline-offset:3px}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible,.file-label:focus-within{outline:3px solid var(--color-focus-ring);outline-offset:3px}
 button{transition:background .15s,color .15s}
 button:not(:disabled):hover{filter:brightness(.95)}
 code{overflow-wrap:anywhere}
@@ -149,6 +149,17 @@ progress::-webkit-progress-bar{background:var(--color-border-subtle)}
 progress::-webkit-progress-value{background:var(--color-primary)}
 progress::-moz-progress-bar{background:var(--color-primary)}
 .experiment-note{font-size:16px;color:var(--color-text-secondary);text-align:center;margin:0;line-height:calc(17 / 9)}
+.code-disclosure{min-width:0}
+main>.code-disclosure{margin:16px 0}
+.code-disclosure summary{padding:16px 20px;min-height:44px;cursor:pointer;font-weight:700;font-size:16px;line-height:1.5}
+.code-disclosure[open] summary{border-bottom:1px solid var(--color-border-subtle)}
+.code-body{display:flex;flex-direction:column;gap:16px;padding:16px 20px 20px;min-width:0}
+.code-lang{min-width:0}
+.code-install{margin:0 0 8px;overflow-x:auto;font-family:ui-monospace,"Cascadia Code","Noto Sans JP",monospace;font-size:16px;line-height:1.5}
+.code-snippet{display:block;max-width:100%;min-width:0;margin:0;padding:12px 14px;overflow-x:auto;white-space:pre;font-family:ui-monospace,"Cascadia Code","Noto Sans JP",monospace;font-size:16px;line-height:1.5;background:var(--color-rail-bg);border:1px solid var(--color-border);border-radius:6px;color:var(--color-text)}
+.code-run{margin-top:8px}
+.code-result{margin:8px 0 0;min-height:1.5em;overflow-wrap:anywhere}
+.code-result[data-state=error]{color:var(--color-status-error)}
 .page-footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:16px;line-height:calc(17 / 9);color:var(--color-text-secondary);margin-top:24px;padding-top:16px;border-top:1px solid var(--color-border)}
 #error{background:#fff3ec;color:#944421;border:1px solid #edd0bf;padding:12px 15px;border-radius:6px;font-size:16px;line-height:calc(17 / 9);margin:0;overflow-wrap:anywhere}
 sub{font-size:.75em}
@@ -169,5 +180,8 @@ sub{font-size:.75em}
   .plot-phase{border-top:1px solid var(--color-border-subtle);padding-top:12px}
   .intro{flex-direction:column}
   .equation{text-align:left}
+}
+@media(min-width:851px){
+  .code-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}

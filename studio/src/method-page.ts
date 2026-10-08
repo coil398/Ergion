@@ -3,6 +3,7 @@ import type { PageId } from './chrome';
 import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
 import { clearFigure, drawErrorSeries, drawTimeSeries, drawUniformMotion } from './figures';
 import type { Config, Snapshot, StepMethod } from './protocol';
+import { codeDisclosure, mountCodeDisclosure } from './code-panel';
 import { mountSession, transportPanel } from './session';
 import { tex } from './tex';
 
@@ -94,6 +95,7 @@ export function mountMethodPage(options: {
               <div class="plot-footer"><span id="comparison">解析解との差を計算します。</span><span>誤差は実線</span></div>
             </section>
             ${transportPanel()}
+            ${codeDisclosure(options.method)}
             <p id="error" role="alert" hidden></p>
             <p class="experiment-note">数値計算はブラウザ内で実行します。条件や結果をサーバーへ送信しません。</p>
           </div>
@@ -101,6 +103,7 @@ export function mountMethodPage(options: {
         ${pageFooter(`この画面は、速度が一定の x' = v を、${options.title}で1ステップ進めます。`)}
       </main>
     </div>`;
+  mountCodeDisclosure();
 
   const form = document.querySelector<HTMLFormElement>('#config-form')!;
   function readForm(): Config {
