@@ -35,6 +35,27 @@ app.innerHTML = `
           <span class="equation-note">加速度一定の厳密解</span>
         </div>
       </section>
+      <section class="study panel" id="study" aria-labelledby="study-heading">
+        <div class="panel-heading"><h2 id="study-heading">等加速度直線運動の計算と説明</h2><span class="quiet-label">厳密解の求め方</span></div>
+        <div class="study-body">
+          <ol class="solution">
+            <li>一つの粒子が直線上を動くとき、加速度 ${tex('a')} は速度 ${tex('v')} の時間微分であり、位置 ${tex('x')} を時刻 ${tex('t')} で二度微分したものです。${tex(String.raw`a = v' = x''`)}。この運動では、${tex('a')} は時刻にも位置にもよらず一定です。</li>
+            <li>加速度が一定なので ${tex(String.raw`v' = a`)} です。時刻 0 から ${tex('t')} まで積分すると ${tex('v(t) - v(0) = a t')} です。初期速度を ${tex('v(0) = v_0')} と書くと、速度の厳密解は次の一次式です。
+              <p class="solution-equation">${tex('v(t) = v_0 + a t', true)}</p>
+              速度は一定の割合 ${tex('a')} で変わります。速度の時間変化のグラフは、傾き ${tex('a')} の直線です。
+            </li>
+            <li>速度は位置の時間微分なので ${tex(String.raw`x' = v_0 + a t`)} です。もう一度、時刻 0 から ${tex('t')} まで積分すると ${tex(String.raw`x(t) - x(0) = v_0 t + \frac{1}{2} a t^2`)} です。初期位置を ${tex('x(0) = x_0')} と書くと、位置の厳密解は次の二次式です。
+              <p class="solution-equation">${tex(String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`, true)}</p>
+            </li>
+            <li>位置は時刻の二次式、速度は時刻の一次式であり、三階以上の導関数はゼロです。時刻 ${tex('t_n')} から ${tex(String.raw`\Delta t`)} だけ進んだ厳密な増分は次の式です（${simulationDoc('constant_acceleration', 'ConstantAccelerationSimulation', '1ステップの説明')}）。
+              <p class="solution-equation">${tex(String.raw`x_{n+1} = x_n + v_n \Delta t + \frac{1}{2} a (\Delta t)^2`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`v_{n+1} = v_n + a \Delta t`, true)}</p>
+              中点法と古典的な4次の Runge–Kutta 法では、数値ステップの増分は厳密解の増分と一致します。残る差は、倍精度浮動小数点の丸めだけです。Euler 法は区間の始点の速度だけで位置を進めるので、位置には ${tex(String.raw`\frac{1}{2} a (\Delta t)^2`)} の打ち切りが残ります。この誤差は丸めだけではありません。図のタブは方法だけを切り替え、上の式は変わりません。
+            </li>
+          </ol>
+          <p>画面は、各時刻の位置と速度を描きます。式 ${tex(String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`)} や ${tex('v(t) = v_0 + a t')} を、描画のために計算し直すことはありません。青の実線が数値解、青緑の破線が厳密解です。誤差は、その破線とは別の実線です。</p>
+        </div>
+      </section>
       <div class="experiment-grid">
         <section class="settings panel" aria-labelledby="conditions-heading">
           <div class="panel-heading"><h2 id="conditions-heading">計算条件</h2><span class="quiet-label">換算単位</span></div>
@@ -60,27 +81,6 @@ app.innerHTML = `
           <p class="file-note">同じJSON設定をCLIでも使えます。途中の計算状態は保存しません。</p>
         </section>
         <div class="results">
-          <section class="study panel" id="study" aria-labelledby="study-heading">
-            <div class="panel-heading"><h2 id="study-heading">等加速度直線運動の計算と説明</h2><span class="quiet-label">厳密解の求め方</span></div>
-            <div class="study-body">
-              <ol class="solution">
-                <li>一つの粒子が直線上を動くとき、加速度 ${tex('a')} は速度 ${tex('v')} の時間微分であり、位置 ${tex('x')} を時刻 ${tex('t')} で二度微分したものです。${tex(String.raw`a = v' = x''`)}。この運動では、${tex('a')} は時刻にも位置にもよらず一定です。</li>
-                <li>加速度が一定なので ${tex(String.raw`v' = a`)} です。時刻 0 から ${tex('t')} まで積分すると ${tex('v(t) - v(0) = a t')} です。初期速度を ${tex('v(0) = v_0')} と書くと、速度の厳密解は次の一次式です。
-                  <p class="solution-equation">${tex('v(t) = v_0 + a t', true)}</p>
-                  速度は一定の割合 ${tex('a')} で変わります。速度の時間変化のグラフは、傾き ${tex('a')} の直線です。
-                </li>
-                <li>速度は位置の時間微分なので ${tex(String.raw`x' = v_0 + a t`)} です。もう一度、時刻 0 から ${tex('t')} まで積分すると ${tex(String.raw`x(t) - x(0) = v_0 t + \frac{1}{2} a t^2`)} です。初期位置を ${tex('x(0) = x_0')} と書くと、位置の厳密解は次の二次式です。
-                  <p class="solution-equation">${tex(String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`, true)}</p>
-                </li>
-                <li>位置は時刻の二次式、速度は時刻の一次式であり、三階以上の導関数はゼロです。時刻 ${tex('t_n')} から ${tex(String.raw`\Delta t`)} だけ進んだ厳密な増分は次の式です（${simulationDoc('constant_acceleration', 'ConstantAccelerationSimulation', '1ステップの説明')}）。
-                  <p class="solution-equation">${tex(String.raw`x_{n+1} = x_n + v_n \Delta t + \frac{1}{2} a (\Delta t)^2`, true)}</p>
-                  <p class="solution-equation">${tex(String.raw`v_{n+1} = v_n + a \Delta t`, true)}</p>
-                  中点法と古典的な4次の Runge–Kutta 法では、数値ステップの増分は厳密解の増分と一致します。残る差は、倍精度浮動小数点の丸めだけです。Euler 法は区間の始点の速度だけで位置を進めるので、位置には ${tex(String.raw`\frac{1}{2} a (\Delta t)^2`)} の打ち切りが残ります。この誤差は丸めだけではありません。図のタブは方法だけを切り替え、上の式は変わりません。
-                </li>
-              </ol>
-              <p>画面は、各時刻の位置と速度を描きます。式 ${tex(String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`)} や ${tex('v(t) = v_0 + a t')} を、描画のために計算し直すことはありません。青の実線が数値解、青緑の破線が厳密解です。誤差は、その破線とは別の実線です。</p>
-            </div>
-          </section>
           <section class="scene panel" aria-labelledby="scene-heading">
             <div class="panel-heading"><h2 id="scene-heading">粒子の直線運動</h2><span id="scene-time" class="numeric">t = 0.000</span></div>
             <p class="scene-caption">粒子は数値解の位置にあります。青緑の破線は、同じ時刻の厳密解の位置です。橙の矢印の長さは、返された速度の大きさに比例します。加速度が一定なので、速度も矢印の長さも一定の割合で変わります。</p>
@@ -102,8 +102,8 @@ app.innerHTML = `
           <p class="experiment-note">数値計算はブラウザ内で実行します。条件や結果をサーバーへ送信しません。</p>
         </div>
       </div>
-      ${checkedProofs([{ statement: `加速度 ${tex('a')} が一定のとき、速度は ${tex('v(t) = v_0 + a t')}、位置は ${tex(String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`)} です。`, source: accelerationProof, moduleName: 'Ergion.ConstantAcceleration', kind: '実数' }])}
       ${pageFooter('この画面の計算は一粒子の等加速度直線運動です。')}
+      ${checkedProofs([{ statement: `加速度 ${tex('a')} が一定のとき、速度は ${tex('v(t) = v_0 + a t')}、位置は ${tex(String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`)} です。`, source: accelerationProof, moduleName: 'Ergion.ConstantAcceleration', kind: '実数' }])}
     </main>
   </div>`;
 

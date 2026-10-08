@@ -97,8 +97,8 @@ app.innerHTML = `
           <p class="equation">${tex(String.raw`x' = x + y`, true)}</p>
         </a>
       </div>
-      ${checkedProofs([{ statement: `関数 ${tex('x(t)')} が解であるとは、各時刻で ${tex(String.raw`\frac{d}{dt} x(t) = f(x(t), t)`)} が成り立つことです。`, source: solutionProof, moduleName: 'Ergion.Solution', kind: '実数' }])}
       ${pageFooter('この節は、1階の解法、2階の解法、Laplace 変換、べき級数、連立です。')}
+      ${checkedProofs([{ statement: `関数 ${tex('x(t)')} が解であるとは、各時刻で ${tex(String.raw`\frac{d}{dt} x(t) = f(x(t), t)`)} が成り立つことです。`, source: solutionProof, moduleName: 'Ergion.Solution', kind: '実数' }])}
     </main>
   </div>`;
 

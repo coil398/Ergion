@@ -32,6 +32,25 @@ app.innerHTML = `
           <span class="equation-note">加速度ゼロの厳密解</span>
         </div>
       </section>
+      <section class="study panel" id="study" aria-labelledby="study-heading">
+        <div class="panel-heading"><h2 id="study-heading">等速直線運動の計算と説明</h2><span class="quiet-label">厳密解の求め方</span></div>
+        <div class="study-body">
+          <ol class="solution">
+            <li>質量 ${tex('m')} の粒子の運動方程式は ${tex(String.raw`m x'' = F`)} です。${tex('x')} は直線上の位置、${tex('t')} は時刻、${tex(String.raw`x''`)} は位置を時刻で二度微分した加速度、${tex('F')} は外力です。</li>
+            <li>この運動では外力が働きません。${tex('F = 0')} なので、加速度は ${tex(String.raw`a = x'' = 0`)} です。</li>
+            <li>加速度がゼロのとき、速度 ${tex(String.raw`v = x'`)} は時刻によって変わりません。最初の速度を ${tex('v')} と書くと、どの時刻でも ${tex('v(t) = v')} です。</li>
+            <li>速度は位置の時間変化なので ${tex(String.raw`x' = v`)} です。時刻 0 から ${tex('t')} まで積分すると ${tex('x(t) - x(0) = v t')} です。初期位置を ${tex('x(0) = x_0')} と書くと、厳密解は次の式です。
+              <p class="solution-equation">${tex('x(t) = x_0 + v t', true)}</p>
+            </li>
+            <li>速度が一定のとき、Euler 法、中点法、古典的な4次の Runge–Kutta 法の1ステップは、どれも次の増分になります（${simulationDoc('uniform', 'UniformSimulation', '1ステップの説明')}）。
+              <p class="solution-equation">${tex(String.raw`x_{n+1} = x_n + v \Delta t`, true)}</p>
+              <p class="solution-equation">${tex(String.raw`v_{n+1} = v`, true)}</p>
+              これは厳密解を刻み幅 ${tex(String.raw`\Delta t`)} だけ進めた増分と一致します。位置は時刻の一次式なので、この数値ステップに打ち切り誤差はありません。表示される差は、倍精度浮動小数点の丸めだけです。図のタブは方法だけを切り替え、この式は変わりません。
+            </li>
+          </ol>
+          <p>画面は、各時刻の位置と速度を描きます。式 ${tex('x(t) = x_0 + v t')} を、描画のために計算し直すことはありません。図の線分は、初期位置 ${tex('x_0')} に加わる変位 ${tex('vt')} です。青の実線が数値解、青緑の破線が厳密解です。誤差は、その破線とは別の実線です。</p>
+        </div>
+      </section>
       <div class="experiment-grid">
         <section class="settings panel" aria-labelledby="conditions-heading">
           <div class="panel-heading"><h2 id="conditions-heading">計算条件</h2><span class="quiet-label">換算単位</span></div>
@@ -56,25 +75,6 @@ app.innerHTML = `
           <p class="file-note">同じJSON設定をCLIでも使えます。途中の計算状態は保存しません。</p>
         </section>
         <div class="results">
-          <section class="study panel" id="study" aria-labelledby="study-heading">
-            <div class="panel-heading"><h2 id="study-heading">等速直線運動の計算と説明</h2><span class="quiet-label">厳密解の求め方</span></div>
-            <div class="study-body">
-              <ol class="solution">
-                <li>質量 ${tex('m')} の粒子の運動方程式は ${tex(String.raw`m x'' = F`)} です。${tex('x')} は直線上の位置、${tex('t')} は時刻、${tex(String.raw`x''`)} は位置を時刻で二度微分した加速度、${tex('F')} は外力です。</li>
-                <li>この運動では外力が働きません。${tex('F = 0')} なので、加速度は ${tex(String.raw`a = x'' = 0`)} です。</li>
-                <li>加速度がゼロのとき、速度 ${tex(String.raw`v = x'`)} は時刻によって変わりません。最初の速度を ${tex('v')} と書くと、どの時刻でも ${tex('v(t) = v')} です。</li>
-                <li>速度は位置の時間変化なので ${tex(String.raw`x' = v`)} です。時刻 0 から ${tex('t')} まで積分すると ${tex('x(t) - x(0) = v t')} です。初期位置を ${tex('x(0) = x_0')} と書くと、厳密解は次の式です。
-                  <p class="solution-equation">${tex('x(t) = x_0 + v t', true)}</p>
-                </li>
-                <li>速度が一定のとき、Euler 法、中点法、古典的な4次の Runge–Kutta 法の1ステップは、どれも次の増分になります（${simulationDoc('uniform', 'UniformSimulation', '1ステップの説明')}）。
-                  <p class="solution-equation">${tex(String.raw`x_{n+1} = x_n + v \Delta t`, true)}</p>
-                  <p class="solution-equation">${tex(String.raw`v_{n+1} = v`, true)}</p>
-                  これは厳密解を刻み幅 ${tex(String.raw`\Delta t`)} だけ進めた増分と一致します。位置は時刻の一次式なので、この数値ステップに打ち切り誤差はありません。表示される差は、倍精度浮動小数点の丸めだけです。図のタブは方法だけを切り替え、この式は変わりません。
-                </li>
-              </ol>
-              <p>画面は、各時刻の位置と速度を描きます。式 ${tex('x(t) = x_0 + v t')} を、描画のために計算し直すことはありません。図の線分は、初期位置 ${tex('x_0')} に加わる変位 ${tex('vt')} です。青の実線が数値解、青緑の破線が厳密解です。誤差は、その破線とは別の実線です。</p>
-            </div>
-          </section>
           <section class="scene panel" aria-labelledby="scene-heading">
             <div class="panel-heading"><h2 id="scene-heading">粒子の直線運動</h2><span id="scene-time" class="numeric">t = 0.000</span></div>
             <p class="scene-caption">粒子は、初期位置 ${tex('x_0')} に変位 ${tex('vt')} を加えた位置まで進みます。速度は一定なので、変位は時刻に比例して伸びます。</p>
@@ -96,8 +96,8 @@ app.innerHTML = `
           <p class="experiment-note">数値計算はブラウザ内で実行します。条件や結果をサーバーへ送信しません。</p>
         </div>
       </div>
-      ${checkedVelocityProof(`速度が一定のとき、${tex('n')} 回の後は ${tex(String.raw`x_n = x_0 + n v \Delta t`)} です。時刻を ${tex(String.raw`t = n \Delta t`)} と置けば、これは ${tex('x(t) = x_0 + v t')} と同じ増分です。`)}
       ${pageFooter('この画面の計算は一粒子の等速直線運動です。')}
+      ${checkedVelocityProof(`速度が一定のとき、${tex('n')} 回の後は ${tex(String.raw`x_n = x_0 + n v \Delta t`)} です。時刻を ${tex(String.raw`t = n \Delta t`)} と置けば、これは ${tex('x(t) = x_0 + v t')} と同じ増分です。`)}
     </main>
   </div>`;
 

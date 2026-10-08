@@ -36,6 +36,7 @@ app.innerHTML = `
           <p class="equation equation-follow">${tex('v(t) = v_0 + a t', true)}</p>
         </a>
       </div>
+      ${pageFooter('力学のページは、位置の時間微分、等速直線運動、等加速度直線運動です。')}
       ${checkedProofs([
         {
           statement: `速度が一定のとき、${tex('n')} 回の後は ${tex(String.raw`x_n = x_0 + n v \Delta t`)} です。時刻を ${tex(String.raw`t = n \Delta t`)} と置けば、これは ${tex('x(t) = x_0 + v t')} と同じ増分です。`,
@@ -50,7 +51,6 @@ app.innerHTML = `
           kind: '実数',
         },
       ])}
-      ${pageFooter('力学のページは、位置の時間微分、等速直線運動、等加速度直線運動です。')}
     </main>
   </div>`;
 

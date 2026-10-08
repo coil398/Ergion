@@ -51,6 +51,11 @@ app.innerHTML = `
             <li>この式は厳密解です。級数にも、時間を刻む数値解法にもよらず、積分を閉じた形のまま残しています。打ち切り誤差はありません。計算の説明は ${coreStepDoc('homogeneous_ratio', '厳密解の説明')} です。
             </li>
           </ol>
+        </div>
+      </section>
+      ${steppedFigure(`タブは、方程式 ${tex(String.raw`x' = 1 + x/t`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。時刻 1 から 2 までの誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
+      <section class="study panel" id="example" aria-labelledby="example-heading">
+        <div class="study-body">
           <h2 id="example-heading">数を代入した例</h2>
           <p>${tex('C = 0')} とします。${tex('t > 0')} という仮定はそのままです。同じ変形を、数を入れた式でたどります。</p>
           <ol class="solution">
@@ -67,9 +72,8 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
-      ${steppedFigure(`タブは、方程式 ${tex(String.raw`x' = 1 + x/t`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。時刻 1 から 2 までの誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
-      ${checkedProofs([{ statement: `${tex(String.raw`x' = 1 + \frac{x}{t}`)} の、${tex('t > 0')} における厳密解は ${tex(String.raw`x(t) = t(\ln t + C)`)} です。`, source: homogeneousProof, moduleName: 'Ergion.Homogeneous', kind: '実数' }])}
       ${pageFooter('同次形の置換 u = x/t で得る x(t) = t(ln t + C) は、t > 0 における厳密解です。')}
+      ${checkedProofs([{ statement: `${tex(String.raw`x' = 1 + \frac{x}{t}`)} の、${tex('t > 0')} における厳密解は ${tex(String.raw`x(t) = t(\ln t + C)`)} です。`, source: homogeneousProof, moduleName: 'Ergion.Homogeneous', kind: '実数' }])}
     </main>
   </div>`;
 

@@ -59,6 +59,11 @@ app.innerHTML = `
             <li>計算の説明は ${coreStepDoc('power_series_cosine', '厳密解の説明')} です。図が描くのは、この無限和です。有限項で止めた多項式を、別に計算して描いてはいません。
             </li>
           </ol>
+        </div>
+      </section>
+      ${steppedFigure(`タブは、方程式 ${tex(String.raw`x'' + x = 0`)} を進める数値解法だけを切り替えます。上の導出と、べき級数の和である厳密解は変わりません。青緑の破線はその和です。誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、その和を小数第5位まで示したものです。`)}
+      <section class="study panel" id="example" aria-labelledby="example-heading">
+        <div class="study-body">
           <h2 id="example-heading">数を代入した検算</h2>
           <p>係数 ${tex('a_0')}、${tex('a_2')}、${tex('a_4')} までを手で方程式へ入れ、残る項の次数を見ます。</p>
           <ol class="solution">
@@ -74,9 +79,8 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
-      ${steppedFigure(`タブは、方程式 ${tex(String.raw`x'' + x = 0`)} を進める数値解法だけを切り替えます。上の導出と、べき級数の和である厳密解は変わりません。青緑の破線はその和です。誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、その和を小数第5位まで示したものです。`)}
-      ${checkedProofs([{ statement: `${tex(String.raw`x'' + x = 0`)} のべき級数は、係数の漸化式 ${tex(String.raw`a_{m+2} = -\frac{a_m}{(m+1)(m+2)}`)} を満たし、和は ${tex(String.raw`\cos t`)} です。`, source: seriesProof, moduleName: 'Ergion.PowerSeries', kind: '実数' }])}
       ${pageFooter('通常点のべき級数は、漸化式で係数が決まり、この方程式では和が cos t という厳密解です。')}
+      ${checkedProofs([{ statement: `${tex(String.raw`x'' + x = 0`)} のべき級数は、係数の漸化式 ${tex(String.raw`a_{m+2} = -\frac{a_m}{(m+1)(m+2)}`)} を満たし、和は ${tex(String.raw`\cos t`)} です。`, source: seriesProof, moduleName: 'Ergion.PowerSeries', kind: '実数' }])}
     </main>
   </div>`;
 

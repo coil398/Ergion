@@ -58,6 +58,11 @@ app.innerHTML = `
             <li>この式は厳密解です。特殊解の形を指数のまま仮定し、係数を代数で決めています。級数にも時間の刻みにもよりません。打ち切り誤差はありません。計算の説明は ${coreStepDoc('undetermined_coefficient', '厳密解の説明')} です。
             </li>
           </ol>
+        </div>
+      </section>
+      ${steppedFigure(`タブは、この初期値問題を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
+      <section class="study panel" id="example" aria-labelledby="example-heading">
+        <div class="study-body">
           <h2 id="example-heading">数を代入した検算</h2>
           <p>上の初期条件そのものが、数の入った例です。微分して方程式と初期条件へ戻します。</p>
           <ol class="solution">
@@ -78,9 +83,8 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
-      ${steppedFigure(`タブは、この初期値問題を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
-      ${checkedProofs([{ statement: `右辺が ${tex(String.raw`e^{3t}`)} のとき、特殊解を ${tex(String.raw`x_p = K e^{3t}`)} と仮定して ${tex(String.raw`x'' - 3x' + 2x = e^{3t}`)} を解きます。`, source: undeterminedProof, moduleName: 'Ergion.Undetermined', kind: '実数' }])}
       ${pageFooter('未定係数法は、右辺と同じ形の特殊解を仮定し、同次解と合わせて厳密解を作ります。')}
+      ${checkedProofs([{ statement: `右辺が ${tex(String.raw`e^{3t}`)} のとき、特殊解を ${tex(String.raw`x_p = K e^{3t}`)} と仮定して ${tex(String.raw`x'' - 3x' + 2x = e^{3t}`)} を解きます。`, source: undeterminedProof, moduleName: 'Ergion.Undetermined', kind: '実数' }])}
     </main>
   </div>`;
 

@@ -53,6 +53,11 @@ app.innerHTML = `
             <li>この陰関数は厳密解です。完全性の判定を満たす領域で、${tex('\\varphi')} の全微分が与えられた微分形式と一致します。打ち切り誤差はありません。計算の説明は ${coreStepDoc('exact_quadratic', '厳密解の説明')} です。
             </li>
           </ol>
+        </div>
+      </section>
+      ${steppedFigure(`タブは、このページの方程式を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。${tex('C = 1')} の枝を、時刻 0 から ${tex('1/2')} まで進めた誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
+      <section class="study panel" id="example" aria-labelledby="example-heading">
+        <div class="study-body">
           <h2 id="example-heading">数を代入した例</h2>
           <p>${tex('C = 1')} とします。陰関数を ${tex('x')} について解き、独立変数を ${tex('y = t')} と書いて図にします。</p>
           <ol class="solution">
@@ -74,9 +79,8 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
-      ${steppedFigure(`タブは、このページの方程式を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。${tex('C = 1')} の枝を、時刻 0 から ${tex('1/2')} まで進めた誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
-      ${checkedProofs([{ statement: `${tex(String.raw`(2x + y)\,dx + (x + 2y)\,dy = 0`)} の陰関数の厳密解は ${tex(String.raw`x^2 + xy + y^2 = C`)} です。`, source: exactProof, moduleName: 'Ergion.Exact', kind: '実数' }])}
       ${pageFooter('完全性の判定を満たすとき、解はポテンシャルが一定という陰関数です。')}
+      ${checkedProofs([{ statement: `${tex(String.raw`(2x + y)\,dx + (x + 2y)\,dy = 0`)} の陰関数の厳密解は ${tex(String.raw`x^2 + xy + y^2 = C`)} です。`, source: exactProof, moduleName: 'Ergion.Exact', kind: '実数' }])}
     </main>
   </div>`;
 

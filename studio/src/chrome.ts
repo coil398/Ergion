@@ -44,7 +44,6 @@ export function appHeader(status: string): string {
   return `
   <header class="app-header">
     <a class="brand" href="./" aria-label="Ergion Studio ホーム"><span class="brand-mark" aria-hidden="true">e</span><span>Ergion <span class="brand-sub">Studio</span></span></a>
-    <span class="header-caption">数値を、動かして確かめる。</span>
     <span class="status" id="status" role="status"><i></i><span>${status}</span></span>
   </header>`;
 }
@@ -113,11 +112,10 @@ export function rail(active: PageId): string {
       ${sectionDisclosure('rail-proof', '証明', proofPages.has(active), active === 'proof', `
           ${pageLink(active, 'proof', './proof.html', '証明の一覧')}
       `)}
-      <div class="rail-note"><span class="orbit-icon" aria-hidden="true">◎</span><p>小さな系から、<br>確かな計算へ。</p><span>直線上の一粒子</span></div>
       <a class="source-link" href="https://github.com/coil398/Ergion" target="_blank" rel="noreferrer">ソースコード ↗</a>
     </aside>`;
 }
 
 export function pageFooter(note: string): string {
-  return `<footer class="page-footer"><span>Ergion / 計算と学習</span><span>${note}</span></footer>`;
+  return `<footer class="page-footer"><span>Ergion</span><span>${note}</span></footer>`;
 }

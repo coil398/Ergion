@@ -59,6 +59,11 @@ app.innerHTML = `
             <li>定数関数 ${tex('x(t) = 0')} も解です。微分すると左辺は 0 で、右辺も ${tex('k \\cdot 0 = 0')} です。変数分離では ${tex('x')} で割ったので、この解は上の積分の外にあります。初期位置を ${tex('x_0 = 0')} と置いて公式へ入れると ${tex('x(t) = 0')} になり、この定数解を含みます。
             </li>
           </ol>
+        </div>
+      </section>
+      ${steppedFigure(`タブは、方程式 ${tex(String.raw`x' = kx`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。${tex('k = 2')}、${tex('x_0 = 3')} の誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
+      <section class="study panel" id="example" aria-labelledby="example-heading">
+        <div class="study-body">
           <h2 id="example-heading">数を代入した例</h2>
           <p>${tex('k = 2')}、${tex('x_0 = 3')} とします。${tex('x_0 \\neq 0')} なので、上の仮定を満たします。同じ変形を、数を入れた式でたどります。</p>
           <ol class="solution">
@@ -86,9 +91,8 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
-      ${steppedFigure(`タブは、方程式 ${tex(String.raw`x' = kx`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。${tex('k = 2')}、${tex('x_0 = 3')} の誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
-      ${checkedProofs([{ statement: `${tex(String.raw`x' = kx`)} の厳密解は ${tex(String.raw`x(t) = x_0 e^{kt}`)} です。`, source: separationProof, moduleName: 'Ergion.Separation', kind: '実数' }])}
       ${pageFooter('変数分離で得る x(t) = x_0 e^{kt} は、x\' = kx の厳密解です。')}
+      ${checkedProofs([{ statement: `${tex(String.raw`x' = kx`)} の厳密解は ${tex(String.raw`x(t) = x_0 e^{kt}`)} です。`, source: separationProof, moduleName: 'Ergion.Separation', kind: '実数' }])}
     </main>
   </div>`;
 

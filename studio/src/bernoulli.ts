@@ -62,6 +62,11 @@ app.innerHTML = `
             <li>この式は厳密解です。置換のあと、1階線形の積分を閉じた形のまま残しています。打ち切り誤差はありません。定数 ${tex('x(t) = 0')} ももとの方程式を満たしますが、${tex('x')} で割る置換の外にあります。計算の説明は ${coreStepDoc('bernoulli_logistic', '厳密解の説明')} です。
             </li>
           </ol>
+        </div>
+      </section>
+      ${steppedFigure(`タブは、方程式 ${tex(String.raw`x' = x - x^2`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。${tex('x_0 = 1/2')} の誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
+      <section class="study panel" id="example" aria-labelledby="example-heading">
+        <div class="study-body">
           <h2 id="example-heading">数を代入した例</h2>
           <p>${tex('x_0 = 1/2')} とします。${tex('x_0 \\neq 0')} かつ ${tex('n = 2 \\neq 0, 1')} なので、上の仮定を満たします。</p>
           <ol class="solution">
@@ -77,9 +82,8 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
-      ${steppedFigure(`タブは、方程式 ${tex(String.raw`x' = x - x^2`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。${tex('x_0 = 1/2')} の誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
-      ${checkedProofs([{ statement: `${tex('n')} が 0 でも 1 でもないとき、${tex(String.raw`u = x^{1-n}`)} と置くと ${tex(String.raw`x' + px = q x^{n}`)} は1階線形になります。`, source: bernoulliProof, moduleName: 'Ergion.Bernoulli', kind: '実数' }])}
       ${pageFooter('ベルヌーイ方程式は、u = x^{1-n} と置くと1階線形になり、その解は厳密です。')}
+      ${checkedProofs([{ statement: `${tex('n')} が 0 でも 1 でもないとき、${tex(String.raw`u = x^{1-n}`)} と置くと ${tex(String.raw`x' + px = q x^{n}`)} は1階線形になります。`, source: bernoulliProof, moduleName: 'Ergion.Bernoulli', kind: '実数' }])}
     </main>
   </div>`;
 

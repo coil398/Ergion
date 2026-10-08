@@ -62,6 +62,11 @@ app.innerHTML = `
               与えられた方程式を満たします。この一致は式のままの一致です。計算の説明は ${coreStepDoc('first_order_linear', '厳密解の説明')} です。
             </li>
           </ol>
+        </div>
+      </section>
+      ${steppedFigure(`タブは、方程式 ${tex(String.raw`x' + px = q`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。${tex('p = 2')}、${tex('q = 6')}、${tex('x_0 = 1')} の誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
+      <section class="study panel" id="example" aria-labelledby="example-heading">
+        <div class="study-body">
           <h2 id="example-heading">数を代入した例</h2>
           <p>${tex('p = 2')}、${tex('q = 6')}、${tex('x_0 = 1')} とします。${tex('p \\neq 0')} なので、上の仮定を満たします。同じ変形を、数を入れた式でたどります。</p>
           <ol class="solution">
@@ -93,9 +98,8 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
-      ${steppedFigure(`タブは、方程式 ${tex(String.raw`x' + px = q`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。${tex('p = 2')}、${tex('q = 6')}、${tex('x_0 = 1')} の誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
-      ${checkedProofs([{ statement: `${tex(String.raw`x' + px = q`)} で ${tex('p')} が 0 でないとき、厳密解は ${tex(String.raw`x(t) = \frac{q}{p} + \left(x_0 - \frac{q}{p}\right) e^{-pt}`)} です。`, source: linearProof, moduleName: 'Ergion.FirstOrderLinear', kind: '実数' }])}
       ${pageFooter('積分因子で得る x(t) = q/p + (x_0 - q/p) e^{-pt} は、x\' + px = q の厳密解です。')}
+      ${checkedProofs([{ statement: `${tex(String.raw`x' + px = q`)} で ${tex('p')} が 0 でないとき、厳密解は ${tex(String.raw`x(t) = \frac{q}{p} + \left(x_0 - \frac{q}{p}\right) e^{-pt}`)} です。`, source: linearProof, moduleName: 'Ergion.FirstOrderLinear', kind: '実数' }])}
     </main>
   </div>`;
 

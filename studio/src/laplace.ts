@@ -60,6 +60,11 @@ app.innerHTML = `
             <li>この式は厳密解です。変換、代数、逆変換のどこにも級数の打ち切りも時間の刻みもありません。初期条件と方程式を満たすことは、未定係数法のページと同じ微分で確かめられます。ここでも一度だけ微分を書きます。計算の説明は ${coreStepDoc('laplace_ivp', '厳密解の説明')} です。
             </li>
           </ol>
+        </div>
+      </section>
+      ${steppedFigure(`タブは、この初期値問題を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
+      <section class="study panel" id="example" aria-labelledby="example-heading">
+        <div class="study-body">
           <h2 id="example-heading">数を代入した検算</h2>
           <ol class="solution">
             <li>${tex('t = 0')} では
@@ -74,9 +79,8 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
-      ${steppedFigure(`タブは、この初期値問題を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
-      ${checkedProofs([{ statement: `初期値問題 ${tex(String.raw`x'' - 3x' + 2x = e^{3t}`)}、${tex('x(0) = 0')}、${tex("x'(0) = 0")} の解は、逆 Laplace 変換で時刻の関数に戻したものです。`, source: laplaceProof, moduleName: 'Ergion.Laplace', kind: '実数' }])}
       ${pageFooter('Laplace 変換は、初期値問題を s の代数に変え、逆変換で厳密解へ戻します。')}
+      ${checkedProofs([{ statement: `初期値問題 ${tex(String.raw`x'' - 3x' + 2x = e^{3t}`)}、${tex('x(0) = 0')}、${tex("x'(0) = 0")} の解は、逆 Laplace 変換で時刻の関数に戻したものです。`, source: laplaceProof, moduleName: 'Ergion.Laplace', kind: '実数' }])}
     </main>
   </div>`;
 

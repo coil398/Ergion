@@ -70,6 +70,11 @@ app.innerHTML = `
             <li>この式は厳密解です。基本解の一次結合の係数を積分で決めており、級数にも時間の刻みにもよりません。打ち切り誤差はありません。計算の説明は ${coreStepDoc('variation_of_parameters', '厳密解の説明')} です。
             </li>
           </ol>
+        </div>
+      </section>
+      ${steppedFigure(`タブは、方程式 ${tex(String.raw`x'' + x = \tan t`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。1 は ${tex('\\pi/2')} より小さいので、特異点を含みません。誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
+      <section class="study panel" id="example" aria-labelledby="example-heading">
+        <div class="study-body">
           <h2 id="example-heading">数を代入した検算</h2>
           <p>初期条件 ${tex('x(0) = x\'(0) = 0')} の解を、微分して方程式へ戻します。</p>
           <ol class="solution">
@@ -87,9 +92,8 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
-      ${steppedFigure(`タブは、方程式 ${tex(String.raw`x'' + x = \tan t`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。1 は ${tex('\\pi/2')} より小さいので、特異点を含みません。誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
-      ${checkedProofs([{ statement: `${tex(String.raw`x'' + x = \tan t`)} は、同次解の定数を時刻の関数にして解きます。`, source: variationProof, moduleName: 'Ergion.Variation', kind: '実数' }])}
       ${pageFooter('定数変化法は、同次解の任意定数を時刻の関数にして、右辺 tan t の厳密解を作ります。')}
+      ${checkedProofs([{ statement: `${tex(String.raw`x'' + x = \tan t`)} は、同次解の定数を時刻の関数にして解きます。`, source: variationProof, moduleName: 'Ergion.Variation', kind: '実数' }])}
     </main>
   </div>`;
 

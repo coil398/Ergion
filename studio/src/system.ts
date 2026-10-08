@@ -52,6 +52,11 @@ app.innerHTML = `
             <li>この組は厳密解です。固有値は2次方程式の根で、解は指数関数の一次結合です。級数にも時間の刻みにもよりません。打ち切り誤差はありません。${tex('x')} の説明は ${coreStepDoc('linear_system_x', '厳密解の説明')}、${tex('y')} の説明は ${coreStepDoc('linear_system_y', 'もう一つの未知関数の説明')} です。
             </li>
           </ol>
+        </div>
+      </section>
+      ${steppedFigure(`タブは、連立 ${tex(String.raw`x' = x + y`)}、${tex(String.raw`y' = 4x + y`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。誤差は ${tex('x')} と ${tex('y')} の両方に出ます。どちらも時間刻みによる打ち切りであり、丸めだけではありません。表示は、厳密解を小数第5位まで示したものです。`, true)}
+      <section class="study panel" id="example" aria-labelledby="example-heading">
+        <div class="study-body">
           <h2 id="example-heading">数を代入した検算</h2>
           <ol class="solution">
             <li>${tex('t = 0')} では ${tex('e^{0} = 1')} なので
@@ -71,9 +76,8 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
-      ${steppedFigure(`タブは、連立 ${tex(String.raw`x' = x + y`)}、${tex(String.raw`y' = 4x + y`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。誤差は ${tex('x')} と ${tex('y')} の両方に出ます。どちらも時間刻みによる打ち切りであり、丸めだけではありません。表示は、厳密解を小数第5位まで示したものです。`, true)}
-      ${checkedProofs([{ statement: `${tex(String.raw`x' = x + y`)} と ${tex(String.raw`y' = 4x + y`)} の解は、相異なる実固有値ごとの指数関数と固有ベクトルの積の和です。`, source: systemProof, moduleName: 'Ergion.LinearSystem', kind: '実数' }])}
       ${pageFooter('定数係数の連立1階方程式は、相異なる実固有値ごとに指数関数と固有ベクトルの積を重ねた厳密解を持ちます。')}
+      ${checkedProofs([{ statement: `${tex(String.raw`x' = x + y`)} と ${tex(String.raw`y' = 4x + y`)} の解は、相異なる実固有値ごとの指数関数と固有ベクトルの積の和です。`, source: systemProof, moduleName: 'Ergion.LinearSystem', kind: '実数' }])}
     </main>
   </div>`;
 

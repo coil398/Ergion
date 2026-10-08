@@ -37,16 +37,8 @@ app.innerHTML = `
               ${tex("f'(x_n) \\neq 0")} のとき、交点を ${tex('x_{n+1}')} について解くと、次の更新になります（${coreStepDoc('newton_step', '反復の説明')}）。
               <p class="solution-equation">${tex(String.raw`x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}`, true)}</p>
             </li>
-            <li>例として ${tex('f(x) = x^2 - 2')} をとります。導関数は ${tex("f'(x) = 2x")} です。出発点は ${tex('x_0 = 1')} です。第1回は
-              <p class="solution-equation">${tex(String.raw`x_1 = 1 - \frac{1^2 - 2}{2 \cdot 1} = \frac{3}{2}`, true)}</p>
-              第2回は
-              <p class="solution-equation">${tex(String.raw`x_2 = \frac{3}{2} - \frac{\left(\frac{3}{2}\right)^2 - 2}{2 \cdot \frac{3}{2}} = \frac{3}{2} - \frac{1}{12} = \frac{17}{12}`, true)}</p>
-              第3回は
-              <p class="solution-equation">${tex(String.raw`x_3 = \frac{17}{12} - \frac{\left(\frac{17}{12}\right)^2 - 2}{2 \cdot \frac{17}{12}} = \frac{17}{12} - \frac{1}{408} = \frac{577}{408}`, true)}</p>
-              ${tex('f(\\sqrt{2}) = 0')} であり、出発点が正なので、以後の近似も正の側に残ります。列の極限は、正の根 ${tex('\\sqrt{2}')} です。
-            </li>
           </ol>
-          <p>図の点は、同じ更新を繰り返して返された値です。はじめの数回は上の分数と一致します。横軸は反復の番号 ${tex('n')} であり、時刻ではありません。青の実線が数値の近似 ${tex('x_n')}、青緑の破線が ${tex('\\sqrt{2}')}、誤差の実線が ${tex('x_n - \\sqrt{2}')} です。${tex('\\sqrt{2}')} も誤差も、返された値を描いています。</p>
+          <p>図の点は、同じ更新を繰り返して返された値です。はじめの数回は、数を代入した例の分数と一致します。横軸は反復の番号 ${tex('n')} であり、時刻ではありません。青の実線が数値の近似 ${tex('x_n')}、青緑の破線が ${tex('\\sqrt{2}')}、誤差の実線が ${tex('x_n - \\sqrt{2}')} です。${tex('\\sqrt{2}')} も誤差も、返された値を描いています。</p>
         </div>
       </section>
       <section class="plots panel" aria-labelledby="curve-heading">
@@ -61,6 +53,21 @@ app.innerHTML = `
           <div><span>数値の近似 x_n</span><output id="numerical-value">—</output></div>
           <div><span>√2</span><output id="exact-root">—</output></div>
           <div><span>誤差 x_n − √2</span><output id="root-error">—</output></div>
+        </div>
+      </section>
+      <section class="study panel" id="example" aria-labelledby="example-heading">
+        <div class="panel-heading"><h2 id="example-heading">数を代入した例</h2><span class="quiet-label">${tex('f(x) = x^2 - 2')}</span></div>
+        <div class="study-body">
+          <ol class="solution">
+            <li>${tex('f(x) = x^2 - 2')} をとります。導関数は ${tex("f'(x) = 2x")} です。出発点は ${tex('x_0 = 1')} です。第1回は
+              <p class="solution-equation">${tex(String.raw`x_1 = 1 - \frac{1^2 - 2}{2 \cdot 1} = \frac{3}{2}`, true)}</p>
+              第2回は
+              <p class="solution-equation">${tex(String.raw`x_2 = \frac{3}{2} - \frac{\left(\frac{3}{2}\right)^2 - 2}{2 \cdot \frac{3}{2}} = \frac{3}{2} - \frac{1}{12} = \frac{17}{12}`, true)}</p>
+              第3回は
+              <p class="solution-equation">${tex(String.raw`x_3 = \frac{17}{12} - \frac{\left(\frac{17}{12}\right)^2 - 2}{2 \cdot \frac{17}{12}} = \frac{17}{12} - \frac{1}{408} = \frac{577}{408}`, true)}</p>
+              ${tex('f(\\sqrt{2}) = 0')} であり、出発点が正なので、以後の近似も正の側に残ります。列の極限は、正の根 ${tex('\\sqrt{2}')} です。
+            </li>
+          </ol>
         </div>
       </section>
       ${pageFooter('ニュートン法は、接線の零点で f(x) = 0 の近似を更新します。')}

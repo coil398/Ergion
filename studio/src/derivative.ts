@@ -32,6 +32,23 @@ app.innerHTML = `
           <span class="equation-note">位置の時間変化率</span>
         </div>
       </section>
+      <section class="study panel" id="study" aria-labelledby="study-heading">
+        <div class="panel-heading"><h2 id="study-heading">位置の時間微分の計算と説明</h2><span class="quiet-label">1ステップの求め方</span></div>
+        <div class="study-body">
+          <ol class="solution">
+            <li>直線上の位置を ${tex('x')}、時刻を ${tex('t')}、速度を ${tex('v')} とします。位置を時刻で微分したものが速度なので、${tex(String.raw`x' = v`)} です。</li>
+            <li>ステップの始まりの時刻を ${tex('t_n')}、時間刻みを ${tex(String.raw`\Delta t`)} とします。このあいだ速度 ${tex('v')} が一定ならば、両辺をその区間で積分して ${tex(String.raw`x(t_n + \Delta t) - x(t_n) = v \Delta t`)} です。</li>
+            <li>ステップ番号を ${tex('n')} と書くと、位置の更新は次の式です。
+              <p class="solution-equation">${tex(String.raw`x_{n+1} = x_n + v \Delta t`, true)}</p>
+              速度がこの刻みのあいだ一定なので、この1ステップは厳密です。打ち切り誤差はありません（${stepDoc('1ステップの説明')}）。
+            </li>
+            <li>同じ更新を時刻 0 から ${tex('t')} まで重ね、初期位置を ${tex('x_0')} と書くと、位置は次の式に沿って進みます。速度は変わりません。
+              <p class="solution-equation">${tex('x(t) = x_0 + v t', true)}</p>
+            </li>
+          </ol>
+          <p>画面は、各時刻の位置と速度を描きます。式 ${tex(String.raw`x' = v`)} や ${tex('x(t) = x_0 + v t')} を、描画のために計算し直すことはありません。図の線分は、初期位置 ${tex('x_0')} に加わる変位 ${tex('vt')} です。青の実線が数値解、青緑の破線が厳密解です。誤差は、その破線とは別の実線です。タブは、この同じ方程式を進める数値解法だけを切り替えます。速度が一定なので、どの方法も上の増分と一致し、誤差は丸めだけです。</p>
+        </div>
+      </section>
       <div class="experiment-grid">
         <section class="settings panel" aria-labelledby="conditions-heading">
           <div class="panel-heading"><h2 id="conditions-heading">計算条件</h2><span class="quiet-label">換算単位</span></div>
@@ -56,23 +73,6 @@ app.innerHTML = `
           <p class="file-note">同じJSON設定をCLIでも使えます。途中の計算状態は保存しません。</p>
         </section>
         <div class="results">
-          <section class="study panel" id="study" aria-labelledby="study-heading">
-            <div class="panel-heading"><h2 id="study-heading">位置の時間微分の計算と説明</h2><span class="quiet-label">1ステップの求め方</span></div>
-            <div class="study-body">
-              <ol class="solution">
-                <li>直線上の位置を ${tex('x')}、時刻を ${tex('t')}、速度を ${tex('v')} とします。位置を時刻で微分したものが速度なので、${tex(String.raw`x' = v`)} です。</li>
-                <li>ステップの始まりの時刻を ${tex('t_n')}、時間刻みを ${tex(String.raw`\Delta t`)} とします。このあいだ速度 ${tex('v')} が一定ならば、両辺をその区間で積分して ${tex(String.raw`x(t_n + \Delta t) - x(t_n) = v \Delta t`)} です。</li>
-                <li>ステップ番号を ${tex('n')} と書くと、位置の更新は次の式です。
-                  <p class="solution-equation">${tex(String.raw`x_{n+1} = x_n + v \Delta t`, true)}</p>
-                  速度がこの刻みのあいだ一定なので、この1ステップは厳密です。打ち切り誤差はありません（${stepDoc('1ステップの説明')}）。
-                </li>
-                <li>同じ更新を時刻 0 から ${tex('t')} まで重ね、初期位置を ${tex('x_0')} と書くと、位置は次の式に沿って進みます。速度は変わりません。
-                  <p class="solution-equation">${tex('x(t) = x_0 + v t', true)}</p>
-                </li>
-              </ol>
-              <p>画面は、各時刻の位置と速度を描きます。式 ${tex(String.raw`x' = v`)} や ${tex('x(t) = x_0 + v t')} を、描画のために計算し直すことはありません。図の線分は、初期位置 ${tex('x_0')} に加わる変位 ${tex('vt')} です。青の実線が数値解、青緑の破線が厳密解です。誤差は、その破線とは別の実線です。タブは、この同じ方程式を進める数値解法だけを切り替えます。速度が一定なので、どの方法も上の増分と一致し、誤差は丸めだけです。</p>
-            </div>
-          </section>
           <section class="scene panel" aria-labelledby="scene-heading">
             <div class="panel-heading"><h2 id="scene-heading">粒子の直線運動</h2><span id="scene-time" class="numeric">t = 0.000</span></div>
             <p class="scene-caption">速度 ${tex('v')} が一定のあいだ、粒子は1ステップごとに変位 ${tex(String.raw`v \Delta t`)} だけ進みます。変位を重ねた長さが ${tex('vt')} です。</p>
@@ -94,8 +94,8 @@ app.innerHTML = `
           <p class="experiment-note">数値計算はブラウザ内で実行します。条件や結果をサーバーへ送信しません。</p>
         </div>
       </div>
-      ${checkedVelocityProof(`速度が一定のとき、1ステップは ${tex(String.raw`x_{n+1} = x_n + v \Delta t`)} であり、${tex('n')} 回の後は ${tex(String.raw`x_n = x_0 + n v \Delta t`)} です。`)}
       ${pageFooter('この画面の計算は、位置の時間微分の1ステップです。')}
+      ${checkedVelocityProof(`速度が一定のとき、1ステップは ${tex(String.raw`x_{n+1} = x_n + v \Delta t`)} であり、${tex('n')} 回の後は ${tex(String.raw`x_n = x_0 + n v \Delta t`)} です。`)}
     </main>
   </div>`;
 

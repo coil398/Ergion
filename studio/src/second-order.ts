@@ -49,6 +49,11 @@ app.innerHTML = `
             <li>記号を定めます。${tex('x(t)')} は時刻 ${tex('t')} の位置、${tex('t')} は時刻、${tex('b')} と ${tex('c')} は方程式の定数、${tex('r')} は特性根、${tex('D')} は判別式、${tex('A')} と ${tex('B')} は任意定数、${tex('e')} は自然対数の底、${tex('i')} は虚数単位、${tex('\\alpha')} は複素根の実部、${tex('\\beta')} は虚部の絶対値です。これらの一般解は、特性方程式を代数的に解いて得た厳密解です。時間の刻みによる打ち切りはありません。
             </li>
           </ol>
+        </div>
+      </section>
+      ${steppedFigure(`タブは、実根の例 ${tex(String.raw`x'' - 3x' + 2x = 0`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
+      <section class="study panel" id="example" aria-labelledby="real-heading">
+        <div class="study-body">
           <h2 id="real-heading">相異なる実根の例</h2>
           <ol class="solution">
             <li>方程式と初期条件は次のとおりです。
@@ -104,9 +109,8 @@ app.innerHTML = `
           </ol>
         </div>
       </section>
-      ${steppedFigure(`タブは、実根の例 ${tex(String.raw`x'' - 3x' + 2x = 0`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
-      ${checkedProofs([{ statement: `${tex(String.raw`x'' + b x' + c x = 0`)} の一般解は、特性根が相異なる実数、重根、複素数のどれかで書けます。`, source: secondOrderProof, moduleName: 'Ergion.SecondOrder', kind: '実数' }])}
       ${pageFooter('定数係数の2階同次方程式の解は、特性根が実数、重根、複素数のどれかで厳密に書けます。')}
+      ${checkedProofs([{ statement: `${tex(String.raw`x'' + b x' + c x = 0`)} の一般解は、特性根が相異なる実数、重根、複素数のどれかで書けます。`, source: secondOrderProof, moduleName: 'Ergion.SecondOrder', kind: '実数' }])}
     </main>
   </div>`;
 

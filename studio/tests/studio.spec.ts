@@ -746,7 +746,7 @@ test('学部の標準的な解法をデスクトップと狭い画面で読む',
     await expect(tex(page, item.formula).first()).toBeVisible();
     await expect(page.locator('#study')).toContainText('厳密解');
     const href = `/Ergion/doc/ergion_core/fn.${item.fn}.html`;
-    const link = page.locator('#study').getByRole('link', { name: '厳密解の説明', exact: true });
+    const link = page.locator('#lesson').getByRole('link', { name: '厳密解の説明', exact: true });
     await expect(link).toHaveCount(1);
     await expect(link).toHaveAttribute('href', href);
     const text = await page.locator('#lesson').evaluate((node) => {
@@ -770,5 +770,64 @@ test('学部の標準的な解法をデスクトップと狭い画面で読む',
     await expect(page.locator('.solution-equation').first()).toBeVisible();
     await expect(page.locator('#solution-value')).toHaveText(item.value);
     await expectReadingPage(page);
+  }
+});
+
+test('証明は式と図と例のあとで、ページの最後にある', async ({ page }) => {
+  test.setTimeout(180_000);
+  const pages = [
+    { href: 'uniform.html', kind: '力学' },
+    { href: 'derivative.html', kind: '力学' },
+    { href: 'accelerated.html', kind: '力学' },
+    { href: './', kind: '力学' },
+    { href: 'separation.html', kind: '微分方程式' },
+    { href: 'linear.html', kind: '微分方程式' },
+    { href: 'ode.html', kind: '微分方程式' },
+    { href: 'integrate.html', kind: '微分方程式' },
+    { href: 'homogeneous.html', kind: '微分方程式' },
+    { href: 'exact.html', kind: '微分方程式' },
+    { href: 'bernoulli.html', kind: '微分方程式' },
+    { href: 'second-order.html', kind: '微分方程式' },
+    { href: 'undetermined.html', kind: '微分方程式' },
+    { href: 'variation.html', kind: '微分方程式' },
+    { href: 'laplace.html', kind: '微分方程式' },
+    { href: 'series.html', kind: '微分方程式' },
+    { href: 'system.html', kind: '微分方程式' },
+    { href: 'velocity-step.html', kind: '数値計算' },
+  ];
+  for (const item of pages) {
+    for (const width of [1440, 390]) {
+      await page.setViewportSize({ width, height: width === 1440 ? 1050 : 844 });
+      await page.goto(item.href);
+      const order = await page.evaluate(() => {
+        const main = document.querySelector('main')!;
+        const proof = main.querySelector('.proof');
+        const equation = main.querySelector('.equation');
+        const steps = main.querySelector('#study .solution');
+        const figure = main.querySelector('canvas');
+        const example = main.querySelector('#example');
+        const follows = (earlier: Element | null, later: Element | null) =>
+          !earlier || !later || Boolean(earlier.compareDocumentPosition(later) & Node.DOCUMENT_POSITION_FOLLOWING);
+        return {
+          proofIsLast: main.lastElementChild === proof,
+          equationBeforeProof: follows(equation, proof),
+          stepsBeforeProof: follows(steps, proof),
+          figureBeforeProof: follows(figure, proof),
+          exampleAfterFigure: follows(figure, example),
+          exampleBeforeProof: follows(example, proof),
+          proofTop: proof?.getBoundingClientRect().top ?? 0,
+          equationTop: equation?.getBoundingClientRect().top ?? 0,
+          slogan: document.body.innerText.includes('数値を、動かして確かめる') || document.body.innerText.includes('小さな系から'),
+        };
+      });
+      expect(order.proofIsLast, `${item.kind} ${item.href} ${width}`).toBe(true);
+      expect(order.equationBeforeProof, item.href).toBe(true);
+      expect(order.stepsBeforeProof, item.href).toBe(true);
+      expect(order.figureBeforeProof, item.href).toBe(true);
+      expect(order.exampleAfterFigure, item.href).toBe(true);
+      expect(order.exampleBeforeProof, item.href).toBe(true);
+      expect(order.proofTop, item.href).toBeGreaterThan(order.equationTop);
+      expect(order.slogan, item.href).toBe(false);
+    }
   }
 });

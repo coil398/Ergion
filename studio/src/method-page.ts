@@ -45,6 +45,19 @@ export function mountMethodPage(options: {
             <span class="equation-note">${options.title}</span>
           </div>
         </section>
+        <section class="study panel" id="study" aria-labelledby="study-heading">
+          <div class="panel-heading"><h2 id="study-heading">${options.title}の1ステップ</h2><span class="quiet-label">例は速度が一定</span></div>
+          <div class="study-body">
+            <ol class="solution">
+              <li>直線上の位置を ${tex('x')}、時刻を ${tex('t')}、速度を ${tex('v')} とします。このページの例の方程式は ${tex(String.raw`x' = v`)} です。速度は時刻にも位置にもよりません。厳密解は ${tex('x(t) = x_0 + v t')} です。</li>
+              <li>${options.prose}（${coreStepDoc(options.fn, '1ステップの説明')}）
+                <p class="solution-equation">${tex(options.formula, true)}</p>
+                <p>${reduction}これは厳密解 ${tex('x(t) = x_0 + v t')} の増分と一致します。打ち切り誤差はありません。各時刻の誤差 ${tex('x - x_{\\mathrm{exact}}')} は、倍精度浮動小数点の丸めだけです。</p>
+              </li>
+            </ol>
+            <p>画面は、各時刻に返された数値解の位置と、誤差 ${tex('x - x_{\\mathrm{exact}}')} を描きます。厳密解の式を、描画のために計算し直すことはありません。青の実線が数値解、青緑の破線が厳密解です。誤差は、その破線とは別の実線です。</p>
+          </div>
+        </section>
         <div class="experiment-grid">
           <section class="settings panel" aria-labelledby="conditions-heading">
             <div class="panel-heading"><h2 id="conditions-heading">計算条件</h2><span class="quiet-label">換算単位</span></div>
@@ -69,19 +82,6 @@ export function mountMethodPage(options: {
             <p class="file-note">同じJSON設定をCLIでも使えます。途中の計算状態は保存しません。</p>
           </section>
           <div class="results">
-            <section class="study panel" id="study" aria-labelledby="study-heading">
-              <div class="panel-heading"><h2 id="study-heading">${options.title}の1ステップ</h2><span class="quiet-label">例は速度が一定</span></div>
-              <div class="study-body">
-                <ol class="solution">
-                  <li>直線上の位置を ${tex('x')}、時刻を ${tex('t')}、速度を ${tex('v')} とします。このページの例の方程式は ${tex(String.raw`x' = v`)} です。速度は時刻にも位置にもよりません。厳密解は ${tex('x(t) = x_0 + v t')} です。</li>
-                  <li>${options.prose}（${coreStepDoc(options.fn, '1ステップの説明')}）
-                    <p class="solution-equation">${tex(options.formula, true)}</p>
-                    <p>${reduction}これは厳密解 ${tex('x(t) = x_0 + v t')} の増分と一致します。打ち切り誤差はありません。各時刻の誤差 ${tex('x - x_{\\mathrm{exact}}')} は、倍精度浮動小数点の丸めだけです。</p>
-                  </li>
-                </ol>
-                <p>画面は、各時刻に返された数値解の位置と、誤差 ${tex('x - x_{\\mathrm{exact}}')} を描きます。厳密解の式を、描画のために計算し直すことはありません。青の実線が数値解、青緑の破線が厳密解です。誤差は、その破線とは別の実線です。</p>
-              </div>
-            </section>
             <section class="scene panel" aria-labelledby="scene-heading">
               <div class="panel-heading"><h2 id="scene-heading">粒子の直線運動</h2><span id="scene-time" class="numeric">t = 0.000</span></div>
               <p class="scene-caption">速度 ${tex('v')} が一定のあいだ、この方法の1ステップは変位 ${tex(String.raw`v \Delta t`)} だけ位置を進めます。</p>
