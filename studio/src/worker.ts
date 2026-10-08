@@ -5,6 +5,7 @@ import init, {
   PositionDerivativeSimulation,
   SeparationSimulation,
   StepCompareSimulation,
+  NewtonSimulation,
   TextbookSimulation,
   UniformSimulation,
 } from '../wasm/ergion_lab.js';
@@ -99,8 +100,13 @@ onmessage = (event: MessageEvent<Command>) => {
                     ? new LinearSimulation(json)
                     : message.model === 'textbook'
                       ? new TextbookSimulation(json)
-                      : new UniformSimulation(json);
-      batchSize = Math.max(1, Math.min(100, Math.round(0.04 / message.config.dt)));
+                      : message.model === 'newton'
+                        ? new NewtonSimulation(json)
+                        : new UniformSimulation(json);
+      const dt = 'dt' in message.config ? message.config.dt : 1;
+      batchSize = message.model === 'newton'
+        ? 1
+        : Math.max(1, Math.min(100, Math.round(0.04 / dt)));
       publish('ready', [JSON.parse(simulation.snapshot()) as Snapshot]);
       return;
     }

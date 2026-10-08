@@ -30,7 +30,7 @@ app.innerHTML = `
             <li>速度 ${tex('v')} が時刻にも位置にもよらず一定ならば、位置は ${tex(String.raw`x' = v`)} を満たします。この運動は <a class="doc-link" href="./uniform.html">等速直線運動</a> です。</li>
             <li>加速度 ${tex('a')} が一定ならば、速度は ${tex(String.raw`v' = a`)} を満たします。この運動は <a class="doc-link" href="./accelerated.html">等加速度直線運動</a> です。</li>
           </ol>
-          <p>右辺が未知関数を含まないときの積分から、変数分離、1階線形、同次形、完全微分、ベルヌーイ、定数係数の2階、未定係数法、定数変化法、Laplace 変換、べき級数、連立1階、一定の速度での1ステップ、Euler 法、中点法、古典的な4次の Runge–Kutta 法まで、この節のページで順に見ます。</p>
+          <p>右辺が未知関数を含まないときの積分から、変数分離、1階線形、同次形、完全微分、ベルヌーイ、定数係数の2階、未定係数法、定数変化法、Laplace 変換、べき級数、連立1階、一定の速度での1ステップ、Euler 法、中点法、古典的な4次の Runge–Kutta 法、そして方程式の根を接線で求めるニュートン法まで、この節のページで順に見ます。ニュートン法は、微分方程式を時刻で進める方法ではありません。</p>
         </div>
       </section>
       <div class="chapter-list">
@@ -114,8 +114,13 @@ app.innerHTML = `
           <p>始点、中点、終点の四つの傾きを重み付きで足します。速度が一定ならば、増分は ${tex(String.raw`v \Delta t`)} と一致します。</p>
           <p class="equation">${tex(String.raw`x_{n+1} = x_n + \frac{\Delta t}{6}(k_1 + 2k_2 + 2k_3 + k_4)`, true)}</p>
         </a>
+        <a class="chapter" href="./newton.html">
+          <h2>ニュートン法</h2>
+          <p>方程式 ${tex('f(x) = 0')} を、接線の零点で更新します。これは微分方程式の時間ステップではありません。</p>
+          <p class="equation">${tex(String.raw`x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}`, true)}</p>
+        </a>
       </div>
-      ${pageFooter('この節は、1階の解法、2階の解法、Laplace 変換、べき級数、連立、そして数値の1ステップです。')}
+      ${pageFooter('この節は、1階の解法、2階の解法、Laplace 変換、べき級数、連立、数値の1ステップ、そして根を求めるニュートン法です。')}
     </main>
   </div>`;
 

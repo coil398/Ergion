@@ -74,7 +74,12 @@ export interface CompareConfig {
   q?: number;
 }
 
-export type MotionModel = 'uniform' | 'constant-acceleration' | 'position-derivative' | 'euler' | 'separation' | 'linear' | 'textbook' | 'compare';
+export interface NewtonConfig {
+  schema_version: 1;
+  steps: number;
+}
+
+export type MotionModel = 'uniform' | 'constant-acceleration' | 'position-derivative' | 'euler' | 'separation' | 'linear' | 'textbook' | 'compare' | 'newton';
 
 export type StepMethod = 'euler' | 'midpoint' | 'rk4';
 
@@ -92,7 +97,7 @@ export interface Snapshot {
 
 export interface Batch { samples: Snapshot[]; state: Snapshot }
 export type Command =
-  | { id: number; command: 'load'; model?: MotionModel; method?: StepMethod; config: Config | ConstantAccelerationConfig | SeparationConfig | LinearConfig | TextbookConfig | CompareConfig }
+  | { id: number; command: 'load'; model?: MotionModel; method?: StepMethod; config: Config | ConstantAccelerationConfig | SeparationConfig | LinearConfig | TextbookConfig | CompareConfig | NewtonConfig }
   | { id: number; command: 'start' | 'pause' | 'step' };
 export interface Update extends Batch {
   id: number;

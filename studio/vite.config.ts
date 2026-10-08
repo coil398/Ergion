@@ -26,6 +26,7 @@ export default defineConfig({
         euler: resolve(import.meta.dirname, 'euler.html'),
         midpoint: resolve(import.meta.dirname, 'midpoint.html'),
         rk4: resolve(import.meta.dirname, 'rk4.html'),
+        newton: resolve(import.meta.dirname, 'newton.html'),
       },
     },
   },

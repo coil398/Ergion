@@ -22,7 +22,7 @@ async function expectMechanicsSection(page: Page) {
   const odeTitle = sections.nth(1).locator('.rail-section-title');
   await expect(odeTitle).toHaveText('微分方程式');
   const odePages = sections.nth(1).locator('.rail-pages a');
-  const odeLabels = ['積分して解く', '変数分離', '1階線形', '同次形', '完全微分', 'ベルヌーイ', '定数係数の2階同次', '未定係数法', '定数変化法', 'Laplace 変換', 'べき級数', '連立1階', '位置の時間微分', 'Euler法', '中点法', '古典的RK4'];
+  const odeLabels = ['積分して解く', '変数分離', '1階線形', '同次形', '完全微分', 'ベルヌーイ', '定数係数の2階同次', '未定係数法', '定数変化法', 'Laplace 変換', 'べき級数', '連立1階', '位置の時間微分', 'Euler法', '中点法', '古典的RK4', 'ニュートン法'];
   await expect(odePages).toHaveCount(odeLabels.length);
   for (let index = 0; index < odeLabels.length; index += 1) {
     await expect(odePages.nth(index)).toHaveText(odeLabels[index]);
@@ -251,6 +251,7 @@ test('微分方程式をデスクトップと狭い画面で読む', async ({ pa
   await expect(page.getByRole('link', { name: 'Euler法' }).first()).toBeVisible();
   await expect(page.getByRole('link', { name: '中点法' }).first()).toBeVisible();
   await expect(page.getByRole('link', { name: '古典的RK4', exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'ニュートン法', exact: true }).first()).toBeVisible();
   const text = await page.locator('#lesson').innerText();
   for (const word of ['crates/', '正本', '計算核', 'ばね', '電磁気', 'RK4']) {
     expect(text).not.toContain(word);
@@ -340,6 +341,35 @@ test('数値解法は方法ごとに別のページで読む', async ({ page }) 
     await expect(page.locator('.equation').first()).toBeVisible();
     await expectMechanicsSection(page);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  }
+});
+
+test('ニュートン法は根の反復であり、微分方程式のタブではない', async ({ page }) => {
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: width === 1440 ? 1050 : 844 });
+    await page.goto('newton.html');
+    await expect(page.locator('#status')).toHaveText('計算完了');
+    await expect(page.getByRole('heading', { level: 1, name: 'ニュートン法.' })).toBeVisible();
+    await expect(page.locator('[role=tablist]')).toHaveCount(0);
+    await expect(tex(page, String.raw`x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}`).first()).toBeVisible();
+    await expect(tex(page, 'f(x) = x^2 - 2').first()).toBeVisible();
+    await expect(tex(page, 'x_0 = 1').first()).toBeVisible();
+    await expect(tex(page, String.raw`x_1 = 1 - \frac{1^2 - 2}{2 \cdot 1} = \frac{3}{2}`).first()).toBeVisible();
+    await expect(tex(page, String.raw`x_2 = \frac{3}{2} - \frac{\left(\frac{3}{2}\right)^2 - 2}{2 \cdot \frac{3}{2}} = \frac{3}{2} - \frac{1}{12} = \frac{17}{12}`).first()).toBeVisible();
+    await expect(tex(page, String.raw`x_3 = \frac{17}{12} - \frac{\left(\frac{17}{12}\right)^2 - 2}{2 \cdot \frac{17}{12}} = \frac{17}{12} - \frac{1}{408} = \frac{577}{408}`).first()).toBeVisible();
+    const lesson = await page.locator('#lesson').innerText();
+    for (const word of ['crates/', 'newton_step', 'NewtonSimulation', '正本', '計算核']) {
+      expect(lesson).not.toContain(word);
+    }
+    const link = page.locator('#study').getByRole('link', { name: '反復の説明', exact: true });
+    await expect(link).toHaveCount(1);
+    await expect(link).toHaveAttribute('href', '/Ergion/doc/ergion_core/fn.newton_step.html');
+    const doc = await page.request.get('/Ergion/doc/ergion_core/fn.newton_step.html');
+    expect(doc.ok()).toBeTruthy();
+    await expect(page.locator('#exact-root')).toHaveText('1.41421');
+    await expect(page.locator('#root-error')).toHaveText('1.59e-12');
+    await expect(page.locator('#solution-error')).toHaveAttribute('aria-label', /誤差/);
+    await expectReadingPage(page);
   }
 });
 

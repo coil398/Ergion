@@ -133,6 +133,36 @@ pub fn midpoint_step(
     }
 }
 
+/// 方程式 \(f(x) = 0\) を、接線で 1 回更新する。
+///
+/// \(f\) は微分できる実関数、\(x\) は未知数です。
+/// \(n\) は反復の番号、\(x_n\) は \(n\) 回目の近似、\(x_0\) は出発点です。
+/// \(f'(x_n)\) は \(x_n\) における導関数です。
+/// 点 \((x_n, f(x_n))\) における接線は
+/// \[
+/// y = f(x_n) + f'(x_n)(x - x_n)
+/// \]
+/// です。次の近似 \(x_{n+1}\) は、この接線が \(y = 0\) と交わる点です。
+/// \[
+/// 0 = f(x_n) + f'(x_n)(x_{n+1} - x_n).
+/// \]
+/// \(f'(x_n) \neq 0\) ならば、交点は次の式になります。
+/// \[
+/// x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}.
+/// \]
+/// これは微分方程式を時刻で進める1ステップではありません。
+///
+/// 例として \(f(x) = x^2 - 2\)、\(f'(x) = 2x\)、\(x_0 = 1\) をとると、
+/// 第1回は \(x_1 = 3/2\)、第2回は \(x_2 = 17/12\) です。
+/// \(f(\sqrt{2}) = 0\) であり、正の出発点から始めると以後の近似も正です。
+/// 列の極限は正の根 \(\sqrt{2}\) です。
+///
+/// `value` は \(f(x_n)\)、`derivative` は \(f'(x_n)\) を返します。
+pub fn newton_step(x: f64, value: impl Fn(f64) -> f64, derivative: impl Fn(f64) -> f64) -> f64 {
+    let slope = derivative(x);
+    x - value(x) / slope
+}
+
 /// 微分方程式 \(x' = v\) を、時間刻み \(\Delta t\) で1ステップ進める。
 ///
 /// \(x\) は直線上の位置、\(v\) は速度、\(t\) は時刻です。
@@ -441,6 +471,35 @@ mod tests {
         euler_step(&mut euler, 4.0, 0.4, |_, _, slope| slope[0] = 2.5);
         assert_eq!(midpoint, euler);
         assert_eq!(midpoint[0], 1.0 + 0.4 * 2.5);
+    }
+
+    #[test]
+    fn newton_step_from_one_on_x_squared_minus_two_is_three_halves() {
+        let next = newton_step(1.0, |x| x * x - 2.0, |x| 2.0 * x);
+        assert_eq!(next, 1.5);
+    }
+
+    #[test]
+    fn newton_step_second_iterate_is_seventeen_twelfths() {
+        let square = |x: f64| x * x - 2.0;
+        let slope = |x: f64| 2.0 * x;
+        let x1 = newton_step(1.0, square, slope);
+        let x2 = newton_step(x1, square, slope);
+        assert!((x2 - (1.5 - 0.25 / 3.0)).abs() < 1e-12);
+        assert!((x2 - 17.0 / 12.0).abs() < 1e-12);
+    }
+
+    #[test]
+    fn newton_step_approaches_the_positive_square_root_of_two() {
+        let square = |x: f64| x * x - 2.0;
+        let slope = |x: f64| 2.0 * x;
+        let mut x = 1.0;
+        for _ in 0..5 {
+            x = newton_step(x, square, slope);
+        }
+        let root = 2.0_f64.sqrt();
+        assert!((x - root).abs() < 1e-12);
+        assert!(x > 0.0);
     }
 
     #[test]
