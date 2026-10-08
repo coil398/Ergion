@@ -5,6 +5,8 @@ pub mod constant_acceleration;
 pub mod euler;
 pub mod lesson;
 mod lesson_analytical;
+mod lesson_analytical_a;
+mod lesson_analytical_b;
 mod lesson_calculus;
 mod lesson_calculus_a;
 mod lesson_calculus_b;

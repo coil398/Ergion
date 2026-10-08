@@ -1,15 +1,21 @@
-//! 単元の値。式は ergion-core の各関数の rustdoc にある。
+//! 解析力学の単元の値。式は `ergion_core::analytical` の各関数の rustdoc にある。
 
 use serde_json::Value;
 
 use crate::lesson::{Figure, LessonModel};
 
-/// この科目の単元の図。
-pub fn figure(unit: &str, _params: &Value) -> Result<Figure, String> {
-    Err(format!("unknown unit {unit}"))
+fn unknown<T>(result: &Result<T, String>) -> bool {
+    matches!(result, Err(message) if message.starts_with("unknown unit"))
 }
 
-/// この科目の単元の時間発展。
-pub fn model(unit: &str, _config: &Value, _dt: f64) -> Result<Box<dyn LessonModel>, String> {
-    Err(format!("unknown unit {unit}"))
+/// 解析力学の単元の図。
+pub fn figure(unit: &str, params: &Value) -> Result<Figure, String> {
+    let first = crate::lesson_analytical_a::figure(unit, params);
+    if unknown(&first) { crate::lesson_analytical_b::figure(unit, params) } else { first }
+}
+
+/// 解析力学の単元の時間発展。
+pub fn model(unit: &str, config: &Value, dt: f64) -> Result<Box<dyn LessonModel>, String> {
+    let first = crate::lesson_analytical_a::model(unit, config, dt);
+    if unknown(&first) { crate::lesson_analytical_b::model(unit, config, dt) } else { first }
 }
