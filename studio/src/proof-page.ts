@@ -104,8 +104,8 @@ const proofs: { statement: string; moduleName: string; href: string; label: stri
   },
 ];
 
-const items = proofs.map((proof) => `
-            <li>${proof.statement} これは${proof.kind}の上の等式です。証明の名前は <a class="doc-link" href="${moduleHref(proof.moduleName)}">${proof.moduleName}</a> です。式と証明の文章は <a class="doc-link" href="${proof.href}">${proof.label}</a> に置いてあります。</li>`).join('');
+const items = proofs.map((proof, index) => `
+            <li>${proof.statement}${index === 0 ? `<p class="solution-equation">${tex(String.raw`x_n = x_0 + n v \Delta t`, true)}</p>` : ''} これは${proof.kind}の上の等式です。証明の名前は <a class="doc-link" href="${moduleHref(proof.moduleName)}">${proof.moduleName}</a> です。式と証明の文章は <a class="doc-link" href="${proof.href}">${proof.label}</a> に置いてあります。</li>`).join('');
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 app.innerHTML = `

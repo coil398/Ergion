@@ -465,7 +465,7 @@ test('証明の節は画面が Lean を実行しないと述べ、各ページ�
   async function expectCheckedProse() {
     await expect(page.locator('#proof-heading')).toHaveText('証明');
     await expect(page.locator('.proof')).not.toContainText('まだ確かめていません');
-    await expect(page.locator('.proof-source')).not.toContainText('sorry');
+    await expect(page.locator('.proof')).not.toContainText('sorry');
     const proofProse = await page.locator('.proof').evaluate((node) => {
       const clone = node.cloneNode(true) as HTMLElement;
       clone.querySelectorAll('.proof-source').forEach((element) => element.remove());
