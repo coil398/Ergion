@@ -15,6 +15,7 @@ import type { Batch, Command, Reply, Snapshot, Update } from './protocol';
 interface RunningSimulation {
   snapshot(): string;
   advance(steps: number): string;
+  extend(additionalSteps: number): string;
   free(): void;
 }
 
@@ -117,6 +118,10 @@ onmessage = (event: MessageEvent<Command>) => {
     } else if (message.command === 'step') {
       stop();
       advance(1, 'paused');
+    } else if (message.command === 'extend') {
+      const state = JSON.parse(simulation.extend(message.steps)) as Snapshot;
+      const phase: Update['phase'] = running ? 'running' : state.step === 0 ? 'ready' : state.finished ? 'finished' : 'paused';
+      send({ id: currentId, phase, state, samples: [], extended: message.steps });
     } else if (message.command === 'start') {
       if (running) return;
       running = true;

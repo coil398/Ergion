@@ -146,6 +146,19 @@ impl SeparationSimulation {
         let step = &mut self.step;
         advance_samples(step, config.steps, steps, |step| Self::at(&config, step))
     }
+
+    /// 終了時刻を延ばす。初期条件と、いまのステップは変えない。
+    pub fn extend(&mut self, additional_steps: u32) -> Result<String, String> {
+        let steps = crate::additional_steps(self.config.steps, additional_steps)?;
+        let final_time = self.config.dt * f64::from(steps);
+        let final_position =
+            ergion_core::separated_exponential(self.config.initial_position, self.config.k, final_time);
+        if !final_time.is_finite() || !final_position.is_finite() {
+            return Err("parameters exceed numeric range".into());
+        }
+        self.config.steps = steps;
+        self.snapshot()
+    }
 }
 
 impl SeparationSimulation {
@@ -219,6 +232,23 @@ impl LinearSimulation {
         let config = self.config.clone();
         let step = &mut self.step;
         advance_samples(step, config.steps, steps, |step| Self::at(&config, step))
+    }
+
+    /// 終了時刻を延ばす。初期条件と、いまのステップは変えない。
+    pub fn extend(&mut self, additional_steps: u32) -> Result<String, String> {
+        let steps = crate::additional_steps(self.config.steps, additional_steps)?;
+        let final_time = self.config.dt * f64::from(steps);
+        let final_position = ergion_core::first_order_linear(
+            self.config.initial_position,
+            self.config.p,
+            self.config.q,
+            final_time,
+        );
+        if !final_time.is_finite() || !final_position.is_finite() {
+            return Err("parameters exceed numeric range".into());
+        }
+        self.config.steps = steps;
+        self.snapshot()
     }
 }
 

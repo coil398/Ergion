@@ -107,7 +107,7 @@ test('開始・停止・再開・1ステップと条件の適用', async ({ page
   await expect(page.locator('#position')).toHaveText('0.00000');
   await page.getByRole('button', { name: '1ステップ', exact: true }).click();
   await expect(page.locator('#progress-text')).toHaveText('1 / 1,000 ステップ');
-  await page.getByRole('button', { name: '計算を再開' }).click();
+  await page.getByRole('button', { name: '再生', exact: true }).click();
   await expect(page.locator('#status')).toHaveText('計算中');
   await expect.poll(async () => page.locator('#scene-time').innerText()).not.toBe('t = 0.010');
   await page.getByRole('button', { name: '一時停止', exact: true }).click();
@@ -115,18 +115,64 @@ test('開始・停止・再開・1ステップと条件の適用', async ({ page
   const stopped = await page.locator('#progress-text').innerText();
   await page.waitForTimeout(180);
   await expect(page.locator('#progress-text')).toHaveText(stopped);
-  await page.getByRole('button', { name: '計算を再開' }).click();
+  await page.getByRole('button', { name: '再生', exact: true }).click();
   await expect.poll(async () => page.locator('#progress-text').innerText()).not.toBe(stopped);
   await page.getByRole('button', { name: '初期状態にリセット' }).click();
   await expect(page.locator('#status')).toHaveText('準備完了');
   await expect(page.locator('#progress-text')).toHaveText('0 / 1,000 ステップ');
   await page.locator('[name=initial_position]').fill('2');
-  await expect(page.getByRole('button', { name: '計算を開始' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: '再生', exact: true })).toBeDisabled();
   await expect(page.locator('#position')).toHaveText('0.00000');
   await page.getByRole('button', { name: '条件を適用してリセット' }).click();
   await expect(page.locator('#position')).toHaveText('2.00000');
   await expect(page.locator('#status')).toHaveText('準備完了');
   expect(errors).toEqual([]);
+});
+
+test('再生、一時停止、ループ再生、計算時間を延ばす', async ({ page }) => {
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: width === 1440 ? 1050 : 844 });
+    await page.goto('uniform.html');
+    await expect(page.locator('#status')).toHaveText('準備完了');
+    await page.locator('[name=dt]').fill('0.25');
+    await page.locator('[name=steps]').fill('24');
+    await page.getByRole('button', { name: '条件を適用してリセット' }).click();
+    await expect(page.locator('#progress-text')).toHaveText('0 / 24 ステップ');
+    const initial = await page.locator('[name=initial_position]').inputValue();
+    const velocity = await page.locator('[name=velocity]').inputValue();
+    await page.evaluate(() => {
+      const node = document.querySelector('#progress-text')!;
+      let max = 0;
+      const mark = () => {
+        const step = Number((node.textContent ?? '0').replace(/,/g, '').split(' / ')[0]);
+        if (step > max) max = step;
+        if (max >= 18 && step < 4) document.documentElement.dataset.looped = 'yes';
+      };
+      new MutationObserver(mark).observe(node, { childList: true, subtree: true, characterData: true });
+    });
+    const loop = page.getByRole('button', { name: 'ループ再生', exact: true });
+    await loop.click();
+    await expect(loop).toHaveAttribute('aria-pressed', 'true');
+    await page.getByRole('button', { name: '再生', exact: true }).click();
+    await expect(page.locator('#status')).toHaveText('計算中');
+    await expect.poll(async () => page.evaluate(() => document.documentElement.dataset.looped ?? '')).toBe('yes');
+    await page.getByRole('button', { name: '一時停止', exact: true }).click();
+    await expect(page.locator('#status')).toHaveText('一時停止');
+    const stopped = await page.locator('#progress-text').innerText();
+    const held = await page.locator('#position').innerText();
+    await page.waitForTimeout(180);
+    await expect(page.locator('#progress-text')).toHaveText(stopped);
+    await page.getByRole('button', { name: '計算時間を延ばす', exact: true }).click();
+    await expect(page.locator('#progress-text')).toContainText('/ 48 ステップ');
+    await expect(page.locator('#position')).toHaveText(held);
+    await expect(page.locator('[name=initial_position]')).toHaveValue(initial);
+    await expect(page.locator('[name=velocity]')).toHaveValue(velocity);
+    await expect(page.locator('[name=steps]')).toHaveValue('48');
+    const before = await page.locator('#progress-text').innerText();
+    await page.getByRole('button', { name: '再生', exact: true }).click();
+    await expect.poll(async () => page.locator('#progress-text').innerText()).not.toBe(before);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  }
 });
 
 test('NativeとブラウザWasmが一致する', async ({ page }, testInfo) => {
@@ -172,15 +218,15 @@ test('設定JSONの往復・不正入力・完了後の操作', async ({ page })
   const saved = JSON.parse(readFileSync((await file.path())!, 'utf8'));
   expect(saved.steps).toBe(8);
   expect(saved.velocity).toBe(2);
-  await page.getByRole('button', { name: '計算を開始' }).click();
+  await page.getByRole('button', { name: '再生', exact: true }).click();
   await expect(page.locator('#status')).toHaveText('計算完了');
   await expect(page.locator('#progress-text')).toHaveText('8 / 8 ステップ');
-  await expect(page.getByRole('button', { name: '計算完了', exact: true })).toBeDisabled();
+  await expect(page.getByRole('button', { name: '再生', exact: true })).toBeDisabled();
   await page.locator('#import').setInputFiles({ name: 'bad.json', mimeType: 'application/json', buffer: Buffer.from('{') });
   await expect(page.locator('#error')).toBeVisible();
   await page.locator('#import').setInputFiles({ name: 'invalid.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify({ ...saved, dt: -1 })) });
   await expect(page.locator('#status')).toHaveText('条件を確認してください');
-  await expect(page.getByRole('button', { name: '計算を開始' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: '再生', exact: true })).toBeDisabled();
   await page.locator('#import').setInputFiles({ name: 'saved.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(saved)) });
   await expect(page.locator('#status')).toHaveText('準備完了');
   await expect(page.locator('#error')).toBeHidden();
@@ -200,7 +246,7 @@ test('デスクトップとモバイルの表示', async ({ page }, testInfo) =>
   await page.locator('[name=steps]').fill('600');
   await page.getByRole('button', { name: '条件を適用してリセット' }).click();
   await expect(page.locator('#status')).toHaveText('準備完了');
-  await page.getByRole('button', { name: '計算を開始' }).click();
+  await page.getByRole('button', { name: '再生', exact: true }).click();
   await expect(page.locator('#status')).toHaveText('計算完了');
   await page.screenshot({ path: testInfo.outputPath('studio-desktop.png'), fullPage: true });
   await page.setViewportSize({ width: 390, height: 844 });

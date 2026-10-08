@@ -4,7 +4,7 @@ import { checkedVelocityProof } from './proof';
 import { clearFigure, drawErrorSeries, drawTimeSeries, drawUniformMotion } from './figures';
 import { bindMethodTabs, methodTabs } from './method-tabs';
 import type { Config, Snapshot, StepMethod } from './protocol';
-import { mountSession } from './session';
+import { mountSession, transportPanel } from './session';
 import { tex } from './tex';
 
 const defaults: Config = {
@@ -85,10 +85,7 @@ app.innerHTML = `
             <div class="plot-grid"><div class="plot-main"><h3>位置の時間変化 ${tex('x(t)')}</h3><canvas id="time-chart" aria-label="位置と時間のグラフ" role="img"></canvas><p>時間 t</p></div><div class="plot-phase"><h3>位置の誤差 ${tex('x - x_{\\mathrm{exact}}')}</h3><canvas id="phase-chart" aria-label="位置の誤差と時間のグラフ" role="img"></canvas><p>時間 t</p></div></div>
             <div class="plot-footer"><span id="comparison">解析解との差を計算します。</span><span>誤差は実線</span></div>
           </section>
-          <section class="transport panel" aria-label="計算操作">
-            <div class="transport-buttons"><button id="run" class="button primary" disabled>計算を開始</button><button id="step" class="button secondary" disabled>1ステップ</button><button id="reset" class="icon-button" aria-label="初期状態にリセット" title="初期状態にリセット" disabled>↺</button></div>
-            <div class="progress-wrap"><div class="progress-copy"><span id="progress-text">0 / 1000 ステップ</span><span id="progress-percent">0%</span></div><progress id="progress" max="1000" value="0" aria-label="計算の進捗"></progress></div>
-          </section>
+          ${transportPanel()}
           <p id="error" role="alert" hidden></p>
           <p class="experiment-note">数値計算はブラウザ内で実行します。条件や結果をサーバーへ送信しません。</p>
         </div>

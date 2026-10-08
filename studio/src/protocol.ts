@@ -98,9 +98,11 @@ export interface Snapshot {
 export interface Batch { samples: Snapshot[]; state: Snapshot }
 export type Command =
   | { id: number; command: 'load'; model?: MotionModel; method?: StepMethod; config: Config | ConstantAccelerationConfig | SeparationConfig | LinearConfig | TextbookConfig | CompareConfig | NewtonConfig }
-  | { id: number; command: 'start' | 'pause' | 'step' };
+  | { id: number; command: 'start' | 'pause' | 'step' }
+  | { id: number; command: 'extend'; steps: number };
 export interface Update extends Batch {
   id: number;
   phase: 'ready' | 'running' | 'paused' | 'finished';
+  extended?: number;
 }
 export type Reply = Update | { id: number; error: string };

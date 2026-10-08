@@ -6,6 +6,21 @@ export interface TimedConfig {
   steps: number;
 }
 
+export function transportPanel(): string {
+  return `
+          <section class="transport panel" aria-label="計算操作">
+            <div class="transport-buttons">
+              <button id="play" class="button primary" type="button" disabled>再生</button>
+              <button id="pause" class="button secondary" type="button" disabled>一時停止</button>
+              <button id="loop" class="button secondary" type="button" aria-pressed="false">ループ再生</button>
+              <button id="extend" class="button secondary" type="button" disabled>計算時間を延ばす</button>
+              <button id="step" class="button secondary" type="button" disabled>1ステップ</button>
+              <button id="reset" class="icon-button" type="button" aria-label="初期状態にリセット" title="初期状態にリセット" disabled>↺</button>
+            </div>
+            <div class="progress-wrap"><div class="progress-copy"><span id="progress-text">0 / 1000 ステップ</span><span id="progress-percent">0%</span></div><progress id="progress" max="1000" value="0" aria-label="計算の進捗"></progress></div>
+          </section>`;
+}
+
 export function mountSession<C extends TimedConfig>(options: {
   defaults: C;
   model: MotionModel;
@@ -17,7 +32,10 @@ export function mountSession<C extends TimedConfig>(options: {
   method?: () => StepMethod;
 }) {
   const form = document.querySelector<HTMLFormElement>('#config-form')!;
-  const runButton = document.querySelector<HTMLButtonElement>('#run')!;
+  const playButton = document.querySelector<HTMLButtonElement>('#play')!;
+  const pauseButton = document.querySelector<HTMLButtonElement>('#pause')!;
+  const loopButton = document.querySelector<HTMLButtonElement>('#loop')!;
+  const extendButton = document.querySelector<HTMLButtonElement>('#extend')!;
   const stepButton = document.querySelector<HTMLButtonElement>('#step')!;
   const resetButton = document.querySelector<HTMLButtonElement>('#reset')!;
   const applyButton = document.querySelector<HTMLButtonElement>('#apply')!;
@@ -34,8 +52,9 @@ export function mountSession<C extends TimedConfig>(options: {
   let samples: Snapshot[] = [];
   let paintQueued = false;
   let sampleStride = 1;
+  let playAfterLoad = false;
 
-  function post(command: { id: number; command: 'load'; model: MotionModel; method?: StepMethod; config: C } | { id: number; command: 'start' | 'pause' | 'step' }) {
+  function post(command: { id: number; command: 'load'; model: MotionModel; method?: StepMethod; config: C } | { id: number; command: 'start' | 'pause' | 'step' } | { id: number; command: 'extend'; steps: number }) {
     worker.postMessage(command);
   }
   function setText(selector: string, value: string) { document.querySelector(selector)!.textContent = value; }
@@ -45,9 +64,12 @@ export function mountSession<C extends TimedConfig>(options: {
   }
   function controls() {
     const busy = phase === 'loading' || phase === 'pausing';
-    runButton.disabled = busy || phase === 'error' || phase === 'finished' || (dirty && phase !== 'running');
-    runButton.textContent = phase === 'running' ? '一時停止' : phase === 'paused' ? '計算を再開' : phase === 'finished' ? '計算完了' : '計算を開始';
-    runButton.classList.toggle('is-running', phase === 'running');
+    const held = phase === 'ready' || phase === 'paused';
+    playButton.disabled = busy || dirty || phase === 'error' || !held;
+    playButton.classList.toggle('is-running', phase === 'running');
+    pauseButton.disabled = phase !== 'running';
+    loopButton.disabled = busy || phase === 'error';
+    extendButton.disabled = busy || dirty || phase === 'error' || config.steps >= 1_000_000;
     stepButton.disabled = busy || dirty || phase === 'running' || phase === 'finished' || phase === 'error';
     resetButton.disabled = busy;
     applyButton.disabled = busy || (!dirty && phase !== 'error');
@@ -109,8 +131,23 @@ export function mountSession<C extends TimedConfig>(options: {
     }
     phase = reply.phase;
     state = reply.state;
+    if (typeof reply.extended === 'number') {
+      config.steps += reply.extended;
+      const stepsInput = form.elements.namedItem('steps');
+      if (stepsInput instanceof HTMLInputElement) stepsInput.value = String(config.steps);
+      updateHint();
+    }
     for (const point of reply.samples) {
       if (point.step % sampleStride === 0 || point.finished) samples.push(point);
+    }
+    if (playAfterLoad && reply.phase === 'ready') {
+      playAfterLoad = false;
+      phase = 'running';
+      post({ id, command: 'start' });
+    } else if (reply.phase === 'finished' && loopButton.getAttribute('aria-pressed') === 'true') {
+      playAfterLoad = true;
+      load(config);
+      return;
     }
     controls();
     if (!paintQueued) {
@@ -128,16 +165,30 @@ export function mountSession<C extends TimedConfig>(options: {
     event.preventDefault();
     if (form.reportValidity()) load(options.readForm());
   });
-  runButton.addEventListener('click', () => {
-    if (phase === 'running') {
-      phase = 'pausing';
-      controls();
-      post({ id, command: 'pause' });
-    } else {
-      phase = 'running';
-      controls();
-      post({ id, command: 'start' });
+  playButton.addEventListener('click', () => {
+    if (phase !== 'ready' && phase !== 'paused') return;
+    phase = 'running';
+    controls();
+    post({ id, command: 'start' });
+  });
+  pauseButton.addEventListener('click', () => {
+    if (phase !== 'running') return;
+    phase = 'pausing';
+    controls();
+    post({ id, command: 'pause' });
+  });
+  loopButton.addEventListener('click', () => {
+    const on = loopButton.getAttribute('aria-pressed') !== 'true';
+    loopButton.setAttribute('aria-pressed', on ? 'true' : 'false');
+    if (on && phase === 'finished') {
+      playAfterLoad = true;
+      load(config);
     }
+  });
+  extendButton.addEventListener('click', () => {
+    const added = Math.min(config.steps, 1_000_000 - config.steps);
+    if (added < 1 || phase === 'loading' || phase === 'pausing' || phase === 'error') return;
+    post({ id, command: 'extend', steps: added });
   });
   stepButton.addEventListener('click', () => post({ id, command: 'step' }));
   resetButton.addEventListener('click', () => { options.fillForm(config); updateHint(); load(config); });

@@ -158,6 +158,21 @@ impl TextbookSimulation {
         })
         .map_err(|e| e.to_string())
     }
+
+    /// 終了時刻を延ばす。初期条件と、いまのステップは変えない。
+    pub fn extend(&mut self, additional_steps: u32) -> Result<String, String> {
+        let steps = crate::additional_steps(self.config.steps, additional_steps)?;
+        let final_time = self.config.t0 + self.config.dt * f64::from(steps);
+        if !in_domain(self.config.kind, self.config.t0) || !in_domain(self.config.kind, final_time) {
+            return Err("time interval leaves the domain".into());
+        }
+        let (position, velocity) = evaluate(self.config.kind, final_time);
+        if !final_time.is_finite() || !position.is_finite() || !velocity.is_finite() {
+            return Err("parameters exceed numeric range".into());
+        }
+        self.config.steps = steps;
+        self.snapshot()
+    }
 }
 
 impl TextbookSimulation {

@@ -44,6 +44,24 @@ fn uniform_motion_batches_are_identical() {
 }
 
 #[test]
+fn extend_keeps_the_state_and_adds_steps() {
+    let mut sim = UniformSimulation::new(&uniform_config(2.0, 3.5, 0.05, 4)).unwrap();
+    let batch: UniformBatch = serde_json::from_str(&sim.advance(4).unwrap()).unwrap();
+    assert!(batch.state.finished);
+    let position = batch.state.position;
+    sim.extend(4).unwrap();
+    let continued: UniformSnapshot = serde_json::from_str(&sim.snapshot().unwrap()).unwrap();
+    assert!(!continued.finished);
+    assert_eq!(continued.step, 4);
+    assert_eq!(continued.position, position);
+    assert_eq!(continued.velocity, 3.5);
+    let next: UniformBatch = serde_json::from_str(&sim.advance(4).unwrap()).unwrap();
+    assert!(next.state.finished);
+    assert_eq!(next.state.step, 8);
+    assert!((next.state.position - (2.0 + 3.5 * 0.4)).abs() < 1e-12);
+}
+
+#[test]
 fn rejects_invalid_uniform_configurations() {
     let base: serde_json::Value =
         serde_json::from_str(&uniform_config(0.0, 1.0, 0.01, 100)).unwrap();

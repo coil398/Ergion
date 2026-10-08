@@ -108,6 +108,12 @@ impl NewtonSimulation {
         })
         .map_err(|e| e.to_string())
     }
+
+    /// 反復の回数を増やす。出発点と、いまの近似は変えない。
+    pub fn extend(&mut self, additional_steps: u32) -> Result<String, String> {
+        self.steps = crate::additional_steps(self.steps, additional_steps)?;
+        self.snapshot()
+    }
 }
 
 impl NewtonSimulation {

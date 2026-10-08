@@ -190,6 +190,19 @@ impl Simulation {
     }
 }
 
+pub(crate) fn additional_steps(current: u32, additional: u32) -> Result<u32, String> {
+    if additional == 0 {
+        return Err("additional steps must be at least 1".into());
+    }
+    let Some(steps) = current.checked_add(additional) else {
+        return Err("steps must be in 1..=1000000".into());
+    };
+    if !(1..=1_000_000).contains(&steps) {
+        return Err("steps must be in 1..=1000000".into());
+    }
+    Ok(steps)
+}
+
 impl Simulation {
     fn state(&self) -> Snapshot {
         let time = f64::from(self.step) * self.config.dt;

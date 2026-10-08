@@ -149,6 +149,18 @@ impl EulerSimulation {
         })
         .map_err(|e| e.to_string())
     }
+
+    /// 終了時刻を延ばす。初期条件と、いまの位置・速度・ステップは変えない。
+    pub fn extend(&mut self, additional_steps: u32) -> Result<String, String> {
+        let steps = crate::additional_steps(self.config.steps, additional_steps)?;
+        let final_time = self.config.dt * f64::from(steps);
+        let final_position = self.config.initial_position + self.config.velocity * final_time;
+        if !final_time.is_finite() || !final_position.is_finite() {
+            return Err("parameters exceed numeric range".into());
+        }
+        self.config.steps = steps;
+        self.snapshot()
+    }
 }
 
 impl EulerSimulation {
