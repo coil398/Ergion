@@ -8,6 +8,8 @@ use crate::lesson::{Figure, LessonModel, Method, ModelState, grid, num, positive
 /// 力学の単元の図。
 ///
 /// - `forced-resonance`: 外力の角振動数 \(\omega\) に対する定常振幅 \(A(\omega)\) と位相の遅れ \(\delta(\omega)\)。
+/// - `damped-envelope`: 時刻 \([0, T]\) の減衰振動の包絡線 \(\pm C e^{-\gamma t/(2m)}\)。系列 `upper` と `lower`。
+/// - `forced-steady`: 時刻 \([0, T]\) の強制振動の定常解 \(x_p(t) = A\cos(\omega t - \delta)\)。系列 `steady`。
 pub fn figure(unit: &str, params: &Value) -> Result<Figure, String> {
     match unit {
         "forced-resonance" => {
@@ -25,6 +27,41 @@ pub fn figure(unit: &str, params: &Value) -> Result<Figure, String> {
                 .series("phase", "exact", omegas, phase)
                 .point("drive", "numerical", w, core::forced_amplitude(m, g, k, f, w))
                 .value("natural_frequency", (k / m).sqrt())
+                .value("amplitude", core::forced_amplitude(m, g, k, f, w))
+                .value("phase", core::forced_phase(m, g, k, w)))
+        }
+        "damped-envelope" => {
+            let m = positive(params, "mass", 1.0)?;
+            let g = num(params, "damping", 0.4)?;
+            let k = positive(params, "spring_constant", 4.0)?;
+            let x0 = num(params, "initial_position", 1.0)?;
+            let v0 = num(params, "initial_velocity", 0.0)?;
+            let end = positive(params, "time_end", 10.0)?;
+            if g < 0.0 {
+                return Err("damping must be nonnegative".into());
+            }
+            let times = grid(0.0, end, 401);
+            let upper: Vec<f64> = times.iter().map(|&t| core::damped_envelope(m, g, k, x0, v0, t)).collect();
+            let lower = upper.iter().map(|v| -v).collect();
+            Ok(Figure::new()
+                .series("upper", "muted", times.clone(), upper)
+                .series("lower", "muted", times, lower)
+                .value("amplitude", core::damped_envelope(m, g, k, x0, v0, 0.0)))
+        }
+        "forced-steady" => {
+            let m = positive(params, "mass", 1.0)?;
+            let g = num(params, "damping", 0.5)?;
+            let k = positive(params, "spring_constant", 4.0)?;
+            let f = num(params, "force", 1.0)?;
+            let w = num(params, "drive_frequency", 2.0)?;
+            let end = positive(params, "time_end", 10.0)?;
+            if g < 0.0 {
+                return Err("damping must be nonnegative".into());
+            }
+            let times = grid(0.0, end, 801);
+            let steady = times.iter().map(|&t| core::forced_steady_state(m, g, k, f, w, t).0).collect();
+            Ok(Figure::new()
+                .series("steady", "muted", times, steady)
                 .value("amplitude", core::forced_amplitude(m, g, k, f, w))
                 .value("phase", core::forced_phase(m, g, k, w)))
         }
@@ -150,7 +187,9 @@ impl LessonModel for Line {
             .value("exact_energy", self.law.energy(x, v))
             .value("acceleration", self.law.acceleration(time, self.state[0], self.state[1]));
         if let Law::Damped { mass, damping, spring } = self.law {
-            figure = figure.value("envelope", core::damped_envelope(mass, damping, spring, self.x0, self.v0, time));
+            figure = figure
+                .value("envelope", core::damped_envelope(mass, damping, spring, self.x0, self.v0, time))
+                .value("dissipated", self.law.energy(self.x0, self.v0) - self.law.energy(x, v));
         }
         if let Law::Forced { mass, damping, spring, force, drive } = self.law {
             let (xp, _) = core::forced_steady_state(mass, damping, spring, force, drive, time);
@@ -321,6 +360,27 @@ mod tests {
         let s = run(r#"{"schema_version":1,"kind":"mechanics/two-body","method":"rk4","dt":0.005,"steps":2052}"#);
         assert!((s.velocity - s.exact_velocity).abs() < 1e-6);
         assert!((s.exact_velocity - 4.5_f64.sqrt()).abs() < 1e-12);
+    }
+
+    #[test]
+    fn damped_envelope_starts_at_the_hand_amplitude_and_bounds_the_solution() {
+        let f = figure("damped-envelope", &serde_json::json!({"time_end": 10.0})).unwrap();
+        let wd = 3.96_f64.sqrt();
+        assert!((f.values["amplitude"] - 2.0 / wd).abs() < 1e-12);
+        let upper = &f.series.iter().find(|s| s.name == "upper").unwrap();
+        for (t, bound) in upper.x.iter().zip(&upper.y) {
+            let (x, _) = core::damped_state(1.0, 0.4, 4.0, 1.0, 0.0, *t);
+            assert!(x.abs() <= bound + 1e-12);
+        }
+    }
+
+    #[test]
+    fn forced_steady_figure_has_unit_amplitude_and_quarter_phase() {
+        let f = figure("forced-steady", &serde_json::json!({"time_end": 5.0})).unwrap();
+        assert!((f.values["amplitude"] - 1.0).abs() < 1e-12);
+        assert!((f.values["phase"] - std::f64::consts::FRAC_PI_2).abs() < 1e-12);
+        let steady = &f.series.iter().find(|s| s.name == "steady").unwrap();
+        assert!(steady.y[0].abs() < 1e-12);
     }
 
     #[test]

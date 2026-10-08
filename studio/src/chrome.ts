@@ -153,7 +153,6 @@ const allSections: RailSection[] = [
 
 /** まだ公開しないページ。ビルドの環境変数 VITE_RAIL_ALL=1 のときだけ目次に出す。 */
 const drafts = new Set<PageId>([
-  'damped', 'forced', 'two-body', 'constant-force', 'harmonic',
   'limits', 'derivative-definition', 'product-chain', 'mean-value', 'fundamental-theorem', 'integration-techniques', 'taylor', 'partial', 'multiple-integral', 'numerical-differentiation', 'numerical-integration',
   'sturm-liouville', 'chaos', 'heat', 'wave',
   'elimination', 'lu', 'eigen', 'least-squares',

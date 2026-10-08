@@ -281,6 +281,16 @@ mod tests {
     }
 
     #[test]
+    fn two_body_hand_example() {
+        assert!((reduced_mass(2.0, 1.0) - 2.0 / 3.0).abs() < 1e-15);
+        let vp = kepler_periapsis_speed(3.0, 1.0, 0.5);
+        assert!((vp - 4.5_f64.sqrt()).abs() < 1e-15);
+        let h = 1.0 * vp;
+        assert!((h * h / 3.0 - 1.5).abs() < 1e-14);
+        assert!((conic_radius(1.5, 0.5, std::f64::consts::PI) - 3.0).abs() < 1e-15);
+    }
+
+    #[test]
     fn kepler_returns_to_periapsis_after_one_period() {
         let gm: f64 = 3.0;
         let (rp, e): (f64, f64) = (1.0, 0.5);

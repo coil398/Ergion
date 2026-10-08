@@ -126,6 +126,11 @@ function interior(pixel: number, start: number, length: number) {
   return pixel > start + 2 && pixel < start + length - 2;
 }
 
+/** 範囲に比べて桁が小さすぎる目盛りの値は 0 と書く。 */
+function tick(value: number, span: number) {
+  return Math.abs(value) < Math.abs(span) * 1e-9 ? 0 : value;
+}
+
 export function drawCartesianAxes(context: CanvasRenderingContext2D, frame: PlotFrame, zeroLabel?: string) {
   context.save();
   context.lineWidth = 1;
@@ -136,7 +141,7 @@ export function drawCartesianAxes(context: CanvasRenderingContext2D, frame: Plot
     context.moveTo(frame.left, y);
     context.lineTo(frame.left + frame.width, y);
     context.stroke();
-    const yValue = frame.yMax - (frame.yMax - frame.yMin) * index / 4;
+    const yValue = tick(frame.yMax - (frame.yMax - frame.yMin) * index / 4, frame.yMax - frame.yMin);
     drawLabel(context, yValue.toPrecision(3), frame.left - 8, y, 'tick', { align: 'right' });
 
     const x = frame.left + frame.width * index / 4;
@@ -145,7 +150,7 @@ export function drawCartesianAxes(context: CanvasRenderingContext2D, frame: Plot
     context.moveTo(x, frame.top);
     context.lineTo(x, frame.top + frame.height);
     context.stroke();
-    const xValue = frame.xMin + (frame.xMax - frame.xMin) * index / 4;
+    const xValue = tick(frame.xMin + (frame.xMax - frame.xMin) * index / 4, frame.xMax - frame.xMin);
     drawLabel(context, xValue.toPrecision(3), x, frame.top + frame.height + 14, 'tick');
   }
   context.restore();
