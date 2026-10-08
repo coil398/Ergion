@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/ergion-core", "crates/ergion-lab"]
+members = ["crates/ergion-core", "crates/ergion-lab", "crates/ergion-md"]
 resolver = "2"
 
 [workspace.package]
