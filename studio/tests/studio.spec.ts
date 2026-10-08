@@ -1068,39 +1068,57 @@ test('暗い配色は端末に従い、図と KaTeX と式の地も同じトー�
   await page.setViewportSize({ width: 1440, height: 1050 });
   await page.goto('separation.html');
   await expect(page.locator('#status')).toHaveText('計算完了');
-  await expect(page.getByRole('button', { name: '端末', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('.theme-toggle')).toHaveAttribute('data-scheme', 'dark');
   expect(await page.evaluate(() => document.documentElement.dataset.theme)).toBeUndefined();
   await expectScheme(page, 'dark', { numerical: '#solution-chart', exact: '#solution-chart', error: '#solution-error' });
   await expectTypeSize(page);
   await page.emulateMedia({ colorScheme: 'light' });
+  await expect(page.locator('.theme-toggle')).toHaveAttribute('data-scheme', 'light');
   await expectScheme(page, 'light', { numerical: '#solution-chart', exact: '#solution-chart', error: '#solution-error' });
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ colorScheme: 'dark' });
-  await expect(page.locator('.theme-switch')).toBeVisible();
+  await expect(page.locator('.theme-toggle')).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
 
-test('明るい、暗い、端末の選択は ergion-theme に置き、どのページでも同じである', async ({ page }) => {
+async function expectThemeIcon(page: Page, scheme: Scheme) {
+  const toggle = page.locator('.app-header .theme-toggle');
+  await expect(toggle).toHaveAttribute('data-scheme', scheme);
+  await expect(toggle).toHaveAccessibleName(scheme === 'dark' ? '明るい配色にする' : '暗い配色にする');
+  expect((await toggle.innerText()).trim()).toBe('');
+  await expect(toggle.locator(scheme === 'dark' ? 'svg circle' : 'svg path')).toHaveCount(1);
+  if (scheme === 'light') await expect(toggle.locator('svg circle')).toHaveCount(0);
+}
+
+test('配色のボタンは一つのアイコンで、押すと ergion-theme に反対の配色を置き、どのページでも同じである', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1050 });
   await page.goto('uniform.html');
   await expect(page.locator('#status')).toHaveText('準備完了');
   await page.evaluate(() => localStorage.removeItem('ergion-theme'));
+  await page.reload();
+  await expect(page.locator('#status')).toHaveText('準備完了');
   for (let step = 1; step <= 3; step += 1) {
     await page.getByRole('button', { name: '1ステップ', exact: true }).click();
     await expect(page.locator('#progress-text')).toContainText(`${step} /`);
   }
-  const group = page.getByRole('group', { name: '配色' });
-  await expect(group.getByRole('button')).toHaveText(['明るい', '暗い', '端末']);
+  const header = page.locator('.app-header');
+  const toggle = header.locator('.theme-toggle');
+  await expect(header.locator('button')).toHaveCount(1);
+  await expectThemeIcon(page, 'light');
+  const headerText = await header.innerText();
+  for (const word of ['配色', '明るい', '暗い', '端末', '暗くする', '明るくする', 'テーマ', 'モード', 'システム']) {
+    expect(headerText).not.toContain(word);
+  }
   await expectScheme(page, 'light', { numerical: '#oscillator', exact: '#oscillator', error: '#phase-chart' });
 
-  await group.getByRole('button', { name: '暗い', exact: true }).click();
-  await expect(group.getByRole('button', { name: '暗い', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await toggle.click();
+  await expectThemeIcon(page, 'dark');
   expect(await page.evaluate(() => localStorage.getItem('ergion-theme'))).toBe('dark');
   await expectScheme(page, 'dark', { numerical: '#oscillator', exact: '#oscillator', error: '#phase-chart' });
 
   for (const href of ['separation.html', 'newton.html', './']) {
     await page.goto(href);
-    await expect(page.getByRole('button', { name: '暗い', exact: true })).toHaveAttribute('aria-pressed', 'true');
+    await expectThemeIcon(page, 'dark');
     expect(await page.evaluate(() => document.documentElement.dataset.theme)).toBe('dark');
     expect(await page.evaluate(() => getComputedStyle(document.documentElement).backgroundColor)).toBe(palettes.dark.bg);
   }
@@ -1109,12 +1127,15 @@ test('明るい、暗い、端末の選択は ergion-theme に置き、どのペ
   await expectScheme(page, 'dark', { numerical: '#solution-chart' });
 
   await page.emulateMedia({ colorScheme: 'dark' });
-  await page.getByRole('button', { name: '明るい', exact: true }).click();
+  await page.locator('.theme-toggle').click();
+  await expectThemeIcon(page, 'light');
   expect(await page.evaluate(() => localStorage.getItem('ergion-theme'))).toBe('light');
   await expectScheme(page, 'light', { numerical: '#solution-chart' });
 
-  await page.getByRole('button', { name: '端末', exact: true }).click();
-  expect(await page.evaluate(() => localStorage.getItem('ergion-theme'))).toBeNull();
+  await page.evaluate(() => localStorage.removeItem('ergion-theme'));
+  await page.reload();
+  await expect(page.locator('#status')).toHaveText('計算完了');
   expect(await page.evaluate(() => document.documentElement.dataset.theme)).toBeUndefined();
+  await expectThemeIcon(page, 'dark');
   await expectScheme(page, 'dark', { numerical: '#solution-chart' });
 });

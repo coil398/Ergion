@@ -1,45 +1,55 @@
-/** 配色。選択はページをまたぐ一つの localStorage のキーに置き、端末を選ぶとキーを消して prefers-color-scheme に従う。 */
+/** 配色。キーがないときは prefers-color-scheme に従い、ボタンを押すと反対の配色をページをまたぐ一つの localStorage のキーに置く。 */
 
-export type ThemeChoice = 'light' | 'dark' | 'system';
+export type Scheme = 'light' | 'dark';
 
 export const THEME_KEY = 'ergion-theme';
 
-const choices: { value: ThemeChoice; label: string }[] = [
-  { value: 'light', label: '明るい' },
-  { value: 'dark', label: '暗い' },
-  { value: 'system', label: '端末' },
-];
-
 const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
 const listeners = new Set<() => void>();
+/** localStorage を使えない環境で、このページだけに置く選択。 */
+let unsaved: Scheme | undefined;
 
-function stored(): ThemeChoice {
+function stored(): Scheme | undefined {
   try {
     const value = localStorage.getItem(THEME_KEY);
-    return value === 'light' || value === 'dark' ? value : 'system';
+    return value === 'light' || value === 'dark' ? value : unsaved;
   } catch {
-    return 'system';
+    return unsaved;
   }
 }
 
-function apply(choice: ThemeChoice) {
+/** いまページが使っている配色。 */
+export function currentScheme(): Scheme {
+  return stored() ?? (darkQuery.matches ? 'dark' : 'light');
+}
+
+const MOON = '<svg class="theme-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+const SUN = '<svg class="theme-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+
+/** 明るいページは月、暗いページは太陽。画面に文字は出さず、名前は読み上げのためだけに置く。 */
+function paint(button: HTMLButtonElement, scheme: Scheme) {
+  button.innerHTML = scheme === 'dark' ? SUN : MOON;
+  button.setAttribute('aria-label', scheme === 'dark' ? '明るい配色にする' : '暗い配色にする');
+  button.dataset.scheme = scheme;
+}
+
+function apply() {
   const root = document.documentElement;
-  if (choice === 'system') delete root.dataset.theme;
-  else root.dataset.theme = choice;
-  for (const button of document.querySelectorAll<HTMLButtonElement>('.theme-choice')) {
-    button.setAttribute('aria-pressed', button.value === choice ? 'true' : 'false');
-  }
+  const choice = stored();
+  if (choice) root.dataset.theme = choice;
+  else delete root.dataset.theme;
+  const scheme = currentScheme();
+  for (const button of document.querySelectorAll<HTMLButtonElement>('.theme-toggle')) paint(button, scheme);
   for (const listener of listeners) listener();
 }
 
-export function setThemeChoice(choice: ThemeChoice) {
+export function setScheme(scheme: Scheme) {
   try {
-    if (choice === 'system') localStorage.removeItem(THEME_KEY);
-    else localStorage.setItem(THEME_KEY, choice);
+    localStorage.setItem(THEME_KEY, scheme);
   } catch {
-    // 保存できない環境でも、このページの配色は切り替える。
+    unsaved = scheme;
   }
-  apply(choice);
+  apply();
 }
 
 /** 配色が変わったときに図を描き直す。端末の配色の変化と、別のタブでの選択も含む。 */
@@ -48,27 +58,23 @@ export function onThemeChange(listener: () => void) {
 }
 
 export function themeControl(): string {
-  const current = stored();
-  const buttons = choices
-    .map(choice => `<button type="button" class="theme-choice" value="${choice.value}" aria-pressed="${choice.value === current ? 'true' : 'false'}">${choice.label}</button>`)
-    .join('');
-  return `<div class="theme-switch" role="group" aria-labelledby="theme-label"><span class="theme-label" id="theme-label">配色</span>${buttons}</div>`;
+  const scheme = currentScheme();
+  return `<button type="button" class="theme-toggle" data-scheme="${scheme}" aria-label="${scheme === 'dark' ? '明るい配色にする' : '暗い配色にする'}">${scheme === 'dark' ? SUN : MOON}</button>`;
 }
 
 document.addEventListener('click', event => {
   const target = event.target;
   if (!(target instanceof Element)) return;
-  const button = target.closest('button.theme-choice');
-  if (!(button instanceof HTMLButtonElement)) return;
-  setThemeChoice(button.value as ThemeChoice);
+  if (!target.closest('button.theme-toggle')) return;
+  setScheme(currentScheme() === 'dark' ? 'light' : 'dark');
 });
 
 darkQuery.addEventListener('change', () => {
-  if (stored() === 'system') apply('system');
+  if (!stored()) apply();
 });
 
 window.addEventListener('storage', event => {
-  if (event.key === THEME_KEY || event.key === null) apply(stored());
+  if (event.key === THEME_KEY || event.key === null) apply();
 });
 
-apply(stored());
+apply();
