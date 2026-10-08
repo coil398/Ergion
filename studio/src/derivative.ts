@@ -94,6 +94,7 @@ app.innerHTML = `
         </div>
       </div>
       ${relatedPages([
+        { href: './derivative-definition.html', title: '微分の定義', description: '差分商の極限として導関数を定めるページです。速度は位置の導関数です。' },
         { href: './uniform.html', title: '等速直線運動', description: '位置の時間微分から導かれる直線の運動と厳密解です。' },
         { href: './velocity-step.html', title: '一定速度の増分', description: '時間刻みごとの位置更新の反復を扱うページです。' },
         { href: './integrate.html', title: '積分して解く', description: '速度から位置を積分によって復元する理論です。' },

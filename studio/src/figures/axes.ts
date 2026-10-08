@@ -126,6 +126,14 @@ function interior(pixel: number, start: number, length: number) {
   return pixel > start + 2 && pixel < start + length - 2;
 }
 
+/** 目盛りの数。有効数字は3桁。10⁻³ 以上 10⁵ 未満は指数を使わずに書く。 */
+export function formatTick(value: number): string {
+  if (value === 0) return '0';
+  const magnitude = Math.abs(value);
+  if (magnitude >= 1e-3 && magnitude < 1e5) return String(Number(value.toPrecision(3)));
+  return value.toPrecision(3);
+}
+
 /** 範囲に比べて桁が小さすぎる目盛りの値は 0 と書く。 */
 function tick(value: number, span: number) {
   return Math.abs(value) < Math.abs(span) * 1e-9 ? 0 : value;
@@ -142,7 +150,7 @@ export function drawCartesianAxes(context: CanvasRenderingContext2D, frame: Plot
     context.lineTo(frame.left + frame.width, y);
     context.stroke();
     const yValue = tick(frame.yMax - (frame.yMax - frame.yMin) * index / 4, frame.yMax - frame.yMin);
-    drawLabel(context, yValue.toPrecision(3), frame.left - 8, y, 'tick', { align: 'right' });
+    drawLabel(context, formatTick(yValue), frame.left - 8, y, 'tick', { align: 'right' });
 
     const x = frame.left + frame.width * index / 4;
     context.strokeStyle = figurePalette().borderSubtle;
@@ -151,7 +159,7 @@ export function drawCartesianAxes(context: CanvasRenderingContext2D, frame: Plot
     context.lineTo(x, frame.top + frame.height);
     context.stroke();
     const xValue = tick(frame.xMin + (frame.xMax - frame.xMin) * index / 4, frame.xMax - frame.xMin);
-    drawLabel(context, xValue.toPrecision(3), x, frame.top + frame.height + 14, 'tick');
+    drawLabel(context, formatTick(xValue), x, frame.top + frame.height + 14, 'tick');
   }
   context.restore();
 
@@ -187,7 +195,7 @@ export function drawNumberLine(context: CanvasRenderingContext2D, line: NumberLi
     context.moveTo(x, line.y);
     context.lineTo(x, line.y + 6);
     context.stroke();
-    drawLabel(context, value.toPrecision(3), x, line.tickY, 'tick');
+    drawLabel(context, formatTick(value), x, line.tickY, 'tick');
   }
   context.restore();
 }

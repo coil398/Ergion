@@ -6,6 +6,8 @@ pub mod euler;
 pub mod lesson;
 mod lesson_analytical;
 mod lesson_calculus;
+mod lesson_calculus_a;
+mod lesson_calculus_b;
 mod lesson_em;
 mod lesson_finance;
 mod lesson_linalg;

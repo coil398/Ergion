@@ -99,7 +99,7 @@ export function mountSession<C extends TimedConfig>(options: {
     setText('#progress-percent', `${Math.floor(currentStep / config.steps * 100)}%`);
     setText('#scene-time', `t = ${(state?.time ?? 0).toFixed(3)}`);
     for (const [selector, value] of [['#position', state?.position], ['#velocity', state?.velocity], ['#exact-position', state?.exact_position]] as const) {
-      setText(selector, value === undefined ? '—' : value.toFixed(5));
+      setText(selector, value === undefined ? '—' : Math.abs(value) >= 1e6 ? value.toExponential(4) : value.toFixed(5));
     }
     const positionError = state
       ? (state.position_error ?? Math.abs(state.position - state.exact_position))

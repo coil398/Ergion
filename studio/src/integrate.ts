@@ -63,6 +63,7 @@ app.innerHTML = `
       </section>
       ${pageFigure('integrate', '右辺が未知関数を含まないとき、解は右辺を時刻で積分した値だけ増える。')}
       ${relatedPages([
+        { href: './fundamental-theorem.html', title: '定積分と微分積分学の基本定理', description: '原始関数の差で定積分が求まる理由を示すページです。' },
         { href: './uniform.html', title: '等速直線運動', description: '速度が一定の方程式 x\' = v を積分して位置を求める例です。' },
         { href: './accelerated.html', title: '等加速度直線運動', description: '加速度 a を二度積分して速度と位置を求める例です。' },
         { href: './separation.html', title: '変数分離', description: '右辺が未知関数を含む場合に割ってから積分する解法です。' },
