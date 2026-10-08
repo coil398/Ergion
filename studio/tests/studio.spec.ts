@@ -193,8 +193,28 @@ test('コードはページをまたいで開き、Euler法の TypeScript を実
     await expect(python.locator('.code-install')).toHaveText('pip install ./py/ergion');
     await expect(python.locator('pre')).toContainText('from ergion import euler_step');
     await expect(python.locator('pre')).not.toContainText('pyodide');
+    const spinner = typescript.locator('.code-spinner');
+    await expect(spinner).toBeHidden();
+    await expect(python.locator('.code-spinner')).toBeHidden();
+    if (width === 390) {
+      await page.evaluate(() => {
+        const mark = document.querySelector('[aria-label="TypeScript"] .code-spinner');
+        if (!(mark instanceof HTMLElement)) throw new Error('spinner missing');
+        const record = () => {
+          if (!mark.hidden) (window as unknown as { __ergionSpinnerSeen?: boolean }).__ergionSpinnerSeen = true;
+        };
+        (window as unknown as { __ergionSpinnerSeen?: boolean }).__ergionSpinnerSeen = !mark.hidden;
+        new MutationObserver(record).observe(mark, { attributes: true, attributeFilter: ['hidden'] });
+      });
+    }
     await typescript.getByRole('button', { name: '実行', exact: true }).click();
+    if (width === 390) {
+      await expect.poll(() => page.evaluate(() => (window as unknown as { __ergionSpinnerSeen?: boolean }).__ergionSpinnerSeen)).toBe(true);
+      expect(await spinner.evaluate(node => getComputedStyle(node).position)).not.toBe('fixed');
+    }
     await expect(typescript.locator('.code-result')).toHaveText('[0.1]');
+    await expect(spinner).toBeHidden();
+    await expect(python.locator('.code-spinner')).toBeHidden();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     await page.goto('midpoint.html');
     await page.reload();

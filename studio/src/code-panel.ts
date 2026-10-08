@@ -75,7 +75,10 @@ function languageBlock(name: string, install: string, source: string, lang: 'typ
           <h3>${name}</h3>
           <p class="code-install">${install}</p>
           <pre class="code-snippet">${escapeHtml(source.trim())}</pre>
-          <button class="button secondary code-run" type="button" data-run="${lang}">実行</button>
+          <div class="code-run-row">
+            <button class="button secondary code-run" type="button" data-run="${lang}">実行</button>
+            <span class="code-spinner" hidden></span>
+          </div>
           <p class="code-result numeric" role="status"></p>
         </section>`;
 }
@@ -134,8 +137,10 @@ export function mountCodeDisclosure() {
       const section = button.closest('.code-lang');
       const source = section?.querySelector('pre')?.textContent ?? '';
       const result = section?.querySelector<HTMLElement>('.code-result');
-      if (!result) return;
+      const spinner = section?.querySelector<HTMLElement>('.code-spinner');
+      if (!result || !spinner) return;
       button.disabled = true;
+      spinner.hidden = false;
       result.dataset.state = '';
       result.textContent = '';
       try {
@@ -144,6 +149,7 @@ export function mountCodeDisclosure() {
         result.dataset.state = 'error';
         result.textContent = error instanceof Error ? error.message : String(error);
       } finally {
+        spinner.hidden = true;
         button.disabled = false;
       }
     });
