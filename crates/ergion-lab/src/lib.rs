@@ -9,6 +9,8 @@ mod lesson_calculus;
 mod lesson_calculus_a;
 mod lesson_calculus_b;
 mod lesson_em;
+mod lesson_em_a;
+mod lesson_em_b;
 mod lesson_finance;
 mod lesson_linalg;
 mod lesson_md;
