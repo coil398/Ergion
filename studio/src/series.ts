@@ -1,6 +1,7 @@
 import './style.css';
 import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
-import { uncheckedProof } from './proof';
+import seriesProof from '../../formal/lean/Ergion/PowerSeries.lean?raw';
+import { checkedProofs } from './proof';
 import { mountSteppedFigure, steppedFigure } from './curve';
 import { tex } from './tex';
 
@@ -74,7 +75,7 @@ app.innerHTML = `
         </div>
       </section>
       ${steppedFigure(`タブは、方程式 ${tex(String.raw`x'' + x = 0`)} を進める数値解法だけを切り替えます。上の導出と、べき級数の和である厳密解は変わりません。青緑の破線はその和です。誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、その和を小数第5位まで示したものです。`)}
-      ${uncheckedProof(`${tex(String.raw`x'' + x = 0`)} のべき級数は、係数の漸化式 ${tex(String.raw`a_{m+2} = -\frac{a_m}{(m+1)(m+2)}`)} を満たし、和は ${tex(String.raw`\cos t`)} です。`)}
+      ${checkedProofs([{ statement: `${tex(String.raw`x'' + x = 0`)} のべき級数は、係数の漸化式 ${tex(String.raw`a_{m+2} = -\frac{a_m}{(m+1)(m+2)}`)} を満たし、和は ${tex(String.raw`\cos t`)} です。`, source: seriesProof, moduleName: 'Ergion.PowerSeries', kind: '実数' }])}
       ${pageFooter('通常点のべき級数は、漸化式で係数が決まり、この方程式では和が cos t という厳密解です。')}
     </main>
   </div>`;

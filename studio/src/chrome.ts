@@ -99,7 +99,7 @@ export function rail(active: PageId): string {
       <div class="rail-section">
         <span class="rail-section-title${active === 'proof' ? ' active' : ''}">証明</span>
         <ul class="rail-pages">
-          ${pageLink(active, 'proof', './proof.html', '有理数での確かめ')}
+          ${pageLink(active, 'proof', './proof.html', '証明の一覧')}
         </ul>
       </div>
       <div class="rail-note"><span class="orbit-icon" aria-hidden="true">◎</span><p>小さな系から、<br>確かな計算へ。</p><span>直線上の一粒子</span></div>

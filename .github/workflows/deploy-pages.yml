@@ -50,7 +50,9 @@ jobs:
 
       - name: Check proofs with lake build
         working-directory: formal/lean
-        run: lake build
+        run: |
+          lake exe cache get
+          lake build
 
       - name: Ensure .nojekyll exists
         run: touch studio/dist/.nojekyll

@@ -1,6 +1,7 @@
 import './style.css';
 import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
-import { uncheckedProof } from './proof';
+import homogeneousProof from '../../formal/lean/Ergion/Homogeneous.lean?raw';
+import { checkedProofs } from './proof';
 import { mountSteppedFigure, steppedFigure } from './curve';
 import { tex } from './tex';
 
@@ -67,7 +68,7 @@ app.innerHTML = `
         </div>
       </section>
       ${steppedFigure(`タブは、方程式 ${tex(String.raw`x' = 1 + x/t`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。時刻 1 から 2 までの誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
-      ${uncheckedProof(`${tex(String.raw`x' = 1 + \frac{x}{t}`)} の、${tex('t > 0')} における厳密解は ${tex(String.raw`x(t) = t(\ln t + C)`)} です。`)}
+      ${checkedProofs([{ statement: `${tex(String.raw`x' = 1 + \frac{x}{t}`)} の、${tex('t > 0')} における厳密解は ${tex(String.raw`x(t) = t(\ln t + C)`)} です。`, source: homogeneousProof, moduleName: 'Ergion.Homogeneous', kind: '実数' }])}
       ${pageFooter('同次形の置換 u = x/t で得る x(t) = t(ln t + C) は、t > 0 における厳密解です。')}
     </main>
   </div>`;

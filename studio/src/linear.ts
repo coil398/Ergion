@@ -1,6 +1,7 @@
 import './style.css';
 import { appHeader, coreStepDoc, pageFooter, rail } from './chrome';
-import { uncheckedProof } from './proof';
+import linearProof from '../../formal/lean/Ergion/FirstOrderLinear.lean?raw';
+import { checkedProofs } from './proof';
 import { mountSteppedFigure, steppedFigure } from './curve';
 import { tex } from './tex';
 
@@ -93,7 +94,7 @@ app.innerHTML = `
         </div>
       </section>
       ${steppedFigure(`タブは、方程式 ${tex(String.raw`x' + px = q`)} を進める数値解法だけを切り替えます。上の導出と厳密解は変わりません。${tex('p = 2')}、${tex('q = 6')}、${tex('x_0 = 1')} の誤差は、時間刻みによる打ち切りであり、丸めだけではありません。位置の表示は、厳密解を小数第5位まで示したものです。`)}
-      ${uncheckedProof(`${tex(String.raw`x' + px = q`)} で ${tex('p')} が 0 でないとき、厳密解は ${tex(String.raw`x(t) = \frac{q}{p} + \left(x_0 - \frac{q}{p}\right) e^{-pt}`)} です。`)}
+      ${checkedProofs([{ statement: `${tex(String.raw`x' + px = q`)} で ${tex('p')} が 0 でないとき、厳密解は ${tex(String.raw`x(t) = \frac{q}{p} + \left(x_0 - \frac{q}{p}\right) e^{-pt}`)} です。`, source: linearProof, moduleName: 'Ergion.FirstOrderLinear', kind: '実数' }])}
       ${pageFooter('積分因子で得る x(t) = q/p + (x_0 - q/p) e^{-pt} は、x\' + px = q の厳密解です。')}
     </main>
   </div>`;

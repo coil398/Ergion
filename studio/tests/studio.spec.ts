@@ -39,7 +39,7 @@ async function expectMechanicsSection(page: Page) {
   await expect(proofTitle).toHaveText('証明');
   const proofPages = sections.nth(3).locator('.rail-pages a');
   await expect(proofPages).toHaveCount(1);
-  await expect(proofPages.nth(0)).toHaveText('有理数での確かめ');
+  await expect(proofPages.nth(0)).toHaveText('証明の一覧');
   const nested = await page.evaluate(() => {
     const blocks = [...document.querySelectorAll('.rail-section')];
     return blocks.every((block, index) => {
@@ -421,15 +421,19 @@ test('証明の節は画面が Lean を実行しないと述べ、各ページ�
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: width === 1440 ? 1050 : 844 });
     await page.goto('proof.html');
-    await expect(page.getByRole('heading', { level: 1, name: '有理数での確かめ.' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1, name: '証明の一覧.' })).toBeVisible();
     await expect(page.locator('#lesson')).toContainText('lake build');
     await expect(page.locator('#lesson')).toContainText('有理数');
+    await expect(page.locator('#lesson')).toContainText('実数');
     await expect(page.locator('#lesson')).toContainText('f64');
     await expect(page.locator('#lesson')).toContainText('この画面は証明を実行しません');
     await expect(page.locator('#lesson')).toContainText('Lean を動かしていません');
-    const link = page.locator('#lesson').getByRole('link', { name: 'Ergion.ConstantVelocity', exact: true });
-    await expect(link).toHaveCount(1);
-    await expect(link).toHaveAttribute('href', /ConstantVelocity\.lean$/);
+    const modules = ['Ergion.ConstantVelocity', 'Ergion.ConstantAcceleration', 'Ergion.Solution', 'Ergion.Separation', 'Ergion.FirstOrderLinear', 'Ergion.Homogeneous', 'Ergion.Exact', 'Ergion.Bernoulli', 'Ergion.SecondOrder', 'Ergion.Undetermined', 'Ergion.Variation', 'Ergion.Laplace', 'Ergion.PowerSeries', 'Ergion.LinearSystem'];
+    for (const name of modules) {
+      const link = page.locator('#lesson').getByRole('link', { name, exact: true });
+      await expect(link).toHaveCount(1);
+      await expect(link).toHaveAttribute('href', new RegExp(`${name.slice('Ergion.'.length)}\\.lean$`));
+    }
     await expect(page.locator('#lesson').getByRole('link', { name: '一定速度の増分' })).toHaveAttribute('href', './velocity-step.html');
     const prose = await page.locator('#lesson').innerText();
     for (const word of ['crates/', 'formal/', 'Rat', '正本', '計算核', 'sorry']) {
@@ -440,16 +444,28 @@ test('証明の節は画面が Lean を実行しないと述べ、各ページ�
     await expectReadingPage(page);
   }
 
-  const checked = ['./', 'uniform.html', 'derivative.html', 'integrate.html', 'velocity-step.html'];
-  const unchecked = ['accelerated.html', 'ode.html', 'separation.html', 'linear.html', 'homogeneous.html', 'exact.html', 'bernoulli.html', 'second-order.html', 'undetermined.html', 'variation.html', 'laplace.html', 'series.html', 'system.html'];
+  const velocityOnly = ['uniform.html', 'derivative.html', 'velocity-step.html'];
+  const velocityAndAcceleration = ['./', 'integrate.html'];
+  const realProofs: [string, string, string][] = [
+    ['accelerated.html', 'constantAcceleration_solves', 'Ergion.ConstantAcceleration'],
+    ['ode.html', 'isOdeSolution_iff_deriv', 'Ergion.Solution'],
+    ['separation.html', 'separatedExponential_solves', 'Ergion.Separation'],
+    ['linear.html', 'firstOrderLinear_solves', 'Ergion.FirstOrderLinear'],
+    ['homogeneous.html', 'homogeneousRatio_solves', 'Ergion.Homogeneous'],
+    ['exact.html', 'exactPotential_constant', 'Ergion.Exact'],
+    ['bernoulli.html', 'bernoulli_to_linear', 'Ergion.Bernoulli'],
+    ['second-order.html', 'twoReal_general', 'Ergion.SecondOrder'],
+    ['undetermined.html', 'undetermined_coefficient', 'Ergion.Undetermined'],
+    ['variation.html', 'variation_solves', 'Ergion.Variation'],
+    ['laplace.html', 'laplaceSolution_transform', 'Ergion.Laplace'],
+    ['series.html', 'powerSeries_eq_cos', 'Ergion.PowerSeries'],
+    ['system.html', 'linearSystem_solves', 'Ergion.LinearSystem'],
+  ];
   const numerical = ['euler.html', 'midpoint.html', 'rk4.html', 'newton.html'];
-  for (const href of checked) {
-    await page.goto(href);
-    const source = page.locator('.proof-source');
-    await expect(source).toHaveCount(1);
-    await expect(source).toContainText('constantVelocitySteps_eq');
-    await expect(source).not.toContainText('sorry');
+  async function expectCheckedProse() {
     await expect(page.locator('#proof-heading')).toHaveText('証明');
+    await expect(page.locator('.proof')).not.toContainText('まだ確かめていません');
+    await expect(page.locator('.proof-source')).not.toContainText('sorry');
     const proofProse = await page.locator('.proof').evaluate((node) => {
       const clone = node.cloneNode(true) as HTMLElement;
       clone.querySelectorAll('.proof-source').forEach((element) => element.remove());
@@ -459,12 +475,28 @@ test('証明の節は画面が Lean を実行しないと述べ、各ページ�
       expect(proofProse).not.toContain(word);
     }
   }
-  for (const href of unchecked) {
+  for (const href of velocityOnly) {
     await page.goto(href);
-    await expect(page.locator('.proof-source')).toHaveCount(0);
-    await expect(page.locator('.proof')).toContainText('このページの証明は、まだ確かめていません。');
-    await expect(page.locator('.proof')).not.toContainText('sorry');
-    await expect(page.locator('#proof-heading')).toHaveText('証明');
+    const source = page.locator('.proof-source');
+    await expect(source).toHaveCount(1);
+    await expect(source).toContainText('constantVelocitySteps_eq');
+    await expectCheckedProse();
+  }
+  for (const href of velocityAndAcceleration) {
+    await page.goto(href);
+    const source = page.locator('.proof-source');
+    await expect(source).toHaveCount(2);
+    await expect(source.nth(0)).toContainText('constantVelocitySteps_eq');
+    await expect(source.nth(1)).toContainText('constantAcceleration_solves');
+    await expectCheckedProse();
+  }
+  for (const [href, theorem, moduleName] of realProofs) {
+    await page.goto(href);
+    const source = page.locator('.proof-source');
+    await expect(source).toHaveCount(1);
+    await expect(source).toContainText(theorem);
+    await expect(page.locator('.proof').getByRole('link', { name: moduleName, exact: true })).toHaveCount(1);
+    await expectCheckedProse();
   }
   for (const href of numerical) {
     await page.goto(href);
@@ -678,7 +710,11 @@ test('学部の標準的な解法をデスクトップと狭い画面で読む',
     const link = page.locator('#study').getByRole('link', { name: '厳密解の説明', exact: true });
     await expect(link).toHaveCount(1);
     await expect(link).toHaveAttribute('href', href);
-    const text = await page.locator('#lesson').innerText();
+    const text = await page.locator('#lesson').evaluate((node) => {
+      const clone = node.cloneNode(true) as HTMLElement;
+      clone.querySelectorAll('.proof-source').forEach((element) => element.remove());
+      return clone.innerText;
+    });
     for (const word of ['crates/', '正本', '計算核', item.fn, 'Textbook', 'ばね', '電磁気']) {
       expect(text, item.href).not.toContain(word);
     }
