@@ -74,7 +74,7 @@ renderLesson({
       です。${tex(String.raw`\gamma`)} が小さいほど山は高く、${tex(String.raw`\omega_r`)} は ${tex(String.raw`\omega_0`)} に近づきます。`,
     `初期値問題の厳密解は、${tex(String.raw`x_h(0) = x_0 - x_p(0)`)}、${tex(String.raw`x_h'(0) = v_0 - x_p'(0)`)} となる減衰振動の解 ${tex('x_h')} を加えたものです（${coreDoc('mechanics', 'forced_state', '初期値問題の厳密解の説明')}）。${tex('x_h')} は ${tex(String.raw`e^{-\beta t}`)} で小さくなるので、時間が十分たつと ${tex(String.raw`x \approx x_p`)} です。数値解は、${tex(`x' = v`)}、${tex(String.raw`v' = (F_0\cos\omega t - \gamma v - k x)/m`)} を選んだ方法で1ステップずつ進めた近似です。`,
   ],
-  figureAlt: '共鳴曲線。減衰係数が小さいほど、定常振幅の山が ω = 2 の近くで高く鋭い。',
+  figureAlt: '減衰係数が小さいほど、定常振幅の山が ω = 2 の近くで高く鋭くなる共鳴曲線。',
   figure: experimentPanel({
     fieldsetLabel: 'ばね、抵抗、外力',
     fields: [

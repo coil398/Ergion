@@ -96,7 +96,7 @@ renderLesson({
       ${eq(String.raw`-\frac{\rho}{2}u_{j-1}^{n+1} + (1 + \rho)u_j^{n+1} - \frac{\rho}{2}u_{j+1}^{n+1} = \frac{\rho}{2}u_{j-1}^n + (1 - \rho)u_j^n + \frac{\rho}{2}u_{j+1}^n`)}
       で、三重対角の連立1次方程式を Thomas 法で解きます（${coreDoc('finance', 'crank_nicolson_heat_step', 'Crank–Nicolson 法の説明')}、${coreDoc('differential', 'solve_tridiagonal', 'Thomas 法の説明')}）。どの ${tex(String.raw`\rho`)} でも安定です。格子の値を ${tex(String.raw`V = Ke^{-\alpha x - \beta\tau}u`)} で価格に戻し、格子の間は線形補間します（${coreDoc('finance', 'interpolate', '線形補間の説明')}）。差分法の値は格子による近似で、主な誤差は ${tex(String.raw`\Delta x^2`)} に比例します。`,
   ],
-  figureAlt: '満期の支払い max(S − 100, 0) の折れ線と、満期までの時間 0.25、0.5、1 年のコールの価格の曲線。時間が長いほど曲線は折れ線の上に丸く持ち上がる。右は熱伝導方程式の変数の初期値と時間発展。',
+  figureAlt: '満期の支払い max(S − 100, 0) の折れ線と、満期までの時間 0.25、0.5、1 年のコールの価格の曲線は、時間が長いほど折れ線の上に丸く持ち上がる。',
   figure: `
     <section class="plots panel lesson-figure" aria-labelledby="fig-heading">
       <div class="panel-heading"><h2 id="fig-heading">コールの価格と熱伝導方程式の変数</h2><div class="legend"><span><i class="numerical"></i>差分法</span><span><i class="analytical"></i>Black–Scholes 公式</span></div></div>

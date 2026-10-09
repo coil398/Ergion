@@ -40,7 +40,7 @@ renderLesson({
       ${eq(String.raw`E(r) = \begin{cases} \dfrac{Q r}{a^3} & (r \le a) \\[1ex] \dfrac{Q}{r^2} & (r > a) \end{cases}`)}
       です（${coreDoc('electromagnetism', 'uniform_ball_field', '一様な球の電場の説明')}）。球の外では、全電荷が中心に集まった点電荷の電場と同じです。`,
   ],
-  figureAlt: '原点の点電荷と、中心をずらした Gauss 面の断面、面を貫く電場の矢印。一様に帯電した球の電場の大きさ。',
+  figureAlt: '原点の点電荷と中心をずらした Gauss 面の断面、面を貫く電場の矢印、および一様に帯電した球の電場の大きさ。',
   figure: `
       <section class="plots panel lesson-figure" aria-labelledby="fig-heading">
         <div class="panel-heading"><h2 id="fig-heading">閉曲面を貫く電束 ${tex(String.raw`\Phi`)}</h2><div class="legend"><span><i class="analytical"></i>Gauss の法則による厳密な電場</span></div></div>

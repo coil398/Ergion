@@ -46,7 +46,7 @@ renderLesson({
       で、各成分は ${tex('[-L/2, L/2]')} に入ります（${coreDoc('molecular', 'minimum_image', '最小イメージの説明')}）。距離は ${tex(String.raw`r_{ij} \le \sqrt{3}\,L/2`)} です。`,
     `相互作用をカットオフ距離 ${tex('r_c')} で打ち切るときは ${tex(String.raw`r_c < L/2`)} とします。粒子 ${tex('j')} の異なる2つの鏡像は少なくとも ${tex('L')} 離れているので、両方が粒子 ${tex('i')} から ${tex('r_c')} 以内にあると三角不等式から ${tex(String.raw`L \le 2r_c`)} となり矛盾します。よって力に寄与する鏡像は最小イメージの一つだけです。${tex('N')} 粒子のペアは ${tex(String.raw`N(N - 1)/2`)} 組で、それぞれに最小イメージを使います。`,
   ],
-  figureAlt: '中央の立方体セルとそれを囲む鏡像セル。セルの面を出た粒子が、向かい合う面から同じ速度で入り直す図。',
+  figureAlt: '中央の立方体セルとそれを囲む鏡像セルで、面を出た粒子が向かい合う面から同じ速度で入り直す。',
   figure: `
       <section class="plots panel lesson-figure" aria-labelledby="hand-heading">
         <div class="panel-heading"><h2 id="hand-heading">折り返しと最小イメージの値（L = 10）</h2></div>

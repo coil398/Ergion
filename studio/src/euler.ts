@@ -1,7 +1,7 @@
 import { mountMethodPage } from './method-page';
 
 mountMethodPage({
-  figureAlt: '速度が一定のとき、Euler 法が始点の接線を Δt だけ延ばした線は、厳密解と同じ一つの直線である。二つの解は一致し、打ち切り誤差は 0。',
+  figureAlt: '速度が一定のとき、Euler 法が始点の接線を Δt だけ延ばした線は厳密解と同じ一つの直線になり、打ち切り誤差は 0 である。',
   page: 'euler',
   method: 'euler',
   title: 'Euler法',

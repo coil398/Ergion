@@ -48,7 +48,7 @@ renderLesson({
       ${eq(String.raw`E'(h) = \frac{|f''(x)|}{2} - \frac{\varepsilon |f(x)|}{h^2} = 0,\qquad h = \sqrt{\frac{2\varepsilon |f(x)|}{|f''(x)|}}`)}
       で、${tex(String.raw`\sin 1 = |f''(1)| = |f(1)|`)} より ${tex(String.raw`h = \sqrt{2\varepsilon} \approx 1.5 \times 10^{-8}`)} で最小です。中心差分では ${tex(String.raw`\frac{h^2}{6}|f'''| + \frac{\varepsilon |f|}{h}`)} を同じように最小にして ${tex(String.raw`h = (3\varepsilon |f| / |f'''|)^{1/3} \approx 8 \times 10^{-6}`)} です。グラフの谷は、この見積もりに近い位置にあります。`,
   ],
-  figureAlt: '刻み h に対する前進差分と中心差分の誤差の両対数グラフ。傾き 1 と 2 の直線と、h が小さい側で誤差が増え始める谷。',
+  figureAlt: '刻み h に対する前進差分と中心差分の誤差の両対数グラフは、傾き 1 と 2 の直線を示し、h が小さい側で誤差が増え始める。',
   figure: `
       <section class="plots panel lesson-figure" aria-labelledby="fig-heading">
         <div class="panel-heading"><h2 id="fig-heading">差分による微分係数 ${tex(String.raw`D f(1)`)} と誤差</h2><div class="legend"><span><i class="numerical"></i>選んだ差分</span><span><i class="analytical"></i>厳密な接線</span></div></div>

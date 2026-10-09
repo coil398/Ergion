@@ -4,9 +4,6 @@
  * 文の一部である行中の式には番号を付けない。先の表示を指す語は、その番号に引き換える。
  */
 
-import { drawPlot } from './figures/plot';
-import { onThemeChange } from './theme';
-
 const FORWARD = ['次の等式', '次の増分', '次の式'] as const;
 
 /** ページの式を、一つの板と番号に整える。各ページの本文を置いたあとで呼ぶ。 */
@@ -25,20 +22,6 @@ function placeOpeningChart(main: HTMLElement) {
   const figure = main.querySelector<HTMLElement>('.page-figure');
   const intro = main.querySelector('.intro');
   if (figure && intro) intro.after(figure);
-  const opening = main.querySelector<HTMLCanvasElement>('#opening-chart');
-  if (!opening) return;
-  const drawFallback = () => {
-    if (opening.dataset.source && opening.dataset.source !== 'fallback') return;
-    drawPlot(opening, { label: '軸', xMin: 0, xMax: 1, yMin: -1, yMax: 1 });
-    if (opening.width > 2) opening.dataset.source = 'fallback';
-  };
-  requestAnimationFrame(drawFallback);
-  onThemeChange(() => {
-    if (opening.dataset.source === 'fallback') {
-      delete opening.dataset.source;
-      drawFallback();
-    }
-  });
 }
 
 function displaysIn(root: ParentNode): HTMLElement[] {

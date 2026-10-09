@@ -47,7 +47,7 @@ renderLesson({
       です。被積分関数 ${tex('r')} は1次式なので、動径 ${tex('n_r')} 等分、角 ${tex(String.raw`n_\theta`)} 等分の中点和も、上と同じ計算で厳密に ${tex(String.raw`\pi`)} です（${coreDoc('calculus', 'polar_disk_area_sum', '極座標の中点和の説明')}）。`,
     `同じ面積を直交座標で求めるには、正方形 ${tex('[-1, 1]^2')} を ${tex('n \\times n')} に分け、中点が円板に入る小さな正方形の面積を足します（${coreDoc('calculus', 'disk_area_grid_sum', '直交格子の和の説明')}）。被積分関数は円の上で 1 から 0 へ跳ぶので、境界をまたぐ正方形の数え方の差が残ります。差は格子を細かくすると小さくなりますが、減り方は一様ではありません。`,
   ],
-  figureAlt: '正方形を覆う中点の格子と、単位円板を覆う格子。格子を細かくすると、円板の格子和と π の差が小さくなる。',
+  figureAlt: '正方形と単位円板を覆う格子を細かくすると、円板の格子和と π の差が小さくなる。',
   figure: `
       <section class="plots panel lesson-figure" aria-labelledby="fig-heading">
         <div class="panel-heading"><h2 id="fig-heading">中点の格子と格子和</h2><div class="legend"><span><i class="numerical"></i>中点（格子和に使う点）</span><span><i class="analytical"></i>厳密な境界（単位円）</span></div></div>

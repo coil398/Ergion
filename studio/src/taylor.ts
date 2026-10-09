@@ -46,7 +46,7 @@ renderLesson({
       ${eq(String.raw`\frac{|x|^{n+2}/(n+2)!}{|x|^{n+1}/(n+1)!} = \frac{|x|}{n+2}`)}
       ${tex('n + 2 > 2|x|')} となる次数からは、この比は ${tex(String.raw`\frac{1}{2}`)} より小さいので、上界は 0 に近づきます。したがって、どの ${tex('x')} でも ${tex('P_n(x) \\to e^x')} で、無限級数 ${tex(String.raw`e^x = \sum_{k=0}^{\infty} x^k/k!`)} が成り立ちます。展開の中心 ${tex('x = 0')} から離れるほど ${tex('|x|^{n+1}')} が大きく、同じ次数では差が広がります。`,
   ],
-  figureAlt: '指数関数 e^x と、次数 1 から 4 の Taylor 多項式。中心 x = 0 の近くでは曲線が重なり、離れるほど差が広がる。',
+  figureAlt: '指数関数 e^x と次数 1 から 4 の Taylor 多項式は、中心 x = 0 の近くで重なり、離れるほど差が広がる。',
   figure: `
       <section class="plots panel lesson-figure" aria-labelledby="fig-heading">
         <div class="panel-heading"><h2 id="fig-heading">指数関数と Taylor 多項式 ${tex('P_n(x)')}</h2><div class="legend"><span><i class="numerical"></i>選んだ次数の多項式</span><span><i class="analytical"></i>厳密な指数関数</span></div></div>

@@ -1249,13 +1249,8 @@ test('既存のページは、その図を明るい配色と暗い配色で示�
     'homogeneous.html', 'exact.html', 'bernoulli.html', 'second-order.html', 'undetermined.html', 'variation.html', 'laplace.html',
     'series.html', 'system.html', 'velocity-step.html', 'euler.html', 'midpoint.html', 'rk4.html', 'newton.html', 'proof.html',
   ];
-  const ink = () => page.locator('#opening-chart').evaluate((canvas: HTMLCanvasElement) => {
-    if (canvas.width < 2 || canvas.height < 2) return 0;
-    const { data } = canvas.getContext('2d')!.getImageData(0, 0, canvas.width, canvas.height);
-    let count = 0;
-    for (let i = 0; i < data.length; i += 4) if (data[i + 3] > 20) count += 1;
-    return count;
-  });
+  const idOf = (href: string) => href === './' ? 'mechanics' : href.replace(/^\.\//, '').replace(/\.html$/, '');
+  const visibleFigure = () => page.locator('.page-figure img').locator('visible=true');
   for (const href of pages) {
     await page.setViewportSize({ width: 1440, height: 1050 });
     await page.emulateMedia({ colorScheme: 'light' });
@@ -1268,7 +1263,12 @@ test('既存のページは、その図を明るい配色と暗い配色で示�
       }
     }
     await page.locator('.page-figure').scrollIntoViewIfNeeded();
-    await expect.poll(ink, href).toBeGreaterThan(0);
+    const light = visibleFigure();
+    await expect(light, href).toHaveCount(1);
+    await expect(light, href).toHaveAttribute('src', new RegExp(`/figures/${idOf(href)}/figure\\.png$`));
+    await expect(page.locator('.page-figure figcaption'), href).toHaveCount(0);
+    await expect(page.locator('.page-figure canvas'), href).toHaveCount(0);
+    await expect.poll(() => light.evaluate((node: HTMLImageElement) => node.complete && node.naturalWidth > 8), href).toBe(true);
     await expect(page.locator('.intro .equation')).toHaveCount(0);
     const placed = await page.evaluate(() => {
       const intro = document.querySelector('.intro');
@@ -1281,11 +1281,14 @@ test('既存のページは、その図を明るい配色と暗い配色で示�
     expect(placed.chartBeforeSteps, href).toBe(true);
     await page.locator('.theme-toggle').click();
     await page.locator('.page-figure').scrollIntoViewIfNeeded();
-    await expect.poll(ink, href).toBeGreaterThan(0);
+    const dark = visibleFigure();
+    await expect(dark, href).toHaveAttribute('src', new RegExp(`/figures/${idOf(href)}/figure-dark\\.png$`));
+    await expect.poll(() => dark.evaluate((node: HTMLImageElement) => node.complete && node.naturalWidth > 8), href).toBe(true);
     await page.locator('.theme-toggle').click();
     await page.setViewportSize({ width: 390, height: 844 });
     await page.locator('.page-figure').scrollIntoViewIfNeeded();
-    await expect.poll(ink, href).toBeGreaterThan(0);
+    await expect(visibleFigure(), href).toHaveAttribute('src', new RegExp(`/figures/${idOf(href)}/figure\\.png$`));
+    await expect.poll(() => visibleFigure().evaluate((node: HTMLImageElement) => node.complete && node.naturalWidth > 8), href).toBe(true);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), href).toBe(true);
     await page.evaluate(() => localStorage.removeItem('ergion-theme'));
   }

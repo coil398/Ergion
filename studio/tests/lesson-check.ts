@@ -13,13 +13,17 @@ export interface LessonPage {
   proof?: boolean;
 }
 
-async function openingHasInk(page: Page) {
-  return page.locator('#opening-chart').evaluate((canvas: HTMLCanvasElement) => {
-    if (canvas.width < 2 || canvas.height < 2) return false;
-    const { data } = canvas.getContext('2d')!.getImageData(0, 0, canvas.width, canvas.height);
-    for (let i = 0; i < data.length; i += 4) if (data[i + 3] > 20) return true;
-    return false;
-  });
+async function openingImage(page: Page, href: string, dark: boolean) {
+  const id = href.replace(/^\.\//, '').replace(/\.html$/, '');
+  const img = page.locator('.page-figure img').locator('visible=true');
+  await expect(img, href).toHaveCount(1);
+  await expect(img, href).toHaveAttribute('src', new RegExp(`/figures/${id}/${dark ? 'figure-dark' : 'figure'}\\.png$`));
+  await expect(img, href).toHaveAttribute('alt', /。$/);
+  const alt = await img.getAttribute('alt');
+  expect(alt?.split('。').filter(Boolean), href).toHaveLength(1);
+  await expect(page.locator('.page-figure figcaption'), href).toHaveCount(0);
+  await expect(page.locator('.page-figure canvas'), href).toHaveCount(0);
+  await expect.poll(() => img.evaluate((node: HTMLImageElement) => node.complete && node.naturalWidth > 8), href).toBe(true);
 }
 
 /** 単元のページの読み順、図、配色、文言を確かめる。 */
@@ -66,7 +70,7 @@ export async function checkLessonPage(page: Page, item: LessonPage) {
       expect((await item.innerText()).trim()).toBe((await item.locator('a').innerText()).trim());
     }
     await page.locator('.page-figure').scrollIntoViewIfNeeded();
-    await expect.poll(() => openingHasInk(page), item.href).toBe(true);
+    await openingImage(page, item.href, false);
     for (const selector of item.canvases ?? []) {
       await expect.poll(() => page.locator(selector).evaluate((canvas: HTMLCanvasElement) => {
         const { data } = canvas.getContext('2d')!.getImageData(0, 0, canvas.width, canvas.height);
@@ -76,7 +80,7 @@ export async function checkLessonPage(page: Page, item: LessonPage) {
       }), `${item.href} ${selector}`).toBeGreaterThan(0);
     }
     await page.emulateMedia({ colorScheme: 'dark' });
-    await expect.poll(() => openingHasInk(page), `${item.href} dark`).toBe(true);
+    await openingImage(page, item.href, true);
   }
   await page.emulateMedia({ colorScheme: 'light' });
 }

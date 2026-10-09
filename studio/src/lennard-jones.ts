@@ -73,7 +73,7 @@ renderLesson({
       ${eq(String.raw`v_i(t + \Delta t) = v_i\!\left(t + \tfrac{\Delta t}{2}\right) + \tfrac{\Delta t}{2}\,a_i(t + \Delta t)`)}
       と進めた近似です。この方法は時間を反転しても同じ式になり、${tex('E')} の誤差は ${tex(String.raw`O(\Delta t^2)`)} の幅で振動するだけです。Euler法 ${tex(String.raw`x_i \gets x_i + \Delta t\,v_i`)}、${tex(String.raw`v_i \gets v_i + \Delta t\,a_i`)} はこの対称性をもたず、${tex('E')} が増え続けます。`,
   ],
-  figureAlt: 'Lennard–Jones ポテンシャル V(r) と力 F(r) の曲線。r₀ = 2^{1/6}σ で V が最小値 −ε をとり、F が反発から引力へ符号を変える図。',
+  figureAlt: 'Lennard–Jones ポテンシャル V(r) と力 F(r) は、r₀ = 2^{1/6}σ で V が最小値 −ε をとり、F が反発から引力へ符号を変える。',
   figure: `
       <section class="plots panel lesson-figure" aria-labelledby="curve-heading">
         <div class="panel-heading"><h2 id="curve-heading">ポテンシャル ${tex('V(r)')} と力 ${tex('F(r)')}</h2><div class="legend">${legend}</div></div>

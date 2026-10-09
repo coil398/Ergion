@@ -44,7 +44,7 @@ renderLesson({
       です。`,
     `等電位線 ${tex(String.raw`\phi = \text{一定}`)} の接線は ${tex(String.raw`\nabla\phi`)} に垂直なので、${tex(String.raw`\frac{d\mathbf{r}}{ds} = \frac{(-E_y,\ E_x)}{|\mathbf{E}|}`)} を刻み ${tex(String.raw`\Delta s = 0.01`)} の古典的 RK4 でたどって描きます（${coreDoc('electromagnetism', 'equipotential_line', '等電位線をたどる計算の説明')}）。電場の矢印は等電位線に垂直で、電位の高い側から低い側へ向きます。`,
   ],
-  figureAlt: '正電荷と負電荷のまわりの等電位線と、等電位線に垂直な電場の矢印。点 A から B への直線と半円の経路。',
+  figureAlt: '正電荷と負電荷のまわりの等電位線と、等電位線に垂直な電場の矢印、および点 A から B への直線と半円の経路。',
   figure: `
       <section class="plots panel lesson-figure" aria-labelledby="fig-heading">
         <div class="panel-heading"><h2 id="fig-heading">等電位線と電場 ${tex(String.raw`\mathbf{E} = -\nabla\phi`)}</h2><div class="legend"><span><i class="numerical"></i>直線の経路</span></div></div>

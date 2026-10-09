@@ -59,7 +59,7 @@ renderLesson({
       ${eq(String.raw`\bar{A} = \frac{1}{n_b}\sum_{m=1}^{n_b} \bar{A}_m, \qquad s_b^2 = \frac{1}{n_b - 1}\sum_{m=1}^{n_b}\left(\bar{A}_m - \bar{A}\right)^2, \qquad \mathrm{SE} = \frac{s_b}{\sqrt{n_b}}`)}
       です（${coreDoc('molecular', 'block_average', 'ブロック平均の説明')}）。最初の ${tex('n_{\\mathrm{eq}}')} ステップは面心立方格子から融けて平衡に近づく途中なので、平均にも ${tex('g(r)')} にも使いません。`,
   ],
-  figureAlt: '距離 r に対する動径分布関数 g(r)。第1近接殻と第2近接殻のピークが並び、遠くで 1 に近づく図。',
+  figureAlt: '距離 r に対する動径分布関数 g(r) は、第1近接殻と第2近接殻のピークが並び、遠くで 1 に近づく。',
   figure: `
       <section class="plots panel lesson-figure" aria-labelledby="hand-heading">
         <div class="panel-heading"><h2 id="hand-heading">2原子の配置の温度と圧力（L = 10）</h2></div>
