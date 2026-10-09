@@ -19,7 +19,7 @@ app.innerHTML = `
       <section class="intro">
         <div>
           <p class="breadcrumb">数値計算 <span>/</span> ニュートン法</p>
-          <h1>ニュートン法<span class="title-dot">.</span></h1>
+          <h1>ニュートン法</h1>
           <p class="description">微分できる実関数 ${tex('f')} について、${tex('f(x) = 0')} を満たす ${tex('x')} を接線で近似します。これは微分方程式を時刻で進める方法ではありません。</p>
         </div>
       </section>

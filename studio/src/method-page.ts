@@ -146,7 +146,7 @@ export function mountMethodPage(options: {
         <section class="intro">
           <div>
             <p class="breadcrumb">数値計算 <span>/</span> ${options.title}</p>
-            <h1>${options.title}<span class="title-dot">.</span></h1>
+            <h1>${options.title}</h1>
             <p class="description">例は ${tex(String.raw`x' = v`)} で、速度 ${tex('v')} は一定です。厳密解は ${tex('x(t) = x_0 + v t')} です。</p>
           </div>
         </section>

@@ -24,6 +24,12 @@ async function openingImage(page: Page, href: string, dark: boolean) {
   await expect(page.locator('.page-figure figcaption'), href).toHaveCount(0);
   await expect(page.locator('.page-figure canvas'), href).toHaveCount(0);
   await expect.poll(() => img.evaluate((node: HTMLImageElement) => node.complete && node.naturalWidth > 8), href).toBe(true);
+  const shape = await img.evaluate((node: HTMLImageElement) => {
+    const box = node.getBoundingClientRect();
+    return { width: box.width, height: box.height, naturalWidth: node.naturalWidth, naturalHeight: node.naturalHeight };
+  });
+  expect(shape.naturalWidth, href).toBe(720);
+  expect(Math.abs(shape.width / shape.height - shape.naturalWidth / shape.naturalHeight), href).toBeLessThan(0.02);
 }
 
 /** 単元のページの読み順、図、配色、文言を確かめる。 */
@@ -32,7 +38,9 @@ export async function checkLessonPage(page: Page, item: LessonPage) {
     await page.setViewportSize({ width, height: width === 1440 ? 1050 : 844 });
     await page.emulateMedia({ colorScheme: 'light' });
     await page.goto(item.href);
-    await expect(page.getByRole('heading', { level: 1, name: `${item.title}.` })).toBeVisible();
+    const railToggle = page.locator('.rail-toggle');
+    if (await railToggle.isVisible()) await railToggle.click();
+    await expect(page.getByRole('heading', { level: 1, name: item.title })).toBeVisible();
     await expect(page.locator('.intro .equation')).toHaveCount(0);
     await expect(page.locator('#study .equation-plate, #study .solution-equation').first()).toBeVisible();
     await expect(page.getByRole('button', { name: item.section, exact: true })).toHaveAttribute('aria-expanded', 'true');

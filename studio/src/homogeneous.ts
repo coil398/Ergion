@@ -15,7 +15,7 @@ app.innerHTML = `
       <section class="intro">
         <div>
           <p class="breadcrumb"><a href="./ode.html">微分方程式</a> <span>/</span> 同次形</p>
-          <h1>同次形<span class="title-dot">.</span></h1>
+          <h1>同次形</h1>
           <p class="description">右辺が比 ${tex('x/t')} だけの関数である方程式を、同次形と呼びます。置換 ${tex('u = x/t')} で <a class="doc-link" href="./separation.html">変数分離</a> に戻します。ここで得る式は厳密解です。2階方程式の右辺が 0 であるという意味の同次とは、別の形です。</p>
         </div>
       </section>

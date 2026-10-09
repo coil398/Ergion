@@ -15,7 +15,7 @@ app.innerHTML = `
       <section class="intro">
         <div>
           <p class="breadcrumb"><a href="./ode.html">微分方程式</a> <span>/</span> 1階線形</p>
-          <h1>1階線形<span class="title-dot">.</span></h1>
+          <h1>1階線形</h1>
           <p class="description">未知関数とその導関数が1次式で結ばれ、係数が定数である方程式を、積分因子を掛けて積分します。<a class="doc-link" href="./separation.html">変数分離</a>では右辺が位置に比例するだけでした。ここでは左辺に位置の項を残し、右辺は定数です。得る式は厳密解です。</p>
         </div>
       </section>

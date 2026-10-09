@@ -171,17 +171,17 @@ function sectionDisclosure(id: string, label: string, open: boolean, current: bo
       </div>`;
 }
 
-/** 幅の狭い画面では目次は高さの限られた枠で、いまのページがその枠の中に見えるように送る。 */
-setTimeout(() => {
-  const box = document.querySelector<HTMLElement>('.rail');
-  const current = box?.querySelector<HTMLElement>('.rail-page.active');
-  if (!box || !current || box.scrollHeight <= box.clientHeight) return;
-  box.scrollTop += current.getBoundingClientRect().top - box.getBoundingClientRect().top - box.clientHeight / 3;
-});
-
 document.addEventListener('click', (event) => {
   const target = event.target;
   if (!(target instanceof Element)) return;
+  const toggle = target.closest('button.rail-toggle');
+  if (toggle instanceof HTMLButtonElement) {
+    const rail = toggle.closest('.rail');
+    const open = toggle.getAttribute('aria-expanded') !== 'true';
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    rail?.classList.toggle('is-open', open);
+    return;
+  }
   const button = target.closest('button.rail-group-title, button.rail-section-title');
   if (!(button instanceof HTMLButtonElement)) return;
   const open = button.getAttribute('aria-expanded') !== 'true';
@@ -241,8 +241,11 @@ export function rail(active: PageId): string {
   }).join('');
   return `
     <aside class="rail" aria-label="目次">
-      ${groups}
-      <a class="source-link" href="https://github.com/coil398/Ergion" target="_blank" rel="noreferrer">ソースコード ↗</a>
+      <button type="button" class="rail-toggle" aria-expanded="false" aria-controls="rail-body">目次</button>
+      <div class="rail-body" id="rail-body">
+        ${groups}
+        <a class="source-link" href="https://github.com/coil398/Ergion" target="_blank" rel="noreferrer">ソースコード ↗</a>
+      </div>
     </aside>`;
 }
 

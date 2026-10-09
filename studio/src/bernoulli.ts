@@ -15,7 +15,7 @@ app.innerHTML = `
       <section class="intro">
         <div>
           <p class="breadcrumb"><a href="./ode.html">微分方程式</a> <span>/</span> ベルヌーイ</p>
-          <h1>ベルヌーイ<span class="title-dot">.</span></h1>
+          <h1>ベルヌーイ</h1>
           <p class="description">未知関数のべきが右辺に残る方程式を、ベルヌーイの方程式と呼びます。指数が 0 でも 1 でもないとき、置換で <a class="doc-link" href="./linear.html">1階線形</a> に戻します。ここで得る式は厳密解です。</p>
         </div>
       </section>

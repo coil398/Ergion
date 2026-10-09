@@ -1,10 +1,12 @@
 import './style.css';
 import { pageFigure } from './page-figure';
 import { appHeader, pageFooter, rail, relatedPages } from './chrome';
+import { drawPlot } from './figures';
+import { onThemeChange } from './theme';
+import { tex } from './tex';
 import constantVelocityProof from '../../formal/lean/Ergion/ConstantVelocity.lean?raw';
 import constantAccelerationProof from '../../formal/lean/Ergion/ConstantAcceleration.lean?raw';
 import { checkedProofs } from './proof';
-import { tex } from './tex';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 app.innerHTML = `
@@ -15,7 +17,7 @@ app.innerHTML = `
       <section class="intro">
         <div>
           <p class="breadcrumb"><a href="./ode.html">微分方程式</a> <span>/</span> 積分して解く</p>
-          <h1>積分して解く<span class="title-dot">.</span></h1>
+          <h1>積分して解く</h1>
           <p class="description">右辺が未知関数 ${tex('x')} を含まないとき、両辺を時刻で積分して解きます。ここで得る式は、どれも厳密解です。</p>
         </div>
       </section>
@@ -59,6 +61,12 @@ app.innerHTML = `
         </div>
       </section>
       ${pageFigure('integrate', '右辺が未知関数を含まないとき、解は右辺を時刻で積分した値だけ増える。')}
+      <section class="plots panel" aria-labelledby="integrate-chart-heading">
+        <div class="panel-heading"><h2 id="integrate-chart-heading">積分した厳密解</h2></div>
+        <div class="plot-grid">
+          <div class="plot-main"><h3>位置の時間変化 ${tex('x(t)')}</h3><canvas id="solution-chart" role="img"></canvas><p>時間 t</p></div>
+        </div>
+      </section>
       <section class="study panel" id="example" aria-labelledby="example-heading">
         <div class="panel-heading"><h2 id="example-heading">数を代入した例</h2></div>
         <div class="study-body">
@@ -101,3 +109,26 @@ app.innerHTML = `
   </div>`;
 
 document.querySelector('#status')!.setAttribute('data-phase', 'ready');
+
+/** 例の数を入れた二つの厳密解。直線は速度が一定、曲線は加速度が一定。 */
+function paintExact() {
+  const canvas = document.querySelector<HTMLCanvasElement>('#solution-chart');
+  if (!canvas) return;
+  const times = Array.from({ length: 61 }, (_, index) => 3 * index / 60);
+  drawPlot(canvas, {
+    key: 'integrate-exact',
+    label: '速度が一定の x = 1 + 2t と、加速度が一定の x = 1 + t + 2t²',
+    xMin: 0,
+    xMax: 3,
+    yMin: 0,
+    yMax: 24,
+    lines: [
+      { x: times, y: times.map(t => 1 + 2 * t), role: 'exact', label: 'x = 1 + 2t' },
+      { x: times, y: times.map(t => 1 + t + 2 * t * t), role: 'text', label: 'x = 1 + t + 2t²' },
+    ],
+  });
+}
+
+paintExact();
+window.addEventListener('resize', paintExact);
+onThemeChange(paintExact);

@@ -26,7 +26,7 @@ app.innerHTML = `
       <section class="intro">
         <div>
           <p class="breadcrumb"><a href="./">力学</a> <span>/</span> 等速直線運動</p>
-          <h1>等速直線運動<span class="title-dot">.</span></h1>
+          <h1>等速直線運動</h1>
           <p class="description">外力を受けない一つの粒子が、直線上を一定の速度で進みます。加速度がゼロであることから、位置の厳密解がどのように出るかを、このページで順に見ます。</p>
         </div>
       </section>

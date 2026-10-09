@@ -15,7 +15,7 @@ app.innerHTML = `
       <section class="intro">
         <div>
           <p class="breadcrumb"><a href="./ode.html">微分方程式</a> <span>/</span> べき級数</p>
-          <h1>べき級数<span class="title-dot">.</span></h1>
+          <h1>べき級数</h1>
           <p class="description">係数が通常点のまわりでべき級数になるとき、解も同じ点のまわりのべき級数として求めます。ここでは通常点 ${tex('t = 0')} で、級数の和が閉じた関数になる方程式を解きます。和は厳密解です。</p>
         </div>
       </section>

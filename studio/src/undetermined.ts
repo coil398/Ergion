@@ -15,7 +15,7 @@ app.innerHTML = `
       <section class="intro">
         <div>
           <p class="breadcrumb"><a href="./ode.html">微分方程式</a> <span>/</span> 未定係数法</p>
-          <h1>未定係数法<span class="title-dot">.</span></h1>
+          <h1>未定係数法</h1>
           <p class="description">右辺が多項式、指数関数、正弦、余弦、またはそれらの積であるとき、特殊解の形を先に仮定して係数を決めます。同次解は <a class="doc-link" href="./second-order.html">定数係数の2階同次</a> で得ます。ここで得る式は厳密解です。</p>
         </div>
       </section>

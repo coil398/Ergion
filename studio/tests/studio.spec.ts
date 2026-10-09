@@ -35,6 +35,8 @@ const expectedGroups: [string, [string, string[]][]][] = [
 const expectedSectionCount = expectedGroups.reduce((count, [, sections]) => count + sections.length, 0);
 
 async function expectMechanicsSection(page: Page) {
+  const railToggle = page.locator('.rail-toggle');
+  if (await railToggle.isVisible() && await railToggle.getAttribute('aria-expanded') !== 'true') await railToggle.click();
   const groups = page.locator('.rail-group');
   await expect(groups).toHaveCount(expectedGroups.length);
   for (let groupIndex = 0; groupIndex < expectedGroups.length; groupIndex += 1) {
@@ -429,7 +431,7 @@ test('デスクトップとモバイルの表示', async ({ page }, testInfo) =>
   await expect(page.locator('#status')).toHaveText('計算完了');
   await page.screenshot({ path: testInfo.outputPath('studio-desktop.png'), fullPage: true });
   await page.setViewportSize({ width: 390, height: 844 });
-  await expect(page.getByRole('heading', { name: '等速直線運動.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '等速直線運動', exact: true })).toBeVisible();
   await expect(page.getByRole('heading', { name: '等速直線運動の計算と説明' })).toBeVisible();
   await expectMechanicsSection(page);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
@@ -443,6 +445,21 @@ test('節の名前はボタンで、閉じた節を開きいまの節を閉じ�
     await page.setViewportSize({ width, height: width === 1440 ? 1050 : 844 });
     await page.goto('uniform.html');
     await expect(page.locator('body')).not.toContainText('実験室');
+    if (width === 390) {
+      const toggle = page.getByRole('button', { name: '目次', exact: true });
+      await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+      await expect(page.getByRole('button', { name: '物理', exact: true })).toHaveCount(0);
+      const closed = await page.locator('.rail').evaluate(node => {
+        const style = getComputedStyle(node);
+        return { client: node.clientHeight, max: style.maxHeight, scrolls: node.scrollHeight > node.clientHeight + 1 };
+      });
+      expect(closed.max).toBe('none');
+      expect(closed.client).toBeLessThan(80);
+      expect(closed.scrolls).toBe(false);
+      const headingTop = await page.locator('h1').evaluate((node) => node.getBoundingClientRect().top);
+      expect(headingTop).toBeLessThan(220);
+      await toggle.click();
+    }
     const physics = page.getByRole('button', { name: '物理', exact: true });
     const math = page.getByRole('button', { name: '数学', exact: true });
     const applied = page.getByRole('button', { name: '応用数学', exact: true });
@@ -453,16 +470,6 @@ test('節の名前はボタンで、閉じた節を開きいまの節を閉じ�
     await expect(mechanics).toHaveAttribute('aria-expanded', 'true');
     await expect(page.getByRole('link', { name: '等速直線運動', exact: true })).toBeVisible();
     await expect(page.getByRole('button', { name: '微分方程式', exact: true })).toHaveCount(0);
-    if (width === 390) {
-      const headingTop = await page.locator('h1').evaluate((node) => node.getBoundingClientRect().top);
-      expect(headingTop).toBeLessThan(844);
-      const railBox = await page.locator('.rail').evaluate(node => {
-        const style = getComputedStyle(node);
-        return { client: node.clientHeight, max: parseFloat(style.maxHeight), scroll: node.scrollHeight > node.clientHeight };
-      });
-      expect(railBox.max).toBeLessThanOrEqual(320);
-      expect(railBox.client).toBeLessThanOrEqual(320);
-    }
     await math.click();
     const ode = page.getByRole('button', { name: '微分方程式', exact: true });
     await expect(ode).toHaveAttribute('aria-expanded', 'false');
@@ -524,7 +531,7 @@ test('粗い刻みでも数値軌道が表示範囲に収まる', async ({ page 
 
 test('力学の目次はいまページにしてあるものだけを示す', async ({ page }) => {
   await page.goto('./');
-  await expect(page.getByRole('heading', { level: 1, name: '力学.' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: '力学' })).toBeVisible();
   await expect(page.locator('#contents')).toContainText('直線上の一つの粒子');
   await expect(page.locator('#contents')).not.toContainText('これより後');
   await expect(tex(page, 'x_0').first()).toBeVisible();
@@ -554,7 +561,7 @@ async function expectReadingPage(page: Page) {
 test('微分方程式をデスクトップと狭い画面で読む', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1050 });
   await page.goto('ode.html');
-  await expect(page.getByRole('heading', { level: 1, name: '微分方程式.' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: '微分方程式' })).toBeVisible();
   await expect(page.locator('.intro .equation')).toHaveCount(0);
   await expect(tex(page, String.raw`\frac{d}{dt} x(t) = f(x(t), t)`).first()).toBeVisible();
   await expect(page.locator('#study')).toContainText('解であるためには');
@@ -580,7 +587,7 @@ test('微分方程式をデスクトップと狭い画面で読む', async ({ pa
   }
   await expectReadingPage(page);
   await page.setViewportSize({ width: 390, height: 844 });
-  await expect(page.getByRole('heading', { level: 1, name: '微分方程式.' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: '微分方程式' })).toBeVisible();
   await expect(page.locator('.equation').first()).toBeVisible();
   await expectReadingPage(page);
 });
@@ -588,7 +595,7 @@ test('微分方程式をデスクトップと狭い画面で読む', async ({ pa
 test('積分して解くをデスクトップと狭い画面で読む', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1050 });
   await page.goto('integrate.html');
-  await expect(page.getByRole('heading', { level: 1, name: '積分して解く.' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: '積分して解く' })).toBeVisible();
   await expect(page.locator('.intro .equation')).toHaveCount(0);
   await expect(tex(page, 'x(t) = x_0 + v t').first()).toBeVisible();
   await expect(tex(page, 'v(t) = v_0 + a t').first()).toBeVisible();
@@ -602,7 +609,7 @@ test('積分して解くをデスクトップと狭い画面で読む', async ({
   }
   await expectReadingPage(page);
   await page.setViewportSize({ width: 390, height: 844 });
-  await expect(page.getByRole('heading', { level: 1, name: '積分して解く.' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: '積分して解く' })).toBeVisible();
   await expect(page.locator('.solution-equation').first()).toBeVisible();
   await expectReadingPage(page);
 });
@@ -611,19 +618,19 @@ test('数値解法は方法ごとに別のページで読む', async ({ page }) 
   const pages: { href: string; title: string; formula: string; doc: string }[] = [
     {
       href: 'euler.html',
-      title: 'Euler法.',
+      title: 'Euler法',
       formula: String.raw`x_{n+1} = x_n + \Delta t \, f(x_n, t_n)`,
       doc: '/Ergion/doc/ergion_core/fn.euler_step.html',
     },
     {
       href: 'midpoint.html',
-      title: '中点法.',
+      title: '中点法',
       formula: String.raw`x_{n+1} = x_n + \Delta t \, k_2`,
       doc: '/Ergion/doc/ergion_core/fn.midpoint_step.html',
     },
     {
       href: 'rk4.html',
-      title: '古典的RK4.',
+      title: '古典的RK4',
       formula: String.raw`x_{n+1} = x_n + \frac{\Delta t}{6}(k_1 + 2k_2 + 2k_3 + k_4)`,
       doc: '/Ergion/doc/ergion_core/fn.rk4_step.html',
     },
@@ -675,7 +682,7 @@ test('ニュートン法は根の反復であり、微分方程式のタブで�
     await page.setViewportSize({ width, height: width === 1440 ? 1050 : 844 });
     await page.goto('newton.html');
     await expect(page.locator('#status')).toHaveText('計算完了');
-    await expect(page.getByRole('heading', { level: 1, name: 'ニュートン法.' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1, name: 'ニュートン法' })).toBeVisible();
     await expect(page.locator('[role=tablist]')).toHaveCount(0);
     await expect(tex(page, String.raw`x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}`).first()).toBeVisible();
     await expect(tex(page, 'f(x) = x^2 - 2').first()).toBeVisible();
@@ -703,7 +710,7 @@ test('一定速度の増分は有理数の等式としてデスクトップと�
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: width === 1440 ? 1050 : 844 });
     await page.goto('velocity-step.html');
-    await expect(page.getByRole('heading', { level: 1, name: '一定速度の増分.' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1, name: '一定速度の増分' })).toBeVisible();
     await expect(page.locator('#status')).toHaveText('準備完了');
     await expect(page.locator('[role=tablist]')).toHaveCount(2);
     await expect(page.getByRole('tab', { name: '一定速度' })).toBeVisible();
@@ -734,7 +741,7 @@ test('証明の節は画面が Lean を実行しないと述べ、各ページ�
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: width === 1440 ? 1050 : 844 });
     await page.goto('proof.html');
-    await expect(page.getByRole('heading', { level: 1, name: '証明の一覧.' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1, name: '証明の一覧' })).toBeVisible();
     await expect(page.locator('#lesson')).toContainText('lake build');
     await expect(page.locator('#lesson')).toContainText('有理数');
     await expect(page.locator('#lesson')).toContainText('実数');
@@ -852,7 +859,7 @@ test('位置の時間微分をデスクトップと狭い画面で読む', async
   await expect(page.locator('#position')).toHaveText('0.50000');
   await expect(page.locator('#velocity')).toHaveText('2.00000');
   await page.setViewportSize({ width: 390, height: 844 });
-  await expect(page.getByRole('heading', { name: '位置の時間微分.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '位置の時間微分', exact: true })).toBeVisible();
   await expect(page.locator('#study .equation-plate').first()).toBeVisible();
   await expectMechanicsSection(page);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
@@ -880,7 +887,7 @@ test('等加速度直線運動をデスクトップと狭い画面で読む', as
   await expect(page.locator('#phase-chart')).toHaveAttribute('aria-label', /位置の誤差/);
   await page.screenshot({ path: testInfo.outputPath('accelerated-desktop.png'), fullPage: true });
   await page.setViewportSize({ width: 390, height: 844 });
-  await expect(page.getByRole('heading', { name: '等加速度直線運動.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '等加速度直線運動', exact: true })).toBeVisible();
   await expect(page.locator('#study .equation-plate').first()).toBeVisible();
   await expect(page.locator('#study .solution')).toBeVisible();
   await expectTypeSize(page);
@@ -918,7 +925,7 @@ test('CLIで有効な大きい刻みの設定を読み込み後も編集でき�
 test('変数分離をデスクトップと狭い画面で読む', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1050 });
   await page.goto('separation.html');
-  await expect(page.getByRole('heading', { level: 1, name: '変数分離.' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: '変数分離' })).toBeVisible();
   await expect(page.locator('[role=tablist]')).toHaveCount(1);
   await expect(page.getByRole('tab')).toHaveCount(3);
   await expect(tex(page, String.raw`x' = kx`).first()).toBeVisible();
@@ -957,7 +964,7 @@ test('変数分離をデスクトップと狭い画面で読む', async ({ page 
   expect(await doc.text()).toContain('separated_exponential');
   await expectReadingPage(page);
   await page.setViewportSize({ width: 390, height: 844 });
-  await expect(page.getByRole('heading', { level: 1, name: '変数分離.' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: '変数分離' })).toBeVisible();
   await expect(page.locator('.solution-equation').first()).toBeVisible();
   await page.getByRole('tab', { name: '中点法', exact: true }).click();
   await expect(page.locator('#status')).toHaveText('計算完了');
@@ -969,7 +976,7 @@ test('変数分離をデスクトップと狭い画面で読む', async ({ page 
 test('1階線形をデスクトップと狭い画面で読む', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1050 });
   await page.goto('linear.html');
-  await expect(page.getByRole('heading', { level: 1, name: '1階線形.' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: '1階線形' })).toBeVisible();
   await expect(page.locator('[role=tablist]')).toHaveCount(1);
   await expect(page.getByRole('tab')).toHaveCount(3);
   await expect(tex(page, String.raw`x' + px = q`).first()).toBeVisible();
@@ -996,7 +1003,7 @@ test('1階線形をデスクトップと狭い画面で読む', async ({ page })
   expect(await doc.text()).toContain('first_order_linear');
   await expectReadingPage(page);
   await page.setViewportSize({ width: 390, height: 844 });
-  await expect(page.getByRole('heading', { level: 1, name: '1階線形.' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: '1階線形' })).toBeVisible();
   await expect(page.locator('.solution-equation').first()).toBeVisible();
   await expect(page.locator('#solution-value')).toHaveText('2.72933');
   await expectReadingPage(page);
@@ -1005,15 +1012,15 @@ test('1階線形をデスクトップと狭い画面で読む', async ({ page })
 test('学部の標準的な解法をデスクトップと狭い画面で読む', async ({ page }) => {
   test.setTimeout(120_000);
   const pages: { href: string; title: string; formula: string; fn: string; value: string; companion?: string }[] = [
-    { href: 'homogeneous.html', title: '同次形.', formula: String.raw`x(t) = t(\ln t + C)`, fn: 'homogeneous_ratio', value: '1.38629' },
-    { href: 'exact.html', title: '完全微分.', formula: String.raw`x^2 + xy + y^2 = C`, fn: 'exact_quadratic', value: '0.65139' },
-    { href: 'bernoulli.html', title: 'ベルヌーイ.', formula: String.raw`x(t) = \frac{1}{1 + e^{-t}}`, fn: 'bernoulli_logistic', value: '0.73106' },
-    { href: 'second-order.html', title: '定数係数の2階同次.', formula: String.raw`x(t) = -e^{t} + 2e^{2t}`, fn: 'characteristic_two_real', value: '12.05983' },
-    { href: 'undetermined.html', title: '未定係数法.', formula: String.raw`x(t) = \frac{1}{2} e^{t} - e^{2t} + \frac{1}{2} e^{3t}`, fn: 'undetermined_coefficient', value: '4.01285' },
-    { href: 'variation.html', title: '定数変化法.', formula: String.raw`x(t) = \sin t - \cos t \cdot \ln|\sec t + \tan t|`, fn: 'variation_of_parameters', value: '0.17896' },
-    { href: 'laplace.html', title: 'Laplace 変換.', formula: String.raw`X(s) = \frac{1}{(s - 1)(s - 2)(s - 3)}`, fn: 'laplace_ivp', value: '4.01285' },
-    { href: 'series.html', title: 'べき級数.', formula: String.raw`a_{m+2} = -\frac{a_m}{(m+1)(m+2)}`, fn: 'power_series_cosine', value: '0.54030' },
-    { href: 'system.html', title: '連立1階.', formula: String.raw`x(t) = \frac{1}{2}\bigl(e^{3t} + e^{-t}\bigr)`, fn: 'linear_system_x', value: '10.22671', companion: '19.71766' },
+    { href: 'homogeneous.html', title: '同次形', formula: String.raw`x(t) = t(\ln t + C)`, fn: 'homogeneous_ratio', value: '1.38629' },
+    { href: 'exact.html', title: '完全微分', formula: String.raw`x^2 + xy + y^2 = C`, fn: 'exact_quadratic', value: '0.65139' },
+    { href: 'bernoulli.html', title: 'ベルヌーイ', formula: String.raw`x(t) = \frac{1}{1 + e^{-t}}`, fn: 'bernoulli_logistic', value: '0.73106' },
+    { href: 'second-order.html', title: '定数係数の2階同次', formula: String.raw`x(t) = -e^{t} + 2e^{2t}`, fn: 'characteristic_two_real', value: '12.05983' },
+    { href: 'undetermined.html', title: '未定係数法', formula: String.raw`x(t) = \frac{1}{2} e^{t} - e^{2t} + \frac{1}{2} e^{3t}`, fn: 'undetermined_coefficient', value: '4.01285' },
+    { href: 'variation.html', title: '定数変化法', formula: String.raw`x(t) = \sin t - \cos t \cdot \ln|\sec t + \tan t|`, fn: 'variation_of_parameters', value: '0.17896' },
+    { href: 'laplace.html', title: 'Laplace 変換', formula: String.raw`X(s) = \frac{1}{(s - 1)(s - 2)(s - 3)}`, fn: 'laplace_ivp', value: '4.01285' },
+    { href: 'series.html', title: 'べき級数', formula: String.raw`a_{m+2} = -\frac{a_m}{(m+1)(m+2)}`, fn: 'power_series_cosine', value: '0.54030' },
+    { href: 'system.html', title: '連立1階', formula: String.raw`x(t) = \frac{1}{2}\bigl(e^{3t} + e^{-t}\bigr)`, fn: 'linear_system_x', value: '10.22671', companion: '19.71766' },
   ];
   for (const item of pages) {
     await page.setViewportSize({ width: 1440, height: 1050 });
@@ -1248,13 +1255,20 @@ test('既存のページは、その図を明るい配色と暗い配色で示�
     './', 'derivative.html', 'uniform.html', 'accelerated.html', 'ode.html', 'integrate.html', 'separation.html', 'linear.html',
     'homogeneous.html', 'exact.html', 'bernoulli.html', 'second-order.html', 'undetermined.html', 'variation.html', 'laplace.html',
     'series.html', 'system.html', 'velocity-step.html', 'euler.html', 'midpoint.html', 'rk4.html', 'newton.html', 'proof.html',
+    'black-scholes.html',
   ];
-  const idOf = (href: string) => href === './' ? 'mechanics' : href.replace(/^\.\//, '').replace(/\.html$/, '');
+  const indexes = new Set(['./', 'ode.html', 'proof.html']);
+  const idOf = (href: string) => href.replace(/^\.\//, '').replace(/\.html$/, '');
   const visibleFigure = () => page.locator('.page-figure img').locator('visible=true');
   for (const href of pages) {
     await page.setViewportSize({ width: 1440, height: 1050 });
     await page.emulateMedia({ colorScheme: 'light' });
     await page.goto(href);
+    if (indexes.has(href)) {
+      await expect(page.locator('.page-figure'), href).toHaveCount(0);
+      await expect(page.locator('.title-dot'), href).toHaveCount(0);
+      continue;
+    }
     if (await page.locator('#related').count()) {
       await expect(page.locator('#related .panel-heading')).toHaveText('関連ページ');
       await expect(page.locator('#related .quiet-label')).toHaveCount(0);
@@ -1269,6 +1283,12 @@ test('既存のページは、その図を明るい配色と暗い配色で示�
     await expect(page.locator('.page-figure figcaption'), href).toHaveCount(0);
     await expect(page.locator('.page-figure canvas'), href).toHaveCount(0);
     await expect.poll(() => light.evaluate((node: HTMLImageElement) => node.complete && node.naturalWidth > 8), href).toBe(true);
+    const shape = await light.evaluate((node: HTMLImageElement) => {
+      const box = node.getBoundingClientRect();
+      return { width: box.width, height: box.height, naturalWidth: node.naturalWidth, naturalHeight: node.naturalHeight };
+    });
+    expect(shape.naturalWidth, href).toBe(720);
+    expect(Math.abs(shape.width / shape.height - shape.naturalWidth / shape.naturalHeight), href).toBeLessThan(0.02);
     await expect(page.locator('.intro .equation')).toHaveCount(0);
     const placed = await page.evaluate(() => {
       const intro = document.querySelector('.intro');
@@ -1288,7 +1308,10 @@ test('既存のページは、その図を明るい配色と暗い配色で示�
     await page.setViewportSize({ width: 390, height: 844 });
     await page.locator('.page-figure').scrollIntoViewIfNeeded();
     await expect(visibleFigure(), href).toHaveAttribute('src', new RegExp(`/figures/${idOf(href)}/figure\\.png$`));
-    await expect.poll(() => visibleFigure().evaluate((node: HTMLImageElement) => node.complete && node.naturalWidth > 8), href).toBe(true);
+    await expect.poll(() => visibleFigure().evaluate((node: HTMLImageElement) => {
+      const box = node.getBoundingClientRect();
+      return node.complete && node.naturalWidth === 720 && Math.abs(box.width / box.height - node.naturalWidth / node.naturalHeight) < 0.02;
+    }), href).toBe(true);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), href).toBe(true);
     await page.evaluate(() => localStorage.removeItem('ergion-theme'));
   }

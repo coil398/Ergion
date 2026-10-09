@@ -34,7 +34,7 @@ app.innerHTML = `
       <section class="intro">
         <div>
           <p class="breadcrumb">数値計算 <span>/</span> 一定速度の増分</p>
-          <h1>一定速度の増分<span class="title-dot">.</span></h1>
+          <h1>一定速度の増分</h1>
           <p class="description">速度 ${tex('v')} が一定のとき、${tex(String.raw`x' = v`)} の1ステップは位置に ${tex(String.raw`v \Delta t`)} を足します。同じ刻みを ${tex('n')} 回繰り返すと、増分は ${tex(String.raw`n v \Delta t`)} です。</p>
         </div>
       </section>

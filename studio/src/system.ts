@@ -15,7 +15,7 @@ app.innerHTML = `
       <section class="intro">
         <div>
           <p class="breadcrumb"><a href="./ode.html">微分方程式</a> <span>/</span> 連立1階</p>
-          <h1>連立1階<span class="title-dot">.</span></h1>
+          <h1>連立1階</h1>
           <p class="description">二つの未知関数が、定数係数の1次式で互いに結ばれている方程式です。係数行列の固有値と固有ベクトルから、厳密解を作ります。</p>
         </div>
       </section>

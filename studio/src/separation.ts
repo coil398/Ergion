@@ -15,7 +15,7 @@ app.innerHTML = `
       <section class="intro">
         <div>
           <p class="breadcrumb"><a href="./ode.html">微分方程式</a> <span>/</span> 変数分離</p>
-          <h1>変数分離<span class="title-dot">.</span></h1>
+          <h1>変数分離</h1>
           <p class="description">右辺が位置 ${tex('x')} に比例するとき、位置と時刻を分けて積分します。<a class="doc-link" href="./integrate.html">積分して解く</a>では右辺が未知関数を含みませんでした。ここでは右辺が ${tex('x')} を含むので、割ってから積分します。得る式は厳密解です。</p>
         </div>
       </section>

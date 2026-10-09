@@ -62,7 +62,7 @@ export function renderLesson(spec: LessonSpec) {
       <section class="intro">
         <div>
           <p class="breadcrumb">${crumb} <span>/</span> ${spec.title}</p>
-          <h1>${spec.title}<span class="title-dot">.</span></h1>
+          <h1>${spec.title}</h1>
           <p class="description">${spec.description}</p>
         </div>
       </section>

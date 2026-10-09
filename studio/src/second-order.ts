@@ -15,7 +15,7 @@ app.innerHTML = `
       <section class="intro">
         <div>
           <p class="breadcrumb"><a href="./ode.html">微分方程式</a> <span>/</span> 定数係数の2階同次</p>
-          <h1>定数係数の2階同次<span class="title-dot">.</span></h1>
+          <h1>定数係数の2階同次</h1>
           <p class="description">未知関数とその1階、2階の導関数が、定数係数の1次式で結ばれ、右辺が 0 である方程式です。特性方程式の根の形で、一般解が決まります。ここで得る式はどれも厳密解です。</p>
         </div>
       </section>

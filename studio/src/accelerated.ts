@@ -28,7 +28,7 @@ app.innerHTML = `
       <section class="intro">
         <div>
           <p class="breadcrumb"><a href="./">力学</a> <span>/</span> 等加速度直線運動</p>
-          <h1>等加速度直線運動<span class="title-dot">.</span></h1>
+          <h1>等加速度直線運動</h1>
           <p class="description">一つの粒子が、一定の加速度 ${tex('a')} で直線上を進みます。速度は一定の割合で変わります。一定の加速度から、速度と位置の厳密解がどのように出るかを、このページで順に見ます。</p>
         </div>
       </section>

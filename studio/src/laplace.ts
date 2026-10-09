@@ -15,7 +15,7 @@ app.innerHTML = `
       <section class="intro">
         <div>
           <p class="breadcrumb"><a href="./ode.html">微分方程式</a> <span>/</span> Laplace 変換</p>
-          <h1>Laplace 変換<span class="title-dot">.</span></h1>
+          <h1>Laplace 変換</h1>
           <p class="description">初期値を変換の中に取り込み、微分方程式を ${tex('s')} の代数方程式にします。逆変換で時刻の関数へ戻します。ここで使う変換は、このページに書き出します。得る式は厳密解です。</p>
         </div>
       </section>

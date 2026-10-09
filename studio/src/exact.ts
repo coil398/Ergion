@@ -15,7 +15,7 @@ app.innerHTML = `
       <section class="intro">
         <div>
           <p class="breadcrumb"><a href="./ode.html">微分方程式</a> <span>/</span> 完全微分</p>
-          <h1>完全微分<span class="title-dot">.</span></h1>
+          <h1>完全微分</h1>
           <p class="description">微分方程式を ${tex('M\\,dx + N\\,dy = 0')} と書いたとき、ある関数 ${tex('\\varphi')} の全微分になっているものを完全微分と呼びます。解は ${tex('\\varphi(x, y) = C')} という陰関数です。</p>
         </div>
       </section>

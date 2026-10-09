@@ -15,7 +15,7 @@ app.innerHTML = `
       <section class="intro">
         <div>
           <p class="breadcrumb"><a href="./ode.html">微分方程式</a> <span>/</span> 定数変化法</p>
-          <h1>定数変化法<span class="title-dot">.</span></h1>
+          <h1>定数変化法</h1>
           <p class="description">右辺が多項式や指数関数の形をしていないとき、同次解の任意定数を時刻の関数に置き換えて特殊解を作ります。<a class="doc-link" href="./undetermined.html">未定係数法</a>がそのまま使えない例です。ここで得る式は厳密解です。</p>
         </div>
       </section>
