@@ -511,8 +511,69 @@ test('等速直線運動の導出は一つの板に番号を付ける', async ({
   });
   expect(aligned).toBe(true);
   await page.goto('numerical-differentiation.html');
-  await expect(page.locator('#lesson')).toContainText('（1）から（2）を引きます');
+  const citation = await page.locator('#lesson').innerText();
+  const pair = citation.match(/（(\d+)）から（(\d+)）を引きます/);
+  expect(pair).not.toBeNull();
+  expect(Number(pair?.[2])).toBe(Number(pair?.[1]) + 1);
   await expect(page.locator('#lesson')).not.toContainText('上の式');
+});
+
+test('運動方程式の板の各行に番号が付き、行中の式には付かない', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1050 });
+  await page.goto('constant-force.html');
+  const numbered = await page.evaluate(() => {
+    const displays = [...document.querySelectorAll<HTMLElement>('.equation-plate .tex-display')];
+    const labels = displays.map(display => display.closest('.solution-equation, .equation-line')?.querySelector('.equation-number')?.textContent ?? '');
+    const inline = [...document.querySelectorAll<HTMLElement>('.tex')].find(node => node.dataset.tex === 'm > 0');
+    return {
+      labels,
+      inlineNumbered: Boolean(inline?.classList.contains('tex-display') || inline?.closest('.equation-number') || inline?.closest('.solution-equation, .equation-line')?.querySelector('.equation-number')),
+    };
+  });
+  expect(numbered.labels.length).toBeGreaterThan(1);
+  expect(numbered.labels).toEqual(numbered.labels.map((_, index) => `（${index + 1}）`));
+  expect(numbered.inlineNumbered).toBe(false);
+});
+
+test('外枠のあいだにページの地が見え、一つの板の中は開かない', async ({ page }) => {
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('derivative.html');
+    await expect(page.locator('#study')).toBeVisible();
+    await expect(page.locator('.scene')).toBeVisible();
+    const gaps = await page.evaluate(() => {
+      const box = (selector: string) => document.querySelector(selector)!.getBoundingClientRect();
+      const study = box('#study');
+      const figure = box('.page-figure');
+      const settings = box('.settings');
+      const scene = box('.scene');
+      const betweenSettingsAndScene = settings.bottom <= scene.top + 1 ? scene.top - settings.bottom : scene.left - settings.right;
+      let insidePlate = Number.POSITIVE_INFINITY;
+      for (const plate of document.querySelectorAll('.equation-plate')) {
+        const lines = [...plate.querySelectorAll(':scope > .solution-equation')];
+        for (let index = 1; index < lines.length; index += 1) {
+          let node = lines[index - 1].nextSibling;
+          let text = '';
+          while (node && node !== lines[index]) {
+            text += node.textContent ?? '';
+            node = node.nextSibling;
+          }
+          if (text.trim()) continue;
+          insidePlate = Math.min(insidePlate, lines[index].getBoundingClientRect().top - lines[index - 1].getBoundingClientRect().bottom);
+        }
+      }
+      return {
+        figureStudy: study.top - figure.bottom,
+        studySettings: settings.top - study.bottom,
+        settingsScene: betweenSettingsAndScene,
+        insidePlate,
+      };
+    });
+    expect(gaps.figureStudy).toBeGreaterThanOrEqual(24);
+    expect(gaps.studySettings).toBeGreaterThanOrEqual(24);
+    expect(gaps.settingsScene).toBeGreaterThanOrEqual(24);
+    expect(gaps.insidePlate).toBeLessThan(16);
+  }
 });
 
 test('粗い刻みでも数値軌道が表示範囲に収まる', async ({ page }, testInfo) => {

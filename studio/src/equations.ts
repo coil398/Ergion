@@ -1,10 +1,8 @@
 /**
  * 表示する式の板と番号。
- * 短いつなぎだけで続く式は一つの地を共有する。本文が指す式には、板の右に（1）、（2）を付ける。
- * 文の一部である行中の式には番号を付けない。先の表示を指す語は、その番号に引き換える。
+ * 短いつなぎだけで続く式は一つの地を共有する。板の各行には、右に（1）、（2）、（3）を付ける。
+ * 文の一部である行中の式には番号を付けない。板を指す語は、その番号に引き換える。
  */
-
-const FORWARD = ['次の等式', '次の増分', '次の式'] as const;
 
 /** ページの式を、一つの板と番号に整える。各ページの本文を置いたあとで呼ぶ。 */
 export function mountEquationPlates(): void {
@@ -163,17 +161,6 @@ function precedingRun(node: Node, displays: HTMLElement[]): HTMLElement[] {
   return run;
 }
 
-function markForwardRun(from: Node, displays: HTMLElement[], referred: Set<HTMLElement>): void {
-  const first = nextAfter(from, displays);
-  if (!first) return;
-  referred.add(first);
-  const start = displays.indexOf(first);
-  for (let index = start + 1; index < displays.length; index += 1) {
-    if (compact(proseBetween(displays[index - 1], displays[index]))) break;
-    referred.add(displays[index]);
-  }
-}
-
 function inlineCloserThan(node: Node, display: HTMLElement): boolean {
   let current: Node | null = node;
   while (current) {
@@ -237,9 +224,14 @@ function textNodes(root: Element): Text[] {
   return nodes;
 }
 
+function plateDisplays(main: Element): HTMLElement[] {
+  return displaysIn(main).filter(display => display.closest('.equation-plate'));
+}
+
 function numberReferredDisplays(main: Element): void {
-  const displays = displaysIn(main);
-  const referred = new Set<HTMLElement>();
+  const displays = plateDisplays(main);
+  const numbers = new Map<HTMLElement, number>();
+  displays.forEach((display, index) => numbers.set(display, index + 1));
   const replacements: Replacement[] = [];
   for (const node of textNodes(main)) {
     const text = node.textContent ?? '';
@@ -252,6 +244,7 @@ function numberReferredDisplays(main: Element): void {
         ['次の等式', 'forward'],
         ['次の増分', 'forward'],
         ['次の式', 'forward'],
+        ['最初の式', 'first'],
         ['前の式', 'mae'],
         ['上の式', 'back'],
         ['この式', 'kono'],
@@ -263,46 +256,34 @@ function numberReferredDisplays(main: Element): void {
       }
       if (!found) break;
       const index = cursor + found.at;
-      if (found.kind === 'forward') markForwardRun(node, displays, referred);
-      else if (found.kind === 'kono' && (text.slice(index + found.length).startsWith('へ'))) markForwardRun(node, displays, referred);
-      else if (found.kind === 'pair') {
+      if (found.kind === 'back' && text.slice(index + found.length).startsWith('等')) {
+        cursor = index + found.length;
+        continue;
+      }
+      if (found.kind === 'forward' || (found.kind === 'kono' && text.slice(index + found.length).startsWith('へ'))) {
+        const display = nextAfter(node, displays);
+        if (display) replacements.push({ node, index, length: found.length, displays: [display], pair: false });
+      } else if (found.kind === 'first') {
+        const list = node.parentElement?.closest('ol.proof-steps');
+        const display = (list ? displays.find(item => list.contains(item)) : null) ?? displays[0] ?? null;
+        if (display) replacements.push({ node, index, length: found.length, displays: [display], pair: false });
+      } else if (found.kind === 'pair') {
         const run = precedingRun(node, displays);
         const upper = run.length >= 2 ? run[run.length - 2] : run[0];
         const lower = run.length >= 2 ? run[run.length - 1] : nextAfter(node, displays);
-        if (upper && lower) {
-          referred.add(upper);
-          referred.add(lower);
-          replacements.push({ node, index, length: found.length, displays: [upper, lower], pair: true });
-        }
+        if (upper && lower) replacements.push({ node, index, length: found.length, displays: [upper, lower], pair: true });
       } else if (found.kind === 'mae') {
         const display = maeDisplay(node, index, displays);
-        if (display) {
-          referred.add(display);
-          replacements.push({ node, index, length: found.length, displays: [display], pair: false });
-        }
+        if (display) replacements.push({ node, index, length: found.length, displays: [display], pair: false });
       } else if (found.kind === 'back') {
         const display = lastBefore(node, displays);
-        if (display) {
-          referred.add(display);
-          replacements.push({ node, index, length: found.length, displays: [display], pair: false });
-        }
+        if (display) replacements.push({ node, index, length: found.length, displays: [display], pair: false });
       } else if (found.kind === 'kono') {
         const display = konoDisplay(node, index, displays);
-        if (display) {
-          referred.add(display);
-          replacements.push({ node, index, length: found.length, displays: [display], pair: false });
-        }
+        if (display) replacements.push({ node, index, length: found.length, displays: [display], pair: false });
       }
       cursor = index + found.length;
     }
-  }
-
-  const numbers = new Map<HTMLElement, number>();
-  let count = 0;
-  for (const display of displays) {
-    if (!referred.has(display)) continue;
-    count += 1;
-    numbers.set(display, count);
   }
   const byNode = new Map<Text, Replacement[]>();
   for (const replacement of replacements) {
@@ -319,7 +300,7 @@ function numberReferredDisplays(main: Element): void {
     }
     node.textContent = text;
   }
-  for (const [display, number] of numbers) placeNumber(display, number);
+  for (const display of displays) placeNumber(display, numbers.get(display) ?? 0);
 }
 
 function placeNumber(display: HTMLElement, number: number): void {
