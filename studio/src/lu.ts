@@ -67,8 +67,8 @@ renderLesson({
         <div><span>PA − LU の成分の最大の絶対値</span><output id="lu-gap">—</output></div>
       </div>
       <p>ライブラリが返した置換、分解、代入の結果（有効数字6桁の近似）</p>
-      <div class="solution-equation" id="lu-factors">—</div>
-      <div class="solution-equation" id="lu-solve">—</div>
+      <div class="result-equation" id="lu-factors">—</div>
+      <div class="result-equation" id="lu-solve">—</div>
     </section>`,
   exampleHeading: '数を代入した例',
   example: [

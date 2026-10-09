@@ -65,7 +65,7 @@ renderLesson({
         <div><span>残差の2乗和 ‖r‖²</span><output id="residual2">—</output></div>
         <div><span>解く行列の条件数 κ₂</span><output id="kappa">—</output></div>
       </div>
-      <div class="solution-equation" id="solved">—</div>
+      <div class="result-equation" id="solved">—</div>
       <p>時刻を ${tex(String.raw`t_i + 10^5`)} にずらした同じ観測値（厳密な傾きは 1）</p>
       <div class="readouts">
         <div><span>切片 c₀（近似）</span><output id="shifted-c0">—</output></div>

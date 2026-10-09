@@ -170,7 +170,7 @@ input:invalid:not(:focus){border-color:var(--color-status-error)}
 .study-body>p{margin:0 0 12px;font-size:16px;line-height:calc(17 / 9);color:var(--color-text)}
 .solution{margin:0 0 16px;padding-left:1.5em;font-size:18px;line-height:calc(17 / 9);color:var(--color-text)}
 .solution li{margin:0 0 12px}
-.solution-equation{font-size:18px;line-height:calc(17 / 9);margin:8px 0;padding:8px 12px;background:var(--color-primary-tint);border:1px solid var(--color-border);border-radius:6px;min-width:0;max-width:100%}
+.solution-equation,.result-equation{font-size:18px;line-height:calc(17 / 9);margin:8px 0;padding:8px 12px;background:var(--color-primary-tint);border:1px solid var(--color-border);border-radius:6px;min-width:0;max-width:100%}
 .equation-plate>.solution-equation{background:transparent;border:0;border-radius:0;margin:4px 0;padding:2px 0}
 .proof{min-width:0}
 .proof-source{display:block;max-width:100%;margin:0 0 16px;padding:12px 14px;overflow-x:auto;overflow-wrap:anywhere;white-space:pre-wrap;font-family:ui-monospace,"Cascadia Code","Noto Sans JP",monospace;font-size:16px;line-height:1.5;background:var(--color-rail-bg);border:1px solid var(--color-border);border-radius:6px;color:var(--color-text)}

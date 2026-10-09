@@ -46,7 +46,7 @@ renderLesson({
     `真空中では ${tex(String.raw`\nabla\cdot\mathbf{E} = 0`)} なので
       ${eq(String.raw`-\nabla^2\mathbf{E} = -\mu_0\varepsilon_0\frac{\partial^2\mathbf{E}}{\partial t^2}`)}
       ${eq(String.raw`\nabla^2\mathbf{E} = \frac{1}{c^2}\frac{\partial^2\mathbf{E}}{\partial t^2},\qquad c = \frac{1}{\sqrt{\varepsilon_0\mu_0}}`)}
-      です。Ampère–Maxwell の法則の回転から始めて ${tex(String.raw`\nabla\cdot\mathbf{B} = 0`)} を使うと、${tex(String.raw`\mathbf{B}`)} も同じ波動方程式に従います。変位電流の項 ${tex(String.raw`\mu_0\varepsilon_0\,\partial\mathbf{E}/\partial t`)} がなければ、この式は出てきません。`,
+      です。Ampère–Maxwell の法則の回転から始めて ${tex(String.raw`\nabla\cdot\mathbf{B} = 0`)} を使うと、${tex(String.raw`\mathbf{B}`)} も同じ波動方程式に従います。変位電流の項 ${tex(String.raw`\mu_0\varepsilon_0\,\partial\mathbf{E}/\partial t`)} がなければ、上の式は出てきません。`,
     `${tex('x')} 方向に進む平面波を考え、${tex(String.raw`\mathbf{E} = E_y(x, t)\,\hat{\mathbf{y}}`)}、${tex(String.raw`\mathbf{B} = B_z(x, t)\,\hat{\mathbf{z}}`)} とします。${tex(String.raw`(\nabla\times\mathbf{E})_z = \partial_x E_y`)}、${tex(String.raw`(\nabla\times\mathbf{B})_y = \partial_z B_x - \partial_x B_z = -\partial_x B_z`)} なので、二つの回転の式は
       ${eq(String.raw`\frac{\partial B_z}{\partial t} = -\frac{\partial E_y}{\partial x},\qquad \frac{\partial E_y}{\partial t} = -c^2\frac{\partial B_z}{\partial x}`)}
       です。${tex(String.raw`E_y = E_0\cos(kx - \omega t)`)}（${tex('E_0')} は振幅、${tex('k')} は波数、${tex(String.raw`\omega`)} は角振動数）を第1式に入れると

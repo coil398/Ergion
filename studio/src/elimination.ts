@@ -82,8 +82,8 @@ renderLesson({
         <div><span>ε の例の残差 ‖Ax − b‖（近似）</span><output id="eps-residual">—</output></div>
       </div>
       <p>選んだ方法で前進消去を終えた拡大係数行列（近似）。上は3元の例、下は ε の例です。</p>
-      <div class="solution-equation" id="upper3">—</div>
-      <div class="solution-equation" id="eps-upper">—</div>
+      <div class="result-equation" id="upper3">—</div>
+      <div class="result-equation" id="eps-upper">—</div>
     </section>`,
   exampleHeading: '数を代入した例',
   example: [
