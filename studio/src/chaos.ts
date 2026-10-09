@@ -31,7 +31,6 @@ renderLesson({
     String.raw`y' = x(\rho - z) - y`,
     String.raw`z' = x y - \beta z`,
   ],
-  equationLabel: 'Lorenz 方程式。x の微分は σ (y − x)、y の微分は x (ρ − z) − y、z の微分は x y − β z。',
   equationNote: 'σ = 10、ρ = 28、β = 8/3',
   studyHeading: '固定点、線形化、軌道の広がり',
   steps: [

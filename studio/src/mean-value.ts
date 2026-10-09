@@ -11,7 +11,6 @@ renderLesson({
   title: '平均値の定理',
   description: `閉区間で連続、開区間で微分可能な関数には、端点を結ぶ割線と平行な接線をもつ点 ${tex('c')} があります。${tex('f(x) = x^3')}、区間 ${tex('[0, 2]')} の点 ${tex('c')} を、厳密な式とニュートン法の近似値で求めます。`,
   equation: [String.raw`f'(c) = \frac{f(b) - f(a)}{b - a} \quad (a < c < b)`, String.raw`c_{n+1} = c_n - \frac{f'(c_n) - m}{f''(c_n)}`],
-  equationLabel: '平均値の定理。ある c で、f プライム c は平均の傾きに等しい。',
   studyHeading: '平均の傾きから点 c への手順',
   steps: [
     `記号を定めます。${tex('f')} は閉区間 ${tex('[a, b]')} で連続、開区間 ${tex('(a, b)')} で微分可能な実関数です。平均の傾き

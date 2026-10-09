@@ -149,9 +149,6 @@ export function mountMethodPage(options: {
             <h1>${options.title}<span class="title-dot">.</span></h1>
             <p class="description">例は ${tex(String.raw`x' = v`)} で、速度 ${tex('v')} は一定です。厳密解は ${tex('x(t) = x_0 + v t')} です。</p>
           </div>
-          <div class="equation" aria-label="${options.title}の更新式">
-            ${tex(options.formula, true)}
-          </div>
         </section>
         <section class="study panel" id="study" aria-labelledby="study-heading">
           <div class="panel-heading"><h2 id="study-heading">${options.title}の1ステップ</h2></div>

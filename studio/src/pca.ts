@@ -15,7 +15,6 @@ renderLesson({
     String.raw`\Sigma = \frac{1}{n - 1}X^T X, \qquad \Sigma\mathbf{v}_k = \lambda_k\mathbf{v}_k`,
     String.raw`\lambda_{1,2} = \frac{a + c}{2} \pm \sqrt{\left(\frac{a - c}{2}\right)^2 + b^2}`,
   ],
-  equationLabel: '共分散行列シグマは中心化標本行列 X の転置と X の積を n − 1 で割ったもの。その固有値は a + c の半分 プラスマイナス 根号。',
   equationNote: `${tex(String.raw`\Sigma = \begin{pmatrix} a & b \\ b & c \end{pmatrix}`)}`,
   studyHeading: '共分散行列の固有値問題から主成分への手順',
   steps: [

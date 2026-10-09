@@ -18,9 +18,6 @@ app.innerHTML = `
           <h1>1階線形<span class="title-dot">.</span></h1>
           <p class="description">未知関数とその導関数が1次式で結ばれ、係数が定数である方程式を、積分因子を掛けて積分します。<a class="doc-link" href="./separation.html">変数分離</a>では右辺が位置に比例するだけでした。ここでは左辺に位置の項を残し、右辺は定数です。得る式は厳密解です。</p>
         </div>
-        <div class="equation" aria-label="1階線形方程式。x プライム足す p x は q">
-          ${tex(String.raw`x' + px = q`, true)}
-        </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
         <div class="panel-heading"><h2 id="study-heading">積分因子の手順</h2></div>

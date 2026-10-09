@@ -18,9 +18,6 @@ app.innerHTML = `
           <h1>連立1階<span class="title-dot">.</span></h1>
           <p class="description">二つの未知関数が、定数係数の1次式で互いに結ばれている方程式です。係数行列の固有値と固有ベクトルから、厳密解を作ります。</p>
         </div>
-        <div class="equation" aria-label="定数係数の2元連立1階方程式">
-          ${tex(String.raw`\begin{aligned} x' &= x + y \\ y' &= 4x + y \end{aligned}`, true)}
-        </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
         <div class="panel-heading"><h2 id="study-heading">固有値の手順</h2></div>

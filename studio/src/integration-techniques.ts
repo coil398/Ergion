@@ -11,7 +11,6 @@ renderLesson({
   title: '置換積分と部分積分',
   description: `合成関数の微分から置換積分の公式を、積の微分から部分積分の公式を、微分積分学の基本定理を使って導きます。例 ${tex(String.raw`\int_0^1 2t\,e^{t^2}\,dt = e - 1`)} と ${tex(String.raw`\int_0^1 x e^x\,dx = 1`)} の厳密な値を、Simpson 則の近似値と比べます。`,
   equation: [String.raw`\int_a^b f(g(t))\,g'(t)\,dt = \int_{g(a)}^{g(b)} f(x)\,dx`, String.raw`\int_a^b u\,v'\,dx = \bigl[uv\bigr]_a^b - \int_a^b u'\,v\,dx`],
-  equationLabel: '置換積分の公式と部分積分の公式。',
   studyHeading: '二つの公式と例の計算の手順',
   steps: [
     `記号を定めます。置換 ${tex('x = g(t)')} の ${tex('g')} は ${tex('[a, b]')} で連続な導関数 ${tex(`g'`)} をもち、${tex('f')} は ${tex('g')} の値の範囲で連続です。部分積分の ${tex('u')}、${tex('v')} は ${tex('[a, b]')} で連続な導関数をもつ関数で、${tex(String.raw`\bigl[uv\bigr]_a^b = u(b)v(b) - u(a)v(a)`)} は境界の項です。`,

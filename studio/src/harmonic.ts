@@ -24,7 +24,6 @@ renderLesson({
   title: '単振動',
   description: `原点からの変位 ${tex('x')} に比例する復元力 ${tex('-kx')} だけを受ける質点の運動です。特性方程式から厳密解を導き、力学的エネルギーが一定であることを確かめます。`,
   equation: [String.raw`m x'' = -k x`, String.raw`x(t) = x_0 \cos\omega t + \frac{v_0}{\omega}\sin\omega t`],
-  equationLabel: '単振動の運動方程式。m x の2階微分は マイナス k x。',
   equationNote: '固有角振動数 ω = √(k/m)',
   studyHeading: '特性方程式から厳密解への手順',
   steps: [

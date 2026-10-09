@@ -30,7 +30,6 @@ renderLesson({
     String.raw`V(r) = 4\varepsilon\left[\left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^{6}\right]`,
     String.raw`F(r) = -V'(r) = \frac{24\varepsilon}{r}\left[2\left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^{6}\right]`,
   ],
-  equationLabel: 'V of r は 4 イプシロン 掛ける、シグマ割る r の12乗 引く シグマ割る r の6乗。F of r はマイナス V プライムで、24 イプシロン割る r 掛ける、2 掛ける シグマ割る r の12乗 引く シグマ割る r の6乗。',
   studyHeading: 'ポテンシャルから力、最小点、カットオフ補正への手順',
   steps: [
     `記号を定めます。${tex('r > 0')} は2原子の中心間距離、${tex(String.raw`\varepsilon > 0`)} は井戸の深さ（エネルギー）、${tex(String.raw`\sigma > 0`)} は ${tex('V = 0')} となる距離です。第1項 ${tex(String.raw`(\sigma/r)^{12}`)} は電子雲の重なりによる反発、第2項 ${tex(String.raw`-(\sigma/r)^{6}`)} は分散力による引力を表します。べきを ${tex('r')} について書き直すと

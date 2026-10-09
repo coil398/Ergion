@@ -17,9 +17,6 @@ app.innerHTML = `
           <h1>微分方程式<span class="title-dot">.</span></h1>
           <p class="description">未知の関数と、その導関数との関係を、微分方程式と呼びます。ここでは独立変数を時刻 ${tex('t')}、未知関数を ${tex('x(t)')} とします。</p>
         </div>
-        <div class="equation" aria-label="微分方程式。x プライムは f(x, t)">
-          ${tex(String.raw`x' = f(x, t)`, true)}
-        </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
         <div class="panel-heading"><h2 id="study-heading">解とは何か</h2></div>

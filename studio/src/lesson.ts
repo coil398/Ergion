@@ -1,5 +1,5 @@
 /**
- * 単元のページの骨組み。本文は、式、解法の手順、図、数を代入した例、関連ページ、証明の順である。
+ * 単元のページの骨組み。本文は、見出しと一文、冒頭の図、解法の手順、数を代入した例、関連ページ、証明の順である。
  * 図の値は、ライブラリの lesson_figure か LessonSimulation が返したものだけを描く。
  */
 import './style.css';
@@ -17,10 +17,9 @@ export interface LessonSpec {
   section: { label: string; href?: string };
   title: string;
   description: string;
-  /** ページの式。TeX のまま。 */
+  /** 記号の注記を最初の手順へ移すとき、式が一つであるかを見る。 */
   equation: string[];
-  equationLabel: string;
-  /** 式の下の注記。式に出る記号の定義のように、見出しにない具体的な事実だけを書く。 */
+  /** 式に出る記号の定義のように、見出しにない具体的な事実。式が一つのとき、最初の手順の先頭に置く。 */
   equationNote?: string;
   studyHeading: string;
   /** 使わない。見出しの隅に語を置かない。 */
@@ -44,7 +43,7 @@ export function eq(source: string): string {
   return `<p class="solution-equation">${tex(source, true)}</p>`;
 }
 
-/** 式が一つだけのページでは、記号の定義を最初の手順へ移す。後から出る式は手順に残し、見出しのカードには置かない。 */
+/** 式が一つだけのページでは、記号の定義を最初の手順へ移す。 */
 function stepsWithNote(spec: LessonSpec): string[] {
   if (!spec.equationNote || spec.equation.length !== 1 || spec.steps.length === 0) return spec.steps;
   const glue = /。\s*$/.test(spec.equationNote) ? '' : '。';
@@ -65,9 +64,6 @@ export function renderLesson(spec: LessonSpec) {
           <p class="breadcrumb">${crumb} <span>/</span> ${spec.title}</p>
           <h1>${spec.title}<span class="title-dot">.</span></h1>
           <p class="description">${spec.description}</p>
-        </div>
-        <div class="equation" aria-label="${spec.equationLabel}">
-          ${tex(spec.equation[0], true)}
         </div>
       </section>
       ${pageFigure(spec.id, spec.figureAlt)}

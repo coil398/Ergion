@@ -17,7 +17,6 @@ renderLesson({
     String.raw`T_n = \frac{h}{2}\sum_{i=0}^{n-1}\bigl(f_i + f_{i+1}\bigr)`,
     String.raw`S_n = \frac{h}{3}\sum_{j=0}^{n/2-1}\bigl(f_{2j} + 4f_{2j+1} + f_{2j+2}\bigr)`,
   ],
-  equationLabel: '台形則と Simpson 則。',
   equationNote: '誤差は O(h²) と O(h⁴)',
   studyHeading: '台形則と Simpson 則の導き方',
   steps: [

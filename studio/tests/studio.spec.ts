@@ -123,8 +123,8 @@ async function expectScheme(page: Page, scheme: Scheme, canvases: { numerical?: 
     return {
       root: getComputedStyle(document.documentElement).backgroundColor,
       text: style('body').color,
-      plate: style('.equation').backgroundColor,
-      katex: style('.equation .katex').color,
+      plate: style('.equation-plate, .equation').backgroundColor,
+      katex: style('.equation-plate .katex, .equation .katex').color,
     };
   });
   expect(colors.root).toBe(expected.bg);
@@ -144,10 +144,10 @@ async function expectTypeSize(page: Page) {
     return {
       body: px('body'),
       solution: px('.solution'),
-      equation: px('.equation'),
-      katex: px('.equation .katex'),
+      equation: px('.equation-plate .katex, .equation .katex'),
+      katex: px('.equation-plate .katex, .equation .katex'),
       heading: px('h1'),
-      equationPlate: plate('.equation'),
+      equationPlate: plate('.equation-plate, .equation'),
       stepPlate: (document.querySelector('.equation-plate') ? plate('.equation-plate') : plate('.solution-equation')),
       scheme: document.documentElement.dataset.theme ?? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'),
     };
@@ -555,7 +555,7 @@ test('微分方程式をデスクトップと狭い画面で読む', async ({ pa
   await page.setViewportSize({ width: 1440, height: 1050 });
   await page.goto('ode.html');
   await expect(page.getByRole('heading', { level: 1, name: '微分方程式.' })).toBeVisible();
-  await expect(tex(page, String.raw`x' = f(x, t)`).first()).toBeVisible();
+  await expect(page.locator('.intro .equation')).toHaveCount(0);
   await expect(tex(page, String.raw`\frac{d}{dt} x(t) = f(x(t), t)`).first()).toBeVisible();
   await expect(page.locator('#study')).toContainText('解であるためには');
   await expect(page.locator('#study').getByRole('link', { name: '等速直線運動' })).toHaveAttribute('href', './uniform.html');
@@ -589,7 +589,7 @@ test('積分して解くをデスクトップと狭い画面で読む', async ({
   await page.setViewportSize({ width: 1440, height: 1050 });
   await page.goto('integrate.html');
   await expect(page.getByRole('heading', { level: 1, name: '積分して解く.' })).toBeVisible();
-  await expect(tex(page, String.raw`x' = f(t)`).first()).toBeVisible();
+  await expect(page.locator('.intro .equation')).toHaveCount(0);
   await expect(tex(page, 'x(t) = x_0 + v t').first()).toBeVisible();
   await expect(tex(page, 'v(t) = v_0 + a t').first()).toBeVisible();
   await expect(tex(page, String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`).first()).toBeVisible();
@@ -664,7 +664,7 @@ test('数値解法は方法ごとに別のページで読む', async ({ page }) 
     await expect(page.locator('#phase-chart')).toHaveAttribute('aria-label', /位置の誤差/);
     await page.setViewportSize({ width: 390, height: 844 });
     await expect(page.getByRole('heading', { level: 1, name: item.title })).toBeVisible();
-    await expect(page.locator('.equation').first()).toBeVisible();
+    await expect(page.locator('#study .equation-plate').first()).toBeVisible();
     await expectMechanicsSection(page);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   }
@@ -853,7 +853,7 @@ test('位置の時間微分をデスクトップと狭い画面で読む', async
   await expect(page.locator('#velocity')).toHaveText('2.00000');
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(page.getByRole('heading', { name: '位置の時間微分.' })).toBeVisible();
-  await expect(page.locator('.equation').first()).toBeVisible();
+  await expect(page.locator('#study .equation-plate').first()).toBeVisible();
   await expectMechanicsSection(page);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
@@ -863,7 +863,7 @@ test('等加速度直線運動をデスクトップと狭い画面で読む', as
   await page.goto('accelerated.html');
   await expect(page.locator('#status')).toHaveText('準備完了');
   await expect(page.getByRole('heading', { name: '等加速度直線運動の計算と説明' })).toBeVisible();
-  await expect(page.locator('.equation').first()).toBeVisible();
+  await expect(page.locator('#study .equation-plate').first()).toBeVisible();
   await expect(tex(page, String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`).first()).toBeVisible();
   await expect(tex(page, 'v(t) = v_0 + a t').first()).toBeVisible();
   await expect(page.locator('#study')).toContainText('数値ステップの増分は厳密解の増分と一致します');
@@ -881,7 +881,7 @@ test('等加速度直線運動をデスクトップと狭い画面で読む', as
   await page.screenshot({ path: testInfo.outputPath('accelerated-desktop.png'), fullPage: true });
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(page.getByRole('heading', { name: '等加速度直線運動.' })).toBeVisible();
-  await expect(page.locator('.equation').first()).toBeVisible();
+  await expect(page.locator('#study .equation-plate').first()).toBeVisible();
   await expect(page.locator('#study .solution')).toBeVisible();
   await expectTypeSize(page);
   await expectMechanicsSection(page);
@@ -893,7 +893,8 @@ test('等速直線運動も狭い画面で本文と式が読める', async ({ pa
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('uniform.html');
   await expect(page.locator('#status')).toHaveText('準備完了');
-  await expect(page.locator('.equation').first()).toBeVisible();
+  await expect(page.locator('#study .equation-plate').first()).toBeVisible();
+  await expect(page.locator('.intro .equation')).toHaveCount(0);
   await expect(tex(page, 'x(t) = x_0 + v t').first()).toBeVisible();
   await expect(page.locator('#study .solution')).toContainText('打ち切り誤差はありません');
   await expectTypeSize(page);
@@ -1268,7 +1269,16 @@ test('既存のページは、その図を明るい配色と暗い配色で示�
     }
     await page.locator('.page-figure').scrollIntoViewIfNeeded();
     await expect.poll(ink, href).toBeGreaterThan(0);
-    await expect(page.locator('.intro .equation .tex-display')).toHaveCount(await page.locator('.intro .equation').count() ? 1 : 0);
+    await expect(page.locator('.intro .equation')).toHaveCount(0);
+    const placed = await page.evaluate(() => {
+      const intro = document.querySelector('.intro');
+      const figure = document.querySelector('.page-figure');
+      const study = document.querySelector('#study');
+      const before = (earlier: Element | null, later: Element | null) => Boolean(earlier && later && (earlier.compareDocumentPosition(later) & Node.DOCUMENT_POSITION_FOLLOWING));
+      return { chartAfterTitle: before(intro, figure), chartBeforeSteps: !study || before(figure, study) };
+    });
+    expect(placed.chartAfterTitle, href).toBe(true);
+    expect(placed.chartBeforeSteps, href).toBe(true);
     await page.locator('.theme-toggle').click();
     await page.locator('.page-figure').scrollIntoViewIfNeeded();
     await expect.poll(ink, href).toBeGreaterThan(0);

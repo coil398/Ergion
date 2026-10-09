@@ -14,7 +14,6 @@ renderLesson({
     String.raw`\frac{\partial f}{\partial x}(a, b) = \lim_{h \to 0} \frac{f(a + h, b) - f(a, b)}{h}`,
     String.raw`\nabla f = \left(\frac{\partial f}{\partial x},\ \frac{\partial f}{\partial y}\right)`,
   ],
-  equationLabel: '偏導関数の定義と勾配。',
   equationNote: '例 f(x, y) = x² + 3xy',
   studyHeading: '定義から偏導関数と勾配を求める手順',
   steps: [

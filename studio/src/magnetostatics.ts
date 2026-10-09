@@ -14,7 +14,6 @@ renderLesson({
     String.raw`d\mathbf{B} = \frac{\mu_0}{4\pi}\,\frac{I\,d\mathbf{l} \times \hat{\mathbf{r}}}{r^2}`,
     String.raw`\oint_C \mathbf{B} \cdot d\mathbf{l} = \mu_0 I_{\mathrm{enclosed}},\qquad \nabla \times \mathbf{B} = \mu_0 \mathbf{J}`,
   ],
-  equationLabel: 'Biot–Savart の法則と Ampère の法則。',
   equationNote: 'このページの単位 μ₀/(4π) = 1、すなわち μ₀ = 4π',
   studyHeading: '電流が作る磁束密度を求める手順',
   steps: [

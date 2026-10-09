@@ -18,7 +18,6 @@ renderLesson({
     String.raw`\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2\frac{\partial^2 V}{\partial S^2} + rS\frac{\partial V}{\partial S} - rV = 0`,
     String.raw`C(S, t) = S\,N(d_1) - K e^{-r(T - t)}N(d_2)`,
   ],
-  equationLabel: 'Black–Scholes 方程式。V の t 偏微分 足す 2分の1 シグマ2乗 S2乗 V の S 2階偏微分 足す r S V の S 偏微分 引く r V は 0。コールの価格は S N(d1) 引く K e のマイナス r (T − t) 乗 N(d2)。',
   equationNote: `${tex(String.raw`d_1 = \frac{\ln(S/K) + (r + \sigma^2/2)(T - t)}{\sigma\sqrt{T - t}}`)}、${tex(String.raw`d_2 = d_1 - \sigma\sqrt{T - t}`)}`,
   studyHeading: '複製の議論から熱伝導方程式と Black–Scholes 公式への手順',
   steps: [

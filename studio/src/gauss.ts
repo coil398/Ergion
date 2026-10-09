@@ -17,7 +17,6 @@ renderLesson({
     String.raw`\oint_S \mathbf{E} \cdot d\mathbf{S} = \frac{Q_{\mathrm{enclosed}}}{\varepsilon_0}`,
     String.raw`\nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0}`,
   ],
-  equationLabel: 'Gauss の法則の積分形と微分形。',
   equationNote: 'このページの単位 1/(4πε₀) = 1、すなわち 1/ε₀ = 4π',
   studyHeading: '閉曲面を貫く電束を求める手順',
   steps: [

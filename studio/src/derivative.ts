@@ -29,9 +29,6 @@ app.innerHTML = `
           <h1>位置の時間微分<span class="title-dot">.</span></h1>
           <p class="description">直線上の位置の時間微分は、速度です。このページでは、速度が一定のあいだに位置がどれだけ進むかを、1ステップずつ見ます。</p>
         </div>
-        <div class="equation" aria-label="位置の時間微分。x プライムは v">
-          ${tex(String.raw`x' = v`, true)}
-        </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
         <div class="panel-heading"><h2 id="study-heading">位置の時間微分の計算と説明</h2></div>

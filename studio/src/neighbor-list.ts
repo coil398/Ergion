@@ -15,7 +15,6 @@ renderLesson({
     String.raw`c = \left\lfloor \frac{x}{\ell} \right\rfloor`,
     String.raw`r_{ij} = \lvert \mathbf{d}_{ij} - L\,\mathrm{round}(\mathbf{d}_{ij}/L) \rvert, \qquad r_{ij} \le r_c`,
   ],
-  equationLabel: 'セル番号は座標をセルの一辺で割った床関数。近接対は、最小イメージの距離がカットオフ以下の粒子の組。',
   studyHeading: 'セル番号と近接対を求める手順',
   steps: [
     `粒子数 ${tex('N')} のすべての対は ${tex('N(N-1)/2')} 組です。${tex('N = 108')} なら ${tex(String.raw`108\cdot 107/2 = 5778`)} 組で、これは厳密です。力の到達距離が ${tex('r_c')} なら、そのうちの多くは力が 0 です。近接リストは ${tex(String.raw`r_{ij} \le r_c`)} の対だけを記録します（${coreDoc('molecular', 'neighbor_pairs', '近接対の説明')}）。`,

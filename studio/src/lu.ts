@@ -12,7 +12,6 @@ renderLesson({
   title: 'LU 分解',
   description: `正方行列 ${tex('A')} の行を置換行列 ${tex('P')} で並べ替え、対角成分が 1 の下三角行列 ${tex('L')} と上三角行列 ${tex('U')} の積 ${tex('PA = LU')} に分けます。連立1次方程式 ${tex(String.raw`A\mathbf{x} = \mathbf{b}`)} は、二つの三角行列の連立方程式を順に解くことで解けます。`,
   equation: [String.raw`PA = LU`, String.raw`L\mathbf{y} = P\mathbf{b}, \quad U\mathbf{x} = \mathbf{y}`],
-  equationLabel: 'P A は L U に等しい。L y は P b、U x は y。',
   studyHeading: 'Doolittle 法による分解と代入の手順',
   steps: [
     `記号を定めます。${tex('A')} は ${tex('n \\times n')} の正則行列、${tex('P')} は単位行列の行を並べ替えた置換行列、${tex('L = (l_{ij})')} は対角成分が 1 の下三角行列、${tex('U = (u_{ij})')} は上三角行列です。${tex('P\\mathbf{b}')} は ${tex(String.raw`\mathbf{b}`)} の成分を同じ順に並べ替えたベクトルです。Gauss の消去法の乗数 ${tex('m_{ik}')} を ${tex('L')} の対角の下に ${tex('l_{ik} = m_{ik}')} として残し、消去を終えた係数行列を ${tex('U')} とする方法を Doolittle 法と呼びます。`,

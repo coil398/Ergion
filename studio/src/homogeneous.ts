@@ -18,9 +18,6 @@ app.innerHTML = `
           <h1>同次形<span class="title-dot">.</span></h1>
           <p class="description">右辺が比 ${tex('x/t')} だけの関数である方程式を、同次形と呼びます。置換 ${tex('u = x/t')} で <a class="doc-link" href="./separation.html">変数分離</a> に戻します。ここで得る式は厳密解です。2階方程式の右辺が 0 であるという意味の同次とは、別の形です。</p>
         </div>
-        <div class="equation" aria-label="同次形。x プライムは 1 足す x 割る t">
-          ${tex(String.raw`x' = 1 + \frac{x}{t}`, true)}
-        </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
         <div class="panel-heading"><h2 id="study-heading">同次形の手順</h2></div>

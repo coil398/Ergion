@@ -29,7 +29,6 @@ renderLesson({
     String.raw`\nabla\cdot F = \frac{\partial \dot q}{\partial q} + \frac{\partial \dot p}{\partial p} = \frac{\partial^2 H}{\partial q\,\partial p} - \frac{\partial^2 H}{\partial p\,\partial q} = 0`,
     String.raw`A(t) = \int_{D(t)} dq\,dp = A(0)`,
   ],
-  equationLabel: 'Hamilton の流れの発散は 0。相空間の領域 D(t) の面積 A(t) は、初めの面積 A(0) に等しい。',
   studyHeading: '相空間の流れの発散と面積を求める手順',
   steps: [
     `記号を定めます。${tex('q')} は一般化座標、${tex('p')} は正準運動量、${tex('H(q, p)')} は Hamilton 関数です。相空間の点 ${tex('(q, p)')} の速度は正準方程式の右辺

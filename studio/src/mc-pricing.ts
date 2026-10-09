@@ -29,7 +29,6 @@ renderLesson({
     String.raw`C = e^{-rT}\,\mathbb{E}^{\mathbb{Q}}\left[\max(S_T - K, 0)\right]`,
     String.raw`\hat{C}_M = \frac{1}{M}\sum_{i=1}^{M} Y_i, \qquad \mathrm{SE} = \frac{s_Y}{\sqrt{M}}`,
   ],
-  equationLabel: 'コールの価格は e のマイナス rT 乗 掛ける リスク中立測度での max(S_T − K, 0) の期待値。推定量は M 個の割り引いた支払い Y_i の平均。標準誤差は標本標準偏差を ルート M で割ったもの。',
   equationNote: `${tex(String.raw`Y_i = e^{-rT}\max(S_T^{(i)} - K, 0)`)}、${tex(String.raw`S_T^{(i)} = S_0\exp\left((r - \tfrac{1}{2}\sigma^2)T + \sigma\sqrt{T}\,Z^{(i)}\right)`)}、${tex(String.raw`Z^{(i)} \sim \mathcal{N}(0, 1)`)}`,
   studyHeading: '期待値の表現から推定量と標準誤差への手順',
   steps: [

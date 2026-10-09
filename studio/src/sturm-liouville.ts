@@ -19,7 +19,6 @@ renderLesson({
     String.raw`\frac{d}{dt}\!\left[p(t)\frac{dx}{dt}\right] + q(t)\,x + \lambda\, w(t)\, x = 0`,
     String.raw`-x'' = \lambda x,\quad x(0) = x(\pi) = 0`,
   ],
-  equationLabel: 'Sturm–Liouville 型の方程式と、その例。マイナス x の2階微分は λ x、両端で x は 0。',
   equationNote: '例は p = w = 1、q = 0、区間 [0, π]',
   studyHeading: '固有値と固有関数を求める手順',
   steps: [

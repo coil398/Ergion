@@ -13,7 +13,6 @@ renderLesson({
   title: '標本・平均・分散',
   description: `同じ分布から独立に取り出した ${tex('n')} 個の数値の標本について、中心の位置を表す標本平均 ${tex(String.raw`\bar{x}`)} と、散らばりを表す不偏分散 ${tex('s^2')} を求めます。二パスの公式と Welford の逐次更新が同じ値を与えることを確かめます。`,
   equation: [String.raw`\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i`, String.raw`s^2 = \frac{1}{n - 1}\sum_{i=1}^{n} (x_i - \bar{x})^2`],
-  equationLabel: '標本平均 x バーは x i の和を n で割ったもの。不偏分散 s の2乗は、偏差の2乗の和を n − 1 で割ったもの。',
   equationNote: `標本標準偏差 ${tex(String.raw`s = \sqrt{s^2}`)}`,
   studyHeading: '標本平均と不偏分散を求める手順',
   steps: [

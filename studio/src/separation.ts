@@ -18,9 +18,6 @@ app.innerHTML = `
           <h1>変数分離<span class="title-dot">.</span></h1>
           <p class="description">右辺が位置 ${tex('x')} に比例するとき、位置と時刻を分けて積分します。<a class="doc-link" href="./integrate.html">積分して解く</a>では右辺が未知関数を含みませんでした。ここでは右辺が ${tex('x')} を含むので、割ってから積分します。得る式は厳密解です。</p>
         </div>
-        <div class="equation" aria-label="変数分離する方程式。x プライムは k x">
-          ${tex(String.raw`x' = kx`, true)}
-        </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
         <div class="panel-heading"><h2 id="study-heading">変数分離の手順</h2></div>

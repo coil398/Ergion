@@ -18,9 +18,6 @@ app.innerHTML = `
           <h1>べき級数<span class="title-dot">.</span></h1>
           <p class="description">係数が通常点のまわりでべき級数になるとき、解も同じ点のまわりのべき級数として求めます。ここでは通常点 ${tex('t = 0')} で、級数の和が閉じた関数になる方程式を解きます。和は厳密解です。</p>
         </div>
-        <div class="equation" aria-label="べき級数で解く方程式。x ダブルプライム足す x は 0">
-          ${tex(String.raw`x'' + x = 0`, true)}
-        </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
         <div class="panel-heading"><h2 id="study-heading">級数の手順</h2></div>

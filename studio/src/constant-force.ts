@@ -24,7 +24,6 @@ renderLesson({
   title: '運動方程式と一定の力',
   description: `質量 ${tex('m')} の質点に、時刻にも位置にもよらない一定の力 ${tex('F')} が働きます。Newton の運動方程式から加速度 ${tex('a = F/m')} を求め、速度と位置の厳密解を導きます。`,
   equation: [String.raw`m x'' = F`, String.raw`x(t) = x_0 + v_0 t + \frac{1}{2}\frac{F}{m} t^2`],
-  equationLabel: 'Newton の運動方程式。質量 m 掛ける x の2階微分は力 F。',
   studyHeading: '運動方程式から厳密解への手順',
   steps: [
     `記号を定めます。${tex('m > 0')} は質点の質量、${tex('F')} は質点に働く力、${tex('x(t)')} は時刻 ${tex('t')} の位置、${tex(`v(t) = x'(t)`)} は速度、${tex(`a(t) = x''(t)`)} は加速度です。初期条件は ${tex('x(0) = x_0')}、${tex(`x'(0) = v_0`)} とします。`,

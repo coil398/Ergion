@@ -18,9 +18,6 @@ app.innerHTML = `
           <h1>完全微分<span class="title-dot">.</span></h1>
           <p class="description">微分方程式を ${tex('M\\,dx + N\\,dy = 0')} と書いたとき、ある関数 ${tex('\\varphi')} の全微分になっているものを完全微分と呼びます。解は ${tex('\\varphi(x, y) = C')} という陰関数です。</p>
         </div>
-        <div class="equation" aria-label="完全微分。(2x + y) dx + (x + 2y) dy = 0">
-          ${tex(String.raw`(2x + y)\,dx + (x + 2y)\,dy = 0`, true)}
-        </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
         <div class="panel-heading"><h2 id="study-heading">完全微分の手順</h2></div>

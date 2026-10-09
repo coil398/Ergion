@@ -28,7 +28,6 @@ renderLesson({
     String.raw`dS_t = \mu S_t\,dt + \sigma S_t\,dW_t`,
     String.raw`S_t = S_0 \exp\left(\left(\mu - \tfrac{1}{2}\sigma^2\right)t + \sigma W_t\right)`,
   ],
-  equationLabel: '幾何 Brownian 運動の確率微分方程式。dS は ミュー S dt 足す シグマ S dW。厳密解は S0 掛ける exp of ミュー引くシグマ2乗の半分 掛ける t 足す シグマ W t。',
   studyHeading: 'Itô の補題から厳密解と離散化への手順',
   steps: [
     `記号を定めます。${tex('S_t > 0')} は時刻 ${tex('t')}（年）の株価、${tex('S_0')} は初期価格、${tex(String.raw`\mu`)} はドリフト率、${tex(String.raw`\sigma > 0`)} はボラティリティです。${tex('W_t')} は標準 Brownian 運動で、${tex('W_0 = 0')}、重ならない区間の増分は独立、増分 ${tex('W_{t+h} - W_t')} は平均 0、分散 ${tex('h')} の正規分布 ${tex(String.raw`\mathcal{N}(0, h)`)} に従います。方程式 ${tex(String.raw`dS_t = \mu S_t\,dt + \sigma S_t\,dW_t`)} は、短い時間 ${tex(String.raw`\Delta t`)} の相対的な変化が

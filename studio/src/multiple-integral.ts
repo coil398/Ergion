@@ -17,7 +17,6 @@ renderLesson({
     String.raw`\iint_{[0,1]^2} xy\,dA = \int_0^1\!\left(\int_0^1 xy\,dy\right) dx = \frac{1}{4}`,
     String.raw`\int_0^{2\pi}\!\!\int_0^1 r\,dr\,d\theta = \pi`,
   ],
-  equationLabel: '正方形の上の xy の二重積分は 4 分の 1。極座標による単位円板の面積は π。',
   studyHeading: '累次積分と格子和の手順',
   steps: [
     `記号を定めます。${tex('D')} は平面の有界な領域、${tex('f(x, y)')} は ${tex('D')} で連続な関数、${tex('dA')} は面積要素です。長方形 ${tex('[x_0, x_1] \\times [y_0, y_1]')} を横に ${tex('n_x')} 個、縦に ${tex('n_y')} 個の小さな長方形に分け、幅を ${tex(String.raw`\Delta x = (x_1 - x_0)/n_x`)}、高さを ${tex(String.raw`\Delta y = (y_1 - y_0)/n_y`)}、中点を ${tex('(x_i^*, y_j^*)')} とします。`,

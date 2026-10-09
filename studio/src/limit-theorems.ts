@@ -12,7 +12,6 @@ renderLesson({
   title: '大数の法則と中心極限定理',
   description: `平均 ${tex(String.raw`\mu`)}、分散 ${tex(String.raw`\sigma^2`)} の分布から独立に取り出した標本の平均 ${tex(String.raw`\bar{x}_n`)} は、${tex('n')} を大きくすると ${tex(String.raw`\mu`)} に近づき（大数の法則）、標準化すると分布の形によらず標準正規分布に近づきます（中心極限定理）。指数分布の擬似乱数の標本で確かめます。`,
   equation: [String.raw`\lim_{n \to \infty} P\left(|\bar{x}_n - \mu| \ge \varepsilon\right) = 0`, String.raw`Z_n = \frac{\bar{x}_n - \mu}{\sigma/\sqrt{n}} \ \xrightarrow{d}\ \mathcal{N}(0, 1)`],
-  equationLabel: '大数の弱法則：標本平均が母平均から ε 以上離れる確率は 0 に近づく。中心極限定理：標準化した標本平均は標準正規分布に分布収束する。',
   studyHeading: '標本平均の平均と分散から二つの定理への手順',
   steps: [
     `記号を定めます。${tex('X_1, X_2, \\ldots')} は、平均 ${tex(String.raw`\mu = \mathbb{E}[X_i]`)}、分散 ${tex(String.raw`\sigma^2 = \mathrm{Var}(X_i) < \infty`)} の同じ分布に独立に従う確率変数です。最初の ${tex('n')} 個の標本平均を ${tex(String.raw`\bar{x}_n = \frac{1}{n}\sum_{i=1}^{n} X_i`)}、${tex(String.raw`\varepsilon > 0`)} を任意の正の数とします。`,

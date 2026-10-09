@@ -18,9 +18,6 @@ app.innerHTML = `
           <h1>未定係数法<span class="title-dot">.</span></h1>
           <p class="description">右辺が多項式、指数関数、正弦、余弦、またはそれらの積であるとき、特殊解の形を先に仮定して係数を決めます。同次解は <a class="doc-link" href="./second-order.html">定数係数の2階同次</a> で得ます。ここで得る式は厳密解です。</p>
         </div>
-        <div class="equation" aria-label="未定係数法の例。右辺は e の 3t">
-          ${tex(String.raw`x'' - 3x' + 2x = e^{3t}`, true)}
-        </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
         <div class="panel-heading"><h2 id="study-heading">未定係数の手順</h2></div>

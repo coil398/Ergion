@@ -120,9 +120,6 @@ app.innerHTML = `
           <h1>証明の一覧<span class="title-dot">.</span></h1>
           <p class="description">この画面は証明を実行しません。証明は lake build で Lean が検査します。検査が失敗すると、サイトは更新されません。</p>
         </div>
-        <div class="equation" aria-label="一定速度の n ステップ。位置は出発点に n v Δt を足す">
-          ${tex(String.raw`x_n = x_0 + n v \Delta t`, true)}
-        </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
         <div class="panel-heading"><h2 id="study-heading">確かめた等式</h2></div>

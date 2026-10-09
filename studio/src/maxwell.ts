@@ -28,7 +28,6 @@ renderLesson({
     String.raw`\nabla\cdot\mathbf{E} = \frac{\rho}{\varepsilon_0},\qquad \nabla\cdot\mathbf{B} = 0`,
     String.raw`\nabla^2\mathbf{E} = \frac{1}{c^2}\frac{\partial^2\mathbf{E}}{\partial t^2}`,
   ],
-  equationLabel: 'Maxwell 方程式。E の回転はマイナス B の時間微分、B の回転は ミュー0 J たす ミュー0 イプシロン0 掛ける E の時間微分。E の発散は ロー 割る イプシロン0、B の発散は 0。真空中の電場は光速 c の波動方程式に従う。',
   equationNote: `${tex(String.raw`c = 1/\sqrt{\varepsilon_0\mu_0}`)}`,
   studyHeading: '回転の式から波動方程式と Yee 格子の差分へ',
   steps: [

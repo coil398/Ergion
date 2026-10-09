@@ -27,7 +27,6 @@ renderLesson({
     String.raw`m\,\mathbf{v}' = q\left(\mathbf{E} + \mathbf{v} \times \mathbf{B}\right)`,
     String.raw`\omega_c = \frac{qB}{m},\qquad r_L = \frac{v_\perp}{|\omega_c|}`,
   ],
-  equationLabel: 'Lorentz 力の運動方程式。m 掛ける v の時間微分は、q 掛ける、E たす v と B の外積。サイクロトロン角振動数は q B 割る m、Larmor 半径は v 垂直割る オメガ c の絶対値。',
   studyHeading: 'らせん運動の厳密解と Boris 法の回転',
   steps: [
     `記号を定めます。${tex('q')} は粒子の電荷、${tex('m > 0')} は質量、${tex(String.raw`\mathbf{r} = (x, y, z)`)} は位置、${tex(String.raw`\mathbf{v} = \mathbf{r}'`)} は速度、${tex(String.raw`\mathbf{E}`)} は電場、${tex(String.raw`\mathbf{B}`)} は磁束密度です。このページでは ${tex(String.raw`\mathbf{E} = \mathbf{0}`)}、${tex(String.raw`\mathbf{B} = B\hat{\mathbf{z}}`)}（一様で一定）とします。外積は

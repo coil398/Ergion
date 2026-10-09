@@ -15,7 +15,6 @@ renderLesson({
     String.raw`\hat{\beta}_1 = \frac{\sum_{i}(x_i - \bar{x})(y_i - \bar{y})}{\sum_{i}(x_i - \bar{x})^2}, \qquad \hat{\beta}_0 = \bar{y} - \hat{\beta}_1\bar{x}`,
     String.raw`R^2 = 1 - \frac{\sum_i (y_i - \hat{y}_i)^2}{\sum_i (y_i - \bar{y})^2}`,
   ],
-  equationLabel: '回帰直線の傾きは、x と y の偏差の積の和を、x の偏差の2乗の和で割ったもの。切片は y バー引く傾き掛ける x バー。決定係数は 1 引く 残差平方和 割る 全平方和。',
   studyHeading: '残差平方和の最小化から回帰係数への手順',
   steps: [
     `記号を定めます。${tex('n')} 組の標本 ${tex('(x_i, y_i)')}（${tex('i = 1, \\ldots, n')}）が、モデル ${tex(String.raw`y_i = \beta_0 + \beta_1 x_i + \varepsilon_i`)} に従うとします。${tex(String.raw`\beta_0`)} は切片、${tex(String.raw`\beta_1`)} は傾き、${tex(String.raw`\varepsilon_i`)} は平均 0、分散 ${tex(String.raw`\sigma^2`)} の誤差です。${tex(String.raw`\bar{x}`)}、${tex(String.raw`\bar{y}`)} は標本平均で、偏差の積の和を

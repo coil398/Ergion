@@ -29,7 +29,8 @@ export async function checkLessonPage(page: Page, item: LessonPage) {
     await page.emulateMedia({ colorScheme: 'light' });
     await page.goto(item.href);
     await expect(page.getByRole('heading', { level: 1, name: `${item.title}.` })).toBeVisible();
-    await expect(page.locator('.equation .katex').first()).toBeVisible();
+    await expect(page.locator('.intro .equation')).toHaveCount(0);
+    await expect(page.locator('#study .equation-plate, #study .solution-equation').first()).toBeVisible();
     await expect(page.getByRole('button', { name: item.section, exact: true })).toHaveAttribute('aria-expanded', 'true');
     await expect(page.locator('.rail-page.active')).toHaveText(item.title);
     await expect(page.locator('#status')).toHaveText(item.status ?? /計算完了|準備完了/, { timeout: 20_000 });
@@ -39,10 +40,10 @@ export async function checkLessonPage(page: Page, item: LessonPage) {
       const before = (a: Element | null, b: Element | null) => Boolean(a && b && (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING));
       const proof = at('.proof');
       return {
-        equationSteps: before(at('.equation'), at('#study .solution')),
+        chartAfterTitle: before(at('.intro'), at('.page-figure')),
         figureBeforeSteps: before(at('.page-figure'), at('#study')),
         figureExample: before(at('.page-figure'), at('#example')),
-        oneHeadline: document.querySelectorAll('.intro .equation .tex-display').length <= 1,
+        noIntroEquation: document.querySelectorAll('.intro .equation').length === 0,
         exampleRelated: before(at('#example'), at('#related')),
         proofLast: !proof || main.lastElementChild === proof,
         hasProof: Boolean(proof),
@@ -50,9 +51,9 @@ export async function checkLessonPage(page: Page, item: LessonPage) {
         text: document.body.innerText,
       };
     });
-    expect(order.equationSteps, item.href).toBe(true);
+    expect(order.chartAfterTitle, item.href).toBe(true);
     expect(order.figureBeforeSteps, item.href).toBe(true);
-    expect(order.oneHeadline, item.href).toBe(true);
+    expect(order.noIntroEquation, item.href).toBe(true);
     expect(order.figureExample, item.href).toBe(true);
     expect(order.exampleRelated, item.href).toBe(true);
     expect(order.proofLast, item.href).toBe(true);

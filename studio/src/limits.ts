@@ -11,7 +11,6 @@ renderLesson({
   title: '極限と連続',
   description: `比 ${tex(String.raw`\frac{\sin x}{x}`)} は ${tex('x = 0')} で定義されませんが、${tex('x')} を 0 に近づけると値は 1 に近づきます。極限の定義に従って、許す誤差 ${tex(String.raw`\varepsilon`)} に対する幅 ${tex(String.raw`\delta`)} を求めます。`,
   equation: [String.raw`\lim_{x \to 0} \frac{\sin x}{x} = 1`, String.raw`\cos x \le \frac{\sin x}{x} \le 1 \quad \left(0 < |x| < \tfrac{\pi}{2}\right)`],
-  equationLabel: '比 sin x / x の、x を 0 に近づけたときの極限は 1。',
   studyHeading: '極限の定義から幅 δ を求める手順',
   steps: [
     `記号を定めます。${tex('f')} は実数の区間で定義された実関数、${tex('a')} はその区間の点、${tex('L')} は実数です。極限

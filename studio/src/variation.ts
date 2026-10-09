@@ -18,9 +18,6 @@ app.innerHTML = `
           <h1>定数変化法<span class="title-dot">.</span></h1>
           <p class="description">右辺が多項式や指数関数の形をしていないとき、同次解の任意定数を時刻の関数に置き換えて特殊解を作ります。<a class="doc-link" href="./undetermined.html">未定係数法</a>がそのまま使えない例です。ここで得る式は厳密解です。</p>
         </div>
-        <div class="equation" aria-label="定数変化法の例。x ダブルプライム足す x は tan t">
-          ${tex(String.raw`x'' + x = \tan t`, true)}
-        </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
         <div class="panel-heading"><h2 id="study-heading">定数変化の手順</h2></div>

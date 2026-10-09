@@ -26,7 +26,6 @@ renderLesson({
     String.raw`x \gets x - L\left\lfloor \frac{x}{L} \right\rfloor`,
     String.raw`\mathbf{r}_{ij} \gets \mathbf{r}_{ij} - L\,\mathrm{round}\!\left(\frac{\mathbf{r}_{ij}}{L}\right)`,
   ],
-  equationLabel: 'x を、x 引く L 掛ける x 割る L の床関数、で置き換える。相対ベクトル r i j を、r i j 引く L 掛ける r i j 割る L を最も近い整数に丸めたもの、で置き換える。',
   equationNote: `${tex(String.raw`\lfloor\cdot\rfloor`)} は床関数、${tex(String.raw`\mathrm{round}`)} は最も近い整数への丸めで、ベクトルには成分ごとに使う`,
   studyHeading: '座標の折り返しと最小イメージの手順',
   steps: [

@@ -21,7 +21,6 @@ renderLesson({
     String.raw`\frac{d}{dx}\int_a^x f(t)\,dt = f(x)`,
     String.raw`\int_a^b f(x)\,dx = G(b) - G(a)`,
   ],
-  equationLabel: 'Riemann 和 S n は長方形の面積の和で、定積分はその極限。積分の上端で微分すると被積分関数に戻り、定積分は原始関数の差に等しい。',
   studyHeading: 'Riemann 和から定積分への手順',
   steps: [
     `記号を定めます。${tex('f')} は閉区間 ${tex('[a, b]')} で連続な関数、${tex('n')} は分割数、${tex(String.raw`\Delta x = \frac{b - a}{n}`)} は小区間の幅、${tex(String.raw`x_i = a + i\,\Delta x`)} は分点です。第 ${tex('i')} 小区間 ${tex(String.raw`[x_{i-1}, x_i]`)} から標本点 ${tex(String.raw`x_i^*`)} を一つ選びます。左端は ${tex(String.raw`x_i^* = x_{i-1}`)}、右端は ${tex(String.raw`x_i^* = x_i`)}、中点は ${tex(String.raw`x_i^* = \frac{x_{i-1} + x_i}{2}`)} です。Riemann 和

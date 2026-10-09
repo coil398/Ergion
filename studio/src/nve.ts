@@ -31,7 +31,6 @@ renderLesson({
     String.raw`\mathbf{v}_i(t + \Delta t) = \mathbf{v}_i\!\left(t + \tfrac{\Delta t}{2}\right) + \frac{\Delta t}{2m}\,\mathbf{F}_i(t + \Delta t)`,
     String.raw`E = \sum_i \tfrac{1}{2} m |\mathbf{v}_i|^2 + \sum_{i<j} V_{\mathrm{sf}}(r_{ij})`,
   ],
-  equationLabel: '速度 Verlet 法。半ステップの速度は、速度に デルタ t 割る 2m 掛ける力 を足したもの。新しい位置は、位置に デルタ t 掛ける半ステップの速度 を足したもの。新しい速度は、半ステップの速度に 新しい位置での力の デルタ t 割る 2m 倍 を足したもの。全エネルギーは運動エネルギーとペアのポテンシャルの和。',
   studyHeading: '運動方程式、保存則、速度 Verlet 法の手順',
   steps: [
     `記号を定めます。${tex('N')} 個の原子（質量 ${tex('m')}）が一辺 ${tex('L')} の立方体セルにあり、体積は ${tex('V = L^3')}、数密度は ${tex(String.raw`\rho = N/V`)} です。原子 ${tex('i')} の位置を ${tex(String.raw`\mathbf{r}_i`)}、速度を ${tex(String.raw`\mathbf{v}_i`)} とします。ペアの距離 ${tex(String.raw`r_{ij}`)} は最小イメージで測り、${tex(String.raw`r_c = 2.5`)} で force-shifted 補正をした Lennard–Jones ポテンシャル ${tex(String.raw`V_{\mathrm{sf}}`)} を使います。全ポテンシャルエネルギーと力は

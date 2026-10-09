@@ -18,7 +18,6 @@ renderLesson({
     String.raw`\hat H_e(R)\,\psi_k(x; R) = E_k(R)\,\psi_k(x; R)`,
     String.raw`\mu R'' = -\frac{dU_0}{dR},\qquad U_0(R) = E_0(R) + V_{nn}(R)`,
   ],
-  equationLabel: '全ハミルトニアンは原子核の運動エネルギーと電子のハミルトニアンの和。電子の固有値 E_k(R) に原子核の反発を加えた U_0 が原子核のポテンシャル。',
   equationNote: '換算質量 μ = M_p/2 = 918.075（M_p = 1836.15）',
   studyHeading: '断熱ポテンシャルを求める手順',
   steps: [

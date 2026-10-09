@@ -18,9 +18,6 @@ app.innerHTML = `
           <h1>ベルヌーイ<span class="title-dot">.</span></h1>
           <p class="description">未知関数のべきが右辺に残る方程式を、ベルヌーイの方程式と呼びます。指数が 0 でも 1 でもないとき、置換で <a class="doc-link" href="./linear.html">1階線形</a> に戻します。ここで得る式は厳密解です。</p>
         </div>
-        <div class="equation" aria-label="ベルヌーイ方程式。x プライム足す p x は q x の n 乗">
-          ${tex(String.raw`x' + px = q x^{n}`, true)}
-        </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
         <div class="panel-heading"><h2 id="study-heading">ベルヌーイの手順</h2></div>

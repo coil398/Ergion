@@ -27,7 +27,6 @@ renderLesson({
     String.raw`\delta S = 0 \iff \frac{d}{dt}\frac{\partial L}{\partial \dot q} - \frac{\partial L}{\partial q} = 0`,
     String.raw`\theta'' + \frac{g}{l}\sin\theta = 0,\qquad T = 4\sqrt{\frac{l}{g}}\,K\!\left(\sin\frac{\theta_0}{2}\right)`,
   ],
-  equationLabel: '作用の変分が 0 であることと Euler–Lagrange 方程式は同値。単振子の方程式と、完全楕円積分 K による周期。',
   studyHeading: '作用の変分から単振子の周期への手順',
   steps: [
     `記号を定めます。${tex('q(t)')} は一般化座標、${tex(String.raw`\dot q = dq/dt`)} は一般化速度、${tex(String.raw`L(q, \dot q, t) = T - V`)} は Lagrange 関数（運動エネルギー ${tex('T')} から位置エネルギー ${tex('V')} を引いたもの）です。端の条件 ${tex('q(t_1) = q_1')}、${tex('q(t_2) = q_2')} を満たす経路に対して、作用を

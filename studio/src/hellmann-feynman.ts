@@ -14,7 +14,6 @@ renderLesson({
   equation: [
     String.raw`F = -\frac{\partial V}{\partial X} = Z\, r\,(r^2 + a^2)^{-3/2}, \qquad r = x - X`,
   ],
-  equationLabel: '点状の電子が原子核に及ぼす Hellmann–Feynman の力。正の力は原子核の座標 X を増やす向き。',
   studyHeading: 'ポテンシャルの偏導関数から力を求める手順',
   steps: [
     `原子単位 ${tex(String.raw`\hbar = m_e = e = 1`)} を使います。電子の座標を ${tex('x')}、原子核の座標を ${tex('X')}、原子核の電荷を ${tex('Z')}、軟化の長さを ${tex('a')} とします。柔らかい Coulomb 相互作用は

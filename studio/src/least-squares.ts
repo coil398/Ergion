@@ -13,7 +13,6 @@ renderLesson({
   title: '最小二乗法',
   description: `式の数 ${tex('m')} が未知数の数 ${tex('n')} より多い連立1次方程式 ${tex(String.raw`A\mathbf{x} \approx \mathbf{b}`)} は、ふつう厳密には解けません。残差 ${tex(String.raw`\mathbf{r} = \mathbf{b} - A\mathbf{x}`)} の長さの2乗を最小にする ${tex(String.raw`\mathbf{x}`)} を、正規方程式と Householder 変換の QR 分解で求めます。`,
   equation: [String.raw`\min_{\mathbf{x}} \|\mathbf{b} - A\mathbf{x}\|^2`, String.raw`A^T A\,\mathbf{x} = A^T\mathbf{b}`],
-  equationLabel: 'b − A x の長さの2乗を最小にする x は、正規方程式 A転置 A x は A転置 b を満たす。',
   studyHeading: '正規方程式と QR 分解による解法の手順',
   steps: [
     `記号を定めます。${tex('A')} は ${tex('m \\times n')} の行列で ${tex('m > n')}、列は1次独立とします。${tex(String.raw`\mathbf{b}`)} は長さ ${tex('m')} の観測値のベクトル、${tex(String.raw`\mathbf{x}`)} は長さ ${tex('n')} の未知数のベクトル、${tex(String.raw`\mathbf{r} = \mathbf{b} - A\mathbf{x}`)} は残差ベクトルです。最小二乗法は、残差の2乗和 ${tex(String.raw`\|\mathbf{r}\|^2 = \sum_{i=1}^{m} r_i^2`)} を最小にする ${tex(String.raw`\hat{\mathbf{x}}`)} を求めます。最小にする ${tex(String.raw`\hat{\mathbf{x}}`)} は正規方程式 ${tex(String.raw`A^T A\hat{\mathbf{x}} = A^T\mathbf{b}`)} の解で、ただ一つです（ページの最後の証明）。`,

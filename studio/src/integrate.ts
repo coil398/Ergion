@@ -18,9 +18,6 @@ app.innerHTML = `
           <h1>積分して解く<span class="title-dot">.</span></h1>
           <p class="description">右辺が未知関数 ${tex('x')} を含まないとき、両辺を時刻で積分して解きます。ここで得る式は、どれも厳密解です。</p>
         </div>
-        <div class="equation" aria-label="右辺が時刻だけの微分方程式。x プライムは f(t)">
-          ${tex(String.raw`x' = f(t)`, true)}
-        </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
         <div class="panel-heading"><h2 id="study-heading">積分の手順</h2></div>

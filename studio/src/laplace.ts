@@ -18,10 +18,6 @@ app.innerHTML = `
           <h1>Laplace 変換<span class="title-dot">.</span></h1>
           <p class="description">初期値を変換の中に取り込み、微分方程式を ${tex('s')} の代数方程式にします。逆変換で時刻の関数へ戻します。ここで使う変換は、このページに書き出します。得る式は厳密解です。</p>
         </div>
-        <div class="equation" aria-label="Laplace 変換で解く初期値問題">
-          ${tex(String.raw`x'' - 3x' + 2x = e^{3t}`, true)}
-          <span class="equation-note">x(0) = x'(0) = 0</span>
-        </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
         <div class="panel-heading"><h2 id="study-heading">変換と逆変換</h2></div>

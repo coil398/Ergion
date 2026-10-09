@@ -27,7 +27,6 @@ renderLesson({
     String.raw`\frac{\partial^2 u}{\partial t^2} = c^2 \frac{\partial^2 u}{\partial x^2}`,
     String.raw`u(x, t) = \tfrac{1}{2}\left[F(x - ct) + F(x + ct)\right]`,
   ],
-  equationLabel: '波動方程式。u の時間についての2階微分は c の2乗掛ける u の x についての2階微分。',
   equationNote: '両端固定 u(0, t) = u(L, t) = 0、F は初期形の奇周期拡張',
   studyHeading: "d'Alembert の解、固有振動、中心差分法",
   steps: [

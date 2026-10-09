@@ -13,7 +13,6 @@ renderLesson({
   title: '固有値と固有ベクトル',
   description: `正方行列 ${tex('A')} が向きを変えずに定数倍だけするベクトル ${tex(String.raw`\mathbf{v} \neq \mathbf{0}`)} を固有ベクトル、その倍率 ${tex(String.raw`\lambda`)} を固有値と呼びます。2行2列の行列で特性方程式から厳密な値を求め、ベキ乗法と QR 法の反復がその値に近づく速さを確かめます。`,
   equation: [String.raw`A\mathbf{v} = \lambda\mathbf{v}`, String.raw`\det(A - \lambda I) = 0`],
-  equationLabel: '固有値問題 A v は λ v。特性方程式 A − λ I の行列式は 0。',
   studyHeading: '特性方程式から固有値と固有ベクトルへの手順',
   steps: [
     `記号を定めます。${tex('A')} は ${tex('n \\times n')} の実行列、${tex('I')} は単位行列、${tex(String.raw`\lambda`)} は数、${tex(String.raw`\mathbf{v}`)} は零でないベクトルです。${tex(String.raw`A\mathbf{v} = \lambda\mathbf{v}`)} は ${tex(String.raw`(A - \lambda I)\mathbf{v} = \mathbf{0}`)} と同じで、零でない解 ${tex(String.raw`\mathbf{v}`)} があるのは ${tex(String.raw`A - \lambda I`)} が正則でないとき、すなわち

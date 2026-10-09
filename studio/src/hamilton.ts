@@ -26,7 +26,6 @@ renderLesson({
     String.raw`p = \frac{\partial L}{\partial \dot q},\qquad H(q, p) = p\,\dot q - L`,
     String.raw`\dot q = \frac{\partial H}{\partial p},\qquad \dot p = -\frac{\partial H}{\partial q}`,
   ],
-  equationLabel: '正準運動量 p は L の q ドットによる偏微分、Hamilton 関数 H は p 掛ける q ドット ひく L。q ドットは H の p による偏微分、p ドットは マイナス H の q による偏微分。',
   studyHeading: 'Legendre 変換から正準方程式を導く手順',
   steps: [
     `記号を定めます。${tex('q')} は一般化座標、${tex(String.raw`\dot q = dq/dt`)} は一般化速度、${tex(String.raw`L(q, \dot q)`)} は Lagrange 関数です。正準運動量を

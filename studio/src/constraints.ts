@@ -11,7 +11,6 @@ renderLesson({
   title: '拘束条件と一般化座標',
   description: `質点の位置が曲面や棒の長さのような条件で縛られると、独立に動かせる座標の数が減ります。その数が自由度 ${tex('s = 3N - k')} で、拘束を自動的に満たす座標を一般化座標と呼びます。球面上の質点の位置を ${tex(String.raw`(\theta, \varphi)`)} で表し、偏微分 ${tex(String.raw`\partial\mathbf{r}/\partial q`)} を厳密に求めて中心差分で確かめます。`,
   equation: [String.raw`s = 3N - k`, String.raw`\mathbf{r}_i = \mathbf{r}_i(q_1, \ldots, q_s, t)`],
-  equationLabel: '自由度 s は 3N から k を引いた数。各質点の位置は一般化座標 q と時刻 t の関数。',
   studyHeading: '自由度の数え方と一般化座標の偏微分',
   steps: [
     `記号を定めます。${tex('N')} 個の質点の位置を ${tex(String.raw`\mathbf{r}_1, \ldots, \mathbf{r}_N`)} とします。3次元空間では、これらは ${tex('3N')} 個のデカルト座標で決まります。座標と時刻 ${tex('t')} の間に成り立つ等式

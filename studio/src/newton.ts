@@ -22,9 +22,6 @@ app.innerHTML = `
           <h1>ニュートン法<span class="title-dot">.</span></h1>
           <p class="description">微分できる実関数 ${tex('f')} について、${tex('f(x) = 0')} を満たす ${tex('x')} を接線で近似します。これは微分方程式を時刻で進める方法ではありません。</p>
         </div>
-        <div class="equation" aria-label="ニュートン法の更新。次の近似は、今の近似から関数値を導関数で割った量を引く">
-          ${tex(String.raw`x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}`, true)}
-        </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
         <div class="panel-heading"><h2 id="study-heading">接線から次の近似を作る</h2></div>

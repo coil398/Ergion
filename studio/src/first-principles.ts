@@ -15,7 +15,6 @@ renderLesson({
     String.raw`a = \frac{1}{\mu}\left(-\frac{dU_0}{dR}\right)`,
     String.raw`v_{n+1/2} = v_n + \tfrac{1}{2}\Delta t\, a_n, \qquad x_{n+1} = x_n + \Delta t\, v_{n+1/2}, \qquad v_{n+1} = v_{n+1/2} + \tfrac{1}{2}\Delta t\, a_{n+1}`,
   ],
-  equationLabel: '第一原理分子動力学の1ステップ。加速度は断熱ポテンシャルの傾きを換算質量で割ったもの。位置と速度は速度 Verlet 法で更新する。',
   studyHeading: '電子状態の力で原子核を1ステップ進める手順',
   steps: [
     `二つの陽子と1個の電子の1次元モデルでは、核間距離 ${tex('R')} の断熱ポテンシャルは ${tex(String.raw`U_0(R) = E_0(R) + V_{nn}(R)`)} です。${tex(String.raw`E_0`)} は電子の基底状態のエネルギー、${tex(String.raw`V_{nn}`)} は原子核の反発です。原子核の運動の換算質量を ${tex(String.raw`\mu`)} とすると、加速度は

@@ -11,7 +11,6 @@ renderLesson({
   title: '積の微分と合成関数の微分',
   description: `微分の定義から、積 ${tex('uv')} の導関数と合成関数 ${tex('f(g(x))')} の導関数の公式を導きます。例 ${tex(String.raw`x^2 \sin x`)} と ${tex('e^{x^2}')} について、公式の厳密な値と中心差分の近似値を比べます。`,
   equation: [String.raw`(uv)' = u'v + uv'`, String.raw`\frac{d}{dx} f(g(x)) = f'(g(x))\,g'(x)`],
-  equationLabel: '積の微分は u プライム v 足す u v プライム。合成関数の微分は f プライム g x 掛ける g プライム x。',
   studyHeading: '微分の定義から二つの公式への手順',
   steps: [
     `記号を定めます。${tex('u')}、${tex('v')} は点 ${tex('x')} で微分可能な関数です。合成関数では、${tex('g')} は ${tex('x')} で微分可能、${tex('f')} は点 ${tex('g(x)')} で微分可能とします。${tex(`u'`)} などは導関数、${tex(String.raw`h \neq 0`)} は刻みです。`,

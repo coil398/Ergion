@@ -28,7 +28,6 @@ renderLesson({
     String.raw`\oint_C \mathbf{E}\cdot d\mathbf{l} = -\frac{d\Phi}{dt},\qquad \Phi = \int_S \mathbf{B}\cdot d\mathbf{S}`,
     String.raw`L\,\frac{dI}{dt} + R\,I = \mathcal{E}(t)`,
   ],
-  equationLabel: 'Faraday の法則。閉曲線 C に沿った電場の線積分は、マイナス磁束の時間微分。RL 回路の方程式は、L 掛ける I の時間微分たす R 掛ける I が起電力。',
   studyHeading: '磁束の時間変化から起電力と電流を求める手順',
   steps: [
     `記号を定めます。${tex('C')} は導線のループ、${tex('S')} は ${tex('C')} を縁とする面積 ${tex('A')} の平面、${tex(String.raw`\hat{\mathbf{n}}`)} はその単位法線です。磁束密度は一様で ${tex(String.raw`\mathbf{B}(t) = B_0\cos(\omega t)\,\hat{\mathbf{n}}`)}（${tex('B_0')} は振幅、${tex(String.raw`\omega > 0`)} は角振動数）とします。ループを貫く磁束は

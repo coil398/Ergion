@@ -25,7 +25,6 @@ renderLesson({
   title: '減衰振動',
   description: `ばねの復元力 ${tex('-kx')} に加えて、速度に比例する抵抗力 ${tex(`-\\gamma x'`)} を受ける質点の運動です。特性方程式の根から三つの減衰の場合を導き、力学的エネルギーが ${tex(String.raw`dE/dt = -\gamma v^2`)} で減ることを確かめます。`,
   equation: [String.raw`m x'' + \gamma x' + k x = 0`, String.raw`x(t) = e^{-\beta t}\left[x_0\cos\omega_d t + \frac{v_0 + \beta x_0}{\omega_d}\sin\omega_d t\right]`],
-  equationLabel: '減衰振動の運動方程式。m x の2階微分、足す γ x の1階微分、足す k x は 0。',
   equationNote: `${tex(String.raw`\beta = \gamma/(2m)`)}、${tex(String.raw`\omega_d = \sqrt{k/m - \beta^2}`)}`,
   studyHeading: '特性方程式から厳密解への手順',
   steps: [

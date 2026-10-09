@@ -13,7 +13,6 @@ renderLesson({
   title: '連立1次方程式と消去法',
   description: `正則な ${tex('n \\times n')} 行列 ${tex('A')} と定数ベクトル ${tex(String.raw`\mathbf{b}`)} から、連立1次方程式 ${tex(String.raw`A\mathbf{x} = \mathbf{b}`)} の解を拡大係数行列の行基本変形で求めます。前進消去で上三角の形にし、後退代入で下の未知数から順に決めます。`,
   equation: [String.raw`A\mathbf{x} = \mathbf{b}`, String.raw`[A \mid \mathbf{b}] \;\longrightarrow\; [U \mid \mathbf{c}]`],
-  equationLabel: '連立1次方程式 A x = b と、拡大係数行列を上三角の形にする前進消去。',
   studyHeading: '前進消去と後退代入の手順',
   steps: [
     `記号を定めます。${tex('A = (a_{ij})')} は ${tex('n \\times n')} の正則な係数行列、${tex(String.raw`\mathbf{x} = (x_1, \ldots, x_n)^T`)} は未知数のベクトル、${tex(String.raw`\mathbf{b} = (b_1, \ldots, b_n)^T`)} は定数ベクトルです。${tex(String.raw`A`)} が正則なので解はただ一つです。右に ${tex(String.raw`\mathbf{b}`)} を付けた行列 ${tex(String.raw`[A \mid \mathbf{b}]`)} を拡大係数行列と呼び、その第 ${tex('i')} 行を ${tex('R_i')} と書きます。二つの行を入れ替える、ある行に 0 でない数を掛ける、ある行に別の行の定数倍を加える、の三つを行基本変形と呼びます。どれも逆の変形で元に戻せるので、連立方程式の解を変えません。`,

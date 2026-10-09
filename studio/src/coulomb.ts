@@ -14,7 +14,6 @@ renderLesson({
     String.raw`\mathbf{F} = \frac{1}{4\pi\varepsilon_0}\,\frac{q_1 q_2}{r^2}\,\hat{\mathbf{r}}`,
     String.raw`\mathbf{E}(\mathbf{r}) = \frac{1}{4\pi\varepsilon_0} \sum_i \frac{q_i}{|\mathbf{r} - \mathbf{r}_i|^3}\,(\mathbf{r} - \mathbf{r}_i)`,
   ],
-  equationLabel: 'Coulomb の法則と、点電荷の組が作る電場。',
   equationNote: 'このページの単位 1/(4πε₀) = 1',
   studyHeading: '点電荷の組の電場と電気力線を求める手順',
   steps: [

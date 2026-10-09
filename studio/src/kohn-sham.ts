@@ -36,7 +36,6 @@ renderLesson({
     String.raw`\left[-\frac{1}{2}\frac{d^2}{dx^2} + V_{\mathrm{eff}}[n](x)\right]\psi_0(x) = \varepsilon_0\,\psi_0(x)`,
     String.raw`V_{\mathrm{eff}} = v_{\mathrm{ext}} + V_H[n] + v_x[n],\qquad n(x) = 2\,|\psi_0(x)|^2`,
   ],
-  equationLabel: 'Kohn–Sham 方程式。有効ポテンシャルは原子核のポテンシャル、Hartree ポテンシャル、交換ポテンシャルの和で、密度は軌道の2乗の2倍。',
   equationNote: '交換のモデル v_x = −(3n/π)^{1/3}、相関は含まない',
   studyHeading: '自己無撞着場の反復の手順',
   steps: [

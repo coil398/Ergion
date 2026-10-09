@@ -17,7 +17,6 @@ renderLesson({
     String.raw`D_+ f(x) = \frac{f(x + h) - f(x)}{h}`,
     String.raw`D_0 f(x) = \frac{f(x + h) - f(x - h)}{2h}`,
   ],
-  equationLabel: '前進差分と中心差分。',
   equationNote: '打ち切り誤差は O(h) と O(h²)',
   studyHeading: 'Taylor 展開から誤差の大きさを求める手順',
   steps: [

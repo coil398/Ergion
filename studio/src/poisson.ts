@@ -16,7 +16,6 @@ renderLesson({
     String.raw`\{f, g\} = \sum_{j}\left(\frac{\partial f}{\partial q_j}\frac{\partial g}{\partial p_j} - \frac{\partial f}{\partial p_j}\frac{\partial g}{\partial q_j}\right)`,
     String.raw`\dot f = \{f, H\},\qquad \{Q, P\} = 1`,
   ],
-  equationLabel: 'Poisson 括弧の定義。f の q_j による偏微分 掛ける g の p_j による偏微分 ひく f の p_j による偏微分 掛ける g の q_j による偏微分 の j についての和。f の時間微分は f と H の Poisson 括弧。正準変換では Q と P の括弧は 1。',
   studyHeading: 'Poisson 括弧と正準変換を計算する手順',
   steps: [
     `記号を定めます。${tex(String.raw`q = (q_1, \ldots, q_s)`)} は一般化座標、${tex(String.raw`p = (p_1, \ldots, p_s)`)} は正準運動量、${tex('f(q, p)')} と ${tex('g(q, p)')} は相空間の微分可能な関数です。Poisson 括弧を

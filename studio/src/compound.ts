@@ -18,7 +18,6 @@ renderLesson({
     String.raw`S_m(t) = S_0\left(1 + \frac{r}{m}\right)^{mt}`,
     String.raw`\lim_{m \to \infty} S_m(t) = S_0 e^{rt}, \qquad \frac{dS}{dt} = rS`,
   ],
-  equationLabel: '年 m 回の複利の元利合計は S0 掛ける 1 足す r 割る m の mt 乗。m を無限大にした極限は S0 e の rt 乗で、微分方程式 dS/dt = rS の解。',
   studyHeading: '複利の漸化式から連続複利の極限への手順',
   steps: [
     `記号を定めます。${tex('S_0 > 0')} は元本、${tex('r > 0')} は年利率、${tex('m')} は1年あたりの複利の回数、${tex('t')} は年で測った時間です。1回の期間は ${tex('1/m')} 年で、期間の終わりに、その時点の元利合計の ${tex('r/m')} 倍が利息として組み入れられます。${tex('k')} 回目の組み入れの後の元利合計を ${tex('S_k')} とすると

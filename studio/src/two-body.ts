@@ -25,7 +25,6 @@ renderLesson({
   title: '中心力場と2体問題',
   description: `逆2乗の引力で引き合う二つの質点の運動です。重心の運動と相対運動に分け、相対運動の軌道が円錐曲線 ${tex(String.raw`r = p/(1 + e\cos\theta)`)} になること、動径が掃く面積の速さが一定であることを導きます。`,
   equation: [String.raw`\mu\,\mathbf{r}'' = -\frac{G m_1 m_2}{r^2}\,\hat{\mathbf{r}}`, String.raw`r(\theta) = \frac{p}{1 + e\cos\theta}`],
-  equationLabel: '相対運動の方程式。換算質量 μ 掛ける r の2階微分は、マイナス G m1 m2 割る r の2乗 掛ける動径方向の単位ベクトル。',
   equationNote: `${tex(String.raw`\mu = m_1 m_2/(m_1 + m_2)`)}、${tex(String.raw`\mathbf{r} = \mathbf{r}_1 - \mathbf{r}_2`)}、${tex(String.raw`p = h^2/(GM)`)}`,
   studyHeading: '重心と相対座標から軌道の式への手順',
   steps: [

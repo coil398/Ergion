@@ -15,7 +15,6 @@ renderLesson({
     String.raw`\frac{dT}{dt} = \frac{T_0 - T}{\tau}`,
     String.raw`\lambda = \sqrt{1 + \frac{\Delta t}{\tau}\left(\frac{T_0}{T} - 1\right)}, \qquad \mathbf{v}_i \leftarrow \lambda\,\mathbf{v}_i`,
   ],
-  equationLabel: 'Berendsen の熱浴。温度の変化率は目標との差を時定数で割ったもの。速度に掛ける係数ラムダは、その1ステップで運動エネルギーが何倍になるかの平方根。',
   studyHeading: '速度を定数倍して温度を目標へ近づける手順',
   steps: [
     `NVE アンサンブルでは全エネルギー ${tex('E')} が一定で、瞬時温度 ${tex('T')} は運動エネルギー ${tex('K')} と一緒に揺れます。NVT アンサンブルでは ${tex('N')} と ${tex('V')} に加え、目標の温度 ${tex('T_0')} を指定します。熱浴は粒子の速度を変え、${tex('K')} を ${tex('T_0')} に対応する大きさへ寄せます。ここで使う Berendsen の熱浴は、温度の微分方程式

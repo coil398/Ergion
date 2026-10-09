@@ -24,7 +24,6 @@ renderLesson({
     String.raw`\hat{I}_N = \frac{1}{N}\sum_{i=1}^{N} g(x_i), \qquad \mathrm{SE} = \frac{s_g}{\sqrt{N}}`,
     String.raw`\hat{\pi}_N = 4\,\frac{N_{\mathrm{in}}}{N}`,
   ],
-  equationLabel: '推定量 I ハット N は g の標本平均。標準誤差は標本標準偏差を ルート N で割ったもの。円周率の推定値は 4 掛ける 内側の点の数 割る N。',
   equationNote: `${tex(String.raw`N_{\mathrm{in}}`)} は ${tex(String.raw`x_i^2 + y_i^2 \le 1`)} を満たす点の数`,
   studyHeading: '期待値の標本平均による近似と標準誤差の手順',
   steps: [

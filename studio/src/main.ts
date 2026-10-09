@@ -29,9 +29,6 @@ app.innerHTML = `
           <h1>等速直線運動<span class="title-dot">.</span></h1>
           <p class="description">外力を受けない一つの粒子が、直線上を一定の速度で進みます。加速度がゼロであることから、位置の厳密解がどのように出るかを、このページで順に見ます。</p>
         </div>
-        <div class="equation" aria-label="等速直線運動の式。x(t) は x0 足す v t">
-          ${tex('x(t) = x_0 + v t', true)}
-        </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
         <div class="panel-heading"><h2 id="study-heading">等速直線運動の計算と説明</h2></div>

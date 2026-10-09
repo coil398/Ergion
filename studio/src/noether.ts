@@ -28,7 +28,6 @@ renderLesson({
     String.raw`I = \sum_j \frac{\partial L}{\partial \dot q_j}\,K_j(q) = \text{一定}`,
     String.raw`E = \sum_j \dot q_j\frac{\partial L}{\partial \dot q_j} - L = \text{一定}`,
   ],
-  equationLabel: '変換 q から q + ε K(q) で Lagrange 関数が変わらないとき、I は一定。時刻を陽に含まないとき、エネルギー E は一定。',
   studyHeading: '対称性から保存量を求める手順',
   steps: [
     `記号を定めます。${tex(String.raw`L(q, \dot q, t)`)} は一般化座標 ${tex(String.raw`q = (q_1, \ldots, q_s)`)} の Lagrange 関数、${tex(String.raw`p_j = \partial L/\partial\dot q_j`)} は一般化運動量です。座標の変換

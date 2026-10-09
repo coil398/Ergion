@@ -30,7 +30,6 @@ renderLesson({
     String.raw`\frac{\partial u}{\partial t} = \kappa \frac{\partial^2 u}{\partial x^2}`,
     String.raw`u(x, t) = \sum_n A_n \sin\frac{n\pi x}{L}\, e^{-\kappa (n\pi/L)^2 t}`,
   ],
-  equationLabel: '熱伝導方程式。u の時間微分は κ 掛ける u の x についての2階微分。',
   equationNote: '境界条件 u(0, t) = u(L, t) = 0',
   studyHeading: '変数分離から厳密解へ、差分法とその安定性',
   steps: [

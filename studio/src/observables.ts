@@ -32,7 +32,6 @@ renderLesson({
     String.raw`T = \frac{2K}{(3N - 3)\,k_B}, \qquad P = \frac{N k_B T}{V} + \frac{1}{3V}\sum_{i<j} \mathbf{r}_{ij}\cdot\mathbf{F}_{ij}`,
     String.raw`g(r) = \frac{V}{N^2\,4\pi r^2\,\Delta r}\left\langle \sum_i \sum_{j \ne i} \delta(r - r_{ij}) \right\rangle`,
   ],
-  equationLabel: '温度は 2K 割る 3N引く3 掛ける kB。圧力は N kB T 割る V に、ペアのビリアルの和 割る 3V を足したもの。動径分布関数 g of r は、V 割る N の2乗 掛ける 4 パイ r の2乗 デルタ r に、ペア距離のデルタ関数の和の平均を掛けたもの。',
   equationNote: `${tex(String.raw`\mathbf{r}_{ij} = \mathbf{r}_i - \mathbf{r}_j`)}（最小イメージ）、${tex(String.raw`\mathbf{F}_{ij}`)} は原子 ${tex('j')} が原子 ${tex('i')} に及ぼす力`,
   studyHeading: '時間平均から温度、圧力、動径分布関数への手順',
   steps: [

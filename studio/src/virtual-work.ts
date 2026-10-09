@@ -24,7 +24,6 @@ renderLesson({
   title: "仮想仕事の原理と d'Alembert の原理",
   description: `拘束力は、拘束を破らない微小な変位（仮想変位）に対して仕事をしません。このことから、拘束力を知らなくても釣り合いの条件と運動方程式が得られます。なめらかな斜面の上の質点で、支える力 ${tex(String.raw`F = mg\tan\alpha`)} と加速度 ${tex(String.raw`s'' = g\sin\alpha`)} を導きます。`,
   equation: [String.raw`\sum_i \mathbf{F}_i\cdot\delta\mathbf{r}_i = 0`, String.raw`\sum_i \left(\mathbf{F}_i - m_i\mathbf{r}_i''\right)\cdot\delta\mathbf{r}_i = 0`],
-  equationLabel: '仮想仕事の原理。力と仮想変位の内積の和は 0。d\'Alembert の原理。力から質量掛ける加速度を引いたものと仮想変位の内積の和は 0。',
   studyHeading: '仮想仕事から釣り合いと運動方程式への手順',
   steps: [
     `記号を定めます。${tex('N')} 個の質点の質量を ${tex('m_i')}、位置を ${tex(String.raw`\mathbf{r}_i`)} とします。質点 ${tex('i')} が受ける力を、与えられた力 ${tex(String.raw`\mathbf{F}_i`)}（重力や手で押す力）と、拘束を保つための拘束力 ${tex(String.raw`\mathbf{R}_i`)}（斜面の垂直抗力や糸の張力）に分けます。時刻を止めたまま拘束を破らないように各質点を微小に動かす変位 ${tex(String.raw`\delta\mathbf{r}_i`)} を仮想変位と呼びます。なめらかな面や伸びない糸のような理想的な拘束では

@@ -31,9 +31,6 @@ app.innerHTML = `
           <h1>等加速度直線運動<span class="title-dot">.</span></h1>
           <p class="description">一つの粒子が、一定の加速度 ${tex('a')} で直線上を進みます。速度は一定の割合で変わります。一定の加速度から、速度と位置の厳密解がどのように出るかを、このページで順に見ます。</p>
         </div>
-        <div class="equation" aria-label="等加速度直線運動の式。位置は x0 足す v0 t 足す 2分の1 a t の二乗">
-          ${tex(String.raw`x(t) = x_0 + v_0 t + \frac{1}{2} a t^2`, true)}
-        </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
         <div class="panel-heading"><h2 id="study-heading">等加速度直線運動の計算と説明</h2></div>

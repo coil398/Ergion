@@ -17,7 +17,6 @@ renderLesson({
     String.raw`f(x) = \sum_{k=0}^{n} \frac{f^{(k)}(a)}{k!}(x - a)^k + R_{n+1}(x)`,
     String.raw`R_{n+1}(x) = \frac{f^{(n+1)}(\xi)}{(n+1)!}(x - a)^{n+1}`,
   ],
-  equationLabel: 'Taylor の定理。f(x) は n 次の Taylor 多項式と、Lagrange 形の剰余項の和。',
   equationNote: 'ξ は a と x のあいだの点',
   studyHeading: '係数の決め方と剰余項の評価',
   steps: [

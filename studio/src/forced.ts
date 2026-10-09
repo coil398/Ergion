@@ -29,7 +29,6 @@ renderLesson({
   title: '強制振動と共鳴',
   description: `減衰振動をする質点に、周期的な外力 ${tex(String.raw`F_0\cos\omega t`)} が働きます。複素振幅の方法で定常解の振幅 ${tex(String.raw`A(\omega)`)} と位相の遅れ ${tex(String.raw`\delta`)} を導き、外力の角振動数に対する共鳴曲線を描きます。`,
   equation: [String.raw`m x'' + \gamma x' + k x = F_0\cos\omega t`, String.raw`x_p(t) = A(\omega)\cos(\omega t - \delta)`],
-  equationLabel: '強制振動の運動方程式。m x の2階微分、足す γ x の1階微分、足す k x は F0 cos ω t。',
   equationNote: `${tex(String.raw`A(\omega) = F_0/\sqrt{(k - m\omega^2)^2 + (\gamma\omega)^2}`)}、${tex(String.raw`\tan\delta = \gamma\omega/(k - m\omega^2)`)}`,
   studyHeading: '複素振幅から定常解への手順',
   steps: [

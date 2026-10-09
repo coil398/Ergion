@@ -37,9 +37,6 @@ app.innerHTML = `
           <h1>一定速度の増分<span class="title-dot">.</span></h1>
           <p class="description">速度 ${tex('v')} が一定のとき、${tex(String.raw`x' = v`)} の1ステップは位置に ${tex(String.raw`v \Delta t`)} を足します。同じ刻みを ${tex('n')} 回繰り返すと、増分は ${tex(String.raw`n v \Delta t`)} です。</p>
         </div>
-        <div class="equation" aria-label="一定速度の1ステップ。位置は速度と時間刻みの積だけ進む">
-          ${tex(String.raw`x \mapsto x + v \Delta t`, true)}
-        </div>
       </section>
       <section class="study panel" id="study" aria-labelledby="study-heading">
         <div class="panel-heading"><h2 id="study-heading">仮定と、証明したこと</h2></div>

@@ -11,7 +11,6 @@ renderLesson({
   title: '微分の定義',
   description: `関数の2点を結ぶ割線の傾き、すなわち差分商の、刻み ${tex('h')} を 0 に近づけたときの極限として導関数を定めます。${tex('f(x) = x^2')} では差分商が ${tex('2a + h')} と整理でき、極限は ${tex('2a')} です。`,
   equation: [String.raw`f'(a) = \lim_{h \to 0} \frac{f(a + h) - f(a)}{h}`, String.raw`\frac{(a + h)^2 - a^2}{h} = 2a + h`],
-  equationLabel: '点 a における導関数は、差分商の h を 0 に近づけたときの極限。',
   studyHeading: '差分商から導関数への手順',
   steps: [
     `記号を定めます。${tex('f')} は点 ${tex('a')} の近くで定義された実関数、${tex(String.raw`h \neq 0`)} は刻みです。差分商

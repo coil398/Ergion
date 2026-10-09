@@ -14,7 +14,6 @@ renderLesson({
     String.raw`\mathbf{E} = -\nabla \phi,\qquad \phi(\mathbf{r}) = \frac{1}{4\pi\varepsilon_0} \sum_i \frac{q_i}{|\mathbf{r} - \mathbf{r}_i|}`,
     String.raw`\phi(A) - \phi(B) = \int_A^B \mathbf{E} \cdot d\mathbf{r}`,
   ],
-  equationLabel: '静電ポテンシャルと電場の関係、および電位差と電場の線積分。',
   equationNote: 'このページの単位 1/(4πε₀) = 1',
   studyHeading: '電位から電場と電位差を求める手順',
   steps: [
