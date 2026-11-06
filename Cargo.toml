@@ -1,5 +1,6 @@
 [workspace]
-members = ["crates/ergion-core", "crates/ergion-lab"]
+members = ["crates/ergion-core", "crates/ergion-lab", "py/ergion"]
+default-members = ["crates/ergion-core", "crates/ergion-lab"]
 resolver = "2"
 
 [workspace.package]

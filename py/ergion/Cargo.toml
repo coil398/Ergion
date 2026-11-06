@@ -1,0 +1,13 @@
+[package]
+name = "ergion-py"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[lib]
+name = "ergion"
+crate-type = ["cdylib"]
+
+[dependencies]
+ergion-core = { path = "../../crates/ergion-core" }
+pyo3 = { version = "0.25", features = ["extension-module"] }

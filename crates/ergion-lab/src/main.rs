@@ -14,6 +14,30 @@ fn run() -> Result<(), String> {
         return Err("usage: ergion <config.json>".into());
     }
     let json = std::fs::read_to_string(path).map_err(|e| e.to_string())?;
+    if let Ok(mut uniform) = ergion_lab::UniformSimulation::new(&json) {
+        loop {
+            let snapshot = uniform.snapshot()?;
+            let state: ergion_lab::UniformSnapshot =
+                serde_json::from_str(&snapshot).map_err(|e| e.to_string())?;
+            if state.finished {
+                println!("{snapshot}");
+                return Ok(());
+            }
+            uniform.advance(500)?;
+        }
+    }
+    if let Ok(mut motion) = ergion_lab::ConstantAccelerationSimulation::new(&json) {
+        loop {
+            let snapshot = motion.snapshot()?;
+            let state: ergion_lab::ConstantAccelerationSnapshot =
+                serde_json::from_str(&snapshot).map_err(|e| e.to_string())?;
+            if state.finished {
+                println!("{snapshot}");
+                return Ok(());
+            }
+            motion.advance(500)?;
+        }
+    }
     let mut simulation = Simulation::new(&json)?;
     loop {
         let snapshot = simulation.snapshot()?;

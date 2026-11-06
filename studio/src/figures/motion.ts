@@ -1,0 +1,265 @@
+/**
+ * 等速直線運動の図。x = x₀ + vt を、初期位置の線分と、そこから伸びる変位 vt で見せる。
+ * 位置は UniformSimulation のスナップショットをそのまま使う。
+ */
+
+import { axisDomain, drawNumberLine, drawOrigin, mapLinear } from './axes';
+import { canvasContext, figurePalette } from './canvas';
+import { drawLabel } from './labels';
+import { drawExactOutline, drawParticle } from './particle';
+import { drawJoint, drawSegment, drawWitness } from './segment';
+
+export interface MotionSample {
+  time: number;
+  position: number;
+  exactPosition: number;
+}
+
+export interface UniformMotionFrame {
+  key: string;
+  x0: number;
+  position: number;
+  exactPosition: number;
+  velocity: number;
+  timeEnd: number;
+  samples: MotionSample[];
+}
+
+function bands(height: number) {
+  const axisY = Math.round(Math.min(height * 0.72, height - 56));
+  const bracketY = Math.round(height * 0.5);
+  const exactY = bracketY - 18;
+  return {
+    cueY: Math.max(18, Math.round(height * 0.1)),
+    labelY: exactY - 24,
+    exactY,
+    bracketY,
+    axisY,
+    tickY: Math.min(axisY + 34, height - 12),
+  };
+}
+
+export function drawUniformMotion(canvas: HTMLCanvasElement, frame: UniformMotionFrame) {
+  const surface = canvasContext(canvas);
+  if (surface.width < 2 || surface.height < 2) return;
+  const { context, width, height } = surface;
+  const palette = figurePalette();
+  const left = 46;
+  const right = 40;
+  const plotWidth = Math.max(width - left - right, 1);
+  const samples = frame.samples.map(sample => ({ time: sample.time, value: sample.position }));
+  const exactValues = frame.samples.map(sample => sample.exactPosition);
+  const domain = axisDomain(
+    `${frame.key}:scene`,
+    samples,
+    frame.timeEnd,
+    [0, frame.x0, frame.position, frame.exactPosition, ...exactValues],
+    0.16,
+    0.8,
+  );
+  const mapX = (value: number) => mapLinear(value, domain.min, domain.max, left, plotWidth);
+  const { cueY, labelY, exactY, bracketY, axisY, tickY } = bands(height);
+  const originX = mapX(0);
+  const jointX = mapX(frame.x0);
+  const positionX = mapX(frame.position);
+  const exactX = mapX(frame.exactPosition);
+  const clampX = { min: 16, max: width - 16 };
+  const x0Pixels = Math.abs(jointX - originX);
+  const x0LabelX = x0Pixels >= 28 ? (originX + jointX) / 2 : jointX;
+  const vtMid = (jointX + positionX) / 2;
+  const vtPixels = Math.abs(positionX - jointX);
+  const vtLabel = vtPixels >= 48 && Math.abs(vtMid - x0LabelX) >= 40 ? 'vt' : undefined;
+
+  if (domain.min <= 0 && domain.max >= 0) {
+    const crowded = Math.abs(x0LabelX - originX) < 42 || Math.abs(positionX - originX) < 36;
+    const label = crowded ? undefined : { text: 'x = 0', y: cueY };
+    const lineTop = Math.abs(positionX - originX) < 36 ? labelY + 12 : cueY + 12;
+    drawOrigin(context, originX, lineTop, axisY + 8, label);
+  }
+  drawNumberLine(context, { y: axisY, left, width: plotWidth, xMin: domain.min, xMax: domain.max, tickY });
+
+  drawSegment(context, {
+    x1: jointX,
+    x2: exactX,
+    y: exactY,
+    color: palette.exact,
+    width: 1.7,
+    dash: [5, 4],
+    caps: 'both',
+  });
+  drawSegment(context, {
+    x1: originX,
+    x2: jointX,
+    y: bracketY,
+    color: palette.textSecondary,
+    width: 1.6,
+    dash: [],
+    caps: 'start',
+    label: 'x₀',
+    labelColor: palette.textSecondary,
+    labelY,
+    labelAlways: true,
+    clampX,
+  });
+  drawSegment(context, {
+    x1: jointX,
+    x2: positionX,
+    y: bracketY,
+    color: palette.numerical,
+    width: 2.5,
+    dash: [],
+    caps: 'none',
+    arrow: true,
+    label: vtLabel,
+    labelColor: palette.numerical,
+    labelY,
+    labelMinPx: 48,
+    clampX,
+  });
+  drawJoint(context, jointX, bracketY);
+
+  if (axisY - 16 > bracketY + 6) drawWitness(context, positionX, bracketY + 6, axisY - 16, palette.numerical);
+  if (Math.abs(positionX - exactX) > 6 && axisY - 22 > exactY + 6) {
+    drawWitness(context, exactX, exactY + 6, axisY - 22, palette.exact, [5, 4]);
+  }
+
+  drawExactOutline(context, exactX, axisY);
+  drawParticle(context, {
+    x: positionX,
+    y: axisY,
+    cue: Math.abs(frame.velocity) > 1e-6 ? { direction: frame.velocity, y: cueY } : undefined,
+  });
+
+  canvas.setAttribute('aria-label', '直線上を進む粒子。初期位置に変位 vt を加えた位置を示します。数値解は青の実線、解析解は青緑の破線。');
+}
+
+export interface ConstantAccelerationFrame {
+  key: string;
+  x0: number;
+  position: number;
+  exactPosition: number;
+  velocity: number;
+  timeEnd: number;
+  samples: MotionSample[];
+  /** 一定の外力 F。渡すと、質点を押す向きに矢印を描く。長さは向きだけを示す。 */
+  force?: number;
+}
+
+/**
+ * 等加速度直線運動の図。位置と速度は ConstantAccelerationSimulation のスナップショットをそのまま使う。
+ * 速度の矢印の長さは、返された速度の大きさに比例する図の縮尺であり、式の再計算ではない。
+ */
+export function drawConstantAcceleration(canvas: HTMLCanvasElement, frame: ConstantAccelerationFrame) {
+  const surface = canvasContext(canvas);
+  if (surface.width < 2 || surface.height < 2) return;
+  const { context, width, height } = surface;
+  const palette = figurePalette();
+  const left = 46;
+  const right = 40;
+  const plotWidth = Math.max(width - left - right, 1);
+  const samples = frame.samples.map(sample => ({ time: sample.time, value: sample.position }));
+  const exactValues = frame.samples.map(sample => sample.exactPosition);
+  const domain = axisDomain(
+    `${frame.key}:scene`,
+    samples,
+    frame.timeEnd,
+    [0, frame.x0, frame.position, frame.exactPosition, ...exactValues],
+    0.16,
+    0.8,
+  );
+  const mapX = (value: number) => mapLinear(value, domain.min, domain.max, left, plotWidth);
+  const { cueY, labelY, exactY, bracketY, axisY, tickY } = bands(height);
+  const originX = mapX(0);
+  const jointX = mapX(frame.x0);
+  const positionX = mapX(frame.position);
+  const exactX = mapX(frame.exactPosition);
+  const clampX = { min: 16, max: width - 16 };
+  const x0Pixels = Math.abs(jointX - originX);
+  const x0LabelX = x0Pixels >= 36 ? (originX + jointX) / 2 : jointX;
+
+  if (domain.min <= 0 && domain.max >= 0) {
+    const crowded = Math.abs(x0LabelX - originX) < 48 || Math.abs(positionX - originX) < 40;
+    const label = crowded ? undefined : { text: 'x = 0', y: cueY };
+    const lineTop = Math.abs(positionX - originX) < 40 ? labelY + 14 : cueY + 14;
+    drawOrigin(context, originX, lineTop, axisY + 8, label);
+  }
+  drawNumberLine(context, { y: axisY, left, width: plotWidth, xMin: domain.min, xMax: domain.max, tickY });
+
+  drawSegment(context, {
+    x1: jointX,
+    x2: exactX,
+    y: exactY,
+    color: palette.exact,
+    width: 1.7,
+    dash: [5, 4],
+    caps: 'both',
+  });
+  drawSegment(context, {
+    x1: originX,
+    x2: jointX,
+    y: bracketY,
+    color: palette.textSecondary,
+    width: 1.6,
+    dash: [],
+    caps: 'start',
+    label: 'x₀',
+    labelColor: palette.textSecondary,
+    labelY,
+    labelAlways: true,
+    clampX,
+  });
+  drawSegment(context, {
+    x1: jointX,
+    x2: positionX,
+    y: bracketY,
+    color: palette.numerical,
+    width: 2.5,
+    dash: [],
+    caps: 'none',
+    arrow: true,
+    clampX,
+  });
+  drawJoint(context, jointX, bracketY);
+
+  if (axisY - 16 > bracketY + 6) drawWitness(context, positionX, bracketY + 6, axisY - 16, palette.numerical);
+  if (Math.abs(positionX - exactX) > 6 && axisY - 22 > exactY + 6) {
+    drawWitness(context, exactX, exactY + 6, axisY - 22, palette.exact, [5, 4]);
+  }
+
+  const sign = Math.sign(frame.velocity);
+  const wanted = Math.min(72, 16 + Math.abs(frame.velocity) * 5);
+  const room = sign > 0 ? width - 24 - positionX : positionX - 24;
+  const arrowLength = Math.min(wanted, Math.max(room, 0));
+  drawExactOutline(context, exactX, axisY);
+  drawParticle(context, {
+    x: positionX,
+    y: axisY,
+    cue: sign !== 0 && arrowLength >= 12 ? { direction: frame.velocity, y: cueY, length: arrowLength } : undefined,
+  });
+  if (frame.force !== undefined && frame.force !== 0) {
+    const push = Math.sign(frame.force);
+    const tip = positionX - push * 18;
+    const tail = tip - push * 34;
+    context.save();
+    context.strokeStyle = palette.text;
+    context.fillStyle = palette.text;
+    context.lineWidth = 2;
+    context.beginPath();
+    context.moveTo(tail, axisY);
+    context.lineTo(tip - push * 6, axisY);
+    context.stroke();
+    context.beginPath();
+    context.moveTo(tip, axisY);
+    context.lineTo(tip - push * 8, axisY - 4);
+    context.lineTo(tip - push * 8, axisY + 4);
+    context.closePath();
+    context.fill();
+    context.restore();
+    drawLabel(context, 'F', (tip + tail) / 2, axisY - 14, 'math');
+  }
+
+  canvas.setAttribute(
+    'aria-label',
+    '直線上を進む粒子。速度の矢印の長さは、その時刻の速度の大きさに比例します。数値解は青の実線、解析解は青緑の破線。',
+  );
+}

@@ -1,4 +1,43 @@
 //! Harmonic oscillator reference model and shared Native/Wasm execution boundary.
+pub mod closed_form;
+pub mod compare;
+pub mod constant_acceleration;
+pub mod euler;
+pub mod lesson;
+mod lesson_analytical;
+mod lesson_analytical_a;
+mod lesson_analytical_b;
+mod lesson_calculus;
+mod lesson_calculus_a;
+mod lesson_calculus_b;
+mod lesson_em;
+mod lesson_em_a;
+mod lesson_em_b;
+mod lesson_finance;
+mod lesson_linalg;
+mod lesson_md;
+mod lesson_md_a;
+mod lesson_md_b;
+mod lesson_md_c;
+mod lesson_mechanics;
+mod lesson_ode;
+mod lesson_statistics;
+pub mod newton;
+pub mod position_derivative;
+#[cfg(target_arch = "wasm32")]
+mod step_api;
+pub mod textbook;
+pub mod uniform;
+pub use closed_form::*;
+pub use compare::*;
+pub use constant_acceleration::*;
+pub use euler::*;
+pub use lesson::{LessonSimulation, LessonSnapshot, lesson_figure};
+pub use newton::*;
+pub use position_derivative::*;
+pub use textbook::*;
+pub use uniform::*;
+
 use serde::{Deserialize, Serialize};
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
@@ -171,6 +210,19 @@ impl Simulation {
         })
         .map_err(|e| e.to_string())
     }
+}
+
+pub(crate) fn additional_steps(current: u32, additional: u32) -> Result<u32, String> {
+    if additional == 0 {
+        return Err("additional steps must be at least 1".into());
+    }
+    let Some(steps) = current.checked_add(additional) else {
+        return Err("steps must be in 1..=1000000".into());
+    };
+    if !(1..=1_000_000).contains(&steps) {
+        return Err("steps must be in 1..=1000000".into());
+    }
+    Ok(steps)
 }
 
 impl Simulation {

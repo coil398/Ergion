@@ -1,0 +1,269 @@
+/** 時刻に対する数値解と解析解。点の値はスナップショットのまま描く。 */
+
+import { axisDomain, drawCartesianAxes, mapX, mapY, type PlotFrame } from './axes';
+import { canvasContext, figurePalette } from './canvas';
+import { mirrorOpening } from './opening-mirror';
+import { drawSamplePoint } from './particle';
+
+export interface SeriesSample {
+  time: number;
+  numerical: number;
+  exact: number;
+}
+
+export interface TimeSeriesFrame {
+  key: string;
+  kind: 'position' | 'velocity';
+  timeEnd: number;
+  time: number;
+  current: number;
+  samples: SeriesSample[];
+  xMin?: number;
+}
+
+function stroke(context: CanvasRenderingContext2D, frame: PlotFrame, samples: SeriesSample[], value: (sample: SeriesSample) => number) {
+  context.beginPath();
+  let started = false;
+  for (const sample of samples) {
+    const x = mapX(frame, sample.time);
+    const y = mapY(frame, value(sample));
+    if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
+    if (started) context.lineTo(x, y);
+    else {
+      context.moveTo(x, y);
+      started = true;
+    }
+  }
+  if (started) context.stroke();
+}
+
+export function drawTimeSeries(canvas: HTMLCanvasElement, frame: TimeSeriesFrame) {
+  const surface = canvasContext(canvas);
+  if (surface.width < 2 || surface.height < 2) return;
+  const { context, width, height } = surface;
+  const left = 88;
+  const top = 18;
+  const right = 16;
+  const bottom = 36;
+  const plotWidth = width - left - right;
+  const plotHeight = height - top - bottom;
+  if (plotWidth < 1 || plotHeight < 1) return;
+
+  const lastTime = frame.samples.reduce((max, sample) => Math.max(max, sample.time), 0);
+  const timeEnd = Number.isFinite(frame.timeEnd) && frame.timeEnd > 0 ? frame.timeEnd : lastTime;
+  const xMax = Math.max(timeEnd, lastTime, 1e-6);
+  const timed = frame.samples.map(sample => ({ time: sample.time, value: sample.numerical }));
+  const seed = frame.samples[0]?.numerical ?? frame.current;
+  const padMin = frame.kind === 'velocity' ? Math.max(Math.abs(seed) * 0.5, 0.5) : 0.5;
+  const padRatio = frame.kind === 'velocity' ? 0.5 : 0.15;
+  const yDomain = axisDomain(
+    frame.key,
+    timed,
+    xMax,
+    [frame.current, ...frame.samples.map(sample => sample.exact)],
+    padRatio,
+    padMin,
+  );
+  const plot: PlotFrame = {
+    left,
+    top,
+    width: plotWidth,
+    height: plotHeight,
+    xMin: frame.xMin !== undefined && Number.isFinite(frame.xMin) ? frame.xMin : 0,
+    xMax,
+    yMin: yDomain.min,
+    yMax: yDomain.max,
+  };
+  const prefix = frame.kind === 'velocity' ? '速度と時間のグラフ' : '位置と時間のグラフ';
+  const zeroLabel = frame.kind === 'velocity' ? 'v = 0' : 'x = 0';
+  canvas.setAttribute('aria-label', `${prefix}。縦軸 ${plot.yMin.toPrecision(3)} から ${plot.yMax.toPrecision(3)}。現在値 ${frame.current}`);
+
+  drawCartesianAxes(context, plot, zeroLabel);
+  context.save();
+  context.beginPath();
+  context.rect(plot.left, plot.top, plot.width, plot.height);
+  context.clip();
+  context.lineJoin = 'round';
+  context.strokeStyle = figurePalette().numerical;
+  context.lineWidth = 2;
+  context.setLineDash([]);
+  stroke(context, plot, frame.samples, sample => sample.numerical);
+  context.strokeStyle = figurePalette().exact;
+  context.lineWidth = 1.7;
+  context.setLineDash([5, 4]);
+  stroke(context, plot, frame.samples, sample => sample.exact);
+  context.restore();
+  drawSamplePoint(context, mapX(plot, frame.time), mapY(plot, frame.current));
+  mirrorOpening(canvas);
+}
+
+export interface ErrorSample {
+  time: number;
+  error: number;
+}
+
+export interface ErrorSeriesFrame {
+  key: string;
+  timeEnd: number;
+  time: number;
+  current: number;
+  samples: ErrorSample[];
+  xMin?: number;
+  zeroLabel?: string;
+}
+
+/** 位置の誤差。返された \(x - x_{\mathrm{exact}}\) を実線で描き、厳密解の破線にはしない。 */
+export function drawErrorSeries(canvas: HTMLCanvasElement, frame: ErrorSeriesFrame) {
+  const surface = canvasContext(canvas);
+  if (surface.width < 2 || surface.height < 2) return;
+  const { context, width, height } = surface;
+  const left = 88;
+  const top = 18;
+  const right = 16;
+  const bottom = 36;
+  const plotWidth = width - left - right;
+  const plotHeight = height - top - bottom;
+  if (plotWidth < 1 || plotHeight < 1) return;
+
+  const lastTime = frame.samples.reduce((max, sample) => Math.max(max, sample.time), 0);
+  const timeEnd = Number.isFinite(frame.timeEnd) && frame.timeEnd > 0 ? frame.timeEnd : lastTime;
+  const xMax = Math.max(timeEnd, lastTime, 1e-6);
+  const timed = frame.samples.map(sample => ({ time: sample.time, value: sample.error }));
+  const yDomain = axisDomain(
+    frame.key,
+    timed,
+    xMax,
+    [0, frame.current, ...frame.samples.map(sample => sample.error)],
+    0.2,
+    1e-15,
+  );
+  const plot: PlotFrame = {
+    left,
+    top,
+    width: plotWidth,
+    height: plotHeight,
+    xMin: frame.xMin !== undefined && Number.isFinite(frame.xMin) ? frame.xMin : 0,
+    xMax,
+    yMin: yDomain.min,
+    yMax: yDomain.max,
+  };
+  canvas.setAttribute(
+    'aria-label',
+    `位置の誤差と時間のグラフ。縦軸 ${plot.yMin.toPrecision(3)} から ${plot.yMax.toPrecision(3)}。現在の誤差 ${frame.current}`,
+  );
+
+  drawCartesianAxes(context, plot, frame.zeroLabel ?? 'x − x_exact = 0');
+  context.save();
+  context.beginPath();
+  context.rect(plot.left, plot.top, plot.width, plot.height);
+  context.clip();
+  context.lineJoin = 'round';
+  context.strokeStyle = figurePalette().difference;
+  context.lineWidth = 2;
+  context.setLineDash([]);
+  context.beginPath();
+  let started = false;
+  for (const sample of frame.samples) {
+    const x = mapX(plot, sample.time);
+    const y = mapY(plot, sample.error);
+    if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
+    if (started) context.lineTo(x, y);
+    else {
+      context.moveTo(x, y);
+      started = true;
+    }
+  }
+  if (started) context.stroke();
+  context.restore();
+  const pointX = mapX(plot, frame.time);
+  const pointY = mapY(plot, frame.current);
+  if (Number.isFinite(pointX) && Number.isFinite(pointY)) {
+    context.beginPath();
+    context.fillStyle = figurePalette().difference;
+    context.arc(pointX, pointY, 3.5, 0, Math.PI * 2);
+    context.fill();
+  }
+  mirrorOpening(canvas);
+}
+
+export interface ExactSample {
+  time: number;
+  value: number;
+}
+
+export interface ExactCurveFrame {
+  key: string;
+  timeEnd: number;
+  time: number;
+  current: number;
+  samples: ExactSample[];
+  label: string;
+  xMin?: number;
+}
+
+/** 返された厳密解だけを破線で描く。数値解の実線は重ねない。 */
+export function drawExactCurve(canvas: HTMLCanvasElement, frame: ExactCurveFrame) {
+  const surface = canvasContext(canvas);
+  if (surface.width < 2 || surface.height < 2) return;
+  const { context, width, height } = surface;
+  const left = 88;
+  const top = 18;
+  const right = 16;
+  const bottom = 36;
+  const plotWidth = width - left - right;
+  const plotHeight = height - top - bottom;
+  if (plotWidth < 1 || plotHeight < 1) return;
+
+  const lastTime = frame.samples.reduce((max, sample) => Math.max(max, sample.time), 0);
+  const timeEnd = Number.isFinite(frame.timeEnd) && frame.timeEnd > 0 ? frame.timeEnd : lastTime;
+  const xMax = Math.max(timeEnd, lastTime, 1e-6);
+  const timed = frame.samples.map(sample => ({ time: sample.time, value: sample.value }));
+  const yDomain = axisDomain(frame.key, timed, xMax, [frame.current], 0.12, 0.5);
+  const plot: PlotFrame = {
+    left,
+    top,
+    width: plotWidth,
+    height: plotHeight,
+    xMin: frame.xMin !== undefined && Number.isFinite(frame.xMin) ? frame.xMin : 0,
+    xMax,
+    yMin: yDomain.min,
+    yMax: yDomain.max,
+  };
+  canvas.setAttribute(
+    'aria-label',
+    `${frame.label}。縦軸 ${plot.yMin.toPrecision(3)} から ${plot.yMax.toPrecision(3)}。現在値 ${frame.current}`,
+  );
+
+  drawCartesianAxes(context, plot, 'x = 0');
+  context.save();
+  context.beginPath();
+  context.rect(plot.left, plot.top, plot.width, plot.height);
+  context.clip();
+  context.lineJoin = 'round';
+  context.strokeStyle = figurePalette().exact;
+  context.lineWidth = 1.7;
+  context.setLineDash([5, 4]);
+  context.beginPath();
+  let started = false;
+  for (const sample of frame.samples) {
+    const x = mapX(plot, sample.time);
+    const y = mapY(plot, sample.value);
+    if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
+    if (started) context.lineTo(x, y);
+    else {
+      context.moveTo(x, y);
+      started = true;
+    }
+  }
+  if (started) context.stroke();
+  context.restore();
+  const pointX = mapX(plot, frame.time);
+  const pointY = mapY(plot, frame.current);
+  if (Number.isFinite(pointX) && Number.isFinite(pointY)) {
+    context.beginPath();
+    context.fillStyle = figurePalette().exact;
+    context.arc(pointX, pointY, 3.5, 0, Math.PI * 2);
+    context.fill();
+  }
+  mirrorOpening(canvas);
+}
