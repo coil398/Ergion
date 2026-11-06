@@ -87,8 +87,8 @@ impl Simulation {
         let omega = omega_squared.sqrt();
         let phase_step = omega * config.dt;
         let final_time = config.dt * f64::from(config.steps);
-        let initial_energy = 0.5 * config.mass * config.initial_velocity.powi(2)
-            + 0.5 * config.spring_constant * config.initial_position.powi(2);
+        let initial_energy = config.mass * config.initial_velocity.powi(2) * 0.5
+            + config.spring_constant * config.initial_position.powi(2) * 0.5;
         let amplitude = config
             .initial_position
             .hypot(config.initial_velocity / omega);
@@ -177,8 +177,8 @@ impl Simulation {
     fn state(&self) -> Snapshot {
         let time = f64::from(self.step) * self.config.dt;
         let (sin, cos) = (self.omega * time).sin_cos();
-        let kinetic_energy = 0.5 * self.config.mass * self.velocity.powi(2);
-        let potential_energy = 0.5 * self.config.spring_constant * self.position.powi(2);
+        let kinetic_energy = self.config.mass * self.velocity.powi(2) * 0.5;
+        let potential_energy = self.config.spring_constant * self.position.powi(2) * 0.5;
         let total_energy = kinetic_energy + potential_energy;
         Snapshot {
             step: self.step,

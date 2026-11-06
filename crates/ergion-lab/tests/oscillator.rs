@@ -110,3 +110,36 @@ fn zero_energy_stays_finite() {
     assert_eq!(batch.state.relative_energy_error, 0.0);
     assert_eq!(batch.state.total_energy, 0.0);
 }
+
+#[test]
+fn subnormal_coefficients_preserve_energy() {
+    for method in ["rk4", "verlet"] {
+        let value = json!({"schema_version":1,"mass":f64::from_bits(1),"spring_constant":f64::from_bits(3),"initial_position":1e12,"initial_velocity":1e12,"dt":0.01,"steps":10,"integrator":method});
+        let mut simulation = Simulation::new(&value.to_string()).unwrap();
+        let initial: Snapshot = serde_json::from_str(&simulation.snapshot().unwrap()).unwrap();
+        let batch: Batch = serde_json::from_str(&simulation.advance(10).unwrap()).unwrap();
+        assert_eq!(batch.samples.len(), 10);
+        // Independently scaled reference: 2^-1074 * 10^24 / 2 and three times it.
+        let initial_kinetic = 2.470_328_229_206_232_7e-300;
+        let initial_potential = 7.410_984_687_618_698e-300;
+        for state in std::iter::once(&initial).chain(&batch.samples) {
+            let kinetic = initial_kinetic * (state.velocity / 1e12).powi(2);
+            let potential = initial_potential * (state.position / 1e12).powi(2);
+            let total = kinetic + potential;
+            let initial_total = initial_kinetic + initial_potential;
+            for (actual, expected) in [
+                (state.kinetic_energy, kinetic),
+                (state.potential_energy, potential),
+                (state.total_energy, total),
+                (state.initial_energy, initial_total),
+            ] {
+                assert!(
+                    (actual / expected - 1.0).abs() < 1e-12,
+                    "{method} step {}: {actual:e} != {expected:e}",
+                    state.step
+                );
+            }
+            assert!((state.relative_energy_error - (total / initial_total - 1.0)).abs() < 1e-12);
+        }
+    }
+}

@@ -142,3 +142,90 @@ test('CLIで有効な大きい刻みの設定を読み込み後も編集でき�
   await page.getByRole('button', { name: '1ステップ', exact: true }).click();
   await expect(page.locator('#scene-time')).toHaveText('t = 2.000');
 });
+
+test('非正規化数の係数でもNativeと本番Workerのエネルギーが正しい', async ({ page }, testInfo) => {
+  await page.goto('/');
+  await expect(page.locator('#status')).toHaveText('準備完了');
+  for (const integrator of ['rk4', 'verlet']) {
+    const config = { schema_version: 1, mass: Number.MIN_VALUE, spring_constant: 3 * Number.MIN_VALUE, initial_position: 1e12, initial_velocity: 1e12, dt: 0.01, steps: 10, integrator };
+    const configPath = testInfo.outputPath(`subnormal-${integrator}.json`);
+    writeFileSync(configPath, JSON.stringify(config));
+    const native = JSON.parse(execFileSync(resolve(root, 'target/debug/ergion'), [configPath], { encoding: 'utf8' }));
+    const states = await page.evaluate(async ({ config: value, workerUrl }) => {
+      return new Promise<Record<string, number>[]>((resolve, reject) => {
+        const worker = new Worker(workerUrl, { type: 'module' });
+        const states: Record<string, number>[] = [];
+        const timer = setTimeout(() => { worker.terminate(); reject(new Error('Worker timeout')); }, 15000);
+        worker.onmessage = ({ data }) => {
+          if (data.error) { clearTimeout(timer); worker.terminate(); reject(new Error(data.error)); return; }
+          states.push(data.state);
+          if (data.state.finished) { clearTimeout(timer); worker.terminate(); resolve(states); }
+          else { worker.postMessage({ id: 8, command: 'step' }); }
+        };
+        worker.onerror = error => { clearTimeout(timer); worker.terminate(); reject(new Error(error.message)); };
+        worker.postMessage({ id: 8, command: 'load', config: value });
+      });
+    }, { config, workerUrl: page.workers()[0].url() });
+    expect(states.map(state => state.step)).toEqual(Array.from({ length: 11 }, (_, step) => step));
+    // Decimal reference constants avoid halving a subnormal coefficient in the oracle.
+    const initialKinetic = 2.4703282292062327e-300;
+    const initialPotential = 7.410984687618698e-300;
+    const initialTotal = initialKinetic + initialPotential;
+    for (const state of [...states, native]) {
+      const kinetic = initialKinetic * (state.velocity / 1e12) ** 2;
+      const potential = initialPotential * (state.position / 1e12) ** 2;
+      for (const [key, expected] of Object.entries({ kinetic_energy: kinetic, potential_energy: potential, total_energy: kinetic + potential, initial_energy: initialTotal })) {
+        expect(Math.abs(state[key] / expected - 1)).toBeLessThan(1e-12);
+      }
+      expect(Math.abs(state.relative_energy_error - ((kinetic + potential) / initialTotal - 1))).toBeLessThan(1e-12);
+    }
+    for (const key of ['kinetic_energy', 'potential_energy', 'total_energy', 'initial_energy']) {
+      expect(Math.abs(states.at(-1)![key] / native[key] - 1)).toBeLessThan(1e-12);
+    }
+  }
+});
+
+for (const action of ['import', 'apply', 'reset'] as const) {
+  for (const outcome of ['success', 'failure'] as const) {
+    test(`遅い設定読込の${outcome}が後続の${action}を上書きしない`, async ({ page }) => {
+      await page.goto('/');
+      await expect(page.locator('#status')).toHaveText('準備完了');
+      const base = JSON.parse(readFileSync(resolve(root, 'examples/oscillator.json'), 'utf8'));
+      await page.evaluate(({ text, outcome }) => {
+        const original = File.prototype.text;
+        let settle: () => void;
+        const pending = new Promise<string>((resolve, reject) => {
+          settle = () => outcome === 'success' ? resolve(text) : reject(new Error('old import failed'));
+        });
+        File.prototype.text = function () { return this.name === 'slow.json' ? pending : original.call(this); };
+        (window as unknown as { releaseImport: () => Promise<void> }).releaseImport = async () => {
+          settle();
+          await pending.catch(() => {});
+        };
+      }, { text: JSON.stringify({ ...base, initial_position: 9 }), outcome });
+      await page.locator('#import').setInputFiles({ name: 'slow.json', mimeType: 'application/json', buffer: Buffer.from('{}') });
+      if (action === 'import') {
+        await page.locator('#import').setInputFiles({ name: 'new.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify({ ...base, initial_position: 2 })) });
+      } else if (action === 'apply') {
+        await page.locator('[name=initial_position]').fill('2');
+        await page.getByRole('button', { name: '条件を適用してリセット' }).click();
+      } else {
+        await page.getByRole('button', { name: '1ステップ', exact: true }).click();
+        await expect(page.locator('#progress-text')).toHaveText('1 / 2,500 ステップ');
+        await page.getByRole('button', { name: '初期状態にリセット' }).click();
+      }
+      const position = action === 'reset' ? '1' : '2';
+      await expect(page.locator('#status')).toHaveText('準備完了');
+      await expect(page.locator('#position')).toHaveText(`${position}.00000`);
+      await page.evaluate(() => (window as unknown as { releaseImport: () => Promise<void> }).releaseImport());
+      await expect(page.locator('[name=initial_position]')).toHaveValue(position);
+      await expect(page.locator('#position')).toHaveText(`${position}.00000`);
+      await expect(page.locator('#status')).toHaveText('準備完了');
+      await expect(page.locator('#error')).toBeHidden();
+      const downloadPromise = page.waitForEvent('download');
+      await page.getByRole('button', { name: '設定を保存' }).click();
+      const saved = JSON.parse(readFileSync((await (await downloadPromise).path())!, 'utf8'));
+      expect(saved.initial_position).toBe(Number(position));
+    });
+  }
+}

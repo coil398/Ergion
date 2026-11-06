@@ -80,6 +80,7 @@ const canvases = ['oscillator', 'time-chart', 'phase-chart'].map(id => document.
 const worker = new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' });
 let config = { ...defaults };
 let id = 0;
+let importGeneration = 0;
 let phase: 'loading' | 'ready' | 'running' | 'paused' | 'finished' | 'error' | 'pausing' = 'loading';
 let dirty = false;
 let state: Snapshot | undefined;
@@ -132,6 +133,7 @@ function updateHint() {
   setText('#time-hint', Number.isFinite(period) && Number.isFinite(duration) ? `計算時間 ${duration.toFixed(2)} ／ 固有周期 ${period.toFixed(2)}` : '有限の正しい数値を入力してください。');
 }
 function load(value: Config) {
+  ++importGeneration;
   config = { ...value };
   phase = 'loading';
   dirty = false;
@@ -198,9 +200,12 @@ document.querySelector<HTMLInputElement>('#import')!.addEventListener('change', 
   const file = input.files?.[0];
   input.value = '';
   if (!file) return;
+  const generation = ++importGeneration;
   try {
     if (file.size > 16384) throw new Error('設定ファイルは16KB以下にしてください。');
-    const value = JSON.parse(await file.text()) as Record<string, unknown>;
+    const text = await file.text();
+    if (generation !== importGeneration) return;
+    const value = JSON.parse(text) as Record<string, unknown>;
     const keys = Object.keys(defaults);
     if (!value || typeof value !== 'object' || Array.isArray(value) || Object.keys(value).length !== keys.length || keys.some(key => !(key in value))) throw new Error('設定の項目が一致しません。保存したJSON設定を選んでください。');
     if (value.schema_version !== 1 || !['rk4', 'verlet'].includes(String(value.integrator)) || keys.filter(key => key !== 'integrator').some(key => typeof value[key] !== 'number' || !Number.isFinite(value[key]))) throw new Error('設定の形式または数値が正しくありません。');
@@ -208,7 +213,9 @@ document.querySelector<HTMLInputElement>('#import')!.addEventListener('change', 
     const next = value as unknown as Config;
     fillForm(next);
     load(next);
-  } catch (error) { showError(String(error)); }
+  } catch (error) {
+    if (generation === importGeneration) showError(String(error));
+  }
 });
 
 function canvasContext(canvas: HTMLCanvasElement) {
